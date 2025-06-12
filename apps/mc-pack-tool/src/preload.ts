@@ -5,16 +5,21 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // Retrieve a list of saved projects
-  listProjects: () => ipcRenderer.invoke('list-projects') as Promise<string[]>,
-
-  // Request the main process to open or create a project
+  listProjects: () =>
+  ipcRenderer.invoke('list-projects') as Promise<{ name: string; version: string }[]>,
+  
+  // Create a new project
+  createProject: (name: string, version: string) =>
+  ipcRenderer.invoke('create-project', name, version),
+  
+  // Request the main process to open an existing project
   openProject: (name: string) => ipcRenderer.invoke('open-project', name),
-
+  
   // Listen for the main window reporting that a project has been opened
   onOpenProject: (listener: (event: unknown, path: string) => void) =>
-    ipcRenderer.on('project-opened', listener),
-
+  ipcRenderer.on('project-opened', listener),
+  
   // Ask the main process to export the current project as a zip
   exportProject: (path: string, out: string) =>
-    ipcRenderer.invoke('export-project', path, out),
+  ipcRenderer.invoke('export-project', path, out),
 });

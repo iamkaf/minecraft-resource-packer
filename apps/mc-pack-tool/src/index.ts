@@ -6,6 +6,8 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { exportPack } from './main/exporter';
+import { createProject } from './main/projects';
+import { ProjectMetadataSchema } from './minecraft/project';
 
 declare const MANAGER_WEBPACK_ENTRY: string;
 declare const MANAGER_PRELOAD_WEBPACK_ENTRY: string;
@@ -53,10 +55,23 @@ const createMainWindow = (projectPath: string) => {
 
 // Return the names of sub directories within the projects folder.
 ipcMain.handle('list-projects', async () => {
-  if (!fs.existsSync(projectsDir)) fs.mkdirSync(projectsDir, { recursive: true });
-  return fs
-    .readdirSync(projectsDir)
-    .filter(f => fs.statSync(path.join(projectsDir, f)).isDirectory());
+    if (!fs.existsSync(projectsDir)) fs.mkdirSync(projectsDir, { recursive: true });
+    return fs
+      .readdirSync(projectsDir)
+      .filter(f => fs.statSync(path.join(projectsDir, f)).isDirectory())
+      .map(name => {
+        const metaPath = path.join(projectsDir, name, 'project.json');
+        if (fs.existsSync(metaPath)) {
+          try {
+            const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+            const meta = ProjectMetadataSchema.parse(data);
+            return { name: meta.name, version: meta.version };
+          } catch {
+            return { name, version: 'unknown' };
+          }
+        }
+        return { name, version: 'unknown' };
+      });
 });
 
 // Create or open an existing project and show it in the main window.
@@ -65,7 +80,12 @@ ipcMain.handle('open-project', (_e, name: string) => {
   if (!fs.existsSync(projectPath)) fs.mkdirSync(projectPath, { recursive: true });
   if (managerWindow) managerWindow.close();
   createMainWindow(projectPath);
-});
+  });
+
+  ipcMain.handle('create-project', (_e, name: string, version: string) => {
+  if (!fs.existsSync(projectsDir)) fs.mkdirSync(projectsDir, { recursive: true });
+  createProject(projectsDir, name, version);
+  });
 
 // Trigger pack export for the given project directory.
 ipcMain.handle('export-project', (_e, projectPath: string, out: string) => {
