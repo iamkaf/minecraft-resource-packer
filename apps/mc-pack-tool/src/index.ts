@@ -13,6 +13,7 @@ import {
   listTextures,
   listVersions,
   getTexturePath,
+  getTextureData,
 } from './main/assets';
 import { ProjectMetadataSchema } from './minecraft/project';
 
@@ -99,6 +100,10 @@ ipcMain.handle('list-textures', (_e, projectPath: string) => {
 
 ipcMain.handle('get-texture-path', (_e, projectPath: string, tex: string) => {
   return getTexturePath(projectPath, tex);
+});
+
+ipcMain.handle('get-texture-data', (_e, projectPath: string, tex: string) => {
+  return getTextureData(projectPath, tex);
 });
 
 // Trigger pack export for the given project directory.

@@ -39,6 +39,10 @@ const api = {
   getTexturePath: (project: string, name: string) =>
     ipcRenderer.invoke('get-texture-path', project, name),
 
+  // Read a texture file and return a base64 data URL
+  getTextureData: (project: string, name: string) =>
+    ipcRenderer.invoke('get-texture-data', project, name),
+
   // Reveal a file in the OS file manager
   openInFolder: (file: string) => ipcRenderer.invoke('open-in-folder', file),
 

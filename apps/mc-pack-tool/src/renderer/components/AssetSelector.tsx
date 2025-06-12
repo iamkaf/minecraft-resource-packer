@@ -6,7 +6,7 @@ interface Props {
 
 interface TextureInfo {
   name: string;
-  path: string;
+  data: string;
 }
 
 const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
@@ -20,8 +20,8 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
       const entries = await Promise.all(
         list.map(async (name) => ({
           name,
-          path:
-            (await window.electronAPI?.getTexturePath(projectPath, name)) ?? '',
+          data:
+            (await window.electronAPI?.getTextureData(projectPath, name)) ?? '',
         }))
       );
       setAll(entries);
@@ -29,7 +29,7 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
     void load();
   }, [projectPath]);
 
-  const filtered = all.filter((t) => t.name.includes(query));
+  const filtered = query ? all.filter((t) => t.name.includes(query)) : [];
 
   const handleSelect = (name: string) => {
     window.electronAPI?.addTexture(projectPath, name);
@@ -46,11 +46,7 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
       <ul className="h-48 overflow-y-scroll border p-1">
         {filtered.map((tex) => (
           <li key={tex.name} className="flex items-center space-x-2">
-            <img
-              src={`file://${tex.path}`}
-              alt={tex.name}
-              className="w-8 h-8"
-            />
+            <img src={tex.data} alt={tex.name} className="w-8 h-8" />
             <button
               className="underline text-blue-600"
               onClick={() => handleSelect(tex.name)}

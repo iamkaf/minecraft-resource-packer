@@ -145,3 +145,18 @@ export async function getTexturePath(
   const root = await ensureAssets(meta.version);
   return path.join(root, 'assets', 'minecraft', 'textures', texture);
 }
+
+/**
+ * Read the given texture file and return a base64 data URL. This allows the
+ * renderer process to display the image without using the file:// protocol,
+ * which can be blocked by Electron's security settings.
+ */
+export async function getTextureData(
+  projectPath: string,
+  texture: string
+): Promise<string> {
+  const texPath = await getTexturePath(projectPath, texture);
+  const buf = await fs.promises.readFile(texPath);
+  const base64 = buf.toString('base64');
+  return `data:image/png;base64,${base64}`;
+}
