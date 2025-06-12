@@ -15,8 +15,11 @@ describe('App', () => {
   let openHandler: ((e: unknown, path: string) => void) | undefined;
 
   beforeEach(() => {
-    (window as any).electronAPI = {
-      onOpenProject: (cb: typeof openHandler) => {
+    interface ElectronAPI {
+      onOpenProject: (cb: (e: unknown, path: string) => void) => void;
+    }
+    (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
+      onOpenProject: (cb) => {
         openHandler = cb;
       },
     };

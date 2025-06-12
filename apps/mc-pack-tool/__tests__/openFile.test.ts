@@ -18,7 +18,7 @@ vi.mock('electron', () => ({
     webContents: { on: vi.fn(), send: vi.fn() },
   })),
   ipcMain: {
-    handle: (channel: string, fn: any) => {
+    handle: (channel: string, fn: (event: unknown, file: string) => void) => {
       if (channel === 'open-file') openHandler = fn;
     },
   },

@@ -9,7 +9,14 @@ describe('AssetSelector', () => {
   const addTexture = vi.fn();
 
   beforeEach(() => {
-    (window as any).electronAPI = { listTextures, addTexture };
+    interface ElectronAPI {
+      listTextures: (path: string) => Promise<string[]>;
+      addTexture: (path: string, texture: string) => Promise<void>;
+    }
+    (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
+      listTextures,
+      addTexture,
+    };
     listTextures.mockResolvedValue(['grass.png', 'stone.png']);
     vi.clearAllMocks();
   });
