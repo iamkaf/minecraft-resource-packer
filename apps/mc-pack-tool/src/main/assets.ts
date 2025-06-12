@@ -97,7 +97,8 @@ export async function listTextures(projectPath: string): Promise<string[]> {
       if (entry.isDirectory()) {
         walk(p);
       } else if (entry.name.endsWith('.png')) {
-        out.push(path.relative(texRoot, p));
+        const rel = path.relative(texRoot, p);
+        out.push(rel.split(path.sep).join('/'));
       }
     }
   };
