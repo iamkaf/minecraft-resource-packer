@@ -22,6 +22,9 @@ npm run dev
 npm run dev:headless
 ```
 
+System packages needed for headless development and RPM creation are listed in
+[docs/setup.md](docs/setup.md).
+
 Run unit tests and lint the codebase with:
 
 ```bash
