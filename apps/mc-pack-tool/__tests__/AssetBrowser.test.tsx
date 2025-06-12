@@ -1,0 +1,30 @@
+import React from 'react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+
+import AssetBrowser from '../src/renderer/components/AssetBrowser';
+
+const onMock = vi.fn();
+const closeMock = vi.fn();
+
+vi.mock('chokidar', () => ({
+  watch: vi.fn(() => ({ on: onMock, close: closeMock })),
+}));
+
+vi.mock('fs', () => ({
+  default: {
+    readdirSync: vi.fn(() => ['a.txt', 'b.png']),
+  },
+}));
+
+describe('AssetBrowser', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders files from directory', () => {
+    render(<AssetBrowser path="/proj" />);
+    expect(screen.getByText('a.txt')).toBeInTheDocument();
+    expect(screen.getByText('b.png')).toBeInTheDocument();
+  });
+});
