@@ -6,6 +6,7 @@
   ],
   "scripts": {
     "dev": "npm --workspace apps/mc-pack-tool run start",
+    "dev:headless": "xvfb-run -a npm --workspace apps/mc-pack-tool run start -- -- --no-sandbox",
     "lint": "npm --workspace apps/mc-pack-tool run lint",
     "test": "npm --workspace apps/mc-pack-tool run test",
     "make": "npm --workspace apps/mc-pack-tool run make",

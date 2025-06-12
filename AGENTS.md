@@ -11,7 +11,7 @@ For more details on project structure and IPC patterns, see `docs/developer-hand
 
 - **Install deps:** `npm i`
 - **Dev server:** `npm run dev` (Electron Forge with reload)
-  - Requires a graphical environment; headless systems fail with an EPIPE error.
+  - Requires a graphical environment. Use `npm run dev:headless` on headless systems to avoid EPIPE errors. This variant also passes `--no-sandbox` so Electron can run as root in CI.
 - **Lint:** `npm run lint`
 - **Unit tests:** `npm test` (Vitest)
 - **Package:** `npm run make`
