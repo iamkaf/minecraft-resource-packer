@@ -7,6 +7,12 @@ npm i
 npm run dev
 ```
 
+On servers without a display you can run the headless variant which starts via `xvfb` and passes `--no-sandbox` so Electron can run as root:
+
+```bash
+npm run dev:headless
+```
+
 Run tests:
 
 ```bash

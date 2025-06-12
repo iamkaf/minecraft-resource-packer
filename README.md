@@ -18,6 +18,8 @@ Install dependencies and launch the development build:
 ```bash
 npm i
 npm run dev
+# Use this variant on servers without a display (runs xvfb and adds --no-sandbox)
+npm run dev:headless
 ```
 
 Run unit tests and lint the codebase with:

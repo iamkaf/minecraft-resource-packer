@@ -15,21 +15,23 @@ const api = {
 
   // Create a new project
   createProject: (name: string, version: string) =>
-    ipcRenderer.invoke('create-project', name, version),
+    ipcRenderer.invoke('create-project', name, version) as Promise<void>,
 
   // Request the main process to open an existing project
-  openProject: (name: string) => ipcRenderer.invoke('open-project', name),
+  openProject: (name: string) =>
+    ipcRenderer.invoke('open-project', name) as Promise<void>,
 
   // Listen for the main window reporting that a project has been opened
   onOpenProject: (listener: (event: unknown, path: string) => void) =>
     ipcRenderer.on('project-opened', listener),
 
   // Ask the main process to export the current project as a zip
-  exportProject: (path: string) => ipcRenderer.invoke('export-project', path),
+  exportProject: (path: string) =>
+    ipcRenderer.invoke('export-project', path) as Promise<void>,
 
   // Download and copy a texture from the cached client jar
   addTexture: (project: string, name: string) =>
-    ipcRenderer.invoke('add-texture', project, name),
+    ipcRenderer.invoke('add-texture', project, name) as Promise<void>,
 
   // Retrieve the list of texture paths for this project
   listTextures: (project: string) =>
@@ -44,12 +46,13 @@ const api = {
     ipcRenderer.invoke('get-texture-url', project, name),
 
   // Reveal a file in the OS file manager
-  openInFolder: (file: string) => ipcRenderer.invoke('open-in-folder', file),
+  openInFolder: (file: string) =>
+    ipcRenderer.invoke('open-in-folder', file) as Promise<void>,
 
   // Open a file with the default application
-  openFile: (file: string) => ipcRenderer.invoke('open-file', file),
+  openFile: (file: string) =>
+    ipcRenderer.invoke('open-file', file) as Promise<void>,
 };
-
 
 if (process.contextIsolated) {
   contextBridge.exposeInMainWorld('electronAPI', api);
