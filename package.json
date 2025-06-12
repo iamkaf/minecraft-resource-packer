@@ -1,7 +1,9 @@
 {
   "name": "minecraft-resource-packer",
   "private": true,
-  "workspaces": ["apps/mc-pack-tool"],
+  "workspaces": [
+    "apps/mc-pack-tool"
+  ],
   "scripts": {
     "dev": "npm --workspace apps/mc-pack-tool run start",
     "lint": "npm --workspace apps/mc-pack-tool run lint",

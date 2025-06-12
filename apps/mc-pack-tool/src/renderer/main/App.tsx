@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AssetBrowser from './AssetBrowser';
+import AssetSelector from './AssetSelector';
 
 // Main React component shown in the editor window.  It waits for the main
 // process to notify which project is open and then displays an AssetBrowser for
@@ -22,6 +23,7 @@ const App: React.FC = () => {
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-2">Project: {projectPath}</h1>
+      <AssetSelector path={projectPath} />
       {/* Display the files inside the selected project */}
       <AssetBrowser path={projectPath} />
     </div>
