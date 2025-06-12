@@ -31,8 +31,8 @@ describe('ProjectManager', () => {
 
   it('renders projects and opens them', async () => {
     render(<ProjectManager />);
-    const item = await screen.findByText('Pack (1.20)');
-    fireEvent.click(item);
+    const btn = await screen.findByRole('button', { name: 'Open' });
+    fireEvent.click(btn);
     expect(openProject).toHaveBeenCalledWith('Pack');
   });
 
@@ -44,7 +44,7 @@ describe('ProjectManager', () => {
 
   it('creates project via form', async () => {
     render(<ProjectManager />);
-    await screen.findByText('Pack (1.20)');
+    await screen.findByRole('button', { name: 'Open' });
     const select = await screen.findByRole('combobox');
     fireEvent.change(screen.getByPlaceholderText('Name'), {
       target: { value: 'New' },
