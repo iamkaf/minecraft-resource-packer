@@ -20,9 +20,21 @@ const App: React.FC = () => {
     return <div className="p-4">No project loaded</div>;
   }
 
+  const handleExport = () => {
+    if (projectPath) {
+      window.electronAPI?.exportProject(projectPath);
+    }
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-2">Project: {projectPath}</h1>
+      <button
+        className="bg-blue-500 text-white px-2 py-1 rounded mb-2"
+        onClick={handleExport}
+      >
+        Export Pack
+      </button>
       <AssetSelector path={projectPath} />
       {/* Display the files inside the selected project */}
       <AssetBrowser path={projectPath} />

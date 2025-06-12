@@ -22,8 +22,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('project-opened', listener),
 
   // Ask the main process to export the current project as a zip
-  exportProject: (path: string, out: string) =>
-    ipcRenderer.invoke('export-project', path, out),
+  exportProject: (path: string) =>
+    ipcRenderer.invoke('export-project', path),
 
   // Download and copy a texture from the cached client jar
   addTexture: (project: string, name: string) =>
