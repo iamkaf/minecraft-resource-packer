@@ -30,9 +30,19 @@ let activeProjectDir = '';
  * @throws if the request fails.
  */
 async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to fetch ${url}`);
-  return res.json() as Promise<T>;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Failed to fetch ${url}`);
+    return res.json() as Promise<T>;
+  } catch (err) {
+    // Fall back to a bundled manifest when offline
+    if (url === VERSION_MANIFEST) {
+      const local = path.join(__dirname, '../minecraft/version_manifest.json');
+      const data = fs.readFileSync(local, 'utf-8');
+      return JSON.parse(data) as T;
+    }
+    throw err;
+  }
 }
 
 /**
