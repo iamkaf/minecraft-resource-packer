@@ -43,4 +43,4 @@ When adding features that need access to Node APIs:
 
 Remember that the renderer runs in a browser-like sandbox, so heavy filesystem work belongs in the main process.
 
-Use tabs for indentation in `.ts` and `.tsx` files and keep React components functional.
+Use spaces for indentation in `.ts` and `.tsx` files and keep React components functional.
