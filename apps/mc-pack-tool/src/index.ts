@@ -42,6 +42,9 @@ const createManagerWindow = () => {
     height: 400,
     webPreferences: {
       nodeIntegration: true,
+      // Disable context isolation because the bundled renderer code relies on
+      // Node integration (uses `require`). The preload script will attach its
+      // API directly to `window` when isolation is off.
       contextIsolation: false,
       preload: MANAGER_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
@@ -58,6 +61,7 @@ const createMainWindow = (projectPath: string) => {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
+      // Disable context isolation here too so the renderer can require modules.
       contextIsolation: false,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
