@@ -50,3 +50,14 @@ Use spaces for indentation in `.ts` and `.tsx` files and keep React components f
 Tailwind CSS is configured with the `daisyUI` plugin. The `tailwind.config.js`
 file defines a custom **minecraft** theme with matching light and dark modes.
 You can switch themes using the `data-theme` attribute on any element.
+
+## Custom Protocols
+
+Two custom protocols simplify image previews:
+
+- `texture://` serves textures from the Minecraft client cache or the active
+  project. URLs use the form `texture://<relative-path>`.
+- `ptex://` serves files directly from the project directory and is used by the
+  asset browser to preview modified assets.
+
+Both protocols are registered in `src/index.ts` when Electron starts.

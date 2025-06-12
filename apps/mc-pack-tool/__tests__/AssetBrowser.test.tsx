@@ -13,7 +13,10 @@ vi.mock('chokidar', () => ({
 
 vi.mock('fs', () => ({
   default: {
-    readdirSync: vi.fn(() => ['a.txt', 'b.png']),
+    readdirSync: vi.fn(() => [
+      { name: 'a.txt', isDirectory: () => false },
+      { name: 'b.png', isDirectory: () => false },
+    ]),
   },
 }));
 
@@ -26,5 +29,7 @@ describe('AssetBrowser', () => {
     render(<AssetBrowser path="/proj" />);
     expect(screen.getByText('a.txt')).toBeInTheDocument();
     expect(screen.getByText('b.png')).toBeInTheDocument();
+    const img = screen.getByAltText('b.png') as HTMLImageElement;
+    expect(img.src).toContain('ptex://b.png');
   });
 });

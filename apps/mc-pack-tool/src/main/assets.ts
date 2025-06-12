@@ -17,6 +17,14 @@ const basePath = electronApp?.getPath
 /** Directory that contains one sub folder per Minecraft version. */
 const cacheDir = path.join(basePath, 'assets-cache');
 
+// Paths used by the custom texture protocol. These are updated when a project
+// is opened so the protocol can resolve relative texture URLs.
+let projectTexturesDir = '';
+let cacheTexturesDir = '';
+// Base path for the currently active project used by the project texture
+// protocol.
+let activeProjectDir = '';
+
 /**
  * Fetch a JSON document from the given URL.
  * @throws if the request fails.
@@ -131,6 +139,14 @@ export async function addTexture(
   await fs.promises.copyFile(src, dest);
   meta.assets.push(`assets/minecraft/textures/${texture}`);
   fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+
+  // Update the cached project texture directory to ensure thumbnails work
+  projectTexturesDir = path.join(
+    projectPath,
+    'assets',
+    'minecraft',
+    'textures'
+  );
 }
 
 /**
@@ -155,8 +171,19 @@ export async function getTextureURL(
   projectPath: string,
   texture: string
 ): Promise<string> {
-  const texPath = await getTexturePath(projectPath, texture);
-  return `texture://${encodeURIComponent(texPath)}`;
+  // Record paths used by the protocol so it can resolve this texture later
+  const metaPath = path.join(projectPath, 'project.json');
+  const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+  const meta = ProjectMetadataSchema.parse(data);
+  const cacheRoot = await ensureAssets(meta.version);
+  cacheTexturesDir = path.join(cacheRoot, 'assets', 'minecraft', 'textures');
+  projectTexturesDir = path.join(
+    projectPath,
+    'assets',
+    'minecraft',
+    'textures'
+  );
+  return `texture://${texture}`;
 }
 
 /**
@@ -164,7 +191,40 @@ export async function getTextureURL(
  */
 export function registerTextureProtocol(protocol: Protocol) {
   protocol.registerFileProtocol('texture', (request, callback) => {
-    const url = request.url.replace('texture://', '');
-    callback(decodeURIComponent(url));
+    const rel = decodeURI(request.url.replace('texture://', ''));
+    const projectFile = projectTexturesDir
+      ? path.join(projectTexturesDir, rel)
+      : '';
+    if (projectFile && fs.existsSync(projectFile)) {
+      callback(projectFile);
+      return;
+    }
+    const cacheFile = cacheTexturesDir ? path.join(cacheTexturesDir, rel) : '';
+    callback(cacheFile);
   });
+}
+
+/** Register the `ptex` protocol to serve files from the active project. */
+export function registerProjectTextureProtocol(protocol: Protocol) {
+  protocol.registerFileProtocol('ptex', (request, callback) => {
+    const rel = decodeURI(request.url.replace('ptex://', ''));
+    const file = activeProjectDir ? path.join(activeProjectDir, rel) : '';
+    callback(file);
+  });
+}
+
+/** Update the directories used by the texture protocol for the active project. */
+export async function setActiveProject(projectPath: string): Promise<void> {
+  const metaPath = path.join(projectPath, 'project.json');
+  const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+  const meta = ProjectMetadataSchema.parse(data);
+  const cacheRoot = await ensureAssets(meta.version);
+  cacheTexturesDir = path.join(cacheRoot, 'assets', 'minecraft', 'textures');
+  projectTexturesDir = path.join(
+    projectPath,
+    'assets',
+    'minecraft',
+    'textures'
+  );
+  activeProjectDir = projectPath;
 }

@@ -21,7 +21,7 @@ describe('AssetSelector', () => {
       getTextureUrl,
     };
     listTextures.mockResolvedValue(['grass.png', 'stone.png']);
-    getTextureUrl.mockResolvedValue('texture:///img/grass.png');
+    getTextureUrl.mockResolvedValue('texture://img/grass.png');
     vi.clearAllMocks();
   });
 
@@ -33,7 +33,7 @@ describe('AssetSelector', () => {
     const item = await screen.findByText('grass.png');
     const img = (await screen.findByAltText('grass.png')) as HTMLImageElement;
     expect(getTextureUrl).toHaveBeenCalledWith('/proj', 'grass.png');
-    expect(img.src).toContain('texture:///img/grass.png');
+    expect(img.src).toContain('texture://img/grass.png');
     fireEvent.click(item);
     expect(addTexture).toHaveBeenCalledWith('/proj', 'grass.png');
   });
