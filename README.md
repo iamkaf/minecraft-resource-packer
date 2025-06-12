@@ -4,7 +4,7 @@ An Electron-based tool for creating Minecraft resource packs. The interface is d
 
 ## Features
 
-- **Project Manager** – similar to Godot's launcher, it keeps a list of projects with their name, Minecraft version and chosen assets. You can create new packs or open and edit existing ones.
+- **Project Manager** – integrated into the main window, it keeps a list of projects with their name, Minecraft version and chosen assets. You can create new packs or open and edit existing ones without switching windows.
 - **Asset Selection** – textures are pulled from Mojang's version manifest and cached locally for quick searching.
 - **Asset Editing** – when an asset is added it is copied into the correct folder structure inside the project. Files can be opened in Explorer/Finder or with the default program for that type. Any changes on disk instantly appear in the UI.
 - **Live Asset Browser** – the editor window lists all files in the project directory and automatically reloads when something changes.

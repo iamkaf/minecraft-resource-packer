@@ -1,6 +1,6 @@
 // Entry point for the Electron main process.
-// This file creates both the project manager window and the main editor window
-// and exposes a few IPC handlers used by the renderer process.
+// This file creates a single window and exposes IPC handlers used by the
+// renderer process.
 
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import { registerFileHandlers } from './main/ipcFiles';
@@ -19,43 +19,20 @@ import { ProjectMetadataSchema } from './minecraft/project';
 // Webpack's DefinePlugin in Electron Forge exposes entry point URLs as
 // `NAME_WEBPACK_ENTRY` and preload scripts as
 // `NAME_PRELOAD_WEBPACK_ENTRY` where `NAME` is the entry point name in
-// `forge.config.ts` converted to upper case. The entry points defined in
-// `forge.config.ts` are `manager_window` and `main_window`, so we need to
-// reference the constants using those exact names.
-declare const MANAGER_WINDOW_WEBPACK_ENTRY: string;
-declare const MANAGER_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
+// `forge.config.ts` converted to upper case.
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
-let managerWindow: BrowserWindow | null = null;
 let mainWindow: BrowserWindow | null = null;
 
 // Directory that stores the local projects on disk.	Under Electron's
 // userData path to keep everything self contained.
 const projectsDir = path.join(app.getPath('userData'), 'projects');
 
-// Create the initial project manager window.	 This lists available projects
-// and lets the user open one or create a new one.
-const createManagerWindow = () => {
-  managerWindow = new BrowserWindow({
-    width: 600,
-    height: 400,
-    webPreferences: {
-      nodeIntegration: true,
-      // Disable context isolation because the bundled renderer code relies on
-      // Node integration (uses `require`). The preload script will attach its
-      // API directly to `window` when isolation is off.
-      contextIsolation: false,
-      preload: MANAGER_WINDOW_PRELOAD_WEBPACK_ENTRY,
-    },
-  });
-  managerWindow.loadURL(MANAGER_WINDOW_WEBPACK_ENTRY);
-};
-
 // Create the main application window for a specific project.
 // Once the window loads we emit the selected project path so the renderer can
 // display its contents.
-const createMainWindow = (projectPath: string) => {
+const createMainWindow = () => {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -67,8 +44,8 @@ const createMainWindow = (projectPath: string) => {
     },
   });
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-  mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow?.webContents.send('project-opened', projectPath);
+  mainWindow.on('closed', () => {
+    mainWindow = null;
   });
 };
 
@@ -103,8 +80,7 @@ ipcMain.handle('open-project', (_e, name: string) => {
   const projectPath = path.join(projectsDir, name);
   if (!fs.existsSync(projectPath))
     fs.mkdirSync(projectPath, { recursive: true });
-  if (managerWindow) managerWindow.close();
-  createMainWindow(projectPath);
+  mainWindow?.webContents.send('project-opened', projectPath);
 });
 
 ipcMain.handle('create-project', (_e, name: string, version: string) => {
@@ -148,8 +124,8 @@ ipcMain.handle('export-project', async (_e, projectPath: string) => {
 // Register file-related IPC handlers
 registerFileHandlers();
 
-// Once Electron is ready show the manager window.
-app.whenReady().then(createManagerWindow);
+// Once Electron is ready show the main window.
+app.whenReady().then(createMainWindow);
 
 // Standard OS X behaviour: quit the app when all windows are closed on Windows
 // and Linux, but keep it alive on macOS so the user can re-open it from the
@@ -164,6 +140,6 @@ app.on('window-all-closed', () => {
 // other windows open.
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    createManagerWindow();
+    createMainWindow();
   }
 });

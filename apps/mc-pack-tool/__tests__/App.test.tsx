@@ -10,6 +10,9 @@ vi.mock('../src/renderer/components/AssetSelector', () => ({
 vi.mock('../src/renderer/components/AssetBrowser', () => ({
   default: () => <div>browser</div>,
 }));
+vi.mock('../src/renderer/components/ProjectManager', () => ({
+  default: () => <div>manager</div>,
+}));
 
 describe('App', () => {
   let openHandler: ((e: unknown, path: string) => void) | undefined;
@@ -28,9 +31,9 @@ describe('App', () => {
     };
   });
 
-  it('shows placeholder then project name', () => {
+  it('shows manager then project name', () => {
     render(<App />);
-    expect(screen.getByText(/No project loaded/)).toBeInTheDocument();
+    expect(screen.getByText('manager')).toBeInTheDocument();
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });

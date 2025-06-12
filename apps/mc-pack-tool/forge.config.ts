@@ -16,7 +16,12 @@ const config: ForgeConfig = {
     asar: true,
   },
   rebuildConfig: {},
-  makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+  makers: [
+    new MakerSquirrel({}),
+    new MakerZIP({}, ['darwin']),
+    new MakerRpm({}),
+    new MakerDeb({}),
+  ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({
@@ -24,14 +29,6 @@ const config: ForgeConfig = {
       renderer: {
         config: rendererConfig,
         entryPoints: [
-          {
-            html: './src/project_manager.html',
-            js: './src/renderer/manager.tsx',
-            name: 'manager_window',
-            preload: {
-              js: './src/preload.ts',
-            },
-          },
           {
             html: './src/index.html',
             js: './src/renderer/index.tsx',

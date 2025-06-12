@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AssetBrowser from './AssetBrowser';
 import AssetSelector from './AssetSelector';
+import ProjectManager from './ProjectManager';
 
 // Main React component shown in the editor window.  It waits for the main
 // process to notify which project is open and then displays an AssetBrowser for
@@ -17,7 +18,7 @@ const App: React.FC = () => {
   }, []);
 
   if (!projectPath) {
-    return <div className="p-4">No project loaded</div>;
+    return <ProjectManager />;
   }
 
   const handleExport = () => {
@@ -28,6 +29,12 @@ const App: React.FC = () => {
 
   return (
     <div className="p-4">
+      <button
+        className="underline text-blue-600 mb-2"
+        onClick={() => setProjectPath(null)}
+      >
+        Back to Projects
+      </button>
       <h1 className="text-xl font-bold mb-2">Project: {projectPath}</h1>
       <button
         className="bg-blue-500 text-white px-2 py-1 rounded mb-2"
