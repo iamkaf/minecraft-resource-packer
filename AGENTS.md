@@ -18,7 +18,7 @@ Primary goal: help users build, edit and export Minecraft resource packs.
 
 ## Coding conventions
 - React functional components, Tailwind CSS.
-- Tabs for indentation in `.ts`, `.tsx`.
+- Spaces for indentation in `.ts`, `.tsx`.
 - Use `zod` for runtime schemas.
 
 ## Libraries of note
@@ -40,6 +40,4 @@ A task is *complete* when:
 
 Use https://minecraft.wiki/ as the source of truth for up-to-date Minecraft information.
 
-## Pull Requests
-
-When writing the description of your pull request, include 3 emojis. Pick the emojis that best represent your changes.
+Minecraft version information can be found at: https://launchermeta.mojang.com/mc/game/version_manifest.json
