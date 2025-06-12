@@ -30,7 +30,15 @@ const config: ForgeConfig = {
       mainConfig,
       // Allow images from our custom texture:// protocol in development.
       devContentSecurityPolicy:
-        "default-src 'self' 'unsafe-inline' data: texture: ptex:; script-src 'self' 'unsafe-eval' 'unsafe-inline' data:",
+        "default-src 'self' data: texture: ptex: https://fonts.googleapis.com https://fonts.gstatic.com; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "font-src 'self' https://fonts.gstatic.com; " +
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline' data:",
+      contentSecurityPolicy:
+        "default-src 'self' data: texture: ptex: https://fonts.googleapis.com https://fonts.gstatic.com; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "font-src 'self' https://fonts.gstatic.com; " +
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline' data:",
       renderer: {
         config: rendererConfig,
         entryPoints: [
