@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './main/App';
+import App from './components/App';
 import '../index.css';
 
 // Bootstraps the main renderer process. This simply mounts the React

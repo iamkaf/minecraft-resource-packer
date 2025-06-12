@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import ProjectManager from './manager/ProjectManager';
+import ProjectManager from './components/ProjectManager';
 import '../index.css';
 
 // Entry point for the project manager renderer window.
