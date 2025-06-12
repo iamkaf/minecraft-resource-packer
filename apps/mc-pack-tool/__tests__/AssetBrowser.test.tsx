@@ -28,7 +28,6 @@ describe('AssetBrowser', () => {
   it('renders files from directory', () => {
     render(<AssetBrowser path="/proj" />);
     expect(screen.getByText('a.txt')).toBeInTheDocument();
-    expect(screen.getByText('b.png')).toBeInTheDocument();
     const img = screen.getByAltText('b.png') as HTMLImageElement;
     expect(img.src).toContain('ptex://b.png');
   });

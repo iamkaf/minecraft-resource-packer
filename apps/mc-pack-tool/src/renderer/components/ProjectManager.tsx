@@ -36,17 +36,17 @@ const ProjectManager: React.FC = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-2">Projects</h1>
-      <form onSubmit={handleCreate} className="space-x-2 mb-4">
+    <section>
+      <h2 className="font-display text-xl mb-2">Projects</h2>
+      <form onSubmit={handleCreate} className="flex gap-2 mb-4">
         <input
-          className="border px-1"
+          className="input input-bordered input-sm"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Name"
         />
         <select
-          className="border px-1"
+          className="select select-bordered select-sm"
           value={version}
           onChange={(e) => setVersion(e.target.value)}
         >
@@ -59,23 +59,36 @@ const ProjectManager: React.FC = () => {
             </option>
           ))}
         </select>
-        <button className="border px-2" type="submit">
+        <button className="btn btn-primary btn-sm" type="submit">
           Create
         </button>
       </form>
-      <ul className="space-y-1">
-        {projects.map((p) => (
-          <li key={p.name}>
-            <button
-              className="underline text-blue-600"
-              onClick={() => handleOpen(p.name)}
-            >
-              {p.name} ({p.version})
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+      <table className="table table-zebra w-full">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>MC Ver.</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {projects.map((p) => (
+            <tr key={p.name}>
+              <td>{p.name}</td>
+              <td>{p.version}</td>
+              <td>
+                <button
+                  className="btn btn-accent btn-sm"
+                  onClick={() => handleOpen(p.name)}
+                >
+                  Open
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
   );
 };
 export default ProjectManager;

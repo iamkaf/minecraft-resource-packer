@@ -40,8 +40,7 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
   }, [projectPath]);
 
   return (
-    <ul className="list-disc pl-4">
-      {/* Render the list of files */}
+    <div className="grid grid-cols-6 gap-2">
       {files.map((f) => {
         const full = path.join(projectPath, f);
         const name = path.basename(f);
@@ -50,22 +49,29 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
           const rel = f.split(path.sep).join('/');
           thumb = `ptex://${rel}`;
         }
-        const openFile = () => window.electronAPI?.openFile(full);
         const openFolder = () => window.electronAPI?.openInFolder(full);
+        const openFile = () => window.electronAPI?.openFile(full);
         return (
-          <li key={f} className="flex items-center space-x-2">
-            {thumb && <img src={thumb} alt={name} className="w-8 h-8" />}
-            <span>{name}</span>
-            <button className="underline text-blue-600" onClick={openFile}>
-              Open
-            </button>
-            <button className="underline text-blue-600" onClick={openFolder}>
-              Show
-            </button>
-          </li>
+          <div
+            key={f}
+            className="p-1 cursor-pointer hover:ring ring-accent"
+            onDoubleClick={openFile}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              openFolder();
+            }}
+          >
+            {thumb ? (
+              <img src={thumb} alt={name} className="w-full aspect-square" />
+            ) : (
+              <div className="w-full aspect-square bg-base-300 flex items-center justify-center">
+                {name}
+              </div>
+            )}
+          </div>
         );
       })}
-    </ul>
+    </div>
   );
 };
 export default AssetBrowser;

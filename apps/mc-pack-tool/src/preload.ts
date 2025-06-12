@@ -54,12 +54,6 @@ const api = {
     ipcRenderer.invoke('open-file', file) as Promise<void>,
 };
 
-declare global {
-  interface Window {
-    electronAPI?: typeof api;
-  }
-}
-
 if (process.contextIsolated) {
   contextBridge.exposeInMainWorld('electronAPI', api);
 } else {

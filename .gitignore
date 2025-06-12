@@ -4,3 +4,4 @@ dist/*.zip
 *.log
 .env
 apps/mc-pack-tool/node_modules/
+.webpack/
