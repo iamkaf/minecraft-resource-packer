@@ -41,3 +41,7 @@ A task is *complete* when:
 ## Bad practices to avoid
 - Don’t commit `.env` or `dist/*.zip`; add them to `.gitignore`.
 - Don’t use `eval`.
+
+## Minecraft Information
+
+Use https://minecraft.wiki/ as the source of truth for up-to-date Minecraft information.
