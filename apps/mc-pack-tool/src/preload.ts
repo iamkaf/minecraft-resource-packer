@@ -10,6 +10,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
       { name: string; version: string }[]
     >,
 
+  // Retrieve the list of official Minecraft versions
+  listVersions: () => ipcRenderer.invoke('list-versions') as Promise<string[]>,
+
   // Create a new project
   createProject: (name: string, version: string) =>
     ipcRenderer.invoke('create-project', name, version),

@@ -8,7 +8,7 @@ import path from 'path';
 import fs from 'fs';
 import { exportPack } from './main/exporter';
 import { createProject } from './main/projects';
-import { addTexture, listTextures, getTexturePath } from './main/assets';
+import { addTexture, listTextures, listVersions, getTexturePath } from './main/assets';
 import { ProjectMetadataSchema } from './minecraft/project';
 
 declare const MANAGER_WEBPACK_ENTRY: string;
@@ -75,6 +75,10 @@ ipcMain.handle('list-projects', async () => {
       }
       return { name, version: 'unknown' };
     });
+});
+
+ipcMain.handle('list-versions', async () => {
+  return listVersions();
 });
 
 // Create or open an existing project and show it in the main window.

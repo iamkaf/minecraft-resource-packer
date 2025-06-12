@@ -8,20 +8,24 @@ describe('ProjectManager', () => {
   const listProjects = vi.fn();
   const openProject = vi.fn();
   const createProject = vi.fn();
+  const listVersions = vi.fn();
 
   beforeEach(() => {
     interface ElectronAPI {
       listProjects: () => Promise<Array<{ name: string; version: string }>>;
+      listVersions: () => Promise<string[]>;
       openProject: (name: string) => void;
       createProject: (name: string, version: string) => Promise<void>;
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       listProjects,
+      listVersions,
       openProject,
       createProject,
     };
     listProjects.mockResolvedValue([{ name: 'Pack', version: '1.20' }]);
     createProject.mockResolvedValue(undefined);
+    listVersions.mockResolvedValue(['1.20', '1.21']);
     vi.clearAllMocks();
   });
 
@@ -32,15 +36,20 @@ describe('ProjectManager', () => {
     expect(openProject).toHaveBeenCalledWith('Pack');
   });
 
+  it('loads available versions', async () => {
+    render(<ProjectManager />);
+    const option = await screen.findByRole('option', { name: '1.21' });
+    expect(option).toBeInTheDocument();
+  });
+
   it('creates project via form', async () => {
     render(<ProjectManager />);
     await screen.findByText('Pack (1.20)');
+    const select = await screen.findByRole('combobox');
     fireEvent.change(screen.getByPlaceholderText('Name'), {
       target: { value: 'New' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Version'), {
-      target: { value: '1.21' },
-    });
+    fireEvent.change(select, { target: { value: '1.21' } });
     fireEvent.click(screen.getByText('Create'));
     expect(createProject).toHaveBeenCalledWith('New', '1.21');
   });

@@ -53,7 +53,9 @@ async function ensureAssets(version: string): Promise<string> {
   }>(VERSION_MANIFEST);
   const entry = manifest.versions.find((v) => v.id === version);
   if (!entry) throw new Error(`Version ${version} not found`);
-  const ver = await fetchJson(entry.url);
+  const ver = await fetchJson<{ downloads: { client: { url: string } } }>(
+    entry.url
+  );
   const jarUrl = ver.downloads.client.url;
   const jarPath = path.join(base, 'client.jar');
   if (!fs.existsSync(jarPath)) await downloadFile(jarUrl, jarPath);
@@ -67,6 +69,17 @@ async function ensureAssets(version: string): Promise<string> {
 }
 
 export { fetchJson, downloadFile, ensureAssets };
+
+/**
+ * Fetch the official Minecraft version manifest and return the list of
+ * available version IDs.
+ */
+export async function listVersions(): Promise<string[]> {
+  const manifest = await fetchJson<{ versions: Array<{ id: string }> }>(
+    VERSION_MANIFEST
+  );
+  return manifest.versions.map((v) => v.id);
+}
 
 /**
  * Recursively list all texture paths available for the given project version.
