@@ -40,12 +40,11 @@ const projectsDir = path.join(app.getPath('userData'), 'projects');
 // display its contents.
 const createMainWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 900,
     webPreferences: {
-      // Keep Node.js out of the renderer for security. Only expose the
-      // whitelisted API defined in preload.ts via contextBridge.
-      contextIsolation: true,
+      nodeIntegration: true,
+      contextIsolation: false,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
