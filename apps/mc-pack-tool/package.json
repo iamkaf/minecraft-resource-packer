@@ -58,7 +58,6 @@
     "archiver": "^7.0.1",
     "chokidar": "^4.0.3",
     "electron-squirrel-startup": "^1.0.1",
-    "minecraft-assets": "^1.15.0",
     "minecraft-data": "^3.89.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
