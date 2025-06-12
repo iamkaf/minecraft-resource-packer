@@ -38,9 +38,9 @@ const createMainWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true,
-      // Disable context isolation here too so the renderer can require modules.
-      contextIsolation: false,
+      // Keep Node.js out of the renderer for security. Only expose the
+      // whitelisted API defined in preload.ts via contextBridge.
+      contextIsolation: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
