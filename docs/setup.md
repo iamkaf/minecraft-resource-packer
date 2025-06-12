@@ -13,6 +13,12 @@ On servers without a display you can run the headless variant which starts via `
 npm run dev:headless
 ```
 
+## Proxy configuration
+
+The development server honors the standard `HTTP_PROXY`, `HTTPS_PROXY`, and
+`NO_PROXY` environment variables via the `global-agent` library. Configure these
+variables if your network requires a proxy.
+
 ## Required packages
 
 Some system packages must be installed for headless development and RPM creation:

@@ -1,3 +1,6 @@
+import { bootstrap } from 'global-agent';
+bootstrap();
+
 // Entry point for the Electron main process.
 // This file creates a single window and exposes IPC handlers used by the
 // renderer process.
