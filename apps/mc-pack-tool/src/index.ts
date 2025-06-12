@@ -2,7 +2,7 @@
 // This file creates both the project manager window and the main editor window
 // and exposes a few IPC handlers used by the renderer process.
 
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import { registerFileHandlers } from './main/ipcFiles';
 import path from 'path';
 import fs from 'fs';
@@ -101,7 +101,13 @@ ipcMain.handle('list-textures', (_e, projectPath: string) => {
 });
 
 // Trigger pack export for the given project directory.
-ipcMain.handle('export-project', (_e, projectPath: string, out: string) => {
+ipcMain.handle('export-project', async (_e, projectPath: string) => {
+  const { canceled, filePath } = await dialog.showSaveDialog({
+    title: 'Export Pack',
+    defaultPath: path.join(projectPath, 'pack.zip'),
+    filters: [{ name: 'Zip Files', extensions: ['zip'] }],
+  });
+  if (canceled || !filePath) return;
   let version = '1.21.1';
   try {
     const metaPath = path.join(projectPath, 'project.json');
@@ -111,7 +117,7 @@ ipcMain.handle('export-project', (_e, projectPath: string, out: string) => {
   } catch {
     // Use default version if metadata can't be read
   }
-  exportPack(projectPath, out, version);
+  await exportPack(projectPath, filePath, version);
 });
 
 // Register file-related IPC handlers
