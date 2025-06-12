@@ -3,13 +3,15 @@
 ## Project overview
 
 You are a coding agent in a monorepo that hosts an Electron + React + TypeScript application
-called **minecraft-resource-packer**.  
+called **minecraft-resource-packer**.
 Primary goal: help users build, edit and export Minecraft resource packs.
+For more details on project structure and IPC patterns, see `docs/developer-handbook.md`.
 
 ## Commands & workflows
 
 - **Install deps:** `npm i`
 - **Dev server:** `npm run dev` (Electron Forge with reload)
+  - Requires a graphical environment; headless systems fail with an EPIPE error.
 - **Lint:** `npm run lint`
 - **Unit tests:** `npm test` (Vitest)
 - **Package:** `npm run make`
@@ -38,7 +40,8 @@ A task is _complete_ when:
 1. Code compiles (`npm run dev`),
 2. Tests pass (`npm test`),
 3. The feature appears in the UI without console errors,
-4. All files lint clean (`npm run lint`).
+4. All files lint clean (`npm run lint`),
+5. Code is formatted (`npm run format`).
 
 ## Bad practices to avoid
 

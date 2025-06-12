@@ -25,8 +25,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('project-opened', listener),
 
   // Ask the main process to export the current project as a zip
-  exportProject: (path: string, out: string) =>
-    ipcRenderer.invoke('export-project', path, out),
+  exportProject: (path: string) =>
+    ipcRenderer.invoke('export-project', path),
 
   // Download and copy a texture from the cached client jar
   addTexture: (project: string, name: string) =>
@@ -35,6 +35,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Retrieve the list of texture paths for this project
   listTextures: (project: string) =>
     ipcRenderer.invoke('list-textures', project),
+
+  // Get absolute path for a texture within the cached client jar
+  getTexturePath: (project: string, name: string) =>
+    ipcRenderer.invoke('get-texture-path', project, name),
 
   // Reveal a file in the OS file manager
   openInFolder: (file: string) => ipcRenderer.invoke('open-in-folder', file),

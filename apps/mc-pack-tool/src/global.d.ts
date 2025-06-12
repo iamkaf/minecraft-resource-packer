@@ -10,9 +10,10 @@ declare global {
       createProject: (name: string, version: string) => Promise<void>;
       openProject: (name: string) => void;
       onOpenProject: (listener: (event: unknown, path: string) => void) => void;
-      exportProject: (path: string, out: string) => void;
+      exportProject: (path: string) => void;
       addTexture: (project: string, name: string) => void;
       listTextures: (project: string) => Promise<string[]>;
+      getTexturePath: (project: string, texture: string) => Promise<string>;
       openInFolder: (file: string) => void;
       openFile: (file: string) => void;
     };
