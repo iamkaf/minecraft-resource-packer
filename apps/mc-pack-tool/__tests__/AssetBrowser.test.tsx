@@ -13,7 +13,10 @@ vi.mock('chokidar', () => ({
 
 vi.mock('fs', () => ({
   default: {
-    readdirSync: vi.fn(() => ['a.txt', 'b.png']),
+    readdirSync: vi.fn(() => [
+      { name: 'a.txt', isDirectory: () => false },
+      { name: 'b.png', isDirectory: () => false },
+    ]),
   },
 }));
 

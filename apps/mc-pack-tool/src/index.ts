@@ -15,6 +15,7 @@ import {
   getTexturePath,
   getTextureURL,
   registerTextureProtocol,
+  setActiveProject,
 } from './main/assets';
 import { ProjectMetadataSchema } from './minecraft/project';
 
@@ -86,6 +87,7 @@ ipcMain.handle('open-project', (_e, name: string) => {
   const projectPath = path.join(projectsDir, name);
   if (!fs.existsSync(projectPath))
     fs.mkdirSync(projectPath, { recursive: true });
+  void setActiveProject(projectPath);
   mainWindow?.webContents.send('project-opened', projectPath);
 });
 

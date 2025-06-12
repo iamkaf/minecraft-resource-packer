@@ -15,7 +15,19 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
 
   useEffect(() => {
     const loadFiles = () => {
-      setFiles(fs.readdirSync(projectPath));
+      const out: string[] = [];
+      const walk = (dir: string, prefix = '') => {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          const rel = path.join(prefix, entry.name);
+          if (entry.isDirectory()) {
+            walk(path.join(dir, entry.name), rel);
+          } else {
+            out.push(rel.split(path.sep).join('/'));
+          }
+        }
+      };
+      walk(projectPath);
+      setFiles(out);
     };
 
     // Initial load and set up a watcher for future changes.
@@ -33,10 +45,20 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
       {files.map((f) => {
         const full = path.join(projectPath, f);
         const name = path.basename(f);
+        const texPrefix = path.join('assets', 'minecraft', 'textures');
+        let thumb: string | null = null;
+        if (f.startsWith(texPrefix) && f.endsWith('.png')) {
+          const rel = f
+            .slice(texPrefix.length + 1)
+            .split(path.sep)
+            .join('/');
+          thumb = `texture://${rel}`;
+        }
         const openFile = () => window.electronAPI?.openFile(full);
         const openFolder = () => window.electronAPI?.openInFolder(full);
         return (
           <li key={f} className="flex items-center space-x-2">
+            {thumb && <img src={thumb} alt={name} className="w-8 h-8" />}
             <span>{name}</span>
             <button className="underline text-blue-600" onClick={openFile}>
               Open
