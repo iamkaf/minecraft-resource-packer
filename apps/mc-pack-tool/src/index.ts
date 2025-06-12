@@ -11,8 +11,14 @@ import { createProject } from './main/projects';
 import { addTexture, listTextures, listVersions, getTexturePath } from './main/assets';
 import { ProjectMetadataSchema } from './minecraft/project';
 
-declare const MANAGER_WEBPACK_ENTRY: string;
-declare const MANAGER_PRELOAD_WEBPACK_ENTRY: string;
+// Webpack's DefinePlugin in Electron Forge exposes entry point URLs as
+// `NAME_WEBPACK_ENTRY` and preload scripts as
+// `NAME_PRELOAD_WEBPACK_ENTRY` where `NAME` is the entry point name in
+// `forge.config.ts` converted to upper case. The entry points defined in
+// `forge.config.ts` are `manager_window` and `main_window`, so we need to
+// reference the constants using those exact names.
+declare const MANAGER_WINDOW_WEBPACK_ENTRY: string;
+declare const MANAGER_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
@@ -31,10 +37,10 @@ const createManagerWindow = () => {
     height: 400,
     webPreferences: {
       nodeIntegration: true,
-      preload: MANAGER_PRELOAD_WEBPACK_ENTRY,
+      preload: MANAGER_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
-  managerWindow.loadURL(MANAGER_WEBPACK_ENTRY);
+  managerWindow.loadURL(MANAGER_WINDOW_WEBPACK_ENTRY);
 };
 
 // Create the main application window for a specific project.
