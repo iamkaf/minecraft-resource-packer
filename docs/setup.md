@@ -13,6 +13,16 @@ On servers without a display you can run the headless variant which starts via `
 npm run dev:headless
 ```
 
+## Required packages
+
+Some system packages must be installed for headless development and RPM creation:
+
+- `xvfb`
+- `dbus` (or `dbus-x11`)
+- `rpmbuild`
+
+`xvfb` and `dbus` enable the headless `npm run dev:headless` workflow. `rpmbuild` is used when packaging the app as an RPM.
+
 Run tests:
 
 ```bash
