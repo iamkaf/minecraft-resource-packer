@@ -8,7 +8,12 @@ import path from 'path';
 import fs from 'fs';
 import { exportPack } from './main/exporter';
 import { createProject } from './main/projects';
-import { addTexture, listTextures, listVersions, getTexturePath } from './main/assets';
+import {
+  addTexture,
+  listTextures,
+  listVersions,
+  getTexturePath,
+} from './main/assets';
 import { ProjectMetadataSchema } from './minecraft/project';
 
 // Webpack's DefinePlugin in Electron Forge exposes entry point URLs as
@@ -37,6 +42,7 @@ const createManagerWindow = () => {
     height: 400,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       preload: MANAGER_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
@@ -52,6 +58,7 @@ const createMainWindow = (projectPath: string) => {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
