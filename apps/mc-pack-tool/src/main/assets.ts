@@ -21,6 +21,9 @@ const cacheDir = path.join(basePath, 'assets-cache');
 // is opened so the protocol can resolve relative texture URLs.
 let projectTexturesDir = '';
 let cacheTexturesDir = '';
+// Base path for the currently active project used by the project texture
+// protocol.
+let activeProjectDir = '';
 
 /**
  * Fetch a JSON document from the given URL.
@@ -201,6 +204,15 @@ export function registerTextureProtocol(protocol: Protocol) {
   });
 }
 
+/** Register the `ptex` protocol to serve files from the active project. */
+export function registerProjectTextureProtocol(protocol: Protocol) {
+  protocol.registerFileProtocol('ptex', (request, callback) => {
+    const rel = decodeURI(request.url.replace('ptex://', ''));
+    const file = activeProjectDir ? path.join(activeProjectDir, rel) : '';
+    callback(file);
+  });
+}
+
 /** Update the directories used by the texture protocol for the active project. */
 export async function setActiveProject(projectPath: string): Promise<void> {
   const metaPath = path.join(projectPath, 'project.json');
@@ -214,4 +226,5 @@ export async function setActiveProject(projectPath: string): Promise<void> {
     'minecraft',
     'textures'
   );
+  activeProjectDir = projectPath;
 }

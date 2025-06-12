@@ -15,12 +15,14 @@ import {
   getTexturePath,
   getTextureURL,
   registerTextureProtocol,
+  registerProjectTextureProtocol,
   setActiveProject,
 } from './main/assets';
 import { ProjectMetadataSchema } from './minecraft/project';
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'texture', privileges: { standard: true, secure: true } },
+  { scheme: 'ptex', privileges: { standard: true, secure: true } },
 ]);
 
 // Webpack's DefinePlugin in Electron Forge exposes entry point URLs as
@@ -139,6 +141,7 @@ registerFileHandlers();
 // Once Electron is ready register protocols and show the main window.
 app.whenReady().then(() => {
   registerTextureProtocol(protocol);
+  registerProjectTextureProtocol(protocol);
   createMainWindow();
 });
 

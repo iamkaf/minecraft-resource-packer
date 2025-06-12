@@ -28,7 +28,7 @@ const config: ForgeConfig = {
       mainConfig,
       // Allow images from our custom texture:// protocol in development.
       devContentSecurityPolicy:
-        "default-src 'self' 'unsafe-inline' data: texture:; script-src 'self' 'unsafe-eval' 'unsafe-inline' data:",
+        "default-src 'self' 'unsafe-inline' data: texture: ptex:; script-src 'self' 'unsafe-eval' 'unsafe-inline' data:",
       renderer: {
         config: rendererConfig,
         entryPoints: [

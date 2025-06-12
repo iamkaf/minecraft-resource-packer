@@ -45,14 +45,10 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
       {files.map((f) => {
         const full = path.join(projectPath, f);
         const name = path.basename(f);
-        const texPrefix = path.join('assets', 'minecraft', 'textures');
         let thumb: string | null = null;
-        if (f.startsWith(texPrefix) && f.endsWith('.png')) {
-          const rel = f
-            .slice(texPrefix.length + 1)
-            .split(path.sep)
-            .join('/');
-          thumb = `texture://${rel}`;
+        if (f.endsWith('.png')) {
+          const rel = f.split(path.sep).join('/');
+          thumb = `ptex://${rel}`;
         }
         const openFile = () => window.electronAPI?.openFile(full);
         const openFolder = () => window.electronAPI?.openInFolder(full);
