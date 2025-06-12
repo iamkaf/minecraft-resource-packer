@@ -1,8 +1,8 @@
 import type { Config } from 'tailwindcss';
 import daisyui from 'daisyui';
 
-const config: Partial<Config> = {
-  content: ['./src/**/*.{html,tsx,ts}'],
+export default {
+  content: ['./src/**/*.{html,tsx,ts,jsx,js}'],
   theme: {
     extend: {
       fontFamily: {
@@ -32,5 +32,4 @@ const config: Partial<Config> = {
       },
     ],
   },
-};
-export default config;
+} satisfies Config;
