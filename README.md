@@ -25,3 +25,9 @@ Run unit tests and lint the codebase with:
 npm test
 npm run lint
 ```
+
+Format all files using Prettier:
+
+```bash
+npm run format
+```
