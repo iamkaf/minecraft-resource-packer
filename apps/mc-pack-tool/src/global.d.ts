@@ -14,7 +14,7 @@ declare global {
       addTexture: (project: string, name: string) => void;
       listTextures: (project: string) => Promise<string[]>;
       getTexturePath: (project: string, texture: string) => Promise<string>;
-      getTextureData: (project: string, texture: string) => Promise<string>;
+      getTextureUrl: (project: string, texture: string) => Promise<string>;
       openInFolder: (file: string) => void;
       openFile: (file: string) => void;
     };

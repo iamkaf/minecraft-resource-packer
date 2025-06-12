@@ -7,21 +7,21 @@ import AssetSelector from '../src/renderer/components/AssetSelector';
 describe('AssetSelector', () => {
   const listTextures = vi.fn();
   const addTexture = vi.fn();
-  const getTextureData = vi.fn();
+  const getTextureUrl = vi.fn();
 
   beforeEach(() => {
     interface ElectronAPI {
       listTextures: (path: string) => Promise<string[]>;
       addTexture: (path: string, texture: string) => Promise<void>;
-      getTextureData: (project: string, tex: string) => Promise<string>;
+      getTextureUrl: (project: string, tex: string) => Promise<string>;
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       listTextures,
       addTexture,
-      getTextureData,
+      getTextureUrl,
     };
     listTextures.mockResolvedValue(['grass.png', 'stone.png']);
-    getTextureData.mockResolvedValue('data:image/png;base64,AAA');
+    getTextureUrl.mockResolvedValue('texture:///img/grass.png');
     vi.clearAllMocks();
   });
 
@@ -32,8 +32,8 @@ describe('AssetSelector', () => {
     fireEvent.change(input, { target: { value: 'grass' } });
     const item = await screen.findByText('grass.png');
     const img = (await screen.findByAltText('grass.png')) as HTMLImageElement;
-    expect(getTextureData).toHaveBeenCalledWith('/proj', 'grass.png');
-    expect(img.src).toContain('data:image/png;base64,AAA');
+    expect(getTextureUrl).toHaveBeenCalledWith('/proj', 'grass.png');
+    expect(img.src).toContain('texture:///img/grass.png');
     fireEvent.click(item);
     expect(addTexture).toHaveBeenCalledWith('/proj', 'grass.png');
   });

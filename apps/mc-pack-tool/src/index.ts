@@ -2,7 +2,7 @@
 // This file creates a single window and exposes IPC handlers used by the
 // renderer process.
 
-import { app, BrowserWindow, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, protocol } from 'electron';
 import { registerFileHandlers } from './main/ipcFiles';
 import path from 'path';
 import fs from 'fs';
@@ -13,9 +13,14 @@ import {
   listTextures,
   listVersions,
   getTexturePath,
-  getTextureData,
+  getTextureURL,
+  registerTextureProtocol,
 } from './main/assets';
 import { ProjectMetadataSchema } from './minecraft/project';
+
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'texture', privileges: { standard: true, secure: true } },
+]);
 
 // Webpack's DefinePlugin in Electron Forge exposes entry point URLs as
 // `NAME_WEBPACK_ENTRY` and preload scripts as
@@ -102,8 +107,8 @@ ipcMain.handle('get-texture-path', (_e, projectPath: string, tex: string) => {
   return getTexturePath(projectPath, tex);
 });
 
-ipcMain.handle('get-texture-data', (_e, projectPath: string, tex: string) => {
-  return getTextureData(projectPath, tex);
+ipcMain.handle('get-texture-url', (_e, projectPath: string, tex: string) => {
+  return getTextureURL(projectPath, tex);
 });
 
 // Trigger pack export for the given project directory.
@@ -129,8 +134,11 @@ ipcMain.handle('export-project', async (_e, projectPath: string) => {
 // Register file-related IPC handlers
 registerFileHandlers();
 
-// Once Electron is ready show the main window.
-app.whenReady().then(createMainWindow);
+// Once Electron is ready register protocols and show the main window.
+app.whenReady().then(() => {
+  registerTextureProtocol(protocol);
+  createMainWindow();
+});
 
 // Standard OS X behaviour: quit the app when all windows are closed on Windows
 // and Linux, but keep it alive on macOS so the user can re-open it from the

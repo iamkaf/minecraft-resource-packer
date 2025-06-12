@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { app as electronApp } from 'electron';
+import type { Protocol } from 'electron';
 import os from 'os';
 import unzipper from 'unzipper';
 import { ProjectMetadataSchema } from '../minecraft/project';
@@ -147,16 +148,23 @@ export async function getTexturePath(
 }
 
 /**
- * Read the given texture file and return a base64 data URL. This allows the
- * renderer process to display the image without using the file:// protocol,
- * which can be blocked by Electron's security settings.
+ * Convert a texture path into a URL that uses the custom `texture://` protocol
+ * so the renderer can load the image without exposing file paths.
  */
-export async function getTextureData(
+export async function getTextureURL(
   projectPath: string,
   texture: string
 ): Promise<string> {
   const texPath = await getTexturePath(projectPath, texture);
-  const buf = await fs.promises.readFile(texPath);
-  const base64 = buf.toString('base64');
-  return `data:image/png;base64,${base64}`;
+  return `texture://${encodeURIComponent(texPath)}`;
+}
+
+/**
+ * Register the `texture` protocol so it serves files directly from disk.
+ */
+export function registerTextureProtocol(protocol: Protocol) {
+  protocol.registerFileProtocol('texture', (request, callback) => {
+    const url = request.url.replace('texture://', '');
+    callback(decodeURIComponent(url));
+  });
 }
