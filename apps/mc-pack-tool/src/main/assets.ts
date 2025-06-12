@@ -117,3 +117,17 @@ export async function addTexture(
   meta.assets.push(`assets/minecraft/textures/${texture}`);
   fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
 }
+
+/**
+ * Return the absolute path to a cached texture for the given project.
+ */
+export async function getTexturePath(
+  projectPath: string,
+  texture: string
+): Promise<string> {
+  const metaPath = path.join(projectPath, 'project.json');
+  const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+  const meta = ProjectMetadataSchema.parse(data);
+  const root = await ensureAssets(meta.version);
+  return path.join(root, 'assets', 'minecraft', 'textures', texture);
+}

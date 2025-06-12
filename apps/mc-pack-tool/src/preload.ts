@@ -33,6 +33,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   listTextures: (project: string) =>
     ipcRenderer.invoke('list-textures', project),
 
+  // Get absolute path for a texture within the cached client jar
+  getTexturePath: (project: string, name: string) =>
+    ipcRenderer.invoke('get-texture-path', project, name),
+
   // Reveal a file in the OS file manager
   openInFolder: (file: string) => ipcRenderer.invoke('open-in-folder', file),
 
