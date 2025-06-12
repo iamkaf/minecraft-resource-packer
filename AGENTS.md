@@ -29,7 +29,7 @@ Primary goal: help users build, edit and export Minecraft resource packs.
 ## Libraries of note
 
 - electron, electron-forge, react, react-dom, typescript
-- chokidar, archiver, minecraft-assets, minecraft-data
+- chokidar, archiver, minecraft-data
 
 ## Definition of done
 
