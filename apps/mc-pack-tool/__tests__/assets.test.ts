@@ -143,6 +143,13 @@ describe('listTextures', () => {
     const list = await listTextures(projDir);
     expect(list).toContain('block/foo.png');
   });
+
+  it('uses forward slashes', async () => {
+    const list = await listTextures(projDir);
+    for (const item of list) {
+      expect(item).not.toContain('\\');
+    }
+  });
 });
 
 describe('listVersions', () => {
