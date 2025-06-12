@@ -8,7 +8,7 @@ import path from 'path';
 import fs from 'fs';
 import { exportPack } from './main/exporter';
 import { createProject } from './main/projects';
-import { addTexture, listTextures } from './main/assets';
+import { addTexture, listTextures, getTexturePath } from './main/assets';
 import { ProjectMetadataSchema } from './minecraft/project';
 
 declare const MANAGER_WEBPACK_ENTRY: string;
@@ -98,6 +98,10 @@ ipcMain.handle('add-texture', (_e, projectPath: string, texture: string) => {
 
 ipcMain.handle('list-textures', (_e, projectPath: string) => {
   return listTextures(projectPath);
+});
+
+ipcMain.handle('get-texture-path', (_e, projectPath: string, tex: string) => {
+  return getTexturePath(projectPath, tex);
 });
 
 // Trigger pack export for the given project directory.
