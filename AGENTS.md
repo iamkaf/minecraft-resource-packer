@@ -39,3 +39,7 @@ A task is *complete* when:
 ## Minecraft Information
 
 Use https://minecraft.wiki/ as the source of truth for up-to-date Minecraft information.
+
+## Pull Requests
+
+When writing the description of your pull request, include 3 emojis. Pick the emojis that best represent your changes.
