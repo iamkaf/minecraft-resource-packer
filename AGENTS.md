@@ -5,11 +5,6 @@ You are a coding agent in a monorepo that hosts an Electron + React + TypeScript
 called **minecraft-resource-packer**.  
 Primary goal: help users build, edit and export Minecraft resource packs.
 
-## Directories
-- `apps/mc-pack-tool/**`   ← all source code here  
-- `docs/**`                ← markdown docs, diagrams  
-- `scripts/**`             ← small helper scripts  
-
 ## Commands & workflows
 - **Install deps:** `npm i`
 - **Dev server:**   `npm run dev` (Electron Forge with reload)
