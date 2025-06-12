@@ -32,8 +32,8 @@ describe('exportPack', () => {
     await exportPack(projectDir, outZip, '1.20.1');
     const dir = await unzipper.Open.file(outZip);
     const entry = dir.files.find((f) => f.path === 'pack.mcmeta');
-    expect(entry).toBeDefined();
-    const buf = await entry!.buffer();
+    if (!entry) throw new Error('pack.mcmeta not found');
+    const buf = await entry.buffer();
     const data = JSON.parse(buf.toString('utf-8'));
     expect(data.pack.pack_format).toBe(15);
   });
