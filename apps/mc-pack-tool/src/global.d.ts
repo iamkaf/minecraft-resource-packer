@@ -6,7 +6,8 @@ declare global {
     /** API provided by the preload script for communicating with the main process */
     electronAPI?: {
       listProjects: () => Promise<{ name: string; version: string }[]>;
-      createProject: (name: string, version: string) => void;
+      listVersions: () => Promise<string[]>;
+      createProject: (name: string, version: string) => Promise<void>;
       openProject: (name: string) => void;
       onOpenProject: (listener: (event: unknown, path: string) => void) => void;
       exportProject: (path: string, out: string) => void;

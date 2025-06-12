@@ -4,18 +4,23 @@ import React, { useEffect, useState } from 'react';
 // project selection dialog used in game engines like Godot.
 
 const ProjectManager: React.FC = () => {
-  interface ProjectInfo { name: string; version: string }
+  interface ProjectInfo {
+    name: string;
+    version: string;
+  }
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [name, setName] = useState('');
   const [version, setVersion] = useState('');
+  const [versions, setVersions] = useState<string[]>([]);
 
   const refresh = () => {
     window.electronAPI?.listProjects().then(setProjects);
   };
 
   useEffect(() => {
-    // Fetch the list of projects from the main process when the component loads
+    // Fetch the list of projects and available versions when the component loads
     refresh();
+    window.electronAPI?.listVersions().then(setVersions);
   }, []);
 
   const handleOpen = (n: string) => {
@@ -37,26 +42,34 @@ const ProjectManager: React.FC = () => {
         <input
           className="border px-1"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           placeholder="Name"
         />
-        <input
+        <select
           className="border px-1"
           value={version}
-          onChange={e => setVersion(e.target.value)}
-          placeholder="Version"
-        />
+          onChange={(e) => setVersion(e.target.value)}
+        >
+          <option value="" disabled>
+            Select version
+          </option>
+          {versions.map((v) => (
+            <option key={v} value={v}>
+              {v}
+            </option>
+          ))}
+        </select>
         <button className="border px-2" type="submit">
           Create
         </button>
       </form>
       <ul className="space-y-1">
-        {projects.map(p => (
+        {projects.map((p) => (
           <li key={p.name}>
             <button
               className="underline text-blue-600"
               onClick={() => handleOpen(p.name)}
->
+            >
               {p.name} ({p.version})
             </button>
           </li>

@@ -12,6 +12,7 @@ import {
   downloadFile,
   ensureAssets,
   listTextures,
+  listVersions,
 } from '../src/main/assets';
 import { createProject } from '../src/main/projects';
 const manifestStub = JSON.parse(
@@ -141,5 +142,17 @@ describe('listTextures', () => {
   it('lists cached textures', async () => {
     const list = await listTextures(projDir);
     expect(list).toContain('block/foo.png');
+  });
+});
+
+describe('listVersions', () => {
+  it('returns ids from manifest', async () => {
+    const fetchMock = vi.fn(
+      async () => new Response(JSON.stringify(manifestStub))
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    const list = await listVersions();
+    expect(list).toContain(manifestStub.versions[0].id);
+    vi.unstubAllGlobals();
   });
 });
