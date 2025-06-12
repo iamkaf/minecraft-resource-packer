@@ -44,3 +44,9 @@ When adding features that need access to Node APIs:
 Remember that the renderer runs in a browser-like sandbox, so heavy filesystem work belongs in the main process.
 
 Use spaces for indentation in `.ts` and `.tsx` files and keep React components functional.
+
+## Styling
+
+Tailwind CSS is configured with the `daisyUI` plugin. The `tailwind.config.js`
+file defines a custom **minecraft** theme with matching light and dark modes.
+You can switch themes using the `data-theme` attribute on any element.

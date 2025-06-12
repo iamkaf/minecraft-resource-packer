@@ -31,3 +31,9 @@ Format all files using Prettier:
 ```bash
 npm run format
 ```
+
+### Styling
+
+This project uses **Tailwind CSS** with the
+[`daisyUI`](https://daisyui.com) plugin. A custom
+"minecraft" theme provides light and dark modes that match the game's look.

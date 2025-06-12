@@ -25,6 +25,8 @@ For more details on project structure and IPC patterns, see `docs/developer-hand
 ## Coding conventions
 
 - React functional components, Tailwind CSS.
+- Tailwind CSS with daisyUI themes.
+- Refer to https://daisyui.com/llms.txt for usage guidelines.
 - Spaces for indentation in `.ts`, `.tsx`.
 - Use `zod` for runtime schemas.
 
@@ -32,6 +34,7 @@ For more details on project structure and IPC patterns, see `docs/developer-hand
 
 - electron, electron-forge, react, react-dom, typescript
 - chokidar, archiver, minecraft-data
+- daisyui
 
 ## Definition of done
 
