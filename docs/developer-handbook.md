@@ -1,0 +1,46 @@
+# Developer Handbook
+
+Welcome to **minecraft-resource-packer**. This workspace uses Electron Forge with a React + TypeScript front end.
+
+## Getting Started
+
+1. Install dependencies from the repo root:
+
+```bash
+npm i
+```
+
+2. Start the development build:
+
+```bash
+npm run dev
+```
+
+Electron requires a graphical environment. Running on a headless server will fail with an EPIPE error.
+
+3. Run the linter and tests:
+
+```bash
+npm run lint
+npm test
+```
+
+## Project Structure
+
+- `apps/mc-pack-tool/` – main Electron application
+- `src/main/` – Node processes and IPC handlers
+- `src/renderer/` – React UI components
+- `src/minecraft/` – utilities for interacting with Minecraft data
+- `__tests__/` – Vitest unit tests
+
+## Adding Functionality
+
+When adding features that need access to Node APIs:
+
+1. Create a function in the `src/main` process and expose it via `ipcMain.handle`.
+2. Declare a matching function in `preload.ts` using `contextBridge.exposeInMainWorld`.
+3. Call this API from the React renderer via `window.electron.yourApi()`.
+
+Remember that the renderer runs in a browser-like sandbox, so heavy filesystem work belongs in the main process.
+
+Use tabs for indentation in `.ts` and `.tsx` files and keep React components functional.
