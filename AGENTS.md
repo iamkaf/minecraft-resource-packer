@@ -5,11 +5,10 @@ You are a coding agent in a monorepo that hosts an Electron + React + TypeScript
 called **minecraft-resource-packer**.  
 Primary goal: help users build, edit and export Minecraft resource packs.
 
-## Allowed directories
+## Directories
 - `apps/mc-pack-tool/**`   ← all source code here  
 - `docs/**`                ← markdown docs, diagrams  
 - `scripts/**`             ← small helper scripts  
-Never write outside these paths.
 
 ## Commands & workflows
 - **Install deps:** `npm i`
@@ -27,7 +26,7 @@ Never write outside these paths.
 - Tabs for indentation in `.ts`, `.tsx`.
 - Use `zod` for runtime schemas.
 
-## Libraries already installed
+## Libraries of note
 - electron, electron-forge, react, react-dom, typescript  
 - chokidar, archiver, minecraft-assets, minecraft-data
 
