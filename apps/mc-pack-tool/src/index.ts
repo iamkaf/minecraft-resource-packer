@@ -102,7 +102,16 @@ ipcMain.handle('list-textures', (_e, projectPath: string) => {
 
 // Trigger pack export for the given project directory.
 ipcMain.handle('export-project', (_e, projectPath: string, out: string) => {
-  exportPack(projectPath, out);
+  let version = '1.21.1';
+  try {
+    const metaPath = path.join(projectPath, 'project.json');
+    const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+    const meta = ProjectMetadataSchema.parse(data);
+    version = meta.version;
+  } catch {
+    // Use default version if metadata can't be read
+  }
+  exportPack(projectPath, out, version);
 });
 
 // Register file-related IPC handlers
