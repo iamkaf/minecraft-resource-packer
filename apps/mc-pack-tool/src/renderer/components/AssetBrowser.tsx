@@ -32,11 +32,12 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
       {/* Render the list of files */}
       {files.map((f) => {
         const full = path.join(projectPath, f);
+        const name = path.basename(f);
         const openFile = () => window.electronAPI?.openFile(full);
         const openFolder = () => window.electronAPI?.openInFolder(full);
         return (
           <li key={f} className="flex items-center space-x-2">
-            <span>{f}</span>
+            <span>{name}</span>
             <button className="underline text-blue-600" onClick={openFile}>
               Open
             </button>
