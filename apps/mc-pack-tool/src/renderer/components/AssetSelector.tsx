@@ -12,6 +12,7 @@ interface TextureInfo {
 const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
   const [all, setAll] = useState<TextureInfo[]>([]);
   const [query, setQuery] = useState('');
+  const [zoom, setZoom] = useState(64);
 
   useEffect(() => {
     const load = async () => {
@@ -37,25 +38,41 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
 
   return (
     <div className="mb-4">
-      <input
-        className="border px-1 mb-2"
-        placeholder="Search texture"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      <ul className="h-48 overflow-y-scroll border p-1">
+      <div className="flex items-center gap-2 mb-2">
+        <input
+          className="border px-1 flex-1"
+          placeholder="Search texture"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <input
+          type="range"
+          min={24}
+          max={128}
+          step={1}
+          value={zoom}
+          aria-label="Zoom"
+          data-testid="zoom-range"
+          onChange={(e) => setZoom(Number(e.target.value))}
+          className="range range-xs w-32"
+        />
+      </div>
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 overflow-y-auto h-48">
         {filtered.map((tex) => (
-          <li key={tex.name} className="flex items-center space-x-2">
-            <img src={tex.url} alt={tex.name} className="w-8 h-8" />
-            <button
-              className="underline text-blue-600"
-              onClick={() => handleSelect(tex.name)}
-            >
-              {tex.name}
-            </button>
-          </li>
+          <button
+            key={tex.name}
+            aria-label={tex.name}
+            onClick={() => handleSelect(tex.name)}
+            className="p-1 hover:ring ring-accent rounded"
+          >
+            <img
+              src={tex.url}
+              alt={tex.name}
+              style={{ width: zoom, height: zoom }}
+            />
+          </button>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
