@@ -4,10 +4,14 @@ export default function RenameModal({
   current,
   onCancel,
   onRename,
+  title = 'Rename File',
+  confirmText = 'Save',
 }: {
   current: string;
   onCancel: () => void;
   onRename: (newName: string) => void;
+  title?: string;
+  confirmText?: string;
 }) {
   const [name, setName] = useState(current);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -24,7 +28,7 @@ export default function RenameModal({
           onRename(name);
         }}
       >
-        <h3 className="font-bold text-lg">Rename File</h3>
+        <h3 className="font-bold text-lg">{title}</h3>
         <input
           ref={inputRef}
           className="input input-bordered"
@@ -36,7 +40,7 @@ export default function RenameModal({
             Cancel
           </button>
           <button type="submit" className="btn btn-primary">
-            Save
+            {confirmText}
           </button>
         </div>
       </form>
