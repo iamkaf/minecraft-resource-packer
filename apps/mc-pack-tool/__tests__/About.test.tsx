@@ -28,8 +28,12 @@ describe('About', () => {
     render(<About />);
     const gh = screen.getByText('GitHub');
     const docs = screen.getByText('Documentation');
-    gh.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    docs.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    gh.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, cancelable: true })
+    );
+    docs.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, cancelable: true })
+    );
     expect(openExternalMock).toHaveBeenCalledWith(
       'https://github.com/iamkaf/minecraft-resource-packer'
     );

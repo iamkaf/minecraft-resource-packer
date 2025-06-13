@@ -8,6 +8,9 @@ import {
   PackMetaSchema,
 } from '../minecraft/project';
 import { listVersions, setActiveProject } from './assets';
+
+// Re-export PackMeta so renderer and preload can import the type from this file
+export type { PackMeta } from '../minecraft/project';
 import { generatePackIcon } from './icon';
 
 export async function createProject(

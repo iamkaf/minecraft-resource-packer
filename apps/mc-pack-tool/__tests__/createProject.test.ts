@@ -1,15 +1,17 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { v4 as uuid } from 'uuid';
 import { createProject } from '../src/main/projects';
 import { ProjectMetadataSchema } from '../src/minecraft/project';
+import * as icon from '../src/main/icon';
 
 const baseDir = path.join(os.tmpdir(), `projtest-${uuid()}`);
 
 beforeAll(() => {
   fs.mkdirSync(baseDir, { recursive: true });
+  vi.spyOn(icon, 'generatePackIcon').mockResolvedValue();
 });
 
 afterAll(() => {

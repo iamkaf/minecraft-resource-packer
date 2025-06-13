@@ -28,7 +28,7 @@ export default function ProjectSidebar({
               <p>{meta.description}</p>
               <p className="text-sm mt-1">Author: {meta.author}</p>
               <ul className="list-disc list-inside mt-2">
-                {meta.urls.map((u) => (
+                {meta.urls.map((u: string) => (
                   <li key={u}>
                     <ExternalLink href={u} className="link link-primary">
                       {u}
