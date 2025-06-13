@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useToast } from './ToastProvider';
+import { generateProjectName } from '../utils/names';
 
 // Lists all available projects and lets the user open them.  Mimics the
 // project selection dialog used in game engines like Godot.
@@ -10,7 +11,7 @@ const ProjectManager: React.FC = () => {
     version: string;
   }
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
-  const [name, setName] = useState('');
+  const [name, setName] = useState(() => generateProjectName());
   const [version, setVersion] = useState('');
   const [versions, setVersions] = useState<string[]>([]);
 
@@ -37,7 +38,7 @@ const ProjectManager: React.FC = () => {
       refresh();
       toast('Project created', 'success');
     });
-    setName('');
+    setName(generateProjectName());
     setVersion('');
   };
 
