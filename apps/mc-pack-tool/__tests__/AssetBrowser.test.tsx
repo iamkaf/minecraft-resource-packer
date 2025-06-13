@@ -5,30 +5,38 @@ import path from 'path';
 
 import AssetBrowser from '../src/renderer/components/AssetBrowser';
 
-const onMock = vi.fn();
-const closeMock = vi.fn();
-
-vi.mock('chokidar', () => ({
-  watch: vi.fn(() => ({ on: onMock, close: closeMock })),
-}));
-
-vi.mock('fs', () => ({
-  default: {
-    readdirSync: vi.fn(() => [
-      { name: 'a.txt', isDirectory: () => false },
-      { name: 'b.png', isDirectory: () => false },
-    ]),
-  },
-}));
+const watchProject = vi.fn(async () => ['a.txt', 'b.png']);
+const unwatchProject = vi.fn();
+const onFileAdded = vi.fn();
+const onFileRemoved = vi.fn();
+const onFileRenamed = vi.fn();
 
 describe('AssetBrowser', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    (
+      window as unknown as {
+        electronAPI: {
+          watchProject: typeof watchProject;
+          unwatchProject: typeof unwatchProject;
+          onFileAdded: typeof onFileAdded;
+          onFileRemoved: typeof onFileRemoved;
+          onFileRenamed: typeof onFileRenamed;
+        };
+      }
+    ).electronAPI = {
+      watchProject,
+      unwatchProject,
+      onFileAdded,
+      onFileRemoved,
+      onFileRenamed,
+    };
   });
 
-  it('renders files from directory', () => {
+  it('renders files from directory', async () => {
     render(<AssetBrowser path="/proj" />);
-    expect(screen.getByText('a.txt')).toBeInTheDocument();
+    expect(watchProject).toHaveBeenCalledWith('/proj');
+    expect(await screen.findByText('a.txt')).toBeInTheDocument();
     const img = screen.getByAltText('B') as HTMLImageElement;
     expect(img.src).toContain('ptex://b.png');
     expect(screen.getByText('B')).toBeInTheDocument();
@@ -48,6 +56,11 @@ describe('AssetBrowser', () => {
           openFile: typeof openFile;
           renameFile: typeof renameFile;
           deleteFile: typeof deleteFile;
+          watchProject: typeof watchProject;
+          unwatchProject: typeof unwatchProject;
+          onFileAdded: typeof onFileAdded;
+          onFileRemoved: typeof onFileRemoved;
+          onFileRenamed: typeof onFileRenamed;
         };
       }
     ).electronAPI = {
@@ -55,9 +68,14 @@ describe('AssetBrowser', () => {
       openFile,
       renameFile,
       deleteFile,
+      watchProject,
+      unwatchProject,
+      onFileAdded,
+      onFileRemoved,
+      onFileRenamed,
     };
     render(<AssetBrowser path="/proj" />);
-    const item = screen.getByText('a.txt');
+    const item = await screen.findByText('a.txt');
     fireEvent.contextMenu(item);
     const revealBtn = (
       await screen.findAllByRole('menuitem', { name: 'Reveal' })

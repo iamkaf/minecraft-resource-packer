@@ -1,4 +1,5 @@
 import { ipcMain, shell } from 'electron';
+import { emitRenamed } from './ipc/fileWatcher';
 import fs from 'fs';
 
 /** Register IPC handlers for file interactions. */
@@ -15,6 +16,7 @@ export function registerFileHandlers() {
     'rename-file',
     async (_e, oldPath: string, newPath: string) => {
       await fs.promises.rename(oldPath, newPath);
+      emitRenamed(oldPath, newPath);
     }
   );
 

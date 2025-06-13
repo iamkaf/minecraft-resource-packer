@@ -7,6 +7,7 @@ bootstrap();
 
 import { app, BrowserWindow, ipcMain, dialog, protocol } from 'electron';
 import { registerFileHandlers } from './main/ipcFiles';
+import { registerFileWatcherHandlers } from './main/ipc/fileWatcher';
 import path from 'path';
 import fs from 'fs';
 import { exportPack, ExportSummary } from './main/exporter';
@@ -54,6 +55,7 @@ const createMainWindow = () => {
     },
   });
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  registerFileWatcherHandlers(mainWindow);
   mainWindow.on('closed', () => {
     mainWindow = null;
   });

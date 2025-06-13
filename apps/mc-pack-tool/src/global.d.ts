@@ -27,6 +27,16 @@ declare global {
       openFile: (file: string) => Promise<void>;
       renameFile: (oldPath: string, newPath: string) => Promise<void>;
       deleteFile: (file: string) => Promise<void>;
+      watchProject: (project: string) => Promise<string[]>;
+      unwatchProject: (project: string) => Promise<void>;
+      onFileAdded: (listener: (event: unknown, path: string) => void) => void;
+      onFileRemoved: (listener: (event: unknown, path: string) => void) => void;
+      onFileRenamed: (
+        listener: (
+          event: unknown,
+          args: { oldPath: string; newPath: string }
+        ) => void
+      ) => void;
       loadPackMeta: (
         name: string
       ) => Promise<import('./main/projects').PackMeta>;
