@@ -28,7 +28,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Create • Import • Duplicate • Delete (confirm) • Open actions
 - [x] Fuzzy search + version filter chips
 - [ ] Bulk export selected rows
-- [ ] Rich metadata sidebar (Description, Author, URLs, etc.)
+- [x] Rich metadata sidebar (Description, Author, URLs, etc.)
 
 ---
 

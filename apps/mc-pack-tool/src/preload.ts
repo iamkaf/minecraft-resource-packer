@@ -73,6 +73,16 @@ const api = {
   // Delete a file from disk
   deleteFile: (file: string) =>
     ipcRenderer.invoke('delete-file', file) as Promise<void>,
+
+  // Load metadata from pack.json
+  loadPackMeta: (name: string) =>
+    ipcRenderer.invoke('load-pack-meta', name) as Promise<
+      import('./main/projects').PackMeta
+    >,
+
+  // Save metadata to pack.json
+  savePackMeta: (name: string, meta: import('./main/projects').PackMeta) =>
+    ipcRenderer.invoke('save-pack-meta', name, meta) as Promise<void>,
 };
 
 if (process.contextIsolated) {
