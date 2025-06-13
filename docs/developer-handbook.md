@@ -16,7 +16,11 @@ npm i
 npm run dev
 ```
 
-Electron requires a graphical environment. Running on a headless server will fail with an EPIPE error.
+Electron requires a graphical environment. Running on a headless server will fail with an EPIPE error. Use the headless variant when no display is available:
+
+```bash
+npm run dev:headless
+```
 
 3. Run the linter and tests:
 
@@ -25,14 +29,21 @@ npm run lint
 npm test
 ```
 
+4. Format the codebase:
+
+```bash
+npm run format
+```
+
 ## Project Structure
 
-- `apps/mc-pack-tool/` – main Electron application
-- `src/main/` – Electron entry point and IPC controllers
-- `src/preload/` – preload script and IPC bindings
-- `src/renderer/` – React UI components
-- `src/shared/` – code shared by both processes
-- `__tests__/` – Vitest unit tests
+- `apps/` – container for Electron applications
+  - `mc-pack-tool/` – main resource pack editor
+    - `src/main/` – Electron entry point and IPC controllers
+    - `src/preload/` – preload script and IPC bindings
+    - `src/renderer/` – React UI with components, hooks, styles and utils
+    - `src/shared/` – utilities and typed IPC definitions shared across processes
+    - `__tests__/` – Vitest unit tests
 
 ## Adding Functionality
 
@@ -45,6 +56,16 @@ When adding features that need access to Node APIs:
 Remember that the renderer runs in a browser-like sandbox, so heavy filesystem work belongs in the main process.
 
 Use spaces for indentation in `.ts` and `.tsx` files and keep React components functional.
+
+## IPC Pattern
+
+Electron uses a main ↔ preload ↔ renderer pipeline. Functions are implemented in
+`src/main` and registered via `ipcMain.handle`. The preload layer exposes typed
+wrappers with `contextBridge.exposeInMainWorld` so the React renderer can call
+them through `window.electron.*`. Shared helpers and the IPC request/response
+types live under `src/shared`. Node integration is enabled and context
+isolation disabled in `src/main/index.ts` on purpose, so leave these settings
+as they are.
 
 ## Styling
 
