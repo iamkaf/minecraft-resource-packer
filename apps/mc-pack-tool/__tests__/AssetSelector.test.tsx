@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 
 import AssetSelector from '../src/renderer/components/AssetSelector';
 
@@ -20,8 +20,12 @@ describe('AssetSelector', () => {
       addTexture,
       getTextureUrl,
     };
-    listTextures.mockResolvedValue(['grass.png', 'stone.png']);
-    getTextureUrl.mockResolvedValue('texture://img/grass.png');
+    listTextures.mockResolvedValue([
+      'block/grass.png',
+      'item/axe.png',
+      'other/custom.png',
+    ]);
+    getTextureUrl.mockImplementation((_p, n) => `texture://${n}`);
     vi.clearAllMocks();
   });
 
@@ -30,14 +34,41 @@ describe('AssetSelector', () => {
     expect(listTextures).toHaveBeenCalledWith('/proj');
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });
-    const button = await screen.findByRole('button', { name: 'grass.png' });
-    const img = (await screen.findByAltText('Grass')) as HTMLImageElement;
-    expect(getTextureUrl).toHaveBeenCalledWith('/proj', 'grass.png');
-    expect(img.src).toContain('texture://img/grass.png');
-    expect(screen.getByText('Grass')).toBeInTheDocument();
-    expect(screen.getByText('grass.png')).toBeInTheDocument();
+    const section = await screen.findByText('blocks');
+    const button = within(section.parentElement!).getByRole('button', {
+      name: 'block/grass.png',
+    });
+    const img = within(section.parentElement!).getByAltText(
+      'Grass'
+    ) as HTMLImageElement;
+    expect(getTextureUrl).toHaveBeenCalledWith('/proj', 'block/grass.png');
+    expect(img.src).toContain('texture://block/grass.png');
     fireEvent.click(button);
-    expect(addTexture).toHaveBeenCalledWith('/proj', 'grass.png');
+    expect(addTexture).toHaveBeenCalledWith('/proj', 'block/grass.png');
+  });
+
+  it('shows items in the items category', async () => {
+    render(<AssetSelector path="/proj" />);
+    const input = screen.getByPlaceholderText('Search texture');
+    fireEvent.change(input, { target: { value: 'axe' } });
+    const section = await screen.findByText('items');
+    expect(
+      within(section.parentElement!).getByRole('button', {
+        name: 'item/axe.png',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('puts uncategorized textures into misc', async () => {
+    render(<AssetSelector path="/proj" />);
+    const input = screen.getByPlaceholderText('Search texture');
+    fireEvent.change(input, { target: { value: 'custom' } });
+    const section = await screen.findByText('misc');
+    expect(
+      within(section.parentElement!).getByRole('button', {
+        name: 'other/custom.png',
+      })
+    ).toBeInTheDocument();
   });
 
   it('adjusts zoom level with slider', async () => {
