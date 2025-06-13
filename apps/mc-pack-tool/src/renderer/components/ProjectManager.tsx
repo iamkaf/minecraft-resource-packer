@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import Fuse from 'fuse.js';
 import { useToast } from './ToastProvider';
 
 // Lists all available projects and lets the user open them.  Mimics the
@@ -13,6 +14,20 @@ const ProjectManager: React.FC = () => {
   const [name, setName] = useState('');
   const [version, setVersion] = useState('');
   const [versions, setVersions] = useState<string[]>([]);
+  const [query, setQuery] = useState('');
+  const [activeVersions, setActiveVersions] = useState<string[]>([]);
+
+  const filteredProjects = useMemo(() => {
+    let res = projects;
+    if (query) {
+      const fuse = new Fuse(res, { keys: ['name'], threshold: 0.4 });
+      res = fuse.search(query).map((r) => r.item);
+    }
+    if (activeVersions.length) {
+      res = res.filter((p) => activeVersions.includes(p.version));
+    }
+    return res;
+  }, [projects, query, activeVersions]);
 
   const refresh = () => {
     window.electronAPI?.listProjects().then(setProjects);
@@ -26,6 +41,12 @@ const ProjectManager: React.FC = () => {
 
   const handleOpen = (n: string) => {
     window.electronAPI?.openProject(n);
+  };
+
+  const toggleVersion = (v: string) => {
+    setActiveVersions((cur) =>
+      cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]
+    );
   };
 
   const toast = useToast();
@@ -69,6 +90,24 @@ const ProjectManager: React.FC = () => {
           Create
         </button>
       </form>
+      <input
+        className="input input-bordered input-sm mb-2 w-full"
+        placeholder="Search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <div className="flex flex-wrap gap-2 mb-4">
+        {versions.map((v) => (
+          <button
+            key={v}
+            type="button"
+            onClick={() => toggleVersion(v)}
+            className={`badge badge-outline cursor-pointer ${activeVersions.includes(v) ? 'badge-accent' : ''}`}
+          >
+            {v}
+          </button>
+        ))}
+      </div>
       <table className="table table-zebra w-full">
         <thead>
           <tr>
@@ -78,7 +117,7 @@ const ProjectManager: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {projects.map((p) => (
+          {filteredProjects.map((p) => (
             <tr key={p.name}>
               <td>{p.name}</td>
               <td>{p.version}</td>
