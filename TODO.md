@@ -12,11 +12,12 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Navbar with title and 🌓 theme switch (persists in `localStorage`)
 - [ ] Toast/alert system via daisyUI `toast`
 - [ ] Loading indicators for every async op (`react-loader-spinner`)
-- [ ] Confetti celebration on successful export (`react-canvas-confetti`)
+- [x] Confetti celebration on successful export (`react-canvas-confetti`)
 - [ ] Undo/Redo queue (last 20 actions)
 - [ ] Auto‑update banner (GitHub releases)
 
 ### Wiki Quick‑Links
+
 - [ ] ❓ icon on each view header opens relevant <https://minecraft.wiki/> page in default browser
 
 ---
@@ -77,7 +78,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## 7. Templates
 
 - [ ] JSON store in `templates/`
-- [ ] “Start from Template” dialog (e.g., *Gold Tools & Armor*, *All Food Items*)
+- [ ] “Start from Template” dialog (e.g., _Gold Tools & Armor_, _All Food Items_)
 - [ ] Download missing base textures for template
 
 ---
