@@ -4,8 +4,8 @@ import App from './components/App';
 import '../index.css';
 
 const saved = localStorage.getItem('theme');
-if (saved === 'dark') {
-  document.documentElement.classList.add('dark');
+if (saved) {
+  document.documentElement.setAttribute('data-theme', saved);
 }
 
 // Bootstraps the main renderer process. This simply mounts the React
