@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import Fuse from 'fuse.js';
 import { useToast } from './ToastProvider';
 import { generateProjectName } from '../utils/names';
 
@@ -18,6 +19,8 @@ const ProjectManager: React.FC = () => {
   const [name, setName] = useState(() => generateProjectName());
   const [version, setVersion] = useState('');
   const [versions, setVersions] = useState<string[]>([]);
+  const [search, setSearch] = useState('');
+  const [activeVersions, setActiveVersions] = useState<string[]>([]);
 
   const refresh = () => {
     window.electronAPI?.listProjects().then(setProjects);
@@ -76,7 +79,22 @@ const ProjectManager: React.FC = () => {
     }
   };
 
-  const sortedProjects = [...projects].sort((a, b) => {
+  const fuse = useMemo(
+    () => new Fuse(projects, { keys: ['name'], threshold: 0.3 }),
+    [projects]
+  );
+
+  const filteredProjects = useMemo(() => {
+    let out: ProjectInfo[] = search
+      ? fuse.search(search).map((r) => r.item)
+      : projects;
+    if (activeVersions.length) {
+      out = out.filter((p) => activeVersions.includes(p.version));
+    }
+    return out;
+  }, [projects, fuse, search, activeVersions]);
+
+  const sortedProjects = [...filteredProjects].sort((a, b) => {
     const dir = asc ? 1 : -1;
     if (a[sortKey] < b[sortKey]) return -1 * dir;
     if (a[sortKey] > b[sortKey]) return 1 * dir;
@@ -118,6 +136,32 @@ const ProjectManager: React.FC = () => {
           Import
         </button>
       </form>
+      <div className="flex gap-2 mb-2 items-center">
+        <input
+          type="text"
+          placeholder="Search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="input input-bordered input-sm flex-grow"
+        />
+        <div className="flex gap-1">
+          {versions.map((v) => (
+            <span
+              key={v}
+              role="button"
+              aria-pressed={activeVersions.includes(v)}
+              onClick={() =>
+                setActiveVersions((cur) =>
+                  cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]
+                )
+              }
+              className={`badge cursor-pointer select-none ${activeVersions.includes(v) ? 'badge-primary' : 'badge-ghost'}`}
+            >
+              {v}
+            </span>
+          ))}
+        </div>
+      </div>
       <table className="table table-zebra w-full">
         <thead>
           <tr>

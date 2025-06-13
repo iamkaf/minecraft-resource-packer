@@ -148,4 +148,35 @@ describe('ProjectManager', () => {
     fireEvent.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
     expect(deleteProject).toHaveBeenCalledWith('Alpha');
   });
+
+  it('filters projects by search', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    fireEvent.change(screen.getByPlaceholderText('Search'), {
+      target: { value: 'pac' },
+    });
+    const rows = await screen.findAllByRole('row');
+    expect(rows).toHaveLength(2);
+    expect(rows[1]).toHaveTextContent('Pack');
+  });
+
+  it('filters projects by version chip', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    fireEvent.click(screen.getByRole('button', { name: '1.20' }));
+    const rows = await screen.findAllByRole('row');
+    expect(rows).toHaveLength(2);
+    expect(rows[1]).toHaveTextContent('Pack');
+  });
+
+  it('combines search and version filters', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    fireEvent.change(screen.getByPlaceholderText('Search'), {
+      target: { value: 'alpha' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: '1.20' }));
+    const rows = await screen.findAllByRole('row');
+    expect(rows).toHaveLength(1);
+  });
 });
