@@ -17,6 +17,17 @@ const api = {
   createProject: (name: string, version: string) =>
     ipcRenderer.invoke('create-project', name, version) as Promise<void>,
 
+  // Import an existing project directory
+  importProject: () => ipcRenderer.invoke('import-project') as Promise<void>,
+
+  // Duplicate an existing project
+  duplicateProject: (name: string, newName: string) =>
+    ipcRenderer.invoke('duplicate-project', name, newName) as Promise<void>,
+
+  // Delete a project directory
+  deleteProject: (name: string) =>
+    ipcRenderer.invoke('delete-project', name) as Promise<void>,
+
   // Request the main process to open an existing project
   openProject: (name: string) =>
     ipcRenderer.invoke('open-project', name) as Promise<void>,

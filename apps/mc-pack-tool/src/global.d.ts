@@ -10,6 +10,9 @@ declare global {
       >;
       listVersions: () => Promise<string[]>;
       createProject: (name: string, version: string) => Promise<void>;
+      importProject: () => Promise<void>;
+      duplicateProject: (name: string, newName: string) => Promise<void>;
+      deleteProject: (name: string) => Promise<void>;
       openProject: (name: string) => Promise<void>;
       onOpenProject: (listener: (event: unknown, path: string) => void) => void;
       exportProject: (

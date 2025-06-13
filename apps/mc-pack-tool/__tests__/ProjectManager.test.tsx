@@ -9,6 +9,9 @@ describe('ProjectManager', () => {
   const openProject = vi.fn();
   const createProject = vi.fn();
   const listVersions = vi.fn();
+  const importProject = vi.fn();
+  const duplicateProject = vi.fn();
+  const deleteProject = vi.fn();
 
   beforeEach(() => {
     interface ElectronAPI {
@@ -23,18 +26,27 @@ describe('ProjectManager', () => {
       listVersions: () => Promise<string[]>;
       openProject: (name: string) => void;
       createProject: (name: string, version: string) => Promise<void>;
+      importProject: () => Promise<void>;
+      duplicateProject: (name: string, newName: string) => Promise<void>;
+      deleteProject: (name: string) => Promise<void>;
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       listProjects,
       listVersions,
       openProject,
       createProject,
+      importProject,
+      duplicateProject,
+      deleteProject,
     };
     listProjects.mockResolvedValue([
       { name: 'Pack', version: '1.20', assets: 2, lastOpened: 0 },
       { name: 'Alpha', version: '1.21', assets: 5, lastOpened: 1 },
     ]);
     createProject.mockResolvedValue(undefined);
+    importProject.mockResolvedValue(undefined);
+    duplicateProject.mockResolvedValue(undefined);
+    deleteProject.mockResolvedValue(undefined);
     listVersions.mockResolvedValue(['1.20', '1.21']);
     vi.clearAllMocks();
   });
@@ -112,5 +124,28 @@ describe('ProjectManager', () => {
     fireEvent.click(screen.getByText('Last opened'));
     const rows = screen.getAllByRole('row');
     expect(rows[1]).toHaveTextContent('Pack');
+  });
+
+  it('imports project when button clicked', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    fireEvent.click(screen.getByText('Import'));
+    expect(importProject).toHaveBeenCalled();
+  });
+
+  it('duplicates project via prompt', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    vi.stubGlobal('prompt', () => 'Alpha Copy');
+    fireEvent.click(screen.getAllByRole('button', { name: 'Duplicate' })[0]);
+    expect(duplicateProject).toHaveBeenCalledWith('Alpha', 'Alpha Copy');
+  });
+
+  it('deletes project with confirmation', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    vi.stubGlobal('confirm', () => true);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
+    expect(deleteProject).toHaveBeenCalledWith('Alpha');
   });
 });

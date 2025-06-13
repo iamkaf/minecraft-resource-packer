@@ -10,7 +10,7 @@ import { registerFileHandlers } from './main/ipcFiles';
 import path from 'path';
 import fs from 'fs';
 import { exportPack, ExportSummary } from './main/exporter';
-import { createProject } from './main/projects';
+import { registerProjectHandlers } from './main/projects';
 import {
   addTexture,
   listTextures,
@@ -60,61 +60,8 @@ const createMainWindow = () => {
   });
 };
 
-// Return the names of sub directories within the projects folder.
-ipcMain.handle('list-projects', async () => {
-  if (!fs.existsSync(projectsDir))
-    fs.mkdirSync(projectsDir, { recursive: true });
-  return fs
-    .readdirSync(projectsDir)
-    .filter((f) => fs.statSync(path.join(projectsDir, f)).isDirectory())
-    .map((name) => {
-      const metaPath = path.join(projectsDir, name, 'project.json');
-      if (fs.existsSync(metaPath)) {
-        try {
-          const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-          const meta = ProjectMetadataSchema.parse(data);
-          return {
-            name: meta.name,
-            version: meta.version,
-            assets: meta.assets.length,
-            lastOpened: meta.lastOpened ?? 0,
-          };
-        } catch {
-          return { name, version: 'unknown', assets: 0, lastOpened: 0 };
-        }
-      }
-      return { name, version: 'unknown', assets: 0, lastOpened: 0 };
-    });
-});
-
-ipcMain.handle('list-versions', async () => {
-  return listVersions();
-});
-
-// Create or open an existing project and show it in the main window.
-ipcMain.handle('open-project', (_e, name: string) => {
-  const projectPath = path.join(projectsDir, name);
-  if (!fs.existsSync(projectPath))
-    fs.mkdirSync(projectPath, { recursive: true });
-  const metaPath = path.join(projectsDir, name, 'project.json');
-  if (fs.existsSync(metaPath)) {
-    try {
-      const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-      const meta = ProjectMetadataSchema.parse(data);
-      meta.lastOpened = Date.now();
-      fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
-    } catch {
-      // ignore corrupted metadata
-    }
-  }
-  void setActiveProject(projectPath);
-  mainWindow?.webContents.send('project-opened', projectPath);
-});
-
-ipcMain.handle('create-project', (_e, name: string, version: string) => {
-  if (!fs.existsSync(projectsDir))
-    fs.mkdirSync(projectsDir, { recursive: true });
-  createProject(projectsDir, name, version);
+registerProjectHandlers(projectsDir, (p) => {
+  mainWindow?.webContents.send('project-opened', p);
 });
 
 ipcMain.handle('add-texture', (_e, projectPath: string, texture: string) => {
