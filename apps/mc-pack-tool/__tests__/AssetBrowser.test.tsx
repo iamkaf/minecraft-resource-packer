@@ -1,6 +1,7 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
+import path from 'path';
 
 import AssetBrowser from '../src/renderer/components/AssetBrowser';
 
@@ -60,12 +61,12 @@ describe('AssetBrowser', () => {
       await screen.findAllByRole('menuitem', { name: 'Reveal' })
     )[0];
     fireEvent.click(revealBtn);
-    expect(openInFolder).toHaveBeenCalledWith('/proj/a.txt');
+    expect(openInFolder).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
     fireEvent.contextMenu(item);
     fireEvent.click(
       (await screen.findAllByRole('menuitem', { name: 'Open' }))[0]
     );
-    expect(openFile).toHaveBeenCalledWith('/proj/a.txt');
+    expect(openFile).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
     fireEvent.contextMenu(item);
     fireEvent.click(
       (await screen.findAllByRole('menuitem', { name: 'Rename' }))[0]
@@ -76,7 +77,10 @@ describe('AssetBrowser', () => {
     const form = input.closest('form');
     if (!form) throw new Error('form not found');
     fireEvent.submit(form);
-    expect(renameFile).toHaveBeenCalledWith('/proj/a.txt', '/proj/renamed.txt');
+    expect(renameFile).toHaveBeenCalledWith(
+      path.join('/proj', 'a.txt'),
+      path.join('/proj', 'renamed.txt')
+    );
     expect(screen.queryByTestId('rename-modal')).toBeNull();
     fireEvent.contextMenu(item);
     fireEvent.click(
@@ -84,7 +88,7 @@ describe('AssetBrowser', () => {
     );
     const modal = await screen.findByTestId('delete-modal');
     fireEvent.click(within(modal).getByText('Delete'));
-    expect(deleteFile).toHaveBeenCalledWith('/proj/a.txt');
+    expect(deleteFile).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
     expect(modal).not.toBeInTheDocument();
   });
 });
