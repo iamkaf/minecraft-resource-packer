@@ -2,120 +2,70 @@
 // The renderer cannot access Node.js directly, so we bridge the required
 // functionality via IPC.
 import { contextBridge, ipcRenderer } from 'electron';
+import type {
+  IpcRequestMap,
+  IpcResponseMap,
+  IpcEventMap,
+} from '../shared/ipc/types';
+
+function invoke<C extends keyof IpcRequestMap>(
+  channel: C,
+  ...args: IpcRequestMap[C]
+) {
+  return ipcRenderer.invoke(channel, ...args) as Promise<IpcResponseMap[C]>;
+}
+
+function on<C extends keyof IpcEventMap>(
+  channel: C,
+  listener: (event: unknown, data: IpcEventMap[C]) => void
+) {
+  ipcRenderer.on(channel, (_e, d) => listener(_e, d));
+}
 
 const api = {
-  // Retrieve a list of saved projects
-  listProjects: () =>
-    ipcRenderer.invoke('list-projects') as Promise<
-      { name: string; version: string; assets: number; lastOpened: number }[]
-    >,
-
-  // Retrieve the list of official Minecraft versions
-  listVersions: () => ipcRenderer.invoke('list-versions') as Promise<string[]>,
-
-  // Create a new project
+  listProjects: () => invoke('list-projects'),
+  listVersions: () => invoke('list-versions'),
   createProject: (name: string, version: string) =>
-    ipcRenderer.invoke('create-project', name, version) as Promise<void>,
-
-  // Import an existing project directory
-  importProject: () => ipcRenderer.invoke('import-project') as Promise<void>,
-
-  // Duplicate an existing project
+    invoke('create-project', name, version),
+  importProject: () => invoke('import-project'),
   duplicateProject: (name: string, newName: string) =>
-    ipcRenderer.invoke('duplicate-project', name, newName) as Promise<void>,
-
-  // Delete a project directory
-  deleteProject: (name: string) =>
-    ipcRenderer.invoke('delete-project', name) as Promise<void>,
-
-  // Request the main process to open an existing project
-  openProject: (name: string) =>
-    ipcRenderer.invoke('open-project', name) as Promise<void>,
-
-  // Listen for the main window reporting that a project has been opened
-  onOpenProject: (listener: (event: unknown, path: string) => void) =>
-    ipcRenderer.on('project-opened', listener),
-
-  // Ask the main process to export the current project as a zip
-  exportProject: (path: string) =>
-    ipcRenderer.invoke('export-project', path) as Promise<
-      import('../main/exporter').ExportSummary
-    >,
-
-  // Download and copy a texture from the cached client jar
+    invoke('duplicate-project', name, newName),
+  deleteProject: (name: string) => invoke('delete-project', name),
+  openProject: (name: string) => invoke('open-project', name),
+  onOpenProject: (listener: (e: unknown, path: string) => void) =>
+    on('project-opened', listener),
+  exportProject: (project: string) => invoke('export-project', project),
   addTexture: (project: string, name: string) =>
-    ipcRenderer.invoke('add-texture', project, name) as Promise<void>,
-
-  // Retrieve the list of texture paths for this project
-  listTextures: (project: string) =>
-    ipcRenderer.invoke('list-textures', project),
-
-  // Get absolute path for a texture within the cached client jar
+    invoke('add-texture', project, name),
+  listTextures: (project: string) => invoke('list-textures', project),
   getTexturePath: (project: string, name: string) =>
-    ipcRenderer.invoke('get-texture-path', project, name),
-
-  // Return a URL to load a texture via the custom protocol
+    invoke('get-texture-path', project, name),
   getTextureUrl: (project: string, name: string) =>
-    ipcRenderer.invoke('get-texture-url', project, name),
-
-  // Generate a new random pack icon
-  randomizeIcon: (project: string) =>
-    ipcRenderer.invoke('randomize-icon', project) as Promise<void>,
-
-  // Reveal a file in the OS file manager
-  openInFolder: (file: string) =>
-    ipcRenderer.invoke('open-in-folder', file) as Promise<void>,
-
-  // Open a file with the default application
-  openFile: (file: string) =>
-    ipcRenderer.invoke('open-file', file) as Promise<void>,
-
-  // Rename a file on disk
+    invoke('get-texture-url', project, name),
+  randomizeIcon: (project: string) => invoke('randomize-icon', project),
+  openInFolder: (file: string) => invoke('open-in-folder', file),
+  openFile: (file: string) => invoke('open-file', file),
   renameFile: (oldPath: string, newPath: string) =>
-    ipcRenderer.invoke('rename-file', oldPath, newPath) as Promise<void>,
-
-  // Delete a file from disk
-  deleteFile: (file: string) =>
-    ipcRenderer.invoke('delete-file', file) as Promise<void>,
-
-  // Watch a project directory and return initial file list
-  watchProject: (project: string) =>
-    ipcRenderer.invoke('watch-project', project) as Promise<string[]>,
-
-  // Stop watching a project directory
-  unwatchProject: (project: string) =>
-    ipcRenderer.invoke('unwatch-project', project) as Promise<void>,
-
-  // Listen for file add events
-  onFileAdded: (listener: (event: unknown, path: string) => void) =>
-    ipcRenderer.on('file-added', listener),
-
-  // Listen for file remove events
-  onFileRemoved: (listener: (event: unknown, path: string) => void) =>
-    ipcRenderer.on('file-removed', listener),
-
-  // Listen for file rename events
+    invoke('rename-file', oldPath, newPath),
+  deleteFile: (file: string) => invoke('delete-file', file),
+  watchProject: (project: string) => invoke('watch-project', project),
+  unwatchProject: (project: string) => invoke('unwatch-project', project),
+  onFileAdded: (listener: (e: unknown, path: string) => void) =>
+    on('file-added', listener),
+  onFileRemoved: (listener: (e: unknown, path: string) => void) =>
+    on('file-removed', listener),
   onFileRenamed: (
-    listener: (
-      event: unknown,
-      args: { oldPath: string; newPath: string }
-    ) => void
-  ) => ipcRenderer.on('file-renamed', listener),
-
-  // Load metadata from pack.json
-  loadPackMeta: (name: string) =>
-    ipcRenderer.invoke('load-pack-meta', name) as Promise<
-      import('../main/projects').PackMeta
-    >,
-
-  // Save metadata to pack.json
+    listener: (e: unknown, args: { oldPath: string; newPath: string }) => void
+  ) => on('file-renamed', listener),
+  loadPackMeta: (name: string) => invoke('load-pack-meta', name),
   savePackMeta: (name: string, meta: import('../main/projects').PackMeta) =>
-    ipcRenderer.invoke('save-pack-meta', name, meta) as Promise<void>,
+    invoke('save-pack-meta', name, meta),
 };
 
 if (process.contextIsolated) {
   contextBridge.exposeInMainWorld('electronAPI', api);
 } else {
   // In development we disable context isolation so just attach directly.
-  window.electronAPI = api;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).electronAPI = api;
 }

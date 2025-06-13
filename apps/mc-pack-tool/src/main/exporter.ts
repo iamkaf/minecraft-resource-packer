@@ -4,6 +4,8 @@
 import fs from 'fs';
 import archiver from 'archiver';
 import { packFormatForVersion } from '../shared/packFormat';
+import type { IpcMain } from 'electron';
+import { dialog } from 'electron';
 
 export interface ExportSummary {
   fileCount: number;
@@ -48,4 +50,19 @@ export function exportPack(
     archive.append(JSON.stringify(mcmeta, null, 2), { name: 'pack.mcmeta' });
     archive.finalize();
   });
+}
+
+export function registerExportHandlers(ipc: IpcMain) {
+  ipc.handle(
+    'export-project',
+    async (_e, projectPath: string): Promise<ExportSummary | void> => {
+      const { canceled, filePath } = await dialog.showSaveDialog({
+        title: 'Export Pack',
+        defaultPath: `${projectPath}/pack.zip`,
+        filters: [{ name: 'Zip Files', extensions: ['zip'] }],
+      });
+      if (canceled || !filePath) return;
+      return exportPack(projectPath, filePath);
+    }
+  );
 }
