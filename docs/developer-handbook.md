@@ -61,3 +61,10 @@ Two custom protocols simplify image previews:
   asset browser to preview modified assets.
 
 Both protocols are registered in `src/index.ts` when Electron starts.
+
+## Project Metadata Sidebar
+
+The projects dashboard shows a drawer on the right when you click **Info** on a
+project row. This sidebar loads `pack.json` via IPC and displays the pack
+description, author, related URLs and creation timestamps. You can edit these
+fields through the **Edit** button which writes back to `pack.json`.

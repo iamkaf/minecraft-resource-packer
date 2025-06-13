@@ -1,7 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import { dialog, ipcMain } from 'electron';
-import { ProjectMetadata, ProjectMetadataSchema } from '../minecraft/project';
+import {
+  ProjectMetadata,
+  ProjectMetadataSchema,
+  PackMeta,
+  PackMetaSchema,
+} from '../minecraft/project';
 import { listVersions, setActiveProject } from './assets';
 
 export function createProject(
@@ -109,6 +114,28 @@ export async function importProject(baseDir: string): Promise<void> {
   fs.cpSync(src, dest, { recursive: true });
 }
 
+export function loadPackMeta(baseDir: string, name: string): PackMeta {
+  const metaPath = path.join(baseDir, name, 'pack.json');
+  if (fs.existsSync(metaPath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+      return PackMetaSchema.parse(data);
+    } catch {
+      // ignore malformed data
+    }
+  }
+  return { description: '', author: '', urls: [], created: Date.now() };
+}
+
+export function savePackMeta(
+  baseDir: string,
+  name: string,
+  meta: PackMeta
+): void {
+  const metaPath = path.join(baseDir, name, 'pack.json');
+  fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+}
+
 export function registerProjectHandlers(
   baseDir: string,
   onOpen: (path: string) => void
@@ -131,5 +158,11 @@ export function registerProjectHandlers(
   });
   ipcMain.handle('import-project', async () => {
     await importProject(baseDir);
+  });
+  ipcMain.handle('load-pack-meta', (_e, name: string) => {
+    return loadPackMeta(baseDir, name);
+  });
+  ipcMain.handle('save-pack-meta', (_e, name: string, meta: PackMeta) => {
+    savePackMeta(baseDir, name, meta);
   });
 }

@@ -4,6 +4,7 @@ import { useToast } from './ToastProvider';
 import { generateProjectName } from '../utils/names';
 import RenameModal from './RenameModal';
 import ConfirmModal from './ConfirmModal';
+import ProjectSidebar from './ProjectSidebar';
 
 // Lists all available projects and lets the user open them.  Mimics the
 // project selection dialog used in game engines like Godot.
@@ -25,6 +26,7 @@ const ProjectManager: React.FC = () => {
   const [filterVersion, setFilterVersion] = useState<string | null>(null);
   const [duplicateTarget, setDuplicateTarget] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [sidebarProject, setSidebarProject] = useState<string | null>(null);
 
   const refresh = () => {
     window.electronAPI?.listProjects().then(setProjects);
@@ -195,6 +197,12 @@ const ProjectManager: React.FC = () => {
                   Open
                 </button>
                 <button
+                  className="btn btn-outline btn-sm"
+                  onClick={() => setSidebarProject(p.name)}
+                >
+                  Info
+                </button>
+                <button
                   className="btn btn-info btn-sm"
                   onClick={() => handleDuplicate(p.name)}
                 >
@@ -241,6 +249,13 @@ const ProjectManager: React.FC = () => {
               toast('Project deleted', 'info');
             });
           }}
+        />
+      )}
+      {sidebarProject && (
+        <ProjectSidebar
+          project={sidebarProject}
+          open={!!sidebarProject}
+          onClose={() => setSidebarProject(null)}
         />
       )}
     </section>

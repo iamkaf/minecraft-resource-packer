@@ -26,6 +26,13 @@ declare global {
       openFile: (file: string) => Promise<void>;
       renameFile: (oldPath: string, newPath: string) => Promise<void>;
       deleteFile: (file: string) => Promise<void>;
+      loadPackMeta: (
+        name: string
+      ) => Promise<import('./main/projects').PackMeta>;
+      savePackMeta: (
+        name: string,
+        meta: import('./main/projects').PackMeta
+      ) => Promise<void>;
     };
   }
 }

@@ -8,3 +8,13 @@ export const ProjectMetadataSchema = z.object({
 });
 
 export type ProjectMetadata = z.infer<typeof ProjectMetadataSchema>;
+
+export const PackMetaSchema = z.object({
+  description: z.string().default(''),
+  author: z.string().default(''),
+  urls: z.array(z.string()).default([]),
+  created: z.number(),
+  updated: z.number().optional(),
+});
+
+export type PackMeta = z.infer<typeof PackMetaSchema>;
