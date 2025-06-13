@@ -5,18 +5,38 @@ import fs from 'fs';
 import archiver from 'archiver';
 import { packFormatForVersion } from '../minecraft/packFormat';
 
+export interface ExportSummary {
+  fileCount: number;
+  totalSize: number;
+  durationMs: number;
+  warnings: string[];
+}
+
 // Export the contents of `projectPath` into `outPath` as a zip archive.
 export function exportPack(
-projectPath: string,
-outPath: string,
-version = '1.21.1',
-): Promise<void> {
+  projectPath: string,
+  outPath: string,
+  version = '1.21.1'
+): Promise<ExportSummary> {
   return new Promise((resolve, reject) => {
     const output = fs.createWriteStream(outPath);
     const archive = archiver('zip', { zlib: { level: 9 } });
 
-    output.on('close', () => resolve());
-    archive.on('error', err => reject(err));
+    const warnings: string[] = [];
+    let fileCount = 0;
+    const start = Date.now();
+
+    output.on('close', () => {
+      const durationMs = Date.now() - start;
+      const totalSize = archive.pointer();
+      resolve({ fileCount, totalSize, durationMs, warnings });
+    });
+
+    archive.on('warning', (err) => warnings.push(err.message));
+    archive.on('error', (err) => reject(err));
+    archive.on('entry', () => {
+      fileCount++;
+    });
 
     archive.pipe(output);
     archive.directory(projectPath, false);

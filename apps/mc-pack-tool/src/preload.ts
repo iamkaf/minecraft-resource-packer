@@ -27,7 +27,9 @@ const api = {
 
   // Ask the main process to export the current project as a zip
   exportProject: (path: string) =>
-    ipcRenderer.invoke('export-project', path) as Promise<void>,
+    ipcRenderer.invoke('export-project', path) as Promise<
+      import('./main/exporter').ExportSummary
+    >,
 
   // Download and copy a texture from the cached client jar
   addTexture: (project: string, name: string) =>
