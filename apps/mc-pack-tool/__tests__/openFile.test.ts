@@ -2,7 +2,9 @@ import { describe, it, expect, vi } from 'vitest';
 
 // Capture the IPC handler registered by registerFileHandlers
 // eslint-disable-next-line no-var
-var openHandler: ((e: unknown, file: string) => void) | undefined;
+var openHandler:
+  | ((e: unknown, file: string) => Promise<void> | void)
+  | undefined;
 // eslint-disable-next-line no-var
 var openPathMock: ReturnType<typeof vi.fn>;
 
@@ -18,7 +20,10 @@ vi.mock('electron', () => ({
     webContents: { on: vi.fn(), send: vi.fn() },
   })),
   ipcMain: {
-    handle: (channel: string, fn: (event: unknown, file: string) => void) => {
+    handle: (
+      channel: string,
+      fn: (event: unknown, file: string) => Promise<void> | void
+    ) => {
       if (channel === 'open-file') openHandler = fn;
     },
   },

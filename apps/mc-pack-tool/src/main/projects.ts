@@ -19,14 +19,14 @@ export async function createProject(
   version: string
 ): Promise<void> {
   const dir = path.join(baseDir, name);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(dir)) await fs.promises.mkdir(dir, { recursive: true });
   const meta: ProjectMetadata = {
     name,
     version,
     assets: [],
     lastOpened: Date.now(),
   };
-  fs.writeFileSync(
+  await fs.promises.writeFile(
     path.join(dir, 'project.json'),
     JSON.stringify(meta, null, 2)
   );
@@ -40,42 +40,49 @@ export interface ProjectInfo {
   lastOpened: number;
 }
 
-export function listProjects(baseDir: string): ProjectInfo[] {
-  if (!fs.existsSync(baseDir)) fs.mkdirSync(baseDir, { recursive: true });
-  return fs
-    .readdirSync(baseDir)
-    .filter((f) => fs.statSync(path.join(baseDir, f)).isDirectory())
-    .map((name) => {
-      const metaPath = path.join(baseDir, name, 'project.json');
-      if (fs.existsSync(metaPath)) {
-        try {
-          const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-          const meta = ProjectMetadataSchema.parse(data);
-          return {
-            name: meta.name,
-            version: meta.version,
-            assets: meta.assets.length,
-            lastOpened: meta.lastOpened ?? 0,
-          } as ProjectInfo;
-        } catch {
-          return { name, version: 'unknown', assets: 0, lastOpened: 0 };
-        }
+export async function listProjects(baseDir: string): Promise<ProjectInfo[]> {
+  if (!fs.existsSync(baseDir))
+    await fs.promises.mkdir(baseDir, { recursive: true });
+  const entries = await fs.promises.readdir(baseDir);
+  const out: ProjectInfo[] = [];
+  for (const name of entries) {
+    const stat = await fs.promises.stat(path.join(baseDir, name));
+    if (!stat.isDirectory()) continue;
+    const metaPath = path.join(baseDir, name, 'project.json');
+    if (fs.existsSync(metaPath)) {
+      try {
+        const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
+        const meta = ProjectMetadataSchema.parse(data);
+        out.push({
+          name: meta.name,
+          version: meta.version,
+          assets: meta.assets.length,
+          lastOpened: meta.lastOpened ?? 0,
+        });
+        continue;
+      } catch {
+        // ignore malformed metadata
       }
-      return { name, version: 'unknown', assets: 0, lastOpened: 0 };
-    });
+    }
+    out.push({ name, version: 'unknown', assets: 0, lastOpened: 0 });
+  }
+  return out;
 }
 
-export function openProject(baseDir: string, name: string): string {
+export async function openProject(
+  baseDir: string,
+  name: string
+): Promise<string> {
   const projectPath = path.join(baseDir, name);
   if (!fs.existsSync(projectPath))
-    fs.mkdirSync(projectPath, { recursive: true });
+    await fs.promises.mkdir(projectPath, { recursive: true });
   const metaPath = path.join(projectPath, 'project.json');
   if (fs.existsSync(metaPath)) {
     try {
-      const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+      const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
       const meta = ProjectMetadataSchema.parse(data);
       meta.lastOpened = Date.now();
-      fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+      await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
     } catch {
       // ignore corrupted metadata
     }
@@ -83,30 +90,33 @@ export function openProject(baseDir: string, name: string): string {
   return projectPath;
 }
 
-export function duplicateProject(
+export async function duplicateProject(
   baseDir: string,
   name: string,
   newName: string
-): void {
+): Promise<void> {
   const src = path.join(baseDir, name);
   const dest = path.join(baseDir, newName);
-  fs.cpSync(src, dest, { recursive: true });
+  await fs.promises.cp(src, dest, { recursive: true });
   const metaPath = path.join(dest, 'project.json');
   if (fs.existsSync(metaPath)) {
     try {
-      const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+      const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
       const meta = ProjectMetadataSchema.parse(data);
       meta.name = newName;
-      fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+      await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
     } catch {
       // ignore malformed metadata
     }
   }
 }
 
-export function deleteProject(baseDir: string, name: string): void {
+export async function deleteProject(
+  baseDir: string,
+  name: string
+): Promise<void> {
   const dir = path.join(baseDir, name);
-  fs.rmSync(dir, { recursive: true, force: true });
+  await fs.promises.rm(dir, { recursive: true, force: true });
 }
 
 export async function importProject(baseDir: string): Promise<void> {
@@ -116,14 +126,17 @@ export async function importProject(baseDir: string): Promise<void> {
   if (canceled || filePaths.length === 0) return;
   const src = filePaths[0];
   const dest = path.join(baseDir, path.basename(src));
-  fs.cpSync(src, dest, { recursive: true });
+  await fs.promises.cp(src, dest, { recursive: true });
 }
 
-export function loadPackMeta(baseDir: string, name: string): PackMeta {
+export async function loadPackMeta(
+  baseDir: string,
+  name: string
+): Promise<PackMeta> {
   const metaPath = path.join(baseDir, name, 'pack.json');
   if (fs.existsSync(metaPath)) {
     try {
-      const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+      const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
       return PackMetaSchema.parse(data);
     } catch {
       // ignore malformed data
@@ -132,13 +145,13 @@ export function loadPackMeta(baseDir: string, name: string): PackMeta {
   return { description: '', author: '', urls: [], created: Date.now() };
 }
 
-export function savePackMeta(
+export async function savePackMeta(
   baseDir: string,
   name: string,
   meta: PackMeta
-): void {
+): Promise<void> {
   const metaPath = path.join(baseDir, name, 'pack.json');
-  fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+  await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
 }
 
 export function registerProjectHandlers(
@@ -151,15 +164,15 @@ export function registerProjectHandlers(
     return createProject(baseDir, name, version);
   });
   ipcMain.handle('open-project', async (_e, name: string) => {
-    const projectPath = openProject(baseDir, name);
+    const projectPath = await openProject(baseDir, name);
     await setActiveProject(projectPath);
     onOpen(projectPath);
   });
   ipcMain.handle('duplicate-project', (_e, name: string, newName: string) => {
-    duplicateProject(baseDir, name, newName);
+    return duplicateProject(baseDir, name, newName);
   });
   ipcMain.handle('delete-project', (_e, name: string) => {
-    deleteProject(baseDir, name);
+    return deleteProject(baseDir, name);
   });
   ipcMain.handle('import-project', async () => {
     await importProject(baseDir);
@@ -168,6 +181,6 @@ export function registerProjectHandlers(
     return loadPackMeta(baseDir, name);
   });
   ipcMain.handle('save-pack-meta', (_e, name: string, meta: PackMeta) => {
-    savePackMeta(baseDir, name, meta);
+    return savePackMeta(baseDir, name, meta);
   });
 }

@@ -6,25 +6,26 @@ import path from 'path';
 let win: BrowserWindow | null = null;
 const watchers = new Map<string, chokidar.FSWatcher>();
 
-function listFiles(dir: string): string[] {
+async function listFiles(dir: string): Promise<string[]> {
   const files: string[] = [];
-  const walk = (d: string, prefix = '') => {
-    for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
+  const walk = async (d: string, prefix = '') => {
+    const entries = await fs.promises.readdir(d, { withFileTypes: true });
+    for (const entry of entries) {
       const rel = path.join(prefix, entry.name);
       if (entry.isDirectory()) {
-        walk(path.join(d, entry.name), rel);
+        await walk(path.join(d, entry.name), rel);
       } else {
         files.push(rel.split(path.sep).join('/'));
       }
     }
   };
-  walk(dir);
+  await walk(dir);
   return files;
 }
 
 export function registerFileWatcherHandlers(window: BrowserWindow) {
   win = window;
-  ipcMain.handle('watch-project', (_e, projectPath: string) => {
+  ipcMain.handle('watch-project', async (_e, projectPath: string) => {
     if (!watchers.has(projectPath)) {
       const watcher = chokidar.watch(projectPath, { ignoreInitial: true });
       watcher.on('add', (file) => {
