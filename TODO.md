@@ -26,7 +26,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Zebra table: Name ▸ MC Version ▸ Assets ▸ Last opened
 - [x] Placeholder names generated with `unique-names-generator`
 - [x] Create • Import • Duplicate • Delete (confirm) • Open actions
-- [ ] Fuzzy search + version filter chips
+- [x] Fuzzy search + version filter chips
 - [ ] Bulk export selected rows
 - [ ] Rich metadata sidebar (Description, Author, URLs, etc.)
 
