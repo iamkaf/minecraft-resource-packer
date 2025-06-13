@@ -3,6 +3,7 @@ import pkg from '../../../package.json';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - webpack replaces import with URL string
 import iconPath from '../../../resources/icon.png';
+import ExternalLink from './ExternalLink';
 
 export default function About() {
   return (
@@ -19,23 +20,19 @@ export default function About() {
         Minecraft Resource Packer v{pkg.version}
       </h2>
       <p>
-        <a
+        <ExternalLink
           className="link link-primary"
-          href="https://github.com/openai/minecraft-resource-packer"
-          target="_blank"
-          rel="noreferrer"
+          href="https://github.com/iamkaf/minecraft-resource-packer"
         >
           GitHub
-        </a>
+        </ExternalLink>
         {' | '}
-        <a
+        <ExternalLink
           className="link link-primary"
-          href="https://github.com/openai/minecraft-resource-packer/blob/main/docs/developer-handbook.md"
-          target="_blank"
-          rel="noreferrer"
+          href="https://github.com/iamkaf/minecraft-resource-packer/blob/main/docs/developer-handbook.md"
         >
           Documentation
-        </a>
+        </ExternalLink>
       </p>
       <pre className="whitespace-pre-wrap text-sm" data-testid="license">
         {`MIT License\n\nCopyright (c) 2025 Kaf`}

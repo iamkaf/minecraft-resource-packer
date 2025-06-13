@@ -107,6 +107,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Editable keyboard shortcuts
 - [ ] Update channel + analytics opt‑in
 - [x] About pane (logo, version, links, license)
+- [x] GitHub/Documentation links open externally
 
 ---
 
