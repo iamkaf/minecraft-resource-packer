@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import type { PackMeta } from '../../main/projects';
 
 export default function PackMetaModal({
+  project,
   meta,
   onSave,
   onCancel,
 }: {
+  project: string;
   meta: PackMeta;
   onSave: (m: PackMeta) => void;
   onCancel: () => void;
@@ -51,6 +53,13 @@ export default function PackMetaModal({
           placeholder="URLs (one per line)"
         />
         <div className="modal-action">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => window.electronAPI?.randomizeIcon(project)}
+          >
+            Randomize Icon
+          </button>
           <button type="button" className="btn" onClick={onCancel}>
             Cancel
           </button>

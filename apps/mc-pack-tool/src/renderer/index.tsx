@@ -18,6 +18,6 @@ if (container) {
   root.render(
     <ToastProvider>
       <App />
-    </ToastProvider>,
+    </ToastProvider>
   );
 }

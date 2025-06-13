@@ -8,12 +8,13 @@ import {
   PackMetaSchema,
 } from '../minecraft/project';
 import { listVersions, setActiveProject } from './assets';
+import { generatePackIcon } from './icon';
 
-export function createProject(
+export async function createProject(
   baseDir: string,
   name: string,
   version: string
-): void {
+): Promise<void> {
   const dir = path.join(baseDir, name);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   const meta: ProjectMetadata = {
@@ -26,6 +27,7 @@ export function createProject(
     path.join(dir, 'project.json'),
     JSON.stringify(meta, null, 2)
   );
+  await generatePackIcon(dir);
 }
 
 export interface ProjectInfo {
@@ -143,7 +145,7 @@ export function registerProjectHandlers(
   ipcMain.handle('list-projects', () => listProjects(baseDir));
   ipcMain.handle('list-versions', () => listVersions());
   ipcMain.handle('create-project', (_e, name: string, version: string) => {
-    createProject(baseDir, name, version);
+    return createProject(baseDir, name, version);
   });
   ipcMain.handle('open-project', async (_e, name: string) => {
     const projectPath = openProject(baseDir, name);

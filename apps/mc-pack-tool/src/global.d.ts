@@ -22,6 +22,7 @@ declare global {
       listTextures: (project: string) => Promise<string[]>;
       getTexturePath: (project: string, texture: string) => Promise<string>;
       getTextureUrl: (project: string, texture: string) => Promise<string>;
+      randomizeIcon: (project: string) => Promise<void>;
       openInFolder: (file: string) => Promise<void>;
       openFile: (file: string) => Promise<void>;
       renameFile: (oldPath: string, newPath: string) => Promise<void>;

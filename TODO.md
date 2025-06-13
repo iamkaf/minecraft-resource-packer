@@ -66,7 +66,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## 6. Pack Settings
 
 - [ ] Editable `pack.mcmeta` (description, `pack_format`, language)
-- [ ] Randomly generated pack icon (pastel bg + border + random Minecraft item texture Sharp)
+- [x] Randomly generated pack icon (pastel bg + border + random Minecraft item texture Sharp)
 - [ ] Pack Icon Editor modal (randomise, colour, border, upload custom)
 - [ ] Target resolution radio (16×/32×/64×)
 - [ ] License & authors

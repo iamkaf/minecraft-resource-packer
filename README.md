@@ -9,6 +9,7 @@ An Electron-based tool for creating Minecraft resource packs. The interface is d
 - **Secure Previews** – images load through custom `texture://` and `ptex://` protocols so `file://` access is never required.
 - **Asset Editing** – when an asset is added it is copied into the correct folder structure inside the project. Files can be opened in Explorer/Finder or with the default program for that type. Any changes on disk instantly appear in the UI.
 - **Live Asset Browser** – the editor window lists all files in the project directory and automatically reloads when something changes.
+- **Random pack icon** – new packs start with a pastel background and random item image; you can regenerate from pack settings.
 - **Export** – generate a zipped resource pack containing the selected files along with a valid `pack.mcmeta`. The output is ready to drop into Minecraft.
 
 ## Development
