@@ -7,7 +7,7 @@ const api = {
   // Retrieve a list of saved projects
   listProjects: () =>
     ipcRenderer.invoke('list-projects') as Promise<
-      { name: string; version: string }[]
+      { name: string; version: string; assets: number; lastOpened: number }[]
     >,
 
   // Retrieve the list of official Minecraft versions
