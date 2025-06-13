@@ -2,6 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Fuse from 'fuse.js';
 import { useToast } from './ToastProvider';
 import { generateProjectName } from '../utils/names';
+import RenameModal from './RenameModal';
+import ConfirmModal from './ConfirmModal';
 
 // Lists all available projects and lets the user open them.  Mimics the
 // project selection dialog used in game engines like Godot.
@@ -21,6 +23,8 @@ const ProjectManager: React.FC = () => {
   const [versions, setVersions] = useState<string[]>([]);
   const [search, setSearch] = useState('');
   const [filterVersion, setFilterVersion] = useState<string | null>(null);
+  const [duplicateTarget, setDuplicateTarget] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const refresh = () => {
     window.electronAPI?.listProjects().then(setProjects);
@@ -41,20 +45,11 @@ const ProjectManager: React.FC = () => {
   };
 
   const handleDuplicate = (n: string) => {
-    const dup = prompt('Duplicate as', `${n} Copy`);
-    if (!dup) return;
-    window.electronAPI?.duplicateProject(n, dup).then(() => {
-      refresh();
-      toast('Project duplicated', 'success');
-    });
+    setDuplicateTarget(n);
   };
 
   const handleDelete = (n: string) => {
-    if (!confirm(`Delete project ${n}?`)) return;
-    window.electronAPI?.deleteProject(n).then(() => {
-      refresh();
-      toast('Project deleted', 'info');
-    });
+    setDeleteTarget(n);
   };
 
   const toast = useToast();
@@ -216,6 +211,38 @@ const ProjectManager: React.FC = () => {
           ))}
         </tbody>
       </table>
+      {duplicateTarget && (
+        <RenameModal
+          current={`${duplicateTarget} Copy`}
+          title="Duplicate Project"
+          confirmText="Duplicate"
+          onCancel={() => setDuplicateTarget(null)}
+          onRename={(newName) => {
+            const src = duplicateTarget;
+            setDuplicateTarget(null);
+            window.electronAPI?.duplicateProject(src, newName).then(() => {
+              refresh();
+              toast('Project duplicated', 'success');
+            });
+          }}
+        />
+      )}
+      {deleteTarget && (
+        <ConfirmModal
+          title="Delete Project"
+          message={`Delete project ${deleteTarget}?`}
+          confirmText="Delete"
+          onCancel={() => setDeleteTarget(null)}
+          onConfirm={() => {
+            const target = deleteTarget;
+            setDeleteTarget(null);
+            window.electronAPI?.deleteProject(target).then(() => {
+              refresh();
+              toast('Project deleted', 'info');
+            });
+          }}
+        />
+      )}
     </section>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 
 import ProjectManager from '../src/renderer/components/ProjectManager';
 
@@ -133,19 +133,25 @@ describe('ProjectManager', () => {
     expect(importProject).toHaveBeenCalled();
   });
 
-  it('duplicates project via prompt', async () => {
+  it('duplicates project via modal', async () => {
     render(<ProjectManager />);
     await screen.findAllByRole('button', { name: 'Open' });
-    vi.stubGlobal('prompt', () => 'Alpha Copy');
     fireEvent.click(screen.getAllByRole('button', { name: 'Duplicate' })[0]);
+    const modal = await screen.findByTestId('rename-modal');
+    const input = modal.querySelector('input') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 'Alpha Copy' } });
+    const form = input.closest('form');
+    if (!form) throw new Error('form not found');
+    fireEvent.submit(form);
     expect(duplicateProject).toHaveBeenCalledWith('Alpha', 'Alpha Copy');
   });
 
-  it('deletes project with confirmation', async () => {
+  it('deletes project with confirmation modal', async () => {
     render(<ProjectManager />);
     await screen.findAllByRole('button', { name: 'Open' });
-    vi.stubGlobal('confirm', () => true);
     fireEvent.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
+    const modal = await screen.findByTestId('confirm-modal');
+    fireEvent.click(within(modal).getByText('Delete'));
     expect(deleteProject).toHaveBeenCalledWith('Alpha');
   });
 
