@@ -12,7 +12,14 @@ describe('ProjectManager', () => {
 
   beforeEach(() => {
     interface ElectronAPI {
-      listProjects: () => Promise<Array<{ name: string; version: string }>>;
+      listProjects: () => Promise<
+        Array<{
+          name: string;
+          version: string;
+          assets: number;
+          lastOpened: number;
+        }>
+      >;
       listVersions: () => Promise<string[]>;
       openProject: (name: string) => void;
       createProject: (name: string, version: string) => Promise<void>;
@@ -23,7 +30,10 @@ describe('ProjectManager', () => {
       openProject,
       createProject,
     };
-    listProjects.mockResolvedValue([{ name: 'Pack', version: '1.20' }]);
+    listProjects.mockResolvedValue([
+      { name: 'Pack', version: '1.20', assets: 2, lastOpened: 0 },
+      { name: 'Alpha', version: '1.21', assets: 5, lastOpened: 0 },
+    ]);
     createProject.mockResolvedValue(undefined);
     listVersions.mockResolvedValue(['1.20', '1.21']);
     vi.clearAllMocks();
@@ -31,9 +41,9 @@ describe('ProjectManager', () => {
 
   it('renders projects and opens them', async () => {
     render(<ProjectManager />);
-    const btn = await screen.findByRole('button', { name: 'Open' });
-    fireEvent.click(btn);
-    expect(openProject).toHaveBeenCalledWith('Pack');
+    const buttons = await screen.findAllByRole('button', { name: 'Open' });
+    fireEvent.click(buttons[0]);
+    expect(openProject).toHaveBeenCalledWith('Alpha');
   });
 
   it('loads available versions', async () => {
@@ -44,7 +54,7 @@ describe('ProjectManager', () => {
 
   it('creates project via form', async () => {
     render(<ProjectManager />);
-    await screen.findByRole('button', { name: 'Open' });
+    await screen.findAllByRole('button', { name: 'Open' });
     const select = await screen.findByRole('combobox');
     fireEvent.change(screen.getByPlaceholderText('Name'), {
       target: { value: 'New' },
@@ -52,5 +62,13 @@ describe('ProjectManager', () => {
     fireEvent.change(select, { target: { value: '1.21' } });
     fireEvent.click(screen.getByText('Create'));
     expect(createProject).toHaveBeenCalledWith('New', '1.21');
+  });
+
+  it('sorts projects when header clicked', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    fireEvent.click(screen.getByText('Name'));
+    const rows = screen.getAllByRole('row');
+    expect(rows[1]).toHaveTextContent('Pack');
   });
 });

@@ -5,7 +5,9 @@ declare global {
   interface Window {
     /** API provided by the preload script for communicating with the main process */
     electronAPI?: {
-      listProjects: () => Promise<{ name: string; version: string }[]>;
+      listProjects: () => Promise<
+        { name: string; version: string; assets: number; lastOpened: number }[]
+      >;
       listVersions: () => Promise<string[]>;
       createProject: (name: string, version: string) => Promise<void>;
       openProject: (name: string) => Promise<void>;
