@@ -73,12 +73,17 @@ ipcMain.handle('list-projects', async () => {
         try {
           const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
           const meta = ProjectMetadataSchema.parse(data);
-          return { name: meta.name, version: meta.version };
+          return {
+            name: meta.name,
+            version: meta.version,
+            assets: meta.assets.length,
+            lastOpened: meta.lastOpened ?? 0,
+          };
         } catch {
-          return { name, version: 'unknown' };
+          return { name, version: 'unknown', assets: 0, lastOpened: 0 };
         }
       }
-      return { name, version: 'unknown' };
+      return { name, version: 'unknown', assets: 0, lastOpened: 0 };
     });
 });
 
@@ -91,6 +96,17 @@ ipcMain.handle('open-project', (_e, name: string) => {
   const projectPath = path.join(projectsDir, name);
   if (!fs.existsSync(projectPath))
     fs.mkdirSync(projectPath, { recursive: true });
+  const metaPath = path.join(projectsDir, name, 'project.json');
+  if (fs.existsSync(metaPath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+      const meta = ProjectMetadataSchema.parse(data);
+      meta.lastOpened = Date.now();
+      fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+    } catch {
+      // ignore corrupted metadata
+    }
+  }
   void setActiveProject(projectPath);
   mainWindow?.webContents.send('project-opened', projectPath);
 });

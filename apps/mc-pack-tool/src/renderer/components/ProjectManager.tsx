@@ -8,8 +8,12 @@ const ProjectManager: React.FC = () => {
   interface ProjectInfo {
     name: string;
     version: string;
+    assets: number;
+    lastOpened: number;
   }
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
+  const [sortKey, setSortKey] = useState<keyof ProjectInfo>('name');
+  const [asc, setAsc] = useState(true);
   const [name, setName] = useState('');
   const [version, setVersion] = useState('');
   const [versions, setVersions] = useState<string[]>([]);
@@ -40,6 +44,22 @@ const ProjectManager: React.FC = () => {
     setName('');
     setVersion('');
   };
+
+  const handleSort = (key: keyof ProjectInfo) => {
+    if (sortKey === key) {
+      setAsc(!asc);
+    } else {
+      setSortKey(key);
+      setAsc(true);
+    }
+  };
+
+  const sortedProjects = [...projects].sort((a, b) => {
+    const dir = asc ? 1 : -1;
+    if (a[sortKey] < b[sortKey]) return -1 * dir;
+    if (a[sortKey] > b[sortKey]) return 1 * dir;
+    return 0;
+  });
 
   return (
     <section>
@@ -72,16 +92,34 @@ const ProjectManager: React.FC = () => {
       <table className="table table-zebra w-full">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>MC Ver.</th>
+            <th onClick={() => handleSort('name')} className="cursor-pointer">
+              Name
+            </th>
+            <th
+              onClick={() => handleSort('version')}
+              className="cursor-pointer"
+            >
+              MC Version
+            </th>
+            <th onClick={() => handleSort('assets')} className="cursor-pointer">
+              Assets
+            </th>
+            <th
+              onClick={() => handleSort('lastOpened')}
+              className="cursor-pointer"
+            >
+              Last opened
+            </th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {projects.map((p) => (
+          {sortedProjects.map((p) => (
             <tr key={p.name}>
               <td>{p.name}</td>
               <td>{p.version}</td>
+              <td>{p.assets}</td>
+              <td>{new Date(p.lastOpened).toLocaleDateString()}</td>
               <td>
                 <button
                   className="btn btn-accent btn-sm"
