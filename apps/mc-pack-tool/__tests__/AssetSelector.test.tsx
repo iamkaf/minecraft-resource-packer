@@ -35,12 +35,12 @@ describe('AssetSelector', () => {
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });
     const section = await screen.findByText('blocks');
-    const button = within(section.parentElement!).getByRole('button', {
+    expect(section.parentElement).not.toBeNull();
+    const sectionParent = section.parentElement as HTMLElement;
+    const button = within(sectionParent).getByRole('button', {
       name: 'block/grass.png',
     });
-    const img = within(section.parentElement!).getByAltText(
-      'Grass'
-    ) as HTMLImageElement;
+    const img = within(sectionParent).getByAltText('Grass') as HTMLImageElement;
     expect(getTextureUrl).toHaveBeenCalledWith('/proj', 'block/grass.png');
     expect(img.src).toContain('texture://block/grass.png');
     fireEvent.click(button);
@@ -52,8 +52,10 @@ describe('AssetSelector', () => {
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'axe' } });
     const section = await screen.findByText('items');
+    expect(section.parentElement).not.toBeNull();
+    const itemParent = section.parentElement as HTMLElement;
     expect(
-      within(section.parentElement!).getByRole('button', {
+      within(itemParent).getByRole('button', {
         name: 'item/axe.png',
       })
     ).toBeInTheDocument();
@@ -64,8 +66,10 @@ describe('AssetSelector', () => {
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'custom' } });
     const section = await screen.findByText('misc');
+    expect(section.parentElement).not.toBeNull();
+    const miscParent = section.parentElement as HTMLElement;
     expect(
-      within(section.parentElement!).getByRole('button', {
+      within(miscParent).getByRole('button', {
         name: 'other/custom.png',
       })
     ).toBeInTheDocument();

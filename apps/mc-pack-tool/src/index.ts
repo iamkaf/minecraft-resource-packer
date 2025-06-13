@@ -14,12 +14,10 @@ import { registerProjectHandlers } from './main/projects';
 import {
   addTexture,
   listTextures,
-  listVersions,
   getTexturePath,
   getTextureURL,
   registerTextureProtocol,
   registerProjectTextureProtocol,
-  setActiveProject,
 } from './main/assets';
 import { generatePackIcon } from './main/icon';
 import { ProjectMetadataSchema } from './minecraft/project';

@@ -27,8 +27,8 @@ export default function PackMetaModal({
             author,
             urls: urls
               .split(/\n+/)
-              .map((u) => u.trim())
-              .filter((u) => u),
+              .map((u: string) => u.trim())
+              .filter((u: string) => u),
             updated: Date.now(),
           });
         }}

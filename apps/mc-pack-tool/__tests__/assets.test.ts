@@ -15,6 +15,7 @@ import {
   listVersions,
 } from '../src/main/assets';
 import { createProject } from '../src/main/projects';
+import * as icon from '../src/main/icon';
 const manifestStub = JSON.parse(
   fs.readFileSync(
     path.join(__dirname, 'fixtures', 'version_manifest.json'),
@@ -122,6 +123,7 @@ describe('listTextures', () => {
   const projDir = path.join(baseDir, 'Pack');
 
   beforeAll(async () => {
+    vi.spyOn(icon, 'generatePackIcon').mockResolvedValue();
     await createProject(baseDir, 'Pack', version);
     const texDir = path.join(
       os.tmpdir(),
