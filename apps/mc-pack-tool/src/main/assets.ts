@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { app as electronApp } from 'electron';
-import type { Protocol } from 'electron';
+import type { Protocol, IpcMain } from 'electron';
 import os from 'os';
 import unzipper from 'unzipper';
 import { ProjectMetadataSchema } from '../shared/project';
@@ -238,4 +238,26 @@ export async function setActiveProject(projectPath: string): Promise<void> {
     'textures'
   );
   activeProjectDir = projectPath;
+}
+
+export function registerAssetHandlers(ipc: IpcMain) {
+  ipc.handle('add-texture', (_e, projectPath: string, texture: string) => {
+    return addTexture(projectPath, texture);
+  });
+
+  ipc.handle('list-textures', (_e, projectPath: string) => {
+    return listTextures(projectPath);
+  });
+
+  ipc.handle('get-texture-path', (_e, projectPath: string, tex: string) => {
+    return getTexturePath(projectPath, tex);
+  });
+
+  ipc.handle('get-texture-url', (_e, projectPath: string, tex: string) => {
+    return getTextureURL(projectPath, tex);
+  });
+
+  ipc.handle('randomize-icon', (_e, projectPath: string) => {
+    return generatePackIcon(projectPath);
+  });
 }

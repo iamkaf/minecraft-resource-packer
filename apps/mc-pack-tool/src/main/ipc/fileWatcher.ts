@@ -1,4 +1,5 @@
-import { ipcMain, BrowserWindow } from 'electron';
+import type { IpcMain } from 'electron';
+import { BrowserWindow } from 'electron';
 import chokidar from 'chokidar';
 import fs from 'fs';
 import path from 'path';
@@ -23,9 +24,12 @@ async function listFiles(dir: string): Promise<string[]> {
   return files;
 }
 
-export function registerFileWatcherHandlers(window: BrowserWindow) {
+export function registerFileWatcherHandlers(
+  ipc: IpcMain,
+  window: BrowserWindow
+) {
   win = window;
-  ipcMain.handle('watch-project', async (_e, projectPath: string) => {
+  ipc.handle('watch-project', async (_e, projectPath: string) => {
     if (!watchers.has(projectPath)) {
       const watcher = chokidar.watch(projectPath, { ignoreInitial: true });
       watcher.on('add', (file) => {
@@ -45,7 +49,7 @@ export function registerFileWatcherHandlers(window: BrowserWindow) {
     return listFiles(projectPath);
   });
 
-  ipcMain.handle('unwatch-project', async (_e, projectPath: string) => {
+  ipc.handle('unwatch-project', async (_e, projectPath: string) => {
     const watcher = watchers.get(projectPath);
     if (watcher) {
       await watcher.close();

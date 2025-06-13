@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { dialog, ipcMain } from 'electron';
+import type { IpcMain } from 'electron';
+import { dialog } from 'electron';
 import {
   ProjectMetadata,
   ProjectMetadataSchema,
@@ -155,32 +156,33 @@ export async function savePackMeta(
 }
 
 export function registerProjectHandlers(
+  ipc: IpcMain,
   baseDir: string,
   onOpen: (path: string) => void
 ): void {
-  ipcMain.handle('list-projects', () => listProjects(baseDir));
-  ipcMain.handle('list-versions', () => listVersions());
-  ipcMain.handle('create-project', (_e, name: string, version: string) => {
+  ipc.handle('list-projects', () => listProjects(baseDir));
+  ipc.handle('list-versions', () => listVersions());
+  ipc.handle('create-project', (_e, name: string, version: string) => {
     return createProject(baseDir, name, version);
   });
-  ipcMain.handle('open-project', async (_e, name: string) => {
+  ipc.handle('open-project', async (_e, name: string) => {
     const projectPath = await openProject(baseDir, name);
     await setActiveProject(projectPath);
     onOpen(projectPath);
   });
-  ipcMain.handle('duplicate-project', (_e, name: string, newName: string) => {
+  ipc.handle('duplicate-project', (_e, name: string, newName: string) => {
     return duplicateProject(baseDir, name, newName);
   });
-  ipcMain.handle('delete-project', (_e, name: string) => {
+  ipc.handle('delete-project', (_e, name: string) => {
     return deleteProject(baseDir, name);
   });
-  ipcMain.handle('import-project', async () => {
+  ipc.handle('import-project', async () => {
     await importProject(baseDir);
   });
-  ipcMain.handle('load-pack-meta', (_e, name: string) => {
+  ipc.handle('load-pack-meta', (_e, name: string) => {
     return loadPackMeta(baseDir, name);
   });
-  ipcMain.handle('save-pack-meta', (_e, name: string, meta: PackMeta) => {
+  ipc.handle('save-pack-meta', (_e, name: string, meta: PackMeta) => {
     return savePackMeta(baseDir, name, meta);
   });
 }
