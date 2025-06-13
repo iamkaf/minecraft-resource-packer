@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { watch } from 'chokidar';
 import fs from 'fs';
 import path from 'path';
+import { Menu } from 'electron';
 
 // Simple file list that updates whenever files inside the project directory
 // change on disk. Uses chokidar to watch for edits and re-read the directory.
@@ -51,6 +52,16 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
         }
         const openFolder = () => window.electronAPI?.openInFolder(full);
         const openFile = () => window.electronAPI?.openFile(full);
+        const renameFile = () => {
+          const newName = window.prompt('Rename file', name);
+          if (!newName || newName === name) return;
+          const target = path.join(path.dirname(full), newName);
+          window.electronAPI?.renameFile(full, target);
+        };
+        const deleteFile = () => {
+          if (!window.confirm(`Delete ${name}?`)) return;
+          window.electronAPI?.deleteFile(full);
+        };
         return (
           <div
             key={f}
@@ -58,7 +69,13 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
             onDoubleClick={openFile}
             onContextMenu={(e) => {
               e.preventDefault();
-              openFolder();
+              const menu = Menu.buildFromTemplate([
+                { label: 'Reveal', click: openFolder },
+                { label: 'Open', click: openFile },
+                { label: 'Rename', click: renameFile },
+                { label: 'Delete', click: deleteFile },
+              ]);
+              menu.popup();
             }}
           >
             {thumb ? (

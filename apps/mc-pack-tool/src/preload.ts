@@ -52,6 +52,14 @@ const api = {
   // Open a file with the default application
   openFile: (file: string) =>
     ipcRenderer.invoke('open-file', file) as Promise<void>,
+
+  // Rename a file on disk
+  renameFile: (oldPath: string, newPath: string) =>
+    ipcRenderer.invoke('rename-file', oldPath, newPath) as Promise<void>,
+
+  // Delete a file from disk
+  deleteFile: (file: string) =>
+    ipcRenderer.invoke('delete-file', file) as Promise<void>,
 };
 
 if (process.contextIsolated) {

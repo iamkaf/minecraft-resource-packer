@@ -19,6 +19,8 @@ declare global {
       getTextureUrl: (project: string, texture: string) => Promise<string>;
       openInFolder: (file: string) => Promise<void>;
       openFile: (file: string) => Promise<void>;
+      renameFile: (oldPath: string, newPath: string) => Promise<void>;
+      deleteFile: (file: string) => Promise<void>;
     };
   }
 }
