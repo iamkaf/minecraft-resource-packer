@@ -68,3 +68,11 @@ The projects dashboard includes a sidebar next to the project table. Selecting a
 row loads `pack.json` via IPC and displays the pack description, author, related
 URLs and creation timestamps. Use the **Edit** button to modify these fields and
 save back to `pack.json`.
+
+## Asset Browser
+
+The vanilla asset browser lets you search textures from the selected Minecraft
+version. Results are grouped into collapsible **Blocks**, **Items**, **Entity**,
+**UI** and **Audio** sections using daisyUI's collapse component. Only assets
+that match the search query appear in each section. Thumbnails respect the zoom
+slider (24–128 px) and clicking a texture adds it to the project.
