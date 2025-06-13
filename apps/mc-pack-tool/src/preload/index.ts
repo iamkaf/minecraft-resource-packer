@@ -39,7 +39,7 @@ const api = {
   // Ask the main process to export the current project as a zip
   exportProject: (path: string) =>
     ipcRenderer.invoke('export-project', path) as Promise<
-      import('./main/exporter').ExportSummary
+      import('../main/exporter').ExportSummary
     >,
 
   // Download and copy a texture from the cached client jar
@@ -105,11 +105,11 @@ const api = {
   // Load metadata from pack.json
   loadPackMeta: (name: string) =>
     ipcRenderer.invoke('load-pack-meta', name) as Promise<
-      import('./main/projects').PackMeta
+      import('../main/projects').PackMeta
     >,
 
   // Save metadata to pack.json
-  savePackMeta: (name: string, meta: import('./main/projects').PackMeta) =>
+  savePackMeta: (name: string, meta: import('../main/projects').PackMeta) =>
     ipcRenderer.invoke('save-pack-meta', name, meta) as Promise<void>,
 };
 

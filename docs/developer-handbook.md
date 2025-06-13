@@ -28,9 +28,10 @@ npm test
 ## Project Structure
 
 - `apps/mc-pack-tool/` – main Electron application
-- `src/main/` – Node processes and IPC handlers
+- `src/main/` – Electron entry point and IPC controllers
+- `src/preload/` – preload script and IPC bindings
 - `src/renderer/` – React UI components
-- `src/minecraft/` – utilities for interacting with Minecraft data
+- `src/shared/` – code shared by both processes
 - `__tests__/` – Vitest unit tests
 
 ## Adding Functionality
@@ -38,7 +39,7 @@ npm test
 When adding features that need access to Node APIs:
 
 1. Create a function in the `src/main` process and expose it via `ipcMain.handle`.
-2. Declare a matching function in `preload.ts` using `contextBridge.exposeInMainWorld`.
+2. Declare a matching function in `src/preload/index.ts` using `contextBridge.exposeInMainWorld`.
 3. Call this API from the React renderer via `window.electron.yourApi()`.
 
 Remember that the renderer runs in a browser-like sandbox, so heavy filesystem work belongs in the main process.
@@ -60,7 +61,7 @@ Two custom protocols simplify image previews:
 - `ptex://` serves files directly from the project directory and is used by the
   asset browser to preview modified assets.
 
-Both protocols are registered in `src/index.ts` when Electron starts.
+Both protocols are registered in `src/main/index.ts` when Electron starts.
 
 ## Project Metadata Sidebar
 

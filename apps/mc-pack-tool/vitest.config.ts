@@ -14,12 +14,13 @@ export default defineConfig({
       statements: 90,
       include: [
         'src/main/**/*.ts',
+        'src/preload/**/*.ts',
         'src/renderer/**/*.ts',
         'src/renderer/**/*.tsx',
-        'src/minecraft/**/*.ts',
+        'src/shared/**/*.ts',
       ],
       exclude: [
-        'src/index.ts',
+        'src/main/index.ts',
         'src/renderer/index.tsx',
         'src/main/assets.ts',
         'src/main/projects.ts',

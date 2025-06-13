@@ -4,7 +4,7 @@ import { app as electronApp } from 'electron';
 import type { Protocol } from 'electron';
 import os from 'os';
 import unzipper from 'unzipper';
-import { ProjectMetadataSchema } from '../minecraft/project';
+import { ProjectMetadataSchema } from '../shared/project';
 
 /** URL pointing to Mojang's version manifest which lists all official releases. */
 const VERSION_MANIFEST =
@@ -37,7 +37,7 @@ async function fetchJson<T>(url: string): Promise<T> {
   } catch (err) {
     // Fall back to a bundled manifest when offline
     if (url === VERSION_MANIFEST) {
-      const local = path.join(__dirname, '../minecraft/version_manifest.json');
+      const local = path.join(__dirname, '../shared/version_manifest.json');
       const data = await fs.promises.readFile(local, 'utf-8');
       return JSON.parse(data) as T;
     }
