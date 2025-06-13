@@ -108,7 +108,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Theme (Light / Dark / System)
 - [ ] Editable keyboard shortcuts
 - [ ] Update channel + analytics opt‑in
-- [ ] About pane (logo, version, links, license)
+- [x] About pane (logo, version, links, license)
 
 ---
 
