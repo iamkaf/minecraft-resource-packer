@@ -40,6 +40,7 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
       entity: [],
       ui: [],
       audio: [],
+      misc: [],
     };
     for (const tex of filtered) {
       if (tex.name.startsWith('block/')) out.blocks.push(tex);
@@ -53,6 +54,7 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
         out.ui.push(tex);
       else if (tex.name.startsWith('sound/') || tex.name.startsWith('sounds/'))
         out.audio.push(tex);
+      else out.misc.push(tex);
     }
     return out;
   }, [filtered]);
@@ -82,49 +84,51 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
           className="range range-xs w-32"
         />
       </div>
-      {(['blocks', 'items', 'entity', 'ui', 'audio'] as const).map((key) => {
-        const list = categories[key];
-        return (
-          <div className="collapse collapse-arrow mb-2" key={key}>
-            <input type="checkbox" defaultChecked />
-            <div className="collapse-title font-medium capitalize">{key}</div>
-            <div className="collapse-content overflow-y-auto h-48">
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-                {list.map((tex) => {
-                  const formatted = formatTextureName(tex.name);
-                  return (
-                    <div
-                      key={tex.name}
-                      className="text-center tooltip"
-                      data-tip={`${formatted} \n${tex.name}`}
-                    >
-                      <button
-                        aria-label={tex.name}
-                        onClick={() => handleSelect(tex.name)}
-                        className="p-1 hover:ring ring-accent rounded"
+      {(['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
+        (key) => {
+          const list = categories[key];
+          return (
+            <div className="collapse collapse-arrow mb-2" key={key}>
+              <input type="checkbox" defaultChecked />
+              <div className="collapse-title font-medium capitalize">{key}</div>
+              <div className="collapse-content overflow-y-auto h-48">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+                  {list.map((tex) => {
+                    const formatted = formatTextureName(tex.name);
+                    return (
+                      <div
+                        key={tex.name}
+                        className="text-center tooltip"
+                        data-tip={`${formatted} \n${tex.name}`}
                       >
-                        <img
-                          src={tex.url}
-                          alt={formatted}
-                          style={{
-                            width: zoom,
-                            height: zoom,
-                            imageRendering: 'pixelated',
-                          }}
-                        />
-                      </button>
-                      <div className="text-xs leading-tight">
-                        <div>{formatted}</div>
-                        <div className="opacity-50">{tex.name}</div>
+                        <button
+                          aria-label={tex.name}
+                          onClick={() => handleSelect(tex.name)}
+                          className="p-1 hover:ring ring-accent rounded"
+                        >
+                          <img
+                            src={tex.url}
+                            alt={formatted}
+                            style={{
+                              width: zoom,
+                              height: zoom,
+                              imageRendering: 'pixelated',
+                            }}
+                          />
+                        </button>
+                        <div className="text-xs leading-tight">
+                          <div>{formatted}</div>
+                          <div className="opacity-50">{tex.name}</div>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        }
+      )}
     </div>
   );
 };

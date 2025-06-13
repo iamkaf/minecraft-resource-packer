@@ -20,7 +20,11 @@ describe('AssetSelector', () => {
       addTexture,
       getTextureUrl,
     };
-    listTextures.mockResolvedValue(['block/grass.png', 'item/axe.png']);
+    listTextures.mockResolvedValue([
+      'block/grass.png',
+      'item/axe.png',
+      'other/custom.png',
+    ]);
     getTextureUrl.mockImplementation((_p, n) => `texture://${n}`);
     vi.clearAllMocks();
   });
@@ -51,6 +55,18 @@ describe('AssetSelector', () => {
     expect(
       within(section.parentElement!).getByRole('button', {
         name: 'item/axe.png',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('puts uncategorized textures into misc', async () => {
+    render(<AssetSelector path="/proj" />);
+    const input = screen.getByPlaceholderText('Search texture');
+    fireEvent.change(input, { target: { value: 'custom' } });
+    const section = await screen.findByText('misc');
+    expect(
+      within(section.parentElement!).getByRole('button', {
+        name: 'other/custom.png',
       })
     ).toBeInTheDocument();
   });
