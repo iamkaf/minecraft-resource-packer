@@ -148,4 +148,33 @@ describe('ProjectManager', () => {
     fireEvent.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
     expect(deleteProject).toHaveBeenCalledWith('Alpha');
   });
+
+  it('filters by search term', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    const search = screen.getByPlaceholderText('Search');
+    fireEvent.change(search, { target: { value: 'pak' } });
+    expect(screen.getByText('Pack')).toBeInTheDocument();
+    expect(screen.queryByText('Alpha')).toBeNull();
+  });
+
+  it('filters by version chip and combines with search', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    const chip = screen.getByRole('button', { name: '1.20' });
+    fireEvent.click(chip);
+    expect(screen.getByText('Pack')).toBeInTheDocument();
+    expect(screen.queryByText('Alpha')).toBeNull();
+    const search = screen.getByPlaceholderText('Search');
+    fireEvent.change(search, { target: { value: 'pack' } });
+    expect(screen.getByText('Pack')).toBeInTheDocument();
+    expect(screen.queryByText('Alpha')).toBeNull();
+  });
+
+  it('search input has reasonable width', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    const input = screen.getByPlaceholderText('Search');
+    expect(input).toHaveClass('w-40');
+  });
 });
