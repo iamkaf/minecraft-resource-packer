@@ -12,7 +12,9 @@ declare global {
       createProject: (name: string, version: string) => Promise<void>;
       openProject: (name: string) => Promise<void>;
       onOpenProject: (listener: (event: unknown, path: string) => void) => void;
-      exportProject: (path: string) => Promise<void>;
+      exportProject: (
+        path: string
+      ) => Promise<import('./main/exporter').ExportSummary>;
       addTexture: (project: string, name: string) => Promise<void>;
       listTextures: (project: string) => Promise<string[]>;
       getTexturePath: (project: string, texture: string) => Promise<string>;

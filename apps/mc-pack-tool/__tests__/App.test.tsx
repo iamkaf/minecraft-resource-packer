@@ -38,7 +38,12 @@ describe('App', () => {
     });
     interface ElectronAPI {
       onOpenProject: (cb: (e: unknown, path: string) => void) => void;
-      exportProject: (path: string) => void;
+      exportProject: (path: string) => Promise<{
+        fileCount: number;
+        totalSize: number;
+        durationMs: number;
+        warnings: string[];
+      }>;
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       onOpenProject: (cb) => {
@@ -72,7 +77,12 @@ describe('App', () => {
     });
     await screen.findByText('Export Pack');
     const btn = screen.getByText('Export Pack');
-    exportProject.mockResolvedValueOnce(undefined);
+    exportProject.mockResolvedValueOnce({
+      fileCount: 1,
+      totalSize: 1,
+      durationMs: 1,
+      warnings: [],
+    });
     fireEvent.click(btn);
     expect(exportProject).toHaveBeenCalledWith('/tmp/proj');
   });
@@ -82,7 +92,12 @@ describe('App', () => {
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
-    exportProject.mockResolvedValueOnce(undefined);
+    exportProject.mockResolvedValueOnce({
+      fileCount: 1,
+      totalSize: 1,
+      durationMs: 1,
+      warnings: [],
+    });
     const btn = screen.getByText('Export Pack');
     await act(async () => {
       fire.mockClear();
@@ -102,7 +117,12 @@ describe('App', () => {
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
-    exportProject.mockResolvedValueOnce(undefined);
+    exportProject.mockResolvedValueOnce({
+      fileCount: 1,
+      totalSize: 1,
+      durationMs: 1,
+      warnings: [],
+    });
     const btn = screen.getByText('Export Pack');
     await act(async () => {
       fire.mockClear();
@@ -110,5 +130,27 @@ describe('App', () => {
       await Promise.resolve();
     });
     expect(fire).not.toHaveBeenCalled();
+  });
+
+  it('shows summary modal after export', async () => {
+    render(<App />);
+    act(() => {
+      openHandler?.({}, '/tmp/proj');
+    });
+    exportProject.mockResolvedValueOnce({
+      fileCount: 2,
+      totalSize: 2048,
+      durationMs: 500,
+      warnings: ['a'],
+    });
+    const btn = screen.getByText('Export Pack');
+    await act(async () => {
+      fireEvent.click(btn);
+      await Promise.resolve();
+    });
+    expect(screen.getByTestId('export-summary')).toBeInTheDocument();
+    expect(screen.getByText(/2 files/)).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Close'));
+    expect(screen.queryByTestId('export-summary')).toBeNull();
   });
 });

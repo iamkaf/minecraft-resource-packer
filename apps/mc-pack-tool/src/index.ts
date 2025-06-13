@@ -9,7 +9,7 @@ import { app, BrowserWindow, ipcMain, dialog, protocol } from 'electron';
 import { registerFileHandlers } from './main/ipcFiles';
 import path from 'path';
 import fs from 'fs';
-import { exportPack } from './main/exporter';
+import { exportPack, ExportSummary } from './main/exporter';
 import { createProject } from './main/projects';
 import {
   addTexture,
@@ -134,24 +134,28 @@ ipcMain.handle('get-texture-url', (_e, projectPath: string, tex: string) => {
 });
 
 // Trigger pack export for the given project directory.
-ipcMain.handle('export-project', async (_e, projectPath: string) => {
-  const { canceled, filePath } = await dialog.showSaveDialog({
-    title: 'Export Pack',
-    defaultPath: path.join(projectPath, 'pack.zip'),
-    filters: [{ name: 'Zip Files', extensions: ['zip'] }],
-  });
-  if (canceled || !filePath) return;
-  let version = '1.21.1';
-  try {
-    const metaPath = path.join(projectPath, 'project.json');
-    const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-    const meta = ProjectMetadataSchema.parse(data);
-    version = meta.version;
-  } catch {
-    // Use default version if metadata can't be read
+ipcMain.handle(
+  'export-project',
+  async (_e, projectPath: string): Promise<ExportSummary | void> => {
+    const { canceled, filePath } = await dialog.showSaveDialog({
+      title: 'Export Pack',
+      defaultPath: path.join(projectPath, 'pack.zip'),
+      filters: [{ name: 'Zip Files', extensions: ['zip'] }],
+    });
+    if (canceled || !filePath) return;
+    let version = '1.21.1';
+    try {
+      const metaPath = path.join(projectPath, 'project.json');
+      const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+      const meta = ProjectMetadataSchema.parse(data);
+      version = meta.version;
+    } catch {
+      // Use default version if metadata can't be read
+    }
+    const summary = await exportPack(projectPath, filePath, version);
+    return summary;
   }
-  await exportPack(projectPath, filePath, version);
-});
+);
 
 // Register file-related IPC handlers
 registerFileHandlers();

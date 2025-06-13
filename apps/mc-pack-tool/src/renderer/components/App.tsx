@@ -2,6 +2,8 @@ import React, { Suspense, useEffect, useState, lazy, useRef } from 'react';
 import ReactCanvasConfetti from 'react-canvas-confetti';
 import Navbar from './Navbar';
 import Spinner from './Spinner';
+import ExportSummaryModal from './ExportSummaryModal';
+import type { ExportSummary } from '../../main/exporter';
 
 const AssetBrowser = lazy(() => import('./AssetBrowser'));
 const AssetSelector = lazy(() => import('./AssetSelector'));
@@ -14,7 +16,8 @@ import DrawerLayout from './DrawerLayout';
 
 const App: React.FC = () => {
   const [projectPath, setProjectPath] = useState<string | null>(null);
-  const confetti = useRef<any>(null);
+  const [summary, setSummary] = useState<ExportSummary | null>(null);
+  const confetti = useRef<((opts: unknown) => void) | null>(null);
 
   useEffect(() => {
     // Listen for the main process telling us which project to load.
@@ -40,7 +43,8 @@ const App: React.FC = () => {
     if (projectPath) {
       window.electronAPI
         ?.exportProject(projectPath)
-        .then(() => {
+        .then((s) => {
+          setSummary(s);
           if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             confetti.current?.({
               particleCount: 150,
@@ -76,6 +80,12 @@ const App: React.FC = () => {
           <AssetBrowser path={projectPath} />
         </Suspense>
       </main>
+      {summary && (
+        <ExportSummaryModal
+          summary={summary}
+          onClose={() => setSummary(null)}
+        />
+      )}
       <ReactCanvasConfetti
         onInit={({ confetti: c }) => {
           confetti.current = c;
