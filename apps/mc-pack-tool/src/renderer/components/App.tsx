@@ -25,7 +25,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     // Listen for the main process telling us which project to load.
-    window.electronAPI?.onOpenProject((_event, path: string) => {
+    window.electronAPI?.onOpenProject((_event: unknown, path: string) => {
       setProjectPath(path);
       setView('projects');
     });
@@ -60,7 +60,7 @@ const App: React.FC = () => {
       window.electronAPI
         ?.exportProject(projectPath)
         .then((s) => {
-          setSummary(s);
+          if (s) setSummary(s);
           if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             confetti.current?.({
               particleCount: 150,

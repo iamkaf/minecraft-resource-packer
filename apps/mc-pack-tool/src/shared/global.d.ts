@@ -14,11 +14,31 @@ type IpcListener<C extends keyof IpcEventMap> = (
 declare global {
   interface Window {
     electronAPI?: {
-      [K in keyof IpcRequestMap as K extends keyof IpcEventMap
-        ? never
-        : K]: IpcInvoke<K>;
-    } & {
-      [K in keyof IpcEventMap as K]: IpcListener<K>;
+      listProjects: IpcInvoke<'list-projects'>;
+      listVersions: IpcInvoke<'list-versions'>;
+      createProject: IpcInvoke<'create-project'>;
+      importProject: IpcInvoke<'import-project'>;
+      duplicateProject: IpcInvoke<'duplicate-project'>;
+      deleteProject: IpcInvoke<'delete-project'>;
+      openProject: IpcInvoke<'open-project'>;
+      loadPackMeta: IpcInvoke<'load-pack-meta'>;
+      savePackMeta: IpcInvoke<'save-pack-meta'>;
+      addTexture: IpcInvoke<'add-texture'>;
+      listTextures: IpcInvoke<'list-textures'>;
+      getTexturePath: IpcInvoke<'get-texture-path'>;
+      getTextureUrl: IpcInvoke<'get-texture-url'>;
+      randomizeIcon: IpcInvoke<'randomize-icon'>;
+      exportProject: IpcInvoke<'export-project'>;
+      openInFolder: IpcInvoke<'open-in-folder'>;
+      openFile: IpcInvoke<'open-file'>;
+      renameFile: IpcInvoke<'rename-file'>;
+      deleteFile: IpcInvoke<'delete-file'>;
+      watchProject: IpcInvoke<'watch-project'>;
+      unwatchProject: IpcInvoke<'unwatch-project'>;
+      onOpenProject: IpcListener<'project-opened'>;
+      onFileAdded: IpcListener<'file-added'>;
+      onFileRemoved: IpcListener<'file-removed'>;
+      onFileRenamed: IpcListener<'file-renamed'>;
     };
   }
 }
