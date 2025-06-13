@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useToast } from './ToastProvider';
 
 // Lists all available projects and lets the user open them.  Mimics the
 // project selection dialog used in game engines like Godot.
@@ -27,10 +28,15 @@ const ProjectManager: React.FC = () => {
     window.electronAPI?.openProject(n);
   };
 
+  const toast = useToast();
+
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !version) return;
-    window.electronAPI?.createProject(name, version).then(refresh);
+    window.electronAPI?.createProject(name, version).then(() => {
+      refresh();
+      toast('Project created', 'success');
+    });
     setName('');
     setVersion('');
   };
