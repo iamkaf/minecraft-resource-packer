@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { formatTextureName } from '../utils/textureNames';
 
 interface Props {
   path: string;
@@ -58,20 +59,36 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
         />
       </div>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 overflow-y-auto h-48">
-        {filtered.map((tex) => (
-          <button
-            key={tex.name}
-            aria-label={tex.name}
-            onClick={() => handleSelect(tex.name)}
-            className="p-1 hover:ring ring-accent rounded"
-          >
-            <img
-              src={tex.url}
-              alt={tex.name}
-              style={{ width: zoom, height: zoom, imageRendering: 'pixelated' }}
-            />
-          </button>
-        ))}
+        {filtered.map((tex) => {
+          const formatted = formatTextureName(tex.name);
+          return (
+            <div
+              key={tex.name}
+              className="text-center tooltip"
+              data-tip={`${formatted} \n${tex.name}`}
+            >
+              <button
+                aria-label={tex.name}
+                onClick={() => handleSelect(tex.name)}
+                className="p-1 hover:ring ring-accent rounded"
+              >
+                <img
+                  src={tex.url}
+                  alt={formatted}
+                  style={{
+                    width: zoom,
+                    height: zoom,
+                    imageRendering: 'pixelated',
+                  }}
+                />
+              </button>
+              <div className="text-xs leading-tight">
+                <div>{formatted}</div>
+                <div className="opacity-50">{tex.name}</div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
