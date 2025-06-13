@@ -38,7 +38,7 @@ async function fetchJson<T>(url: string): Promise<T> {
     // Fall back to a bundled manifest when offline
     if (url === VERSION_MANIFEST) {
       const local = path.join(__dirname, '../minecraft/version_manifest.json');
-      const data = fs.readFileSync(local, 'utf-8');
+      const data = await fs.promises.readFile(local, 'utf-8');
       return JSON.parse(data) as T;
     }
     throw err;
@@ -105,23 +105,24 @@ export async function listVersions(): Promise<string[]> {
  */
 export async function listTextures(projectPath: string): Promise<string[]> {
   const metaPath = path.join(projectPath, 'project.json');
-  const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+  const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
   const meta = ProjectMetadataSchema.parse(data);
   const root = await ensureAssets(meta.version);
   const texRoot = path.join(root, 'assets', 'minecraft', 'textures');
   const out: string[] = [];
-  const walk = (dir: string) => {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+  const walk = async (dir: string) => {
+    const entries = await fs.promises.readdir(dir, { withFileTypes: true });
+    for (const entry of entries) {
       const p = path.join(dir, entry.name);
       if (entry.isDirectory()) {
-        walk(p);
+        await walk(p);
       } else if (entry.name.endsWith('.png')) {
         const rel = path.relative(texRoot, p);
         out.push(rel.split(path.sep).join('/'));
       }
     }
   };
-  walk(texRoot);
+  await walk(texRoot);
   return out;
 }
 
@@ -134,7 +135,7 @@ export async function addTexture(
   texture: string
 ): Promise<void> {
   const metaPath = path.join(projectPath, 'project.json');
-  const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+  const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
   const meta = ProjectMetadataSchema.parse(data);
   const root = await ensureAssets(meta.version);
   const src = path.join(root, 'assets', 'minecraft', 'textures', texture);
@@ -148,7 +149,7 @@ export async function addTexture(
   await fs.promises.mkdir(path.dirname(dest), { recursive: true });
   await fs.promises.copyFile(src, dest);
   meta.assets.push(`assets/minecraft/textures/${texture}`);
-  fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+  await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
 
   // Update the cached project texture directory to ensure thumbnails work
   projectTexturesDir = path.join(
@@ -167,7 +168,7 @@ export async function getTexturePath(
   texture: string
 ): Promise<string> {
   const metaPath = path.join(projectPath, 'project.json');
-  const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+  const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
   const meta = ProjectMetadataSchema.parse(data);
   const root = await ensureAssets(meta.version);
   return path.join(root, 'assets', 'minecraft', 'textures', texture);
@@ -183,7 +184,7 @@ export async function getTextureURL(
 ): Promise<string> {
   // Record paths used by the protocol so it can resolve this texture later
   const metaPath = path.join(projectPath, 'project.json');
-  const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+  const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
   const meta = ProjectMetadataSchema.parse(data);
   const cacheRoot = await ensureAssets(meta.version);
   cacheTexturesDir = path.join(cacheRoot, 'assets', 'minecraft', 'textures');
@@ -226,7 +227,7 @@ export function registerProjectTextureProtocol(protocol: Protocol) {
 /** Update the directories used by the texture protocol for the active project. */
 export async function setActiveProject(projectPath: string): Promise<void> {
   const metaPath = path.join(projectPath, 'project.json');
-  const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+  const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
   const meta = ProjectMetadataSchema.parse(data);
   const cacheRoot = await ensureAssets(meta.version);
   cacheTexturesDir = path.join(cacheRoot, 'assets', 'minecraft', 'textures');
