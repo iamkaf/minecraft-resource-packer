@@ -56,7 +56,6 @@ describe('AssetBrowser', () => {
     render(<AssetBrowser path="/proj" />);
     const item = screen.getByText('a.txt');
     fireEvent.contextMenu(item);
-    vi.stubGlobal('prompt', () => 'renamed.txt');
     const revealBtn = (
       await screen.findAllByRole('menuitem', { name: 'Reveal' })
     )[0];
@@ -71,7 +70,14 @@ describe('AssetBrowser', () => {
     fireEvent.click(
       (await screen.findAllByRole('menuitem', { name: 'Rename' }))[0]
     );
+    const rmodal = await screen.findByTestId('rename-modal');
+    const input = within(rmodal).getByDisplayValue('a.txt');
+    fireEvent.change(input, { target: { value: 'renamed.txt' } });
+    const form = input.closest('form');
+    if (!form) throw new Error('form not found');
+    fireEvent.submit(form);
     expect(renameFile).toHaveBeenCalledWith('/proj/a.txt', '/proj/renamed.txt');
+    expect(screen.queryByTestId('rename-modal')).toBeNull();
     fireEvent.contextMenu(item);
     fireEvent.click(
       (await screen.findAllByRole('menuitem', { name: 'Delete' }))[0]

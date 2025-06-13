@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { watch } from 'chokidar';
 import fs from 'fs';
 import path from 'path';
+import RenameModal from './RenameModal';
 
 // Simple file list that updates whenever files inside the project directory
 // change on disk. Uses chokidar to watch for edits and re-read the directory.
@@ -41,6 +42,7 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
 
   const [menuTarget, setMenuTarget] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [renameTarget, setRenameTarget] = useState<string | null>(null);
   const firstItem = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -61,12 +63,7 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
         }
         const openFolder = () => window.electronAPI?.openInFolder(full);
         const openFile = () => window.electronAPI?.openFile(full);
-        const renameFile = () => {
-          const newName = window.prompt('Rename file', name);
-          if (!newName || newName === name) return;
-          const target = path.join(path.dirname(full), newName);
-          window.electronAPI?.renameFile(full, target);
-        };
+        const showRename = () => setRenameTarget(f);
         const confirmDel = () => setConfirmDelete(full);
         const showMenu = () => setMenuTarget(f);
         const handleKey = (e: React.KeyboardEvent) => {
@@ -122,7 +119,7 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
                 </button>
               </li>
               <li>
-                <button role="menuitem" onClick={renameFile}>
+                <button role="menuitem" onClick={showRename}>
                   Rename
                 </button>
               </li>
@@ -157,6 +154,18 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
             </div>
           </div>
         </dialog>
+      )}
+      {renameTarget && (
+        <RenameModal
+          current={path.basename(renameTarget)}
+          onCancel={() => setRenameTarget(null)}
+          onRename={(n) => {
+            const full = path.join(projectPath, renameTarget);
+            const target = path.join(path.dirname(full), n);
+            window.electronAPI?.renameFile(full, target);
+            setRenameTarget(null);
+          }}
+        />
       )}
     </div>
   );
