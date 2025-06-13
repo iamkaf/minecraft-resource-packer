@@ -1,6 +1,6 @@
 import React from 'react';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import DrawerLayout from '../src/renderer/components/DrawerLayout';
 import Navbar from '../src/renderer/components/Navbar';
 
@@ -11,24 +11,43 @@ describe('DrawerLayout', () => {
     document.body.innerHTML = '';
   });
 
-  it('renders children and menu', () => {
+  it('collapses to icons on mobile and expands when toggled', () => {
+    window.matchMedia = vi.fn().mockReturnValue({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    });
+
     render(
       <DrawerLayout>
         <Navbar />
         <div>content</div>
       </DrawerLayout>
     );
+
     expect(screen.getByText('content')).toBeInTheDocument();
-    expect(screen.getByText('Projects')).toBeInTheDocument();
+    const label = screen.getByText('Projects');
+    expect(label.className).toContain('hidden');
+    fireEvent.click(screen.getByTestId('drawer-toggle'));
+    expect(label.className).not.toContain('hidden');
   });
 
-  it('contains drawer toggle checkbox', () => {
+  it('shows full drawer on desktop by default', () => {
+    window.matchMedia = vi.fn().mockReturnValue({
+      matches: true,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    });
+
     render(
       <DrawerLayout>
         <Navbar />
         <div>content</div>
       </DrawerLayout>
     );
-    expect(screen.getByRole('checkbox')).toBeInTheDocument();
+
+    const label = screen.getByText('Projects');
+    expect(label.className).not.toContain('hidden');
+    expect(screen.getByRole('checkbox')).toBeChecked();
   });
 });
