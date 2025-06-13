@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import ProjectManager from '../src/renderer/components/ProjectManager';
+import ToastProvider from '../src/renderer/components/ToastProvider';
 
 describe('ProjectManager', () => {
   const listProjects = vi.fn();
@@ -133,19 +134,36 @@ describe('ProjectManager', () => {
     expect(importProject).toHaveBeenCalled();
   });
 
-  it('duplicates project via prompt', async () => {
-    render(<ProjectManager />);
+  it('duplicates project via modal', async () => {
+    render(
+      <ToastProvider>
+        <ProjectManager />
+      </ToastProvider>
+    );
     await screen.findAllByRole('button', { name: 'Open' });
-    vi.stubGlobal('prompt', () => 'Alpha Copy');
     fireEvent.click(screen.getAllByRole('button', { name: 'Duplicate' })[0]);
+    const modal = await screen.findByTestId('duplicate-modal');
+    fireEvent.change(modal.querySelector('input')!, {
+      target: { value: 'Alpha Copy' },
+    });
+    fireEvent.click(screen.getByText('Save'));
     expect(duplicateProject).toHaveBeenCalledWith('Alpha', 'Alpha Copy');
+    await screen.findAllByText('Project duplicated');
   });
 
-  it('deletes project with confirmation', async () => {
-    render(<ProjectManager />);
+  it('deletes project with confirmation modal', async () => {
+    render(
+      <ToastProvider>
+        <ProjectManager />
+      </ToastProvider>
+    );
     await screen.findAllByRole('button', { name: 'Open' });
-    vi.stubGlobal('confirm', () => true);
     fireEvent.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
+    const modal = await screen.findByTestId('delete-project-modal');
+    fireEvent.click(
+      modal.querySelector('button.btn-error') as HTMLButtonElement
+    );
     expect(deleteProject).toHaveBeenCalledWith('Alpha');
+    await screen.findAllByText('Project deleted');
   });
 });

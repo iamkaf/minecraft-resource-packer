@@ -18,6 +18,9 @@ const ProjectManager: React.FC = () => {
   const [name, setName] = useState(() => generateProjectName());
   const [version, setVersion] = useState('');
   const [versions, setVersions] = useState<string[]>([]);
+  const [dupTarget, setDupTarget] = useState<string | null>(null);
+  const [dupValue, setDupValue] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const refresh = () => {
     window.electronAPI?.listProjects().then(setProjects);
@@ -38,20 +41,12 @@ const ProjectManager: React.FC = () => {
   };
 
   const handleDuplicate = (n: string) => {
-    const dup = prompt('Duplicate as', `${n} Copy`);
-    if (!dup) return;
-    window.electronAPI?.duplicateProject(n, dup).then(() => {
-      refresh();
-      toast('Project duplicated', 'success');
-    });
+    setDupTarget(n);
+    setDupValue(`${n} Copy`);
   };
 
   const handleDelete = (n: string) => {
-    if (!confirm(`Delete project ${n}?`)) return;
-    window.electronAPI?.deleteProject(n).then(() => {
-      refresh();
-      toast('Project deleted', 'info');
-    });
+    setDeleteTarget(n);
   };
 
   const toast = useToast();
@@ -173,6 +168,63 @@ const ProjectManager: React.FC = () => {
           ))}
         </tbody>
       </table>
+      {dupTarget && (
+        <dialog className="modal modal-open" data-testid="duplicate-modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg mb-2">Duplicate project</h3>
+            <input
+              autoFocus
+              className="input input-bordered w-full"
+              value={dupValue}
+              onChange={(e) => setDupValue(e.target.value)}
+            />
+            <div className="modal-action">
+              <button className="btn" onClick={() => setDupTarget(null)}>
+                Cancel
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  if (!dupTarget) return;
+                  window.electronAPI
+                    ?.duplicateProject(dupTarget, dupValue)
+                    .then(() => {
+                      refresh();
+                      toast('Project duplicated', 'success');
+                    });
+                  setDupTarget(null);
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </dialog>
+      )}
+      {deleteTarget && (
+        <dialog className="modal modal-open" data-testid="delete-project-modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg mb-2">Delete {deleteTarget}?</h3>
+            <div className="modal-action">
+              <button className="btn" onClick={() => setDeleteTarget(null)}>
+                Cancel
+              </button>
+              <button
+                className="btn btn-error"
+                onClick={() => {
+                  window.electronAPI?.deleteProject(deleteTarget).then(() => {
+                    refresh();
+                    toast('Project deleted', 'info');
+                  });
+                  setDeleteTarget(null);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </dialog>
+      )}
     </section>
   );
 };

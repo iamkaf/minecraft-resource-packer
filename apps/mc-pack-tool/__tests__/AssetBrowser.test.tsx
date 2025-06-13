@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import AssetBrowser from '../src/renderer/components/AssetBrowser';
+import ToastProvider from '../src/renderer/components/ToastProvider';
 
 const onMock = vi.fn();
 const closeMock = vi.fn();
@@ -40,11 +41,11 @@ describe('AssetBrowser', () => {
     expect(img.style.imageRendering).toBe('pixelated');
   });
 
-  it('context menu triggers IPC calls', () => {
+  it('context menu triggers IPC calls', async () => {
     const openInFolder = vi.fn();
     const openFile = vi.fn();
-    const renameFile = vi.fn();
-    const deleteFile = vi.fn();
+    const renameFile = vi.fn().mockResolvedValue(undefined);
+    const deleteFile = vi.fn().mockResolvedValue(undefined);
     (
       window as unknown as {
         electronAPI: {
@@ -60,19 +61,32 @@ describe('AssetBrowser', () => {
       renameFile,
       deleteFile,
     };
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <ToastProvider>
+        <AssetBrowser path="/proj" />
+      </ToastProvider>
+    );
     const item = screen.getByText('a.txt');
     fireEvent.contextMenu(item);
     const template = buildMock.mock.calls[0][0];
-    vi.stubGlobal('prompt', () => 'renamed.txt');
-    vi.stubGlobal('confirm', () => true);
     template[0].click();
     expect(openInFolder).toHaveBeenCalledWith('/proj/a.txt');
     template[1].click();
     expect(openFile).toHaveBeenCalledWith('/proj/a.txt');
     template[2].click();
+    const renameModal = await screen.findByTestId('rename-modal');
+    fireEvent.change(renameModal.querySelector('input')!, {
+      target: { value: 'renamed.txt' },
+    });
+    fireEvent.click(screen.getByText('Save'));
     expect(renameFile).toHaveBeenCalledWith('/proj/a.txt', '/proj/renamed.txt');
+    await screen.findAllByText('File renamed');
     template[3].click();
+    const delModal = await screen.findByTestId('delete-modal');
+    fireEvent.click(
+      delModal.querySelector('button.btn-error') as HTMLButtonElement
+    );
     expect(deleteFile).toHaveBeenCalledWith('/proj/a.txt');
+    await screen.findAllByText('File deleted');
   });
 });
