@@ -1,3 +1,19 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin "daisyui";
+@plugin "daisyui/theme" {
+  name: 'minecraft';
+  default: true;
+  color-scheme: dark;
+  --color-primary: #5b8731;
+  --color-primary-content: #ffffff;
+  --color-secondary: #926c4d;
+  --color-accent: #29d3e2;
+  --color-neutral: #ad9f8e;
+  --color-base-100: #1d232a;
+  --color-base-200: #191e24;
+  --color-base-300: #15191e;
+  --color-info: #42adff;
+  --color-success: #16a34a;
+  --color-warning: #facc15;
+  --color-error: #ff4d4f;
+}
