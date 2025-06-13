@@ -33,6 +33,27 @@ const ProjectManager: React.FC = () => {
     window.electronAPI?.openProject(n);
   };
 
+  const handleImport = () => {
+    window.electronAPI?.importProject().then(refresh);
+  };
+
+  const handleDuplicate = (n: string) => {
+    const dup = prompt('Duplicate as', `${n} Copy`);
+    if (!dup) return;
+    window.electronAPI?.duplicateProject(n, dup).then(() => {
+      refresh();
+      toast('Project duplicated', 'success');
+    });
+  };
+
+  const handleDelete = (n: string) => {
+    if (!confirm(`Delete project ${n}?`)) return;
+    window.electronAPI?.deleteProject(n).then(() => {
+      refresh();
+      toast('Project deleted', 'info');
+    });
+  };
+
   const toast = useToast();
 
   const handleCreate = (e: React.FormEvent) => {
@@ -89,6 +110,13 @@ const ProjectManager: React.FC = () => {
         <button className="btn btn-primary btn-sm" type="submit">
           Create
         </button>
+        <button
+          type="button"
+          onClick={handleImport}
+          className="btn btn-secondary btn-sm"
+        >
+          Import
+        </button>
       </form>
       <table className="table table-zebra w-full">
         <thead>
@@ -121,12 +149,24 @@ const ProjectManager: React.FC = () => {
               <td>{p.version}</td>
               <td>{p.assets}</td>
               <td>{new Date(p.lastOpened).toLocaleDateString()}</td>
-              <td>
+              <td className="flex gap-1">
                 <button
                   className="btn btn-accent btn-sm"
                   onClick={() => handleOpen(p.name)}
                 >
                   Open
+                </button>
+                <button
+                  className="btn btn-info btn-sm"
+                  onClick={() => handleDuplicate(p.name)}
+                >
+                  Duplicate
+                </button>
+                <button
+                  className="btn btn-error btn-sm"
+                  onClick={() => handleDelete(p.name)}
+                >
+                  Delete
                 </button>
               </td>
             </tr>
