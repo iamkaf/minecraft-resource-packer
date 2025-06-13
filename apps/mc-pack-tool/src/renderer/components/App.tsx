@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState, lazy } from 'react';
 import Navbar from './Navbar';
-import AssetBrowser from './AssetBrowser';
-import AssetSelector from './AssetSelector';
-import ProjectManager from './ProjectManager';
+import Spinner from './Spinner';
+
+const AssetBrowser = lazy(() => import('./AssetBrowser'));
+const AssetSelector = lazy(() => import('./AssetSelector'));
+const ProjectManager = lazy(() => import('./ProjectManager'));
 import DrawerLayout from './DrawerLayout';
 
 // Main React component shown in the editor window.  It waits for the main
@@ -24,7 +26,9 @@ const App: React.FC = () => {
       <DrawerLayout>
         <Navbar />
         <main className="p-4 flex flex-col gap-6">
-          <ProjectManager />
+          <Suspense fallback={<Spinner />}>
+            <ProjectManager />
+          </Suspense>
         </main>
       </DrawerLayout>
     );
@@ -50,8 +54,12 @@ const App: React.FC = () => {
         <button className="btn btn-accent mb-2" onClick={handleExport}>
           Export Pack
         </button>
-        <AssetSelector path={projectPath} />
-        <AssetBrowser path={projectPath} />
+        <Suspense fallback={<Spinner />}>
+          <AssetSelector path={projectPath} />
+        </Suspense>
+        <Suspense fallback={<Spinner />}>
+          <AssetBrowser path={projectPath} />
+        </Suspense>
       </main>
     </DrawerLayout>
   );

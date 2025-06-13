@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, act, fireEvent } from '@testing-library/react';
 
@@ -31,20 +31,29 @@ describe('App', () => {
     };
   });
 
-  it('shows manager then project name', () => {
-    render(<App />);
-    expect(screen.getByText('manager')).toBeInTheDocument();
+  it('shows manager then project name', async () => {
+    render(
+      <Suspense fallback="loading">
+        <App />
+      </Suspense>
+    );
+    await screen.findByText('manager');
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
     expect(screen.getByText(/Project: \/tmp\/proj/)).toBeInTheDocument();
   });
 
-  it('invokes exportProject when button clicked', () => {
-    render(<App />);
+  it('invokes exportProject when button clicked', async () => {
+    render(
+      <Suspense fallback="loading">
+        <App />
+      </Suspense>
+    );
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
+    await screen.findByText('Export Pack');
     const btn = screen.getByText('Export Pack');
     fireEvent.click(btn);
     expect(exportProject).toHaveBeenCalledWith('/tmp/proj');
