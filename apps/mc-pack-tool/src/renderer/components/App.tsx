@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import ReactCanvasConfetti, {
+  TCanvasConfettiInstance,
+} from 'react-canvas-confetti';
 import Navbar from './Navbar';
 import AssetBrowser from './AssetBrowser';
 import AssetSelector from './AssetSelector';
@@ -11,6 +14,7 @@ import DrawerLayout from './DrawerLayout';
 
 const App: React.FC = () => {
   const [projectPath, setProjectPath] = useState<string | null>(null);
+  const confetti = useRef<TCanvasConfettiInstance | null>(null);
 
   useEffect(() => {
     // Listen for the main process telling us which project to load.
@@ -32,7 +36,20 @@ const App: React.FC = () => {
 
   const handleExport = () => {
     if (projectPath) {
-      window.electronAPI?.exportProject(projectPath);
+      window.electronAPI
+        ?.exportProject(projectPath)
+        .then(() => {
+          if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            confetti.current?.({
+              particleCount: 150,
+              spread: 70,
+              origin: { y: 0.6 },
+            });
+          }
+        })
+        .catch(() => {
+          /* ignore */
+        });
     }
   };
 
@@ -53,6 +70,19 @@ const App: React.FC = () => {
         <AssetSelector path={projectPath} />
         <AssetBrowser path={projectPath} />
       </main>
+      <ReactCanvasConfetti
+        onInit={({ confetti: c }) => {
+          confetti.current = c;
+        }}
+        style={{
+          position: 'fixed',
+          pointerEvents: 'none',
+          width: '100%',
+          height: '100%',
+          top: 0,
+          left: 0,
+        }}
+      />
     </DrawerLayout>
   );
 };
