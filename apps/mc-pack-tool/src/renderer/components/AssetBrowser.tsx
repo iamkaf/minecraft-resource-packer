@@ -3,6 +3,7 @@ import { watch } from 'chokidar';
 import fs from 'fs';
 import path from 'path';
 import RenameModal from './RenameModal';
+import { formatTextureName } from '../utils/textureNames';
 
 // Simple file list that updates whenever files inside the project directory
 // change on disk. Uses chokidar to watch for edits and re-read the directory.
@@ -56,6 +57,7 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
       {files.map((f) => {
         const full = path.join(projectPath, f);
         const name = path.basename(f);
+        const formatted = f.endsWith('.png') ? formatTextureName(name) : name;
         let thumb: string | null = null;
         if (f.endsWith('.png')) {
           const rel = f.split(path.sep).join('/');
@@ -76,7 +78,8 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
         return (
           <div
             key={f}
-            className="p-1 cursor-pointer hover:ring ring-accent relative"
+            className="p-1 cursor-pointer hover:ring ring-accent relative text-center tooltip"
+            data-tip={`${formatted} \n${name}`}
             tabIndex={0}
             onDoubleClick={openFile}
             onContextMenu={(e) => {
@@ -91,12 +94,18 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
             }}
           >
             {thumb ? (
-              <img
-                src={thumb}
-                alt={name}
-                className="w-full aspect-square"
-                style={{ imageRendering: 'pixelated' }}
-              />
+              <>
+                <img
+                  src={thumb}
+                  alt={formatted}
+                  className="w-full aspect-square"
+                  style={{ imageRendering: 'pixelated' }}
+                />
+                <div className="text-xs leading-tight mt-1">
+                  <div>{formatted}</div>
+                  <div className="opacity-50">{name}</div>
+                </div>
+              </>
             ) : (
               <div className="w-full aspect-square bg-base-300 flex items-center justify-center">
                 {name}

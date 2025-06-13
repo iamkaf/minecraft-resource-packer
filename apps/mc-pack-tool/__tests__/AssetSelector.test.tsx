@@ -31,9 +31,11 @@ describe('AssetSelector', () => {
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });
     const button = await screen.findByRole('button', { name: 'grass.png' });
-    const img = (await screen.findByAltText('grass.png')) as HTMLImageElement;
+    const img = (await screen.findByAltText('Grass')) as HTMLImageElement;
     expect(getTextureUrl).toHaveBeenCalledWith('/proj', 'grass.png');
     expect(img.src).toContain('texture://img/grass.png');
+    expect(screen.getByText('Grass')).toBeInTheDocument();
+    expect(screen.getByText('grass.png')).toBeInTheDocument();
     fireEvent.click(button);
     expect(addTexture).toHaveBeenCalledWith('/proj', 'grass.png');
   });
@@ -42,7 +44,7 @@ describe('AssetSelector', () => {
     render(<AssetSelector path="/proj" />);
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });
-    const img = (await screen.findByAltText('grass.png')) as HTMLImageElement;
+    const img = (await screen.findByAltText('Grass')) as HTMLImageElement;
     expect(img.style.width).toBe('64px');
     expect(img.style.imageRendering).toBe('pixelated');
     const slider = screen.getByLabelText('Zoom');

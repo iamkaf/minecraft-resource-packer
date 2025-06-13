@@ -43,3 +43,9 @@ npm run format
 This project uses **Tailwind CSS** with the
 [`daisyUI`](https://daisyui.com) plugin. A custom
 "minecraft" theme provides light and dark modes that match the game's look.
+
+### Texture Naming
+
+Texture filenames are displayed in a friendlier form by removing the path and
+extension, replacing underscores with spaces and capitalising each word. The
+original filename is still shown alongside the formatted name and in tooltips.
