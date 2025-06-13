@@ -1,7 +1,5 @@
 import React, { Suspense, useEffect, useState, lazy, useRef } from 'react';
-import ReactCanvasConfetti, {
-  TCanvasConfettiInstance,
-} from 'react-canvas-confetti';
+import ReactCanvasConfetti from 'react-canvas-confetti';
 import Navbar from './Navbar';
 import Spinner from './Spinner';
 
@@ -16,7 +14,7 @@ import DrawerLayout from './DrawerLayout';
 
 const App: React.FC = () => {
   const [projectPath, setProjectPath] = useState<string | null>(null);
-  const confetti = useRef<TCanvasConfettiInstance | null>(null);
+  const confetti = useRef<any>(null);
 
   useEffect(() => {
     // Listen for the main process telling us which project to load.
