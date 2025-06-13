@@ -32,7 +32,7 @@ describe('ProjectManager', () => {
     };
     listProjects.mockResolvedValue([
       { name: 'Pack', version: '1.20', assets: 2, lastOpened: 0 },
-      { name: 'Alpha', version: '1.21', assets: 5, lastOpened: 0 },
+      { name: 'Alpha', version: '1.21', assets: 5, lastOpened: 1 },
     ]);
     createProject.mockResolvedValue(undefined);
     listVersions.mockResolvedValue(['1.20', '1.21']);
@@ -75,10 +75,41 @@ describe('ProjectManager', () => {
     expect(createProject).toHaveBeenCalledWith('New', '1.21');
   });
 
+  it('has daisyUI zebra table', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    const table = document.querySelector('table.table-zebra');
+    expect(table).not.toBeNull();
+  });
+
   it('sorts projects when header clicked', async () => {
     render(<ProjectManager />);
     await screen.findAllByRole('button', { name: 'Open' });
     fireEvent.click(screen.getByText('Name'));
+    const rows = screen.getAllByRole('row');
+    expect(rows[1]).toHaveTextContent('Pack');
+  });
+
+  it('sorts by version', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    fireEvent.click(screen.getByText('MC Version'));
+    const rows = screen.getAllByRole('row');
+    expect(rows[1]).toHaveTextContent('Pack');
+  });
+
+  it('sorts by assets', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    fireEvent.click(screen.getByText('Assets'));
+    const rows = screen.getAllByRole('row');
+    expect(rows[1]).toHaveTextContent('Pack');
+  });
+
+  it('sorts by last opened', async () => {
+    render(<ProjectManager />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    fireEvent.click(screen.getByText('Last opened'));
     const rows = screen.getAllByRole('row');
     expect(rows[1]).toHaveTextContent('Pack');
   });

@@ -24,7 +24,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ## 2. Projects Dashboard
 
-- [ ] Zebra table: Name ▸ MC Version ▸ Assets ▸ Last opened
+- [x] Zebra table: Name ▸ MC Version ▸ Assets ▸ Last opened
 - [ ] Placeholder names generated with `unique-names-generator`
 - [ ] Create • Import • Duplicate • Delete (confirm) • Open actions
 - [ ] Fuzzy search + version filter chips
