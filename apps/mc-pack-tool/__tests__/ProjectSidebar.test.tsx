@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import ProjectSidebar from '../src/renderer/components/ProjectSidebar';
 
 describe('ProjectSidebar', () => {
-  it('loads metadata when opened', async () => {
+  it('loads metadata when given a project', async () => {
     const load = vi.fn().mockResolvedValue({
       description: 'A pack',
       author: 'Me',
@@ -19,29 +19,20 @@ describe('ProjectSidebar', () => {
       loadPackMeta: load,
       savePackMeta: vi.fn(),
     };
-    render(
-      <ProjectSidebar project="Pack" open={true} onClose={() => undefined} />
-    );
+    render(<ProjectSidebar project="Pack" />);
     expect(load).toHaveBeenCalledWith('Pack');
     await screen.findByText('A pack');
   });
 
-  it('toggles visibility', () => {
-    const load = vi
-      .fn()
-      .mockResolvedValue({ description: '', author: '', urls: [], created: 0 });
+  it('shows placeholder without a project', () => {
+    const load = vi.fn();
     (window as unknown as { electronAPI: API }).electronAPI = {
       loadPackMeta: load,
       savePackMeta: vi.fn(),
     };
-    const { rerender } = render(
-      <ProjectSidebar project="Pack" open={false} onClose={() => undefined} />
-    );
-    expect(screen.queryByTestId('project-sidebar')).toBeNull();
-    rerender(
-      <ProjectSidebar project="Pack" open={true} onClose={() => undefined} />
-    );
-    expect(screen.getByTestId('project-sidebar')).toBeInTheDocument();
+    render(<ProjectSidebar project={null} />);
+    expect(screen.getByText(/select a project/i)).toBeInTheDocument();
+    expect(load).not.toHaveBeenCalled();
   });
 
   it('updates when project changes', async () => {
@@ -67,13 +58,9 @@ describe('ProjectSidebar', () => {
       loadPackMeta: load,
       savePackMeta: vi.fn(),
     };
-    const { rerender } = render(
-      <ProjectSidebar project="A" open={true} onClose={() => undefined} />
-    );
+    const { rerender } = render(<ProjectSidebar project="A" />);
     await screen.findByText('First');
-    rerender(
-      <ProjectSidebar project="B" open={true} onClose={() => undefined} />
-    );
+    rerender(<ProjectSidebar project="B" />);
     expect(load).toHaveBeenLastCalledWith('B');
     await screen.findByText('Second');
     expect(screen.queryByText('First')).toBeNull();

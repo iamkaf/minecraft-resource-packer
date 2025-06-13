@@ -5,46 +5,23 @@ import type { PackMeta } from '../../main/projects';
 
 export default function ProjectSidebar({
   project,
-  open,
-  onClose,
 }: {
-  project: string;
-  open: boolean;
-  onClose: () => void;
+  project: string | null;
 }) {
   const [meta, setMeta] = useState<PackMeta | null>(null);
   const [edit, setEdit] = useState(false);
 
   useEffect(() => {
-    if (open) {
+    if (project) {
       setMeta(null);
       window.electronAPI?.loadPackMeta(project).then(setMeta);
     }
-  }, [open, project]);
-
-  if (!open) return null;
+  }, [project]);
 
   return (
-    <div
-      className={`drawer drawer-end z-50 ${open ? 'drawer-open' : ''}`}
-      data-testid="project-sidebar"
-    >
-      <input
-        id="project-sidebar-toggle"
-        type="checkbox"
-        className="drawer-toggle"
-        checked={open}
-        onChange={onClose}
-        data-testid="sidebar-toggle"
-      />
-      <div className="drawer-content" />
-      <div className="drawer-side">
-        <label
-          className="drawer-overlay"
-          onClick={onClose}
-          htmlFor="project-sidebar-toggle"
-        />
-        <aside className="p-4 w-80 bg-base-200">
+    <aside data-testid="project-sidebar" className="w-80 p-4 bg-base-200">
+      {project ? (
+        <>
           <h2 className="font-display text-lg mb-2">{project}</h2>
           {meta ? (
             <div className="card bg-base-100 p-4">
@@ -77,13 +54,16 @@ export default function ProjectSidebar({
           ) : (
             <div>Loading...</div>
           )}
-        </aside>
-      </div>
+        </>
+      ) : (
+        <p>Select a project to view metadata.</p>
+      )}
       {edit && meta && (
         <PackMetaModal
           meta={meta}
           onCancel={() => setEdit(false)}
           onSave={(m) => {
+            if (!project) return;
             window.electronAPI?.savePackMeta(project, m).then(() => {
               setMeta(m);
               setEdit(false);
@@ -91,6 +71,6 @@ export default function ProjectSidebar({
           }}
         />
       )}
-    </div>
+    </aside>
   );
 }
