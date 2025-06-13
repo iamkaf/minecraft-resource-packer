@@ -12,10 +12,10 @@ const ProjectManager: React.FC = () => {
     assets: number;
     lastOpened: number;
   }
-  const [projects, setProjects] = useState<ProjectInfo[]>([]);=
+  const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [sortKey, setSortKey] = useState<keyof ProjectInfo>('name');
   const [asc, setAsc] = useState(true);
-  const [name, setName] = useState(() => generateProjectName());=
+  const [name, setName] = useState(() => generateProjectName());
   const [version, setVersion] = useState('');
   const [versions, setVersions] = useState<string[]>([]);
 

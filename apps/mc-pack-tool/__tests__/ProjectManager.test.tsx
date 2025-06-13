@@ -54,7 +54,7 @@ describe('ProjectManager', () => {
 
   it('uses generated name when input left unchanged', async () => {
     render(<ProjectManager />);
-    await screen.findByRole('button', { name: 'Open' });
+    await screen.findAllByRole('button', { name: 'Open' });
     const input = screen.getByPlaceholderText('Name') as HTMLInputElement;
     const select = await screen.findByRole('combobox');
     const generated = input.value;
