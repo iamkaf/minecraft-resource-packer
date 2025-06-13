@@ -5,31 +5,30 @@ import path from 'path';
 
 import AssetBrowser from '../src/renderer/components/AssetBrowser';
 
-const onMock = vi.fn();
-const closeMock = vi.fn();
-
-vi.mock('chokidar', () => ({
-  watch: vi.fn(() => ({ on: onMock, close: closeMock })),
-}));
-
-vi.mock('fs', () => ({
-  default: {
-    readdirSync: vi.fn(() => [
-      { name: 'a.txt', isDirectory: () => false },
-      { name: 'b.png', isDirectory: () => false },
-    ]),
-  },
-}));
-
 describe('AssetBrowser', () => {
+  const listFiles = vi.fn();
+
   beforeEach(() => {
     vi.clearAllMocks();
+    listFiles.mockResolvedValue(['a.txt', 'b.png']);
+    (
+      window as unknown as { electronAPI: Record<string, unknown> }
+    ).electronAPI = {
+      listFiles,
+      openInFolder: vi.fn(),
+      openFile: vi.fn(),
+      renameFile: vi.fn(),
+      deleteFile: vi.fn(),
+      pathJoin: path.join,
+      pathBasename: path.basename,
+      pathDirname: path.dirname,
+    };
   });
 
-  it('renders files from directory', () => {
+  it('renders files from directory', async () => {
     render(<AssetBrowser path="/proj" />);
-    expect(screen.getByText('a.txt')).toBeInTheDocument();
-    const img = screen.getByAltText('b.png') as HTMLImageElement;
+    expect(await screen.findByText('a.txt')).toBeInTheDocument();
+    const img = (await screen.findByAltText('b.png')) as HTMLImageElement;
     expect(img.src).toContain('ptex://b.png');
     expect(img.style.imageRendering).toBe('pixelated');
   });
@@ -40,22 +39,19 @@ describe('AssetBrowser', () => {
     const renameFile = vi.fn();
     const deleteFile = vi.fn();
     (
-      window as unknown as {
-        electronAPI: {
-          openInFolder: typeof openInFolder;
-          openFile: typeof openFile;
-          renameFile: typeof renameFile;
-          deleteFile: typeof deleteFile;
-        };
-      }
+      window as unknown as { electronAPI: Record<string, unknown> }
     ).electronAPI = {
+      listFiles,
       openInFolder,
       openFile,
       renameFile,
       deleteFile,
+      pathJoin: path.join,
+      pathBasename: path.basename,
+      pathDirname: path.dirname,
     };
     render(<AssetBrowser path="/proj" />);
-    const item = screen.getByText('a.txt');
+    const item = await screen.findByText('a.txt');
     fireEvent.contextMenu(item);
     const revealBtn = (
       await screen.findAllByRole('menuitem', { name: 'Reveal' })

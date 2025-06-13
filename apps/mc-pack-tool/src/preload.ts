@@ -2,6 +2,7 @@
 // The renderer cannot access Node.js directly, so we bridge the required
 // functionality via IPC.
 import { contextBridge, ipcRenderer } from 'electron';
+import path from 'path';
 
 const api = {
   // Retrieve a list of saved projects
@@ -73,6 +74,17 @@ const api = {
   // Delete a file from disk
   deleteFile: (file: string) =>
     ipcRenderer.invoke('delete-file', file) as Promise<void>,
+
+  // Recursively list files within a directory
+  listFiles: (dir: string) =>
+    ipcRenderer.invoke('list-files', dir) as Promise<string[]>,
+
+  // Join path segments using Node's path module
+  pathJoin: (...segments: string[]) => path.join(...segments),
+
+  pathDirname: (p: string) => path.dirname(p),
+
+  pathBasename: (p: string) => path.basename(p),
 };
 
 if (process.contextIsolated) {

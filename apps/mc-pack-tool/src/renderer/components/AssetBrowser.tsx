@@ -1,7 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { watch } from 'chokidar';
-import fs from 'fs';
-import path from 'path';
 import RenameModal from './RenameModal';
 
 // Simple file list that updates whenever files inside the project directory
@@ -15,29 +12,7 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
   const [files, setFiles] = useState<string[]>([]);
 
   useEffect(() => {
-    const loadFiles = () => {
-      const out: string[] = [];
-      const walk = (dir: string, prefix = '') => {
-        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-          const rel = path.join(prefix, entry.name);
-          if (entry.isDirectory()) {
-            walk(path.join(dir, entry.name), rel);
-          } else {
-            out.push(rel.split(path.sep).join('/'));
-          }
-        }
-      };
-      walk(projectPath);
-      setFiles(out);
-    };
-
-    // Initial load and set up a watcher for future changes.
-    loadFiles();
-    const watcher = watch(projectPath, { ignoreInitial: true });
-    watcher.on('all', loadFiles);
-    return () => {
-      void watcher.close();
-    };
+    window.electronAPI?.listFiles(projectPath).then(setFiles);
   }, [projectPath]);
 
   const [menuTarget, setMenuTarget] = useState<string | null>(null);
@@ -54,12 +29,11 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
   return (
     <div className="grid grid-cols-6 gap-2" onClick={() => setMenuTarget(null)}>
       {files.map((f) => {
-        const full = path.join(projectPath, f);
-        const name = path.basename(f);
+        const full = window.electronAPI?.pathJoin(projectPath, f) ?? '';
+        const name = f.split('/').pop() ?? f;
         let thumb: string | null = null;
         if (f.endsWith('.png')) {
-          const rel = f.split(path.sep).join('/');
-          thumb = `ptex://${rel}`;
+          thumb = `ptex://${f}`;
         }
         const openFolder = () => window.electronAPI?.openInFolder(full);
         const openFile = () => window.electronAPI?.openFile(full);
@@ -136,7 +110,7 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
         <dialog className="modal modal-open" data-testid="delete-modal">
           <div className="modal-box">
             <h3 className="font-bold text-lg mb-2">Confirm Delete</h3>
-            <p>{path.basename(confirmDelete)}</p>
+            <p>{window.electronAPI?.pathBasename(confirmDelete)}</p>
             <div className="modal-action">
               <button className="btn" onClick={() => setConfirmDelete(null)}>
                 Cancel
@@ -157,11 +131,13 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
       )}
       {renameTarget && (
         <RenameModal
-          current={path.basename(renameTarget)}
+          current={window.electronAPI?.pathBasename(renameTarget)}
           onCancel={() => setRenameTarget(null)}
           onRename={(n) => {
-            const full = path.join(projectPath, renameTarget);
-            const target = path.join(path.dirname(full), n);
+            const full =
+              window.electronAPI?.pathJoin(projectPath, renameTarget) ?? '';
+            const dir = window.electronAPI?.pathDirname(full) ?? '';
+            const target = window.electronAPI?.pathJoin(dir, n) ?? '';
             window.electronAPI?.renameFile(full, target);
             setRenameTarget(null);
           }}

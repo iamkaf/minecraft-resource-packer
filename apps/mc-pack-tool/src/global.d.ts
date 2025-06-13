@@ -26,6 +26,10 @@ declare global {
       openFile: (file: string) => Promise<void>;
       renameFile: (oldPath: string, newPath: string) => Promise<void>;
       deleteFile: (file: string) => Promise<void>;
+      listFiles: (dir: string) => Promise<string[]>;
+      pathJoin: (...segments: string[]) => string;
+      pathDirname: (p: string) => string;
+      pathBasename: (p: string) => string;
     };
   }
 }

@@ -14,12 +14,10 @@ import { registerProjectHandlers } from './main/projects';
 import {
   addTexture,
   listTextures,
-  listVersions,
   getTexturePath,
   getTextureURL,
   registerTextureProtocol,
   registerProjectTextureProtocol,
-  setActiveProject,
 } from './main/assets';
 import { ProjectMetadataSchema } from './minecraft/project';
 
@@ -49,8 +47,8 @@ const createMainWindow = () => {
     width: 1200,
     height: 900,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
