@@ -111,4 +111,36 @@ describe('AssetBrowser', () => {
     expect(deleteFile).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
     expect(modal).not.toBeInTheDocument();
   });
+
+  it('updates when file watcher events fire', async () => {
+    let added: ((e: unknown, p: string) => void) | undefined;
+    let removed: ((e: unknown, p: string) => void) | undefined;
+    let renamed:
+      | ((e: unknown, args: { oldPath: string; newPath: string }) => void)
+      | undefined;
+    onFileAdded.mockImplementation((cb) => {
+      added = cb;
+    });
+    onFileRemoved.mockImplementation((cb) => {
+      removed = cb;
+    });
+    onFileRenamed.mockImplementation((cb) => {
+      renamed = cb;
+    });
+
+    render(<AssetBrowser path="/proj" />);
+    await screen.findByText('a.txt');
+
+    added?.({}, 'c.txt');
+    expect(await screen.findByText('c.txt')).toBeInTheDocument();
+
+    removed?.({}, 'a.txt');
+    await screen.findByText('c.txt');
+    expect(screen.queryByText('a.txt')).toBeNull();
+
+    renamed?.({}, { oldPath: 'b.png', newPath: 'd.png' });
+    await screen.findByText('d.png');
+    expect(screen.queryByText('b.png')).toBeNull();
+    expect(screen.getByText('d.png')).toBeInTheDocument();
+  });
 });
