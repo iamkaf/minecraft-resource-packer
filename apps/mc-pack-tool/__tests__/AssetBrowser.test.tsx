@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 
 import AssetBrowser from '../src/renderer/components/AssetBrowser';
 
@@ -20,13 +20,6 @@ vi.mock('fs', () => ({
   },
 }));
 
-// eslint-disable-next-line no-var
-var buildMock: ReturnType<typeof vi.fn>;
-vi.mock('electron', () => {
-  buildMock = vi.fn(() => ({ popup: vi.fn() }));
-  return { Menu: { buildFromTemplate: buildMock } };
-});
-
 describe('AssetBrowser', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -40,7 +33,7 @@ describe('AssetBrowser', () => {
     expect(img.style.imageRendering).toBe('pixelated');
   });
 
-  it('context menu triggers IPC calls', () => {
+  it('context menu triggers IPC calls', async () => {
     const openInFolder = vi.fn();
     const openFile = vi.fn();
     const renameFile = vi.fn();
@@ -63,16 +56,35 @@ describe('AssetBrowser', () => {
     render(<AssetBrowser path="/proj" />);
     const item = screen.getByText('a.txt');
     fireEvent.contextMenu(item);
-    const template = buildMock.mock.calls[0][0];
-    vi.stubGlobal('prompt', () => 'renamed.txt');
-    vi.stubGlobal('confirm', () => true);
-    template[0].click();
+    const revealBtn = (
+      await screen.findAllByRole('menuitem', { name: 'Reveal' })
+    )[0];
+    fireEvent.click(revealBtn);
     expect(openInFolder).toHaveBeenCalledWith('/proj/a.txt');
-    template[1].click();
+    fireEvent.contextMenu(item);
+    fireEvent.click(
+      (await screen.findAllByRole('menuitem', { name: 'Open' }))[0]
+    );
     expect(openFile).toHaveBeenCalledWith('/proj/a.txt');
-    template[2].click();
+    fireEvent.contextMenu(item);
+    fireEvent.click(
+      (await screen.findAllByRole('menuitem', { name: 'Rename' }))[0]
+    );
+    const rmodal = await screen.findByTestId('rename-modal');
+    const input = within(rmodal).getByDisplayValue('a.txt');
+    fireEvent.change(input, { target: { value: 'renamed.txt' } });
+    const form = input.closest('form');
+    if (!form) throw new Error('form not found');
+    fireEvent.submit(form);
     expect(renameFile).toHaveBeenCalledWith('/proj/a.txt', '/proj/renamed.txt');
-    template[3].click();
+    expect(screen.queryByTestId('rename-modal')).toBeNull();
+    fireEvent.contextMenu(item);
+    fireEvent.click(
+      (await screen.findAllByRole('menuitem', { name: 'Delete' }))[0]
+    );
+    const modal = await screen.findByTestId('delete-modal');
+    fireEvent.click(within(modal).getByText('Delete'));
     expect(deleteFile).toHaveBeenCalledWith('/proj/a.txt');
+    expect(modal).not.toBeInTheDocument();
   });
 });
