@@ -52,6 +52,17 @@ describe('ProjectManager', () => {
     expect(option).toBeInTheDocument();
   });
 
+  it('uses generated name when input left unchanged', async () => {
+    render(<ProjectManager />);
+    await screen.findByRole('button', { name: 'Open' });
+    const input = screen.getByPlaceholderText('Name') as HTMLInputElement;
+    const select = await screen.findByRole('combobox');
+    const generated = input.value;
+    fireEvent.change(select, { target: { value: '1.21' } });
+    fireEvent.click(screen.getByText('Create'));
+    expect(createProject).toHaveBeenCalledWith(generated, '1.21');
+  });
+
   it('creates project via form', async () => {
     render(<ProjectManager />);
     await screen.findAllByRole('button', { name: 'Open' });
