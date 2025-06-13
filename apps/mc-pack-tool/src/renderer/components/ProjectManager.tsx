@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import Fuse from 'fuse.js';
 import { useToast } from './ToastProvider';
 import { generateProjectName } from '../utils/names';
 
@@ -18,6 +19,8 @@ const ProjectManager: React.FC = () => {
   const [name, setName] = useState(() => generateProjectName());
   const [version, setVersion] = useState('');
   const [versions, setVersions] = useState<string[]>([]);
+  const [search, setSearch] = useState('');
+  const [filterVersion, setFilterVersion] = useState<string | null>(null);
 
   const refresh = () => {
     window.electronAPI?.listProjects().then(setProjects);
@@ -76,7 +79,22 @@ const ProjectManager: React.FC = () => {
     }
   };
 
-  const sortedProjects = [...projects].sort((a, b) => {
+  const chipVersions = useMemo(
+    () => Array.from(new Set(projects.map((p) => p.version))),
+    [projects]
+  );
+
+  const filteredProjects = useMemo(() => {
+    let list = projects;
+    if (filterVersion) list = list.filter((p) => p.version === filterVersion);
+    if (search) {
+      const fuse = new Fuse(list, { keys: ['name'], threshold: 0.4 });
+      list = fuse.search(search).map((r) => r.item);
+    }
+    return list;
+  }, [projects, filterVersion, search]);
+
+  const sortedProjects = [...filteredProjects].sort((a, b) => {
     const dir = asc ? 1 : -1;
     if (a[sortKey] < b[sortKey]) return -1 * dir;
     if (a[sortKey] > b[sortKey]) return 1 * dir;
@@ -118,6 +136,31 @@ const ProjectManager: React.FC = () => {
           Import
         </button>
       </form>
+      <div className="flex items-center gap-2 mb-2">
+        <input
+          className="input input-bordered input-sm w-40"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search"
+        />
+        <div className="flex gap-1">
+          {chipVersions.map((v) => (
+            <span
+              key={v}
+              role="button"
+              tabIndex={0}
+              onClick={() => setFilterVersion(filterVersion === v ? null : v)}
+              onKeyDown={(e) =>
+                e.key === 'Enter' &&
+                setFilterVersion(filterVersion === v ? null : v)
+              }
+              className={`badge badge-outline cursor-pointer select-none ${filterVersion === v ? 'badge-primary' : ''}`}
+            >
+              {v}
+            </span>
+          ))}
+        </div>
+      </div>
       <table className="table table-zebra w-full">
         <thead>
           <tr>
