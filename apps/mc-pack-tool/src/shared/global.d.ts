@@ -17,7 +17,7 @@ declare global {
       onOpenProject: (listener: (event: unknown, path: string) => void) => void;
       exportProject: (
         path: string
-      ) => Promise<import('./main/exporter').ExportSummary>;
+      ) => Promise<import('../main/exporter').ExportSummary>;
       addTexture: (project: string, name: string) => Promise<void>;
       listTextures: (project: string) => Promise<string[]>;
       getTexturePath: (project: string, texture: string) => Promise<string>;
@@ -39,10 +39,10 @@ declare global {
       ) => void;
       loadPackMeta: (
         name: string
-      ) => Promise<import('./main/projects').PackMeta>;
+      ) => Promise<import('../main/projects').PackMeta>;
       savePackMeta: (
         name: string,
-        meta: import('./main/projects').PackMeta
+        meta: import('../main/projects').PackMeta
       ) => Promise<void>;
     };
   }

@@ -49,4 +49,3 @@ describe('generatePackIcon', () => {
     expect(meta.height).toBe(128);
   });
 });
-

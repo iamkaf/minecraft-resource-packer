@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './components/App';
 import ToastProvider from './components/ToastProvider';
-import '../index.css';
+import './styles/index.css';
 
 const saved = localStorage.getItem('theme');
 if (saved) {

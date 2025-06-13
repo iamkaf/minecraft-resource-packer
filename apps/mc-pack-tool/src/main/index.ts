@@ -6,12 +6,12 @@ bootstrap();
 // renderer process.
 
 import { app, BrowserWindow, ipcMain, dialog, protocol } from 'electron';
-import { registerFileHandlers } from './main/ipcFiles';
-import { registerFileWatcherHandlers } from './main/ipc/fileWatcher';
+import { registerFileHandlers } from './ipcFiles';
+import { registerFileWatcherHandlers } from './ipc/fileWatcher';
 import path from 'path';
 import fs from 'fs';
-import { exportPack, ExportSummary } from './main/exporter';
-import { registerProjectHandlers } from './main/projects';
+import { exportPack, ExportSummary } from './exporter';
+import { registerProjectHandlers } from './projects';
 import {
   addTexture,
   listTextures,
@@ -19,9 +19,9 @@ import {
   getTextureURL,
   registerTextureProtocol,
   registerProjectTextureProtocol,
-} from './main/assets';
-import { generatePackIcon } from './main/icon';
-import { ProjectMetadataSchema } from './minecraft/project';
+} from './assets';
+import { generatePackIcon } from './icon';
+import { ProjectMetadataSchema } from '../shared/project';
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'texture', privileges: { standard: true, secure: true } },

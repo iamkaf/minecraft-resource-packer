@@ -3,7 +3,7 @@
 
 import fs from 'fs';
 import archiver from 'archiver';
-import { packFormatForVersion } from '../minecraft/packFormat';
+import { packFormatForVersion } from '../shared/packFormat';
 
 export interface ExportSummary {
   fileCount: number;

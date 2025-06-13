@@ -4,7 +4,7 @@ import path from 'path';
 import os from 'os';
 import { v4 as uuid } from 'uuid';
 import { createProject } from '../src/main/projects';
-import { ProjectMetadataSchema } from '../src/minecraft/project';
+import { ProjectMetadataSchema } from '../src/shared/project';
 import * as icon from '../src/main/icon';
 
 const baseDir = path.join(os.tmpdir(), `projtest-${uuid()}`);
