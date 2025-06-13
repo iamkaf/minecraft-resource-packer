@@ -1,11 +1,11 @@
 import type { IpcMain } from 'electron';
 import { BrowserWindow } from 'electron';
-import chokidar from 'chokidar';
+import { watch, FSWatcher } from 'chokidar';
 import fs from 'fs';
 import path from 'path';
 
 let win: BrowserWindow | null = null;
-const watchers = new Map<string, chokidar.FSWatcher>();
+const watchers = new Map<string, FSWatcher>();
 
 async function listFiles(dir: string): Promise<string[]> {
   const files: string[] = [];
@@ -31,7 +31,7 @@ export function registerFileWatcherHandlers(
   win = window;
   ipc.handle('watch-project', async (_e, projectPath: string) => {
     if (!watchers.has(projectPath)) {
-      const watcher = chokidar.watch(projectPath, { ignoreInitial: true });
+      const watcher = watch(projectPath, { ignoreInitial: true });
       watcher.on('add', (file) => {
         win?.webContents.send(
           'file-added',

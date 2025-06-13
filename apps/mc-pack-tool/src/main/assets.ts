@@ -5,6 +5,7 @@ import type { Protocol, IpcMain } from 'electron';
 import os from 'os';
 import unzipper from 'unzipper';
 import { ProjectMetadataSchema } from '../shared/project';
+import { generatePackIcon } from './icon';
 
 /** URL pointing to Mojang's version manifest which lists all official releases. */
 const VERSION_MANIFEST =
