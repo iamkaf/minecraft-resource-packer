@@ -20,6 +20,7 @@ vi.mock('fs', () => ({
   },
 }));
 
+// eslint-disable-next-line no-var
 var buildMock: ReturnType<typeof vi.fn>;
 vi.mock('electron', () => {
   buildMock = vi.fn(() => ({ popup: vi.fn() }));

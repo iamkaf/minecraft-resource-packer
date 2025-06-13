@@ -9,6 +9,7 @@ const AssetBrowser = lazy(() => import('./AssetBrowser'));
 const AssetSelector = lazy(() => import('./AssetSelector'));
 const ProjectManager = lazy(() => import('./ProjectManager'));
 import DrawerLayout from './DrawerLayout';
+import About from './About';
 
 // Main React component shown in the editor window.  It waits for the main
 // process to notify which project is open and then displays an AssetBrowser for
@@ -17,18 +18,33 @@ import DrawerLayout from './DrawerLayout';
 const App: React.FC = () => {
   const [projectPath, setProjectPath] = useState<string | null>(null);
   const [summary, setSummary] = useState<ExportSummary | null>(null);
+  const [view, setView] = useState<'projects' | 'settings' | 'about'>(
+    'projects'
+  );
   const confetti = useRef<((opts: unknown) => void) | null>(null);
 
   useEffect(() => {
     // Listen for the main process telling us which project to load.
     window.electronAPI?.onOpenProject((_event, path: string) => {
       setProjectPath(path);
+      setView('projects');
     });
   }, []);
 
+  if (view === 'about') {
+    return (
+      <DrawerLayout view={view} onNavigate={setView}>
+        <Navbar />
+        <main className="p-4">
+          <About />
+        </main>
+      </DrawerLayout>
+    );
+  }
+
   if (!projectPath) {
     return (
-      <DrawerLayout>
+      <DrawerLayout view={view} onNavigate={setView}>
         <Navbar />
         <main className="p-4 flex flex-col gap-6">
           <Suspense fallback={<Spinner />}>
@@ -60,7 +76,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <DrawerLayout>
+    <DrawerLayout view={view} onNavigate={setView}>
       <Navbar />
       <main className="p-4 flex flex-col gap-4">
         <button
