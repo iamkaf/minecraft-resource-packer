@@ -13,7 +13,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Toast/alert system via daisyUI `toast`
 - [x] Loading indicators for every async op (`react-loader-spinner`)
 - [x] Confetti celebration on successful export (`react-canvas-confetti`)
-- [ ] Undo/Redo queue (last 20 actions)
+- [x] Undo/Redo queue (last 20 actions)
 
 ### Wiki Quick‑Links
 

@@ -75,6 +75,7 @@
     "react-loader-spinner": "^6.1.6",
     "unique-names-generator": "^4.7.1",
     "uuid": "^11.1.0",
-    "zod": "^3.25.63"
+    "zod": "^3.25.63",
+    "zustand": "^5.0.5"
   }
 }
