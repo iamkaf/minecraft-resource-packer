@@ -4,6 +4,18 @@ import { render, screen, act, fireEvent } from '@testing-library/react';
 
 import App from '../src/renderer/components/App';
 
+const fire = vi.fn();
+
+vi.mock('react-canvas-confetti', () => ({
+  __esModule: true,
+  default: (props: {
+    onInit: ({ confetti }: { confetti: () => void }) => void;
+  }) => {
+    props.onInit({ confetti: fire });
+    return <canvas />;
+  },
+}));
+
 vi.mock('../src/renderer/components/AssetSelector', () => ({
   default: () => <div>selector</div>,
 }));
@@ -19,6 +31,11 @@ describe('App', () => {
   const exportProject = vi.fn();
 
   beforeEach(() => {
+    window.matchMedia = vi.fn().mockReturnValue({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    });
     interface ElectronAPI {
       onOpenProject: (cb: (e: unknown, path: string) => void) => void;
       exportProject: (path: string) => void;
@@ -46,7 +63,43 @@ describe('App', () => {
       openHandler?.({}, '/tmp/proj');
     });
     const btn = screen.getByText('Export Pack');
+    exportProject.mockResolvedValueOnce(undefined);
     fireEvent.click(btn);
     expect(exportProject).toHaveBeenCalledWith('/tmp/proj');
+  });
+
+  it('fires confetti after successful export', async () => {
+    render(<App />);
+    act(() => {
+      openHandler?.({}, '/tmp/proj');
+    });
+    exportProject.mockResolvedValueOnce(undefined);
+    const btn = screen.getByText('Export Pack');
+    await act(async () => {
+      fire.mockClear();
+      fireEvent.click(btn);
+      await Promise.resolve();
+    });
+    expect(fire).toHaveBeenCalled();
+  });
+
+  it('skips confetti when prefers reduced motion', async () => {
+    window.matchMedia = vi.fn().mockReturnValue({
+      matches: true,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    });
+    render(<App />);
+    act(() => {
+      openHandler?.({}, '/tmp/proj');
+    });
+    exportProject.mockResolvedValueOnce(undefined);
+    const btn = screen.getByText('Export Pack');
+    await act(async () => {
+      fire.mockClear();
+      fireEvent.click(btn);
+      await Promise.resolve();
+    });
+    expect(fire).not.toHaveBeenCalled();
   });
 });
