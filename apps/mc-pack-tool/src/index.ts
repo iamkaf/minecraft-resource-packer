@@ -111,10 +111,10 @@ ipcMain.handle('open-project', (_e, name: string) => {
   mainWindow?.webContents.send('project-opened', projectPath);
 });
 
-ipcMain.handle('create-project', (_e, name: string, version: string) => {
+ipcMain.handle('create-project', async (_e, name: string, version: string) => {
   if (!fs.existsSync(projectsDir))
     fs.mkdirSync(projectsDir, { recursive: true });
-  createProject(projectsDir, name, version);
+  await createProject(projectsDir, name, version);
 });
 
 ipcMain.handle('add-texture', (_e, projectPath: string, texture: string) => {

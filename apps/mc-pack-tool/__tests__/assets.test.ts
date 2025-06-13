@@ -121,8 +121,8 @@ describe('listTextures', () => {
   const version = `lt-${uuid()}`;
   const projDir = path.join(baseDir, 'Pack');
 
-  beforeAll(() => {
-    createProject(baseDir, 'Pack', version);
+  beforeAll(async () => {
+    await createProject(baseDir, 'Pack', version);
     const texDir = path.join(
       os.tmpdir(),
       'assets-cache',

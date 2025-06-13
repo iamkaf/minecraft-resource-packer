@@ -67,7 +67,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## 6. Pack Settings
 
 - [ ] Editable `pack.mcmeta` (description, `pack_format`, language)
-- [ ] Pack icon random seed (pastel bg + border + vanilla sprite via Sharp)
+- [x] Pack icon random seed (pastel bg + border + vanilla sprite via Sharp)
 - [ ] Pack Icon Editor modal (randomise, colour, border, upload custom)
 - [ ] Target resolution radio (16×/32×/64×)
 - [ ] License & authors

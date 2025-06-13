@@ -13,12 +13,12 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-		fs.rmSync(tmpDir, { recursive: true, force: true });
+  fs.rmSync(tmpDir, { recursive: true, force: true });
 });
 
 describe('addTexture', () => {
   it('copies texture into project folder', async () => {
-    createProject(tmpDir, 'Pack', '1.21.1');
+    await createProject(tmpDir, 'Pack', '1.21.1');
     const proj = path.join(tmpDir, 'Pack');
     // pre-create cached texture to avoid network fetch
     const cacheTex = path.join(

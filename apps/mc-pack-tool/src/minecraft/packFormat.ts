@@ -90,7 +90,7 @@ export const SNAPSHOT_FORMATS: VersionRange[] = [
 ];
 
 function parseRelease(ver: string): number[] {
-  return ver.split('.').map(n => parseInt(n, 10));
+  return ver.split('.').map((n) => parseInt(n, 10));
 }
 
 function compareRelease(a: number[], b: number[]): number {
@@ -116,10 +116,17 @@ const SNAP_RE = /^(\d{2})w(\d{2})([a-z])$/i;
 function parseSnapshot(ver: string): [number, number, number] | null {
   const m = SNAP_RE.exec(ver);
   if (!m) return null;
-  return [parseInt(m[1], 10), parseInt(m[2], 10), m[3].toLowerCase().charCodeAt(0) - 97];
+  return [
+    parseInt(m[1], 10),
+    parseInt(m[2], 10),
+    m[3].toLowerCase().charCodeAt(0) - 97,
+  ];
 }
 
-function compareSnapshot(a: [number, number, number], b: [number, number, number]): number {
+function compareSnapshot(
+  a: [number, number, number],
+  b: [number, number, number]
+): number {
   for (let i = 0; i < 3; i++) {
     if (a[i] > b[i]) return 1;
     if (a[i] < b[i]) return -1;
