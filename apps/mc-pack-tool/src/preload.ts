@@ -58,6 +58,10 @@ const api = {
   getTextureUrl: (project: string, name: string) =>
     ipcRenderer.invoke('get-texture-url', project, name),
 
+  // Generate a new random pack icon
+  randomizeIcon: (project: string) =>
+    ipcRenderer.invoke('randomize-icon', project) as Promise<void>,
+
   // Reveal a file in the OS file manager
   openInFolder: (file: string) =>
     ipcRenderer.invoke('open-in-folder', file) as Promise<void>,

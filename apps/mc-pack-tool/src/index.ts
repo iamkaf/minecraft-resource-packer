@@ -21,6 +21,7 @@ import {
   registerProjectTextureProtocol,
   setActiveProject,
 } from './main/assets';
+import { generatePackIcon } from './main/icon';
 import { ProjectMetadataSchema } from './minecraft/project';
 
 protocol.registerSchemesAsPrivileged([
@@ -78,6 +79,10 @@ ipcMain.handle('get-texture-path', (_e, projectPath: string, tex: string) => {
 
 ipcMain.handle('get-texture-url', (_e, projectPath: string, tex: string) => {
   return getTextureURL(projectPath, tex);
+});
+
+ipcMain.handle('randomize-icon', (_e, projectPath: string) => {
+  return generatePackIcon(projectPath);
 });
 
 // Trigger pack export for the given project directory.

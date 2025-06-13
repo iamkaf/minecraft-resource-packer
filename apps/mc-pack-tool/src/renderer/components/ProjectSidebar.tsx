@@ -60,6 +60,7 @@ export default function ProjectSidebar({
       )}
       {edit && meta && (
         <PackMetaModal
+          project={project}
           meta={meta}
           onCancel={() => setEdit(false)}
           onSave={(m) => {
