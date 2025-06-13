@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { watch } from 'chokidar';
-import fs from 'fs';
 import path from 'path';
 import RenameModal from './RenameModal';
 import { formatTextureName } from '../utils/textureNames';
 
 // Simple file list that updates whenever files inside the project directory
-// change on disk. Uses chokidar to watch for edits and re-read the directory.
+// change on disk. Updates are received via the IPC file watcher service.
 
 interface Props {
   path: string;
@@ -16,28 +14,26 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
   const [files, setFiles] = useState<string[]>([]);
 
   useEffect(() => {
-    const loadFiles = () => {
-      const out: string[] = [];
-      const walk = (dir: string, prefix = '') => {
-        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-          const rel = path.join(prefix, entry.name);
-          if (entry.isDirectory()) {
-            walk(path.join(dir, entry.name), rel);
-          } else {
-            out.push(rel.split(path.sep).join('/'));
-          }
-        }
-      };
-      walk(projectPath);
-      setFiles(out);
-    };
-
-    // Initial load and set up a watcher for future changes.
-    loadFiles();
-    const watcher = watch(projectPath, { ignoreInitial: true });
-    watcher.on('all', loadFiles);
+    let alive = true;
+    window.electronAPI
+      ?.watchProject(projectPath)
+      .then((list) => {
+        if (alive && list) setFiles(list);
+      })
+      .catch(() => {
+        /* ignore */
+      });
+    const add = (_e: unknown, p: string) => setFiles((f) => [...f, p]);
+    const remove = (_e: unknown, p: string) =>
+      setFiles((f) => f.filter((x) => x !== p));
+    const rename = (_e: unknown, args: { oldPath: string; newPath: string }) =>
+      setFiles((f) => f.map((x) => (x === args.oldPath ? args.newPath : x)));
+    window.electronAPI?.onFileAdded(add);
+    window.electronAPI?.onFileRemoved(remove);
+    window.electronAPI?.onFileRenamed(rename);
     return () => {
-      void watcher.close();
+      alive = false;
+      window.electronAPI?.unwatchProject(projectPath);
     };
   }, [projectPath]);
 

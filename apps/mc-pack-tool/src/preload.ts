@@ -78,6 +78,30 @@ const api = {
   deleteFile: (file: string) =>
     ipcRenderer.invoke('delete-file', file) as Promise<void>,
 
+  // Watch a project directory and return initial file list
+  watchProject: (project: string) =>
+    ipcRenderer.invoke('watch-project', project) as Promise<string[]>,
+
+  // Stop watching a project directory
+  unwatchProject: (project: string) =>
+    ipcRenderer.invoke('unwatch-project', project) as Promise<void>,
+
+  // Listen for file add events
+  onFileAdded: (listener: (event: unknown, path: string) => void) =>
+    ipcRenderer.on('file-added', listener),
+
+  // Listen for file remove events
+  onFileRemoved: (listener: (event: unknown, path: string) => void) =>
+    ipcRenderer.on('file-removed', listener),
+
+  // Listen for file rename events
+  onFileRenamed: (
+    listener: (
+      event: unknown,
+      args: { oldPath: string; newPath: string }
+    ) => void
+  ) => ipcRenderer.on('file-renamed', listener),
+
   // Load metadata from pack.json
   loadPackMeta: (name: string) =>
     ipcRenderer.invoke('load-pack-meta', name) as Promise<
