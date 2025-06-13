@@ -68,7 +68,7 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
             <img
               src={tex.url}
               alt={tex.name}
-              style={{ width: zoom, height: zoom }}
+              style={{ width: zoom, height: zoom, imageRendering: 'pixelated' }}
             />
           </button>
         ))}

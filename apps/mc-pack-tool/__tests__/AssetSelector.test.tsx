@@ -44,6 +44,7 @@ describe('AssetSelector', () => {
     fireEvent.change(input, { target: { value: 'grass' } });
     const img = (await screen.findByAltText('grass.png')) as HTMLImageElement;
     expect(img.style.width).toBe('64px');
+    expect(img.style.imageRendering).toBe('pixelated');
     const slider = screen.getByLabelText('Zoom');
     fireEvent.change(slider, { target: { value: '100' } });
     expect(img.style.width).toBe('100px');
