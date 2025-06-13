@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PackMeta } from '../../main/projects';
+import type { PackMeta } from '../../main/projects';
 
 export default function PackMetaModal({
   meta,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ExternalLink from './ExternalLink';
 import PackMetaModal from './PackMetaModal';
-import { PackMeta } from '../../main/projects';
+import type { PackMeta } from '../../main/projects';
 
 export default function ProjectSidebar({
   project,
@@ -17,6 +17,7 @@ export default function ProjectSidebar({
 
   useEffect(() => {
     if (open) {
+      setMeta(null);
       window.electronAPI?.loadPackMeta(project).then(setMeta);
     }
   }, [open, project]);
@@ -25,10 +26,11 @@ export default function ProjectSidebar({
 
   return (
     <div
-      className={`drawer drawer-end ${open ? 'drawer-open' : ''}`}
+      className={`drawer drawer-end z-50 ${open ? 'drawer-open' : ''}`}
       data-testid="project-sidebar"
     >
       <input
+        id="project-sidebar-toggle"
         type="checkbox"
         className="drawer-toggle"
         checked={open}
@@ -37,7 +39,11 @@ export default function ProjectSidebar({
       />
       <div className="drawer-content" />
       <div className="drawer-side">
-        <label className="drawer-overlay" onClick={onClose} />
+        <label
+          className="drawer-overlay"
+          onClick={onClose}
+          htmlFor="project-sidebar-toggle"
+        />
         <aside className="p-4 w-80 bg-base-200">
           <h2 className="font-display text-lg mb-2">{project}</h2>
           {meta ? (
