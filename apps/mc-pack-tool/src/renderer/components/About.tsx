@@ -22,14 +22,14 @@ export default function About() {
       <p>
         <ExternalLink
           className="link link-primary"
-          href="https://github.com/openai/minecraft-resource-packer"
+          href="https://github.com/iamkaf/minecraft-resource-packer"
         >
           GitHub
         </ExternalLink>
         {' | '}
         <ExternalLink
           className="link link-primary"
-          href="https://github.com/openai/minecraft-resource-packer/blob/main/docs/developer-handbook.md"
+          href="https://github.com/iamkaf/minecraft-resource-packer/blob/main/docs/developer-handbook.md"
         >
           Documentation
         </ExternalLink>

@@ -31,10 +31,10 @@ describe('About', () => {
     gh.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     docs.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     expect(openExternalMock).toHaveBeenCalledWith(
-      'https://github.com/openai/minecraft-resource-packer'
+      'https://github.com/iamkaf/minecraft-resource-packer'
     );
     expect(openExternalMock).toHaveBeenCalledWith(
-      'https://github.com/openai/minecraft-resource-packer/blob/main/docs/developer-handbook.md'
+      'https://github.com/iamkaf/minecraft-resource-packer/blob/main/docs/developer-handbook.md'
     );
   });
 });
