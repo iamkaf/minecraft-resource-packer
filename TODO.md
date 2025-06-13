@@ -48,7 +48,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## 4. Project File Explorer
 
 - [ ] Real‑time watcher with `chokidar`
-- [ ] Context menu: Reveal, Open, Rename, Delete
+- [x] Context menu: Reveal, Open, Rename, Delete
 - [ ] Dirty badge for changed assets
 - [ ] 🔒 No‑export toggle per file
 - [ ] Custom namespace support (non‑`minecraft` assets)
