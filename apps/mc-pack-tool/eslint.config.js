@@ -15,6 +15,7 @@ module.exports = [
       '.out/*',
       '.webpack/*',
       '*.js',
+      'webpack.plugins.ts'
     ],
   },
   js.configs.recommended,
