@@ -79,7 +79,12 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
             }}
           >
             {thumb ? (
-              <img src={thumb} alt={name} className="w-full aspect-square" />
+              <img
+                src={thumb}
+                alt={name}
+                className="w-full aspect-square"
+                style={{ imageRendering: 'pixelated' }}
+              />
             ) : (
               <div className="w-full aspect-square bg-base-300 flex items-center justify-center">
                 {name}

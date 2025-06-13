@@ -36,6 +36,7 @@ describe('AssetBrowser', () => {
     expect(screen.getByText('a.txt')).toBeInTheDocument();
     const img = screen.getByAltText('b.png') as HTMLImageElement;
     expect(img.src).toContain('ptex://b.png');
+    expect(img.style.imageRendering).toBe('pixelated');
   });
 
   it('context menu triggers IPC calls', () => {
