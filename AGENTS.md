@@ -70,20 +70,18 @@ Minecraft version information can be found at: https://launchermeta.mojang.com/m
 * **Toast system** – daisyUI `toast`, ARIA live region.
 * **Loading indicators** – wrap async ops in `<Suspense>` with `react-loader-spinner`.
 * **Confetti** – `react-canvas-confetti`, auto-disabled by `prefers-reduced-motion`.
-* **Undo/Redo** – global queue (20 actions).  
-* **Auto-update** – checks GitHub releases, shows banner.  
+* **Undo/Redo** – global queue (20 actions).
 
 ### Projects Dashboard  
 * **Placeholder names** – generated via `unique-names-generator`; must be pronounceable.
 * Zebra table columns: Name · MC Version · Assets · Last opened; sortable.  
 * CRUD actions: New / Import / Duplicate / Delete / Open.  
-* Search + version filter chips.  
-* Status badge if `pack_format` outdated (refer to pack-format list on Minecraft Wiki).
+* Search + version filter chips.
 * Bulk export selected rows.  
 * Metadata sidebar: description, author, URLs, timestamps.
 
 ### Vanilla Asset Browser  
-* Namespace tree from `minecraft-assets`; grid with zoom 24–128 px; hover ring.  
+* Categorized sections; grid with zoom 24–128 px; hover ring.  
 * Drag-or-click to add; quick filters (Blocks, Items, Entity, UI, Audio).  
 * Neutral-lighting preview pane.
 
@@ -95,23 +93,23 @@ Minecraft version information can be found at: https://launchermeta.mojang.com/m
 ### Texture Inspector  
 * 1 : 1 canvas preview + zoom.  
 * External edit; auto-reload; revision history (20).  
-* **Sharp mini-lab**: hue-shift, rotate 90°, gray-scale, ±saturation, ±brightness. :contentReference[oaicite:7]{index=7}  
+* **Sharp mini-lab**: hue-shift, rotate 90°, gray-scale, ±saturation, ±brightness.
 
 ### Pack Settings  
 * Editable `pack.mcmeta` (desc, `pack_format`, language).  
-* **Random icon seed** – Sharp composited 128×128 PNG (pastel BG, 4 px border, centered item sprite).  
-* **Pack-Icon Editor** – modal to randomise sprite/background/border, or upload custom PNG; always outputs 128 × 128.  
+* **Random icon seed** – Sharp composited 128×128 PNG (pastel BG, 4 px border, centered random Minecraft item texture).  
+* **Pack-Icon Editor** – modal to randomise item/background/border, or upload custom PNG; always outputs 128 × 128.  
 * Target resolution radio 16×/32×/64×; license; validation.
 
 ### Templates  
-* JSON files under `templates/` → `{name, mcVersion, assets[]}` (e.g., “Gold Tools & Armor”).  
+* JSON files under `templates/` → `{name, mcVersion, assets[]}` (e.g., “Gold Tools & Armor”, “All Food Items”).
 
 ### Import / Export  
-* Import wizard – use `adm-zip` to ingest `.zip`, read `pack.mcmeta` + optional `pack.json`. :contentReference[oaicite:8]{index=8}  
+* Import wizard – use `adm-zip` to ingest `.zip`, read `pack.mcmeta` + optional `pack.json`.
 * Export – `archiver` with progress bar; embed `pack.json`; respect No-export flags; confetti on success.  
 
 ### Export Wizard  
-* Destination picker (Downloads default); compression ETA; post-actions (Open folder, Copy to resourcepacks, Test-launch MC).  
+* Destination picker (Downloads default); compression ETA; archive name defaults to project name, a custom name can be saved and will be remembered; post-actions (Open folder, Copy to resourcepacks, Test-launch MC).  
 
 ### Preferences / About  
 * Paths, theme, shortcuts, update channel, analytics opt-in, about pane.  

@@ -14,7 +14,6 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Loading indicators for every async op (`react-loader-spinner`)
 - [x] Confetti celebration on successful export (`react-canvas-confetti`)
 - [ ] Undo/Redo queue (last 20 actions)
-- [ ] Auto‑update banner (GitHub releases)
 
 ### Wiki Quick‑Links
 
@@ -25,19 +24,18 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## 2. Projects Dashboard
 
 - [x] Zebra table: Name ▸ MC Version ▸ Assets ▸ Last opened
-- [ ] Placeholder names generated with `unique-names-generator`
+- [x] Placeholder names generated with `unique-names-generator`
 - [x] Create • Import • Duplicate • Delete (confirm) • Open actions
 - [ ] Fuzzy search + version filter chips
-- [ ] Status badge if `pack_format` is outdated
 - [ ] Bulk export selected rows
 - [ ] Rich metadata sidebar (Description, Author, URLs, etc.)
-- [ ] TODO.md auto‑seed on first run
 
 ---
 
 ## 3. Vanilla Asset Browser
 
-- [ ] Version‑scoped folder tree (powered by `minecraft-assets`)
+- [ ] Categorized sections
+- [ ] Properly formatted texture names, with original filename fallback
 - [x] Responsive grid thumbnails (zoom 24–128 px, hover ring)
 - [ ] Drag‑or‑click to add asset to project
 - [ ] Quick filters: Blocks / Items / Entity / UI / Audio
@@ -67,7 +65,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## 6. Pack Settings
 
 - [ ] Editable `pack.mcmeta` (description, `pack_format`, language)
-- [ ] Pack icon random seed (pastel bg + border + vanilla sprite via Sharp)
+- [ ] Randomly generated pack icon (pastel bg + border + random Minecraft item texture Sharp)
 - [ ] Pack Icon Editor modal (randomise, colour, border, upload custom)
 - [ ] Target resolution radio (16×/32×/64×)
 - [ ] License & authors
@@ -79,14 +77,14 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 - [ ] JSON store in `templates/`
 - [ ] “Start from Template” dialog (e.g., _Gold Tools & Armor_, _All Food Items_)
-- [ ] Download missing base textures for template
+- [ ] Add templates to existing projects
 
 ---
 
 ## 8. Import / Export
 
 - [ ] Import wizard: ingest `.zip`, parse `pack.mcmeta` + optional `pack.json`
-- [ ] Merge into new or existing project
+- [ ] Import wizard: option to merge into existing project
 - [ ] Export ZIP with `archiver` + progress bar
 - [ ] Embed `pack.json` for round‑trip metadata
 - [ ] Honour No‑export flags
