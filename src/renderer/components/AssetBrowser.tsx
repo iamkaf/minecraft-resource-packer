@@ -138,12 +138,13 @@ const AssetBrowser: React.FC<Props> = ({
           }
           showMenu(e.clientX, e.clientY);
         };
+        const flagged = noExport.has(f);
         return (
           <div
             key={f}
             className={`p-1 cursor-pointer hover:ring ring-accent relative text-center tooltip ${
               isSelected ? 'ring' : ''
-            }`}
+            } ${flagged ? 'opacity-50 border border-gray-500' : ''}`}
             data-tip={`${formatted} \n${name}`}
             tabIndex={0}
             onClick={toggleSelect}

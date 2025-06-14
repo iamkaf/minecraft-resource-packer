@@ -48,6 +48,19 @@ describe('AssetBrowser', () => {
     expect(img.style.imageRendering).toBe('pixelated');
   });
 
+  it('marks files in noExport as dim with gray border', async () => {
+    (
+      window as unknown as {
+        electronAPI: { getNoExport: () => Promise<string[]> };
+      }
+    ).electronAPI.getNoExport = vi.fn(async () => ['a.txt']);
+    render(<AssetBrowser path="/proj" />);
+    const a = await screen.findByText('a.txt');
+    const wrapper = a.closest('[data-tip]') as HTMLElement;
+    expect(wrapper.className).toMatch(/opacity-50/);
+    expect(wrapper.className).toMatch(/border-gray-500/);
+  });
+
   it('context menu triggers IPC calls', async () => {
     const openInFolder = vi.fn();
     const openFile = vi.fn();
@@ -214,7 +227,9 @@ describe('AssetBrowser', () => {
     fireEvent.click(b, { ctrlKey: true });
     fireEvent.contextMenu(a);
     const menus = await screen.findAllByRole('menu');
-    const menu = menus.find((m) => m.classList.contains('block')) as HTMLElement;
+    const menu = menus.find((m) =>
+      m.classList.contains('block')
+    ) as HTMLElement;
     const toggle = within(menu).getByRole('checkbox', { name: /No Export/i });
     fireEvent.click(toggle);
     expect(setNoExport).toHaveBeenCalledWith('/proj', ['a.txt', 'b.png'], true);

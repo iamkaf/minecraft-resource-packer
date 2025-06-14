@@ -57,4 +57,24 @@ describe('exportPack', () => {
     expect(names).toContain('keep.txt');
     expect(names).not.toContain('skip.txt');
   });
+
+  it('does not add empty directories when skipping files', async () => {
+    const meta = {
+      name: 'proj',
+      version: '1.21.1',
+      assets: [],
+      noExport: ['folder/skip.txt'],
+    };
+    fs.writeFileSync(
+      path.join(projectDir, 'project.json'),
+      JSON.stringify(meta)
+    );
+    const folder = path.join(projectDir, 'folder');
+    fs.mkdirSync(folder, { recursive: true });
+    fs.writeFileSync(path.join(folder, 'skip.txt'), 'x');
+    await exportPack(projectDir, outZip);
+    const dir = await unzipper.Open.file(outZip);
+    const names = dir.files.map((f) => f.path);
+    expect(names).not.toContain('folder/');
+  });
 });
