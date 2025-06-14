@@ -53,22 +53,26 @@ export function exportPack(
   });
 }
 
-export async function exportProjects(paths: string[]): Promise<void> {
+export async function exportProjects(
+  baseDir: string,
+  names: string[],
+): Promise<void> {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     title: 'Select Export Folder',
     properties: ['openDirectory', 'createDirectory'],
   });
   if (canceled || filePaths.length === 0) return;
   const dir = filePaths[0];
-  for (const p of paths) {
-    const out = path.join(dir, `${path.basename(p)}.zip`);
-    await exportPack(p, out).catch(() => {
-      throw new Error(`Failed to export ${p}`);
+  for (const name of names) {
+    const src = path.join(baseDir, name);
+    const out = path.join(dir, `${name}.zip`);
+    await exportPack(src, out).catch(() => {
+      throw new Error(`Failed to export ${name}`);
     });
   }
 }
 
-export function registerExportHandlers(ipc: IpcMain) {
+export function registerExportHandlers(ipc: IpcMain, baseDir: string) {
   ipc.handle(
     'export-project',
     async (_e, projectPath: string): Promise<ExportSummary | void> => {
@@ -81,5 +85,7 @@ export function registerExportHandlers(ipc: IpcMain) {
       return exportPack(projectPath, filePath);
     }
   );
-  ipc.handle('export-projects', (_e, paths: string[]) => exportProjects(paths));
+  ipc.handle('export-projects', (_e, names: string[]) =>
+    exportProjects(baseDir, names),
+  );
 }

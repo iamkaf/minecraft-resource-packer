@@ -15,11 +15,13 @@ vi.mock('electron', () => {
 import { exportProjects } from '../src/main/exporter';
 
 const tmpDir = path.join(os.tmpdir(), `bulk-${uuid()}`);
-const projA = path.join(tmpDir, 'A');
-const projB = path.join(tmpDir, 'B');
+const baseDir = path.join(tmpDir, 'projects');
+const projA = path.join(baseDir, 'A');
+const projB = path.join(baseDir, 'B');
 const outDir = path.join(tmpDir, 'out');
 
 beforeAll(() => {
+  fs.mkdirSync(baseDir, { recursive: true });
   fs.mkdirSync(projA, { recursive: true });
   fs.mkdirSync(projB, { recursive: true });
   fs.mkdirSync(outDir, { recursive: true });
@@ -37,7 +39,7 @@ describe('exportProjects', () => {
       canceled: false,
       filePaths: [outDir],
     });
-    await exportProjects([projA, projB]);
+    await exportProjects(baseDir, ['A', 'B']);
     const dirA = await unzipper.Open.file(path.join(outDir, 'A.zip'));
     const namesA = dirA.files.map((f) => f.path);
     expect(namesA).toContain('a.txt');
