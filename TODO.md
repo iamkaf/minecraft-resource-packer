@@ -37,7 +37,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Categorized sections
 - [x] Properly formatted texture names, with original filename fallback
 - [x] Responsive grid thumbnails (zoom 24–128 px, hover ring)
-- [ ] Drag‑or‑click to add asset to project
+- [x] Drag‑or‑click to add asset to project
 - [x] Quick filters: Blocks / Items / Entity / UI / Audio
 - [ ] Neutral‑lighting preview pane
 

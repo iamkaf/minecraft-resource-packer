@@ -116,7 +116,8 @@ The vanilla asset browser lets you search textures from the selected Minecraft
 version. Results are grouped into collapsible **Blocks**, **Items**, **Entity**,
 **UI**, **Audio** and **Misc** sections using daisyUI's collapse component. Only assets
 that match the search query appear in each section. Thumbnails respect the zoom
-slider (24–128 px) and clicking a texture adds it to the project.
+slider (24–128 px) and textures can be clicked or dragged into the asset browser
+to add them to the project.
 
 ## Windows Paths
 
