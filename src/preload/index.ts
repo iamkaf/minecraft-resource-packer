@@ -56,6 +56,8 @@ const api = {
   getNoExport: (project: string) => invoke('get-no-export', project),
   setNoExport: (project: string, files: string[], flag: boolean) =>
     invoke('set-no-export', project, files, flag),
+  getEditorLayout: () => invoke('get-editor-layout'),
+  setEditorLayout: (layout: number[]) => invoke('set-editor-layout', layout),
   onFileAdded: (listener: (e: unknown, path: string) => void) =>
     on('file-added', listener),
   onFileRemoved: (listener: (e: unknown, path: string) => void) =>

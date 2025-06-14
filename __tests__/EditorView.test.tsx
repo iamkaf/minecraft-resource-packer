@@ -20,6 +20,14 @@ vi.mock('../src/renderer/components/AssetSelector', () => ({
 vi.mock('../src/renderer/components/AssetBrowser', () => ({
   default: () => <div>browser</div>,
 }));
+vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
+  default: ({ onExport }: { onExport: () => void }) => (
+    <button onClick={onExport}>Export Pack</button>
+  ),
+}));
+vi.mock('../src/renderer/components/AssetSelectorInfoPanel', () => ({
+  default: () => <div>info</div>,
+}));
 
 const summary = {
   fileCount: 1,
@@ -31,12 +39,19 @@ const summary = {
 describe('EditorView', () => {
   const exportProject = vi.fn();
 
+  const getLayout = vi.fn(async () => [20, 40, 40]);
+  const setLayout = vi.fn();
+
   beforeEach(() => {
     interface API {
       exportProject: (path: string) => Promise<typeof summary>;
+      getEditorLayout: () => Promise<number[]>;
+      setEditorLayout: (l: number[]) => void;
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       exportProject,
+      getEditorLayout: getLayout,
+      setEditorLayout: setLayout,
     };
     exportProject.mockResolvedValue(summary);
     openExternalMock.mockResolvedValue(undefined);

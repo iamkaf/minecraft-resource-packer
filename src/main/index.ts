@@ -17,6 +17,7 @@ import {
   registerTextureProtocol,
   registerProjectTextureProtocol,
 } from './assets';
+import { registerLayoutHandlers } from './layout';
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'texture', privileges: { standard: true, secure: true } },
@@ -63,6 +64,7 @@ registerProjectHandlers(ipcMain, projectsDir, (p) => {
 registerAssetHandlers(ipcMain);
 registerExportHandlers(ipcMain, projectsDir);
 registerNoExportHandlers(ipcMain);
+registerLayoutHandlers(ipcMain);
 
 // Register file-related IPC handlers
 registerFileHandlers(ipcMain);

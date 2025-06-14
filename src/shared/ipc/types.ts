@@ -29,6 +29,8 @@ export interface IpcRequestMap {
   'unwatch-project': [string];
   'get-no-export': [string];
   'set-no-export': [string, string[], boolean];
+  'get-editor-layout': [];
+  'set-editor-layout': [number[]];
 }
 
 export interface IpcResponseMap {
@@ -58,6 +60,8 @@ export interface IpcResponseMap {
   'unwatch-project': void;
   'get-no-export': string[];
   'set-no-export': void;
+  'get-editor-layout': number[];
+  'set-editor-layout': void;
 }
 
 export interface IpcEventMap {

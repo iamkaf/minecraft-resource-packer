@@ -3,6 +3,7 @@ import TextureGrid, { TextureInfo } from './TextureGrid';
 
 interface Props {
   path: string;
+  onAssetSelect?: (name: string) => void;
 }
 
 const FILTERS = ['blocks', 'items', 'entity', 'ui', 'audio'] as const;
@@ -22,7 +23,10 @@ const getCategory = (name: string): Filter | 'misc' => {
   return 'misc';
 };
 
-const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
+const AssetSelector: React.FC<Props> = ({
+  path: projectPath,
+  onAssetSelect,
+}) => {
   const [all, setAll] = useState<TextureInfo[]>([]);
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);
@@ -73,6 +77,7 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
 
   const handleSelect = (name: string) => {
     window.electronAPI?.addTexture(projectPath, name);
+    onAssetSelect?.(name);
   };
 
   const toggleFilter = (f: Filter) => {
