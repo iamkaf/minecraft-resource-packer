@@ -92,9 +92,9 @@ save back to `pack.json`.
 ## Bulk Export
 
 Select multiple rows using the checkboxes in the projects table and click
-**Bulk Export**. Each selected project is zipped to `pack.zip` inside its
-directory. Progress appears in a modal with a toast confirming success or
-failure.
+**Bulk Export**. Choose a destination folder when prompted and each project
+is zipped to `<name>.zip` in that location. Progress appears in a modal with a
+toast confirming success or failure.
 
 ## Asset Browser
 

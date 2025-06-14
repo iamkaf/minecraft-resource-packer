@@ -54,8 +54,14 @@ export function exportPack(
 }
 
 export async function exportProjects(paths: string[]): Promise<void> {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    title: 'Select Export Folder',
+    properties: ['openDirectory', 'createDirectory'],
+  });
+  if (canceled || filePaths.length === 0) return;
+  const dir = filePaths[0];
   for (const p of paths) {
-    const out = path.join(p, 'pack.zip');
+    const out = path.join(dir, `${path.basename(p)}.zip`);
     await exportPack(p, out).catch(() => {
       throw new Error(`Failed to export ${p}`);
     });
