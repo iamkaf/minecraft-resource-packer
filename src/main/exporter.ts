@@ -2,6 +2,7 @@
 // resource pack zip.  The output always includes a minimal `pack.mcmeta` file.
 
 import fs from 'fs';
+import path from 'path';
 import archiver from 'archiver';
 import { packFormatForVersion } from '../shared/packFormat';
 import type { IpcMain } from 'electron';
@@ -52,6 +53,15 @@ export function exportPack(
   });
 }
 
+export async function exportProjects(paths: string[]): Promise<void> {
+  for (const p of paths) {
+    const out = path.join(p, 'pack.zip');
+    await exportPack(p, out).catch(() => {
+      throw new Error(`Failed to export ${p}`);
+    });
+  }
+}
+
 export function registerExportHandlers(ipc: IpcMain) {
   ipc.handle(
     'export-project',
@@ -65,4 +75,5 @@ export function registerExportHandlers(ipc: IpcMain) {
       return exportPack(projectPath, filePath);
     }
   );
+  ipc.handle('export-projects', (_e, paths: string[]) => exportProjects(paths));
 }

@@ -5,6 +5,7 @@ import { generateProjectName } from '../utils/names';
 import RenameModal from './RenameModal';
 import ConfirmModal from './ConfirmModal';
 import ProjectSidebar from './ProjectSidebar';
+import Spinner from './Spinner';
 
 // Lists all available projects and lets the user open them.  Mimics the
 // project selection dialog used in game engines like Godot.
@@ -27,6 +28,8 @@ const ProjectManager: React.FC = () => {
   const [duplicateTarget, setDuplicateTarget] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [activeProject, setActiveProject] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [exporting, setExporting] = useState(false);
 
   const refresh = () => {
     window.electronAPI?.listProjects().then(setProjects);
@@ -76,6 +79,19 @@ const ProjectManager: React.FC = () => {
     }
   };
 
+  const handleBulkExport = () => {
+    if (selected.size === 0) return;
+    setExporting(true);
+    window.electronAPI
+      ?.exportProjects(Array.from(selected))
+      .then(() => {
+        toast('Bulk export complete', 'success');
+        setSelected(new Set());
+      })
+      .catch(() => toast('Bulk export failed', 'error'))
+      .finally(() => setExporting(false));
+  };
+
   const chipVersions = useMemo(
     () => Array.from(new Set(projects.map((p) => p.version))),
     [projects]
@@ -97,6 +113,16 @@ const ProjectManager: React.FC = () => {
     if (a[sortKey] > b[sortKey]) return 1 * dir;
     return 0;
   });
+
+  const allSelected =
+    selected.size > 0 && sortedProjects.every((p) => selected.has(p.name));
+  const toggleAll = (checked: boolean) => {
+    if (checked) {
+      setSelected(new Set(sortedProjects.map((p) => p.name)));
+    } else {
+      setSelected(new Set());
+    }
+  };
 
   return (
     <section className="flex gap-4">
@@ -158,11 +184,28 @@ const ProjectManager: React.FC = () => {
               </span>
             ))}
           </div>
+          <button
+            className="btn btn-accent btn-sm"
+            onClick={handleBulkExport}
+            disabled={selected.size === 0}
+          >
+            Bulk Export
+          </button>
         </div>
         <div className="flex-1 overflow-x-auto">
           <table className="table table-zebra w-full">
             <thead>
               <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    aria-label="Select all"
+                    checked={allSelected}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => toggleAll(e.target.checked)}
+                    className="checkbox checkbox-sm"
+                  />
+                </th>
                 <th
                   onClick={() => handleSort('name')}
                   className="cursor-pointer"
@@ -197,6 +240,22 @@ const ProjectManager: React.FC = () => {
                   onClick={() => setActiveProject(p.name)}
                   className="cursor-pointer"
                 >
+                  <td>
+                    <input
+                      type="checkbox"
+                      aria-label={`Select ${p.name}`}
+                      checked={selected.has(p.name)}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        const ns = new Set(selected);
+                        if (e.target.checked) ns.add(p.name);
+                        else ns.delete(p.name);
+                        setSelected(ns);
+                      }}
+                      className="checkbox checkbox-sm"
+                    />
+                  </td>
                   <td>{p.name}</td>
                   <td>{p.version}</td>
                   <td>{p.assets}</td>
@@ -235,6 +294,14 @@ const ProjectManager: React.FC = () => {
             </tbody>
           </table>
         </div>
+        {exporting && (
+          <dialog className="modal modal-open" data-testid="bulk-export-modal">
+            <div className="modal-box flex flex-col items-center">
+              <h3 className="font-bold text-lg mb-2">Exporting...</h3>
+              <Spinner />
+            </div>
+          </dialog>
+        )}
         {duplicateTarget && (
           <RenameModal
             current={`${duplicateTarget} Copy`}
