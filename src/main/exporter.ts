@@ -16,7 +16,41 @@ export interface ExportSummary {
   warnings: string[];
 }
 
-// Export the contents of `projectPath` into `outPath` as a zip archive.
+/**
+ * Recursively add a directory and all of its files to an archiver instance.
+ */
+function addDirectory(
+  archive: archiver.Archiver,
+  dir: string,
+  ignore: Set<string>,
+  prefix = ''
+): void {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const rel = path.join(prefix, entry.name).split(path.sep).join('/');
+    if (ignore.has(rel)) continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      addDirectory(archive, full, ignore, rel);
+    } else {
+      archive.file(full, { name: rel });
+    }
+  }
+}
+
+/**
+ * Export the contents of `projectPath` into `outPath` as a zip archive.
+ *
+ * Algorithm:
+ * 1. Read `project.json` if present to obtain the list of files that should be
+ *    excluded from the archive.
+ * 2. Create an archiver instance and stream a zip to `outPath`.
+ * 3. Recursively walk the project directory, adding all files that are not
+ *    listed in `noExport`.
+ * 4. Append a default `pack.mcmeta` containing the correct `pack_format` for
+ *    the requested Minecraft version.
+ * 5. Resolve with summary statistics once archiving completes.
+ */
 export function exportPack(
   projectPath: string,
   outPath: string,
@@ -55,21 +89,7 @@ export function exportPack(
 
     archive.pipe(output);
 
-    const addDir = (dir: string, prefix = '') => {
-      const entries = fs.readdirSync(dir, { withFileTypes: true });
-      for (const entry of entries) {
-        const rel = path.join(prefix, entry.name).split(path.sep).join('/');
-        if (ignore.has(rel)) continue;
-        const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-          addDir(full, rel);
-        } else {
-          archive.file(full, { name: rel });
-        }
-      }
-    };
-
-    addDir(projectPath);
+    addDirectory(archive, projectPath, ignore);
     // Add a default pack.mcmeta so Minecraft recognises the pack.
     const format = packFormatForVersion(version) ?? 15;
     const mcmeta = {
