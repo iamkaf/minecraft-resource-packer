@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { formatTextureName } from '../utils/textureNames';
+import TextureGrid, { TextureInfo } from './TextureGrid';
 
 interface Props {
   path: string;
-}
-
-interface TextureInfo {
-  name: string;
-  url: string;
 }
 
 const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
@@ -91,39 +86,13 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
             <div className="collapse collapse-arrow mb-2" key={key}>
               <input type="checkbox" defaultChecked />
               <div className="collapse-title font-medium capitalize">{key}</div>
-              <div className="collapse-content overflow-y-auto h-48">
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-                  {list.map((tex) => {
-                    const formatted = formatTextureName(tex.name);
-                    return (
-                      <div
-                        key={tex.name}
-                        className="text-center tooltip"
-                        data-tip={`${formatted} \n${tex.name}`}
-                      >
-                        <button
-                          aria-label={tex.name}
-                          onClick={() => handleSelect(tex.name)}
-                          className="p-1 hover:ring ring-accent rounded"
-                        >
-                          <img
-                            src={tex.url}
-                            alt={formatted}
-                            style={{
-                              width: zoom,
-                              height: zoom,
-                              imageRendering: 'pixelated',
-                            }}
-                          />
-                        </button>
-                        <div className="text-xs leading-tight">
-                          <div>{formatted}</div>
-                          <div className="opacity-50">{tex.name}</div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+              <div className="collapse-content">
+                <TextureGrid
+                  testId="texture-grid"
+                  textures={list}
+                  zoom={zoom}
+                  onSelect={handleSelect}
+                />
               </div>
             </div>
           );

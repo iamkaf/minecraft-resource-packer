@@ -86,4 +86,17 @@ describe('AssetSelector', () => {
     fireEvent.change(slider, { target: { value: '100' } });
     expect(img.style.width).toBe('100px');
   });
+
+  it('renders only visible items', async () => {
+    listTextures.mockResolvedValue(
+      Array.from({ length: 50 }, (_, i) => `block/test${i}.png`)
+    );
+    render(<AssetSelector path="/proj" />);
+    const input = screen.getByPlaceholderText('Search texture');
+    fireEvent.change(input, { target: { value: 'test' } });
+    await screen.findByText('blocks');
+    expect(
+      screen.getAllByRole('button', { name: /block\/test/ }).length
+    ).toBeLessThan(50);
+  });
 });
