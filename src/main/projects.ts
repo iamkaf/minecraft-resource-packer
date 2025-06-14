@@ -25,6 +25,7 @@ export async function createProject(
     name,
     version,
     assets: [],
+    noExport: [],
     lastOpened: Date.now(),
   };
   await fs.promises.writeFile(

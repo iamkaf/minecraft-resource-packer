@@ -37,4 +37,24 @@ describe('exportPack', () => {
     const data = JSON.parse(buf.toString('utf-8'));
     expect(data.pack.pack_format).toBe(15);
   });
+
+  it('skips files listed in noExport', async () => {
+    const meta = {
+      name: 'proj',
+      version: '1.21.1',
+      assets: [],
+      noExport: ['skip.txt'],
+    };
+    fs.writeFileSync(
+      path.join(projectDir, 'project.json'),
+      JSON.stringify(meta)
+    );
+    fs.writeFileSync(path.join(projectDir, 'skip.txt'), 'x');
+    fs.writeFileSync(path.join(projectDir, 'keep.txt'), 'y');
+    await exportPack(projectDir, outZip);
+    const dir = await unzipper.Open.file(outZip);
+    const names = dir.files.map((f) => f.path);
+    expect(names).toContain('keep.txt');
+    expect(names).not.toContain('skip.txt');
+  });
 });

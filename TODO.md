@@ -49,7 +49,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Context menu: Reveal, Open, Rename, Delete
 - [x] React context menu with daisyUI dropdown + delete modal
 - [ ] Dirty badge for changed assets
-- [ ] 🔒 No‑export toggle per file
+- [x] 🔒 No‑export toggle per file
 - [ ] Custom namespace support (non‑`minecraft` assets)
 
 ---
