@@ -214,8 +214,8 @@ describe('AssetBrowser', () => {
     fireEvent.click(b, { ctrlKey: true });
     fireEvent.contextMenu(a);
     const menus = await screen.findAllByRole('menu');
-    const menu = menus.find((m) =>
-      m.classList.contains('block')
+    const menu = menus.find(
+      (m) => (m as HTMLElement).style.display === 'block'
     ) as HTMLElement;
     const toggle = within(menu).getByRole('checkbox', { name: /No Export/i });
     fireEvent.click(toggle);
