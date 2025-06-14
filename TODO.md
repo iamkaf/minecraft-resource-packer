@@ -32,7 +32,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ---
 
-## 3. Vanilla Asset Browser
+## 3. Editor > Asset Selector
 
 - [x] Categorized sections
 - [x] Properly formatted texture names, with original filename fallback
@@ -43,7 +43,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ---
 
-## 4. Project File Explorer
+## 4. Editor > Asset Browser
 
 - [ ] Real‑time watcher with `chokidar`
 - [x] Context menu: Reveal, Open, Rename, Delete
@@ -54,7 +54,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ---
 
-## 5. Texture Inspector
+## 5. Editor > Texture Inspector
 
 - [ ] 1 : 1 pixel preview + zoom slider
 - [ ] External edit button (auto‑reload on save)
@@ -104,7 +104,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## 10. Preferences / About
 
 - [ ] Paths (override `.minecraft`, external editor)
-- [ ] Theme (Light / Dark / System)
+- [ ] Theme (Minecraft inspired Light / Minecraft inspired Dark / System)
 - [ ] Editable keyboard shortcuts
 - [ ] Update channel + analytics opt‑in
 - [x] About pane (logo, version, links, license)
