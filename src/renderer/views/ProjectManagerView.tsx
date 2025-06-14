@@ -2,10 +2,11 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Fuse from 'fuse.js';
 import { useToast } from '../components/ToastProvider';
 import ProjectSidebar from '../components/ProjectSidebar';
-import Spinner from '../components/Spinner';
 import ProjectForm from '../components/project/ProjectForm';
 import ProjectTable, { ProjectInfo } from '../components/project/ProjectTable';
 import { useProjectModals } from '../components/project/ProjectModals';
+import SearchToolbar from '../components/project/SearchToolbar';
+import BulkExportModal, { BulkProgress } from '../components/BulkExportModal';
 
 // Lists all available projects and lets the user open them.
 
@@ -18,7 +19,7 @@ const ProjectManagerView: React.FC = () => {
   const [filterVersion, setFilterVersion] = useState<string | null>(null);
   const [activeProject, setActiveProject] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [exporting, setExporting] = useState(false);
+  const [progress, setProgress] = useState<BulkProgress | null>(null);
 
   const toast = useToast();
 
@@ -62,7 +63,7 @@ const ProjectManagerView: React.FC = () => {
 
   const handleBulkExport = () => {
     if (selected.size === 0) return;
-    setExporting(true);
+    setProgress({ current: 0, total: selected.size });
     window.electronAPI
       ?.exportProjects(Array.from(selected))
       .then(() => {
@@ -70,7 +71,7 @@ const ProjectManagerView: React.FC = () => {
         setSelected(new Set());
       })
       .catch(() => toast('Bulk export failed', 'error'))
-      .finally(() => setExporting(false));
+      .finally(() => setProgress(null));
   };
 
   const chipVersions = useMemo(
@@ -119,40 +120,17 @@ const ProjectManagerView: React.FC = () => {
           onCreate={handleCreate}
           onImport={handleImport}
         />
-        <div className="flex items-center gap-2 mb-2">
-          <input
-            className="input input-bordered input-sm w-40"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search"
-          />
-          <div className="flex gap-1">
-            {chipVersions.map((v) => (
-              <span
-                key={v}
-                role="button"
-                tabIndex={0}
-                onClick={() => setFilterVersion(filterVersion === v ? null : v)}
-                onKeyDown={(e) =>
-                  e.key === 'Enter' &&
-                  setFilterVersion(filterVersion === v ? null : v)
-                }
-                className={`badge badge-outline cursor-pointer select-none ${
-                  filterVersion === v ? 'badge-primary' : ''
-                }`}
-              >
-                {v}
-              </span>
-            ))}
-          </div>
-          <button
-            className="btn btn-accent btn-sm"
-            onClick={handleBulkExport}
-            disabled={selected.size === 0}
-          >
-            Bulk Export
-          </button>
-        </div>
+        <SearchToolbar
+          search={search}
+          onSearchChange={setSearch}
+          versions={chipVersions}
+          activeVersion={filterVersion}
+          onToggleVersion={(v) =>
+            setFilterVersion(filterVersion === v ? null : v)
+          }
+          onBulkExport={handleBulkExport}
+          disableExport={selected.size === 0}
+        />
         <ProjectTable
           projects={sortedProjects}
           onSort={handleSort}
@@ -164,14 +142,7 @@ const ProjectManagerView: React.FC = () => {
           onDelete={openDelete}
           onRowClick={setActiveProject}
         />
-        {exporting && (
-          <dialog className="modal modal-open" data-testid="bulk-export-modal">
-            <div className="modal-box flex flex-col items-center">
-              <h3 className="font-bold text-lg mb-2">Exporting...</h3>
-              <Spinner />
-            </div>
-          </dialog>
-        )}
+        {progress && <BulkExportModal progress={progress} />}
         {modals}
       </div>
       <ProjectSidebar project={activeProject} />
