@@ -27,6 +27,7 @@
     "react": "^19.1.0",
     "react-canvas-confetti": "^2.0.7",
     "react-dom": "^19.1.0",
+    "react-loader-spinner": "^6.1.6",
     "react-virtualized-auto-sizer": "^1.0.26",
     "react-window": "^1.8.11",
     "sharp": "^0.34.2",

@@ -9,8 +9,9 @@ describe('AssetInfo', () => {
     expect(screen.getByText('No asset selected')).toBeInTheDocument();
   });
 
-  it('renders asset name', () => {
+  it('renders asset name', async () => {
     render(<AssetInfo asset="foo.png" />);
     expect(screen.getByText('foo.png')).toBeInTheDocument();
+    expect(await screen.findByTestId('preview-pane')).toBeInTheDocument();
   });
 });

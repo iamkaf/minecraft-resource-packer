@@ -39,7 +39,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Responsive grid thumbnails (zoom 24–128 px, hover ring)
 - [x] Drag‑or‑click to add asset to project
 - [x] Quick filters: Blocks / Items / Entity / UI / Audio
-- [ ] Neutral‑lighting preview pane
+- [x] Neutral‑lighting preview pane
 
 ---
 
