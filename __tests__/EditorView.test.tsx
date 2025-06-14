@@ -2,6 +2,12 @@ import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 
+// eslint-disable-next-line no-var
+var openExternalMock: ReturnType<typeof vi.fn>;
+vi.mock('electron', () => ({
+  shell: { openExternal: (openExternalMock = vi.fn()) },
+}));
+
 import EditorView from '../src/renderer/views/EditorView';
 
 vi.mock('react-canvas-confetti', () => ({
@@ -33,6 +39,7 @@ describe('EditorView', () => {
       exportProject,
     };
     exportProject.mockResolvedValue(summary);
+    openExternalMock.mockResolvedValue(undefined);
     vi.clearAllMocks();
   });
 
@@ -53,5 +60,16 @@ describe('EditorView', () => {
     render(<EditorView projectPath="/tmp" onBack={back} />);
     fireEvent.click(screen.getByText('Back to Projects'));
     expect(back).toHaveBeenCalled();
+  });
+
+  it('opens help link externally', () => {
+    render(<EditorView projectPath="/tmp" onBack={() => undefined} />);
+    const link = screen.getByRole('link', { name: 'Help' });
+    link.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, cancelable: true })
+    );
+    expect(openExternalMock).toHaveBeenCalledWith(
+      'https://minecraft.wiki/w/Resource_pack'
+    );
   });
 });

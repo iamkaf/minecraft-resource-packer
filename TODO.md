@@ -17,7 +17,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ### Wiki Quick‑Links
 
-- [ ] ❓ icon on each view header opens relevant <https://minecraft.wiki/> page in default browser
+- [x] ❓ icon on each view header opens relevant <https://minecraft.wiki/> page in default browser
 
 ---
 

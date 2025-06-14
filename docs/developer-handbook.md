@@ -52,6 +52,9 @@ The renderer separates the interface into four top‑level views found under
 - **Editor** – edit project assets and export the finished pack.
 - **Settings** – application preferences.
 - **About** – version information, license and links.
+- Each view header features a small **Help** button linking to the relevant article on
+  [minecraft.wiki](https://minecraft.wiki/). The button uses `ExternalLink` and shows
+  a toast if the link fails to open.
 
 ## Adding Functionality
 
