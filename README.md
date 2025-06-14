@@ -2,13 +2,19 @@
 
 An Electron-based tool for creating Minecraft resource packs. The interface is designed to be fun and beginner friendly so anyone can pick a version, edit textures and export a ready to use pack.
 
+## Views
+
+- **Project Manager** – lists available packs with their Minecraft version and chosen assets. Create new projects or open existing ones.
+- **Editor** – browse and modify textures inside a project then export the finished pack.
+- **Settings** – customise application preferences.
+- **About** – see version info, license and helpful links.
+
 ## Features
 
-- **Project Manager** – integrated into the main window, it keeps a list of projects with their name, Minecraft version and chosen assets. You can create new packs or open and edit existing ones without switching windows.
 - **Asset Selection** – textures are pulled from Mojang's version manifest and cached locally for quick searching.
 - **Secure Previews** – images load through custom `texture://` and `ptex://` protocols so `file://` access is never required.
 - **Asset Editing** – when an asset is added it is copied into the correct folder structure inside the project. Files can be opened in Explorer/Finder or with the default program for that type. Any changes on disk instantly appear in the UI.
-- **Live Asset Browser** – the editor window lists all files in the project directory and automatically reloads when something changes.
+- **Live Asset Browser** – the Editor view lists all files in the project directory and automatically reloads when something changes.
 - **Random pack icon** – new packs start with a pastel background and random item image; you can regenerate from pack settings.
 - **Export** – generate a zipped resource pack containing the selected files along with a valid `pack.mcmeta`. The output is ready to drop into Minecraft.
 
