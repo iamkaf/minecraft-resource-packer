@@ -5,10 +5,28 @@ interface Props {
   path: string;
 }
 
+const FILTERS = ['blocks', 'items', 'entity', 'ui', 'audio'] as const;
+type Filter = (typeof FILTERS)[number];
+
+const getCategory = (name: string): Filter | 'misc' => {
+  if (name.startsWith('block/')) return 'blocks';
+  if (name.startsWith('item/')) return 'items';
+  if (name.startsWith('entity/')) return 'entity';
+  if (
+    name.startsWith('gui/') ||
+    name.startsWith('font/') ||
+    name.startsWith('misc/')
+  )
+    return 'ui';
+  if (name.startsWith('sound/') || name.startsWith('sounds/')) return 'audio';
+  return 'misc';
+};
+
 const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
   const [all, setAll] = useState<TextureInfo[]>([]);
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);
+  const [filters, setFilters] = useState<Filter[]>([]);
 
   useEffect(() => {
     const load = async () => {
@@ -26,10 +44,18 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
     void load();
   }, [projectPath]);
 
-  const filtered = query ? all.filter((t) => t.name.includes(query)) : [];
+  const filtered = query
+    ? all.filter((t) => {
+        if (!t.name.includes(query)) return false;
+        if (filters.length > 0 && !filters.includes(getCategory(t.name))) {
+          return false;
+        }
+        return true;
+      })
+    : [];
 
   const categories = React.useMemo(() => {
-    const out: Record<string, TextureInfo[]> = {
+    const out: Record<Filter | 'misc', TextureInfo[]> = {
       blocks: [],
       items: [],
       entity: [],
@@ -38,17 +64,8 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
       misc: [],
     };
     for (const tex of filtered) {
-      if (tex.name.startsWith('block/')) out.blocks.push(tex);
-      else if (tex.name.startsWith('item/')) out.items.push(tex);
-      else if (tex.name.startsWith('entity/')) out.entity.push(tex);
-      else if (
-        tex.name.startsWith('gui/') ||
-        tex.name.startsWith('font/') ||
-        tex.name.startsWith('misc/')
-      )
-        out.ui.push(tex);
-      else if (tex.name.startsWith('sound/') || tex.name.startsWith('sounds/'))
-        out.audio.push(tex);
+      const cat = getCategory(tex.name);
+      if (out[cat]) out[cat].push(tex);
       else out.misc.push(tex);
     }
     return out;
@@ -56,6 +73,12 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
 
   const handleSelect = (name: string) => {
     window.electronAPI?.addTexture(projectPath, name);
+  };
+
+  const toggleFilter = (f: Filter) => {
+    setFilters((prev) =>
+      prev.includes(f) ? prev.filter((p) => p !== f) : [...prev, f]
+    );
   };
 
   return (
@@ -79,9 +102,26 @@ const AssetSelector: React.FC<Props> = ({ path: projectPath }) => {
           className="range range-xs w-32"
         />
       </div>
+      <div className="flex gap-1 mb-2">
+        {FILTERS.map((f) => (
+          <span
+            key={f}
+            role="button"
+            tabIndex={0}
+            onClick={() => toggleFilter(f)}
+            onKeyDown={(e) => e.key === 'Enter' && toggleFilter(f)}
+            className={`badge badge-outline cursor-pointer select-none ${
+              filters.includes(f) ? 'badge-primary' : ''
+            }`}
+          >
+            {f.charAt(0).toUpperCase() + f.slice(1)}
+          </span>
+        ))}
+      </div>
       {(['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
         (key) => {
           const list = categories[key];
+          if (list.length === 0) return null;
           return (
             <div className="collapse collapse-arrow mb-2" key={key}>
               <input type="checkbox" defaultChecked />
