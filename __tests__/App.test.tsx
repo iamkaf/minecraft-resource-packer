@@ -25,6 +25,14 @@ vi.mock('../src/renderer/components/AssetBrowser', () => ({
 vi.mock('../src/renderer/views/ProjectManagerView', () => ({
   default: () => <div>manager</div>,
 }));
+vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
+  default: ({ onExport }: { onExport: () => void }) => (
+    <button onClick={onExport}>Export Pack</button>
+  ),
+}));
+vi.mock('../src/renderer/components/AssetSelectorInfoPanel', () => ({
+  default: () => <div>info</div>,
+}));
 
 describe('App', () => {
   let openHandler: ((e: unknown, path: string) => void) | undefined;
@@ -44,12 +52,18 @@ describe('App', () => {
         durationMs: number;
         warnings: string[];
       }>;
+      getEditorLayout: () => Promise<number[]>;
+      setEditorLayout: (l: number[]) => void;
+      loadPackMeta: () => Promise<unknown>;
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       onOpenProject: (cb) => {
         openHandler = cb;
       },
       exportProject,
+      getEditorLayout: vi.fn(async () => [20, 40, 40]),
+      setEditorLayout: vi.fn(),
+      loadPackMeta: vi.fn(async () => ({ description: '' })),
     };
   });
 
