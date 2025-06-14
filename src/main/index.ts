@@ -11,6 +11,7 @@ import { registerFileWatcherHandlers } from './ipc/fileWatcher';
 import path from 'path';
 import { registerExportHandlers } from './exporter';
 import { registerProjectHandlers } from './projects';
+import { registerNoExportHandlers } from './noExport';
 import {
   registerAssetHandlers,
   registerTextureProtocol,
@@ -61,6 +62,7 @@ registerProjectHandlers(ipcMain, projectsDir, (p) => {
 
 registerAssetHandlers(ipcMain);
 registerExportHandlers(ipcMain, projectsDir);
+registerNoExportHandlers(ipcMain);
 
 // Register file-related IPC handlers
 registerFileHandlers(ipcMain);

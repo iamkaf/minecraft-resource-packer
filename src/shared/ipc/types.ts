@@ -25,6 +25,8 @@ export interface IpcRequestMap {
   'delete-file': [string];
   'watch-project': [string];
   'unwatch-project': [string];
+  'get-no-export': [string];
+  'set-no-export': [string, string[], boolean];
 }
 
 export interface IpcResponseMap {
@@ -50,6 +52,8 @@ export interface IpcResponseMap {
   'delete-file': void;
   'watch-project': string[];
   'unwatch-project': void;
+  'get-no-export': string[];
+  'set-no-export': void;
 }
 
 export interface IpcEventMap {

@@ -17,6 +17,8 @@ const AssetBrowser: React.FC<Props> = ({
 }) => {
   const [files, setFiles] = useState<string[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [noExport, setNoExport] = useState<Set<string>>(new Set());
+  const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     onSelectionChange?.(Array.from(selected));
@@ -46,6 +48,16 @@ const AssetBrowser: React.FC<Props> = ({
     };
   }, [projectPath]);
 
+  useEffect(() => {
+    let active = true;
+    window.electronAPI?.getNoExport(projectPath).then((list) => {
+      if (active && list) setNoExport(new Set(list));
+    });
+    return () => {
+      active = false;
+    };
+  }, [projectPath]);
+
   const [menuTarget, setMenuTarget] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string[] | null>(null);
   const [renameTarget, setRenameTarget] = useState<string | null>(null);
@@ -67,7 +79,10 @@ const AssetBrowser: React.FC<Props> = ({
     <div
       data-testid="asset-browser"
       className="grid grid-cols-6 gap-2"
-      onClick={() => setMenuTarget(null)}
+      onClick={() => {
+        setMenuTarget(null);
+        setMenuPos(null);
+      }}
       onKeyDown={(e) => {
         if (e.key === 'Delete' && selected.size > 0) {
           e.preventDefault();
@@ -89,11 +104,17 @@ const AssetBrowser: React.FC<Props> = ({
         const openFile = () => window.electronAPI?.openFile(full);
         const showRename = () => setRenameTarget(f);
         const confirmDel = () => setConfirmDelete([full]);
-        const showMenu = () => setMenuTarget(f);
+        const showMenu = (x: number, y: number) => {
+          setMenuPos({ x, y });
+          setMenuTarget(f);
+        };
         const handleKey = (e: React.KeyboardEvent) => {
           if (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) {
             e.preventDefault();
-            showMenu();
+            const rect = (
+              e.currentTarget as HTMLElement
+            ).getBoundingClientRect();
+            showMenu(rect.right, rect.bottom);
           }
         };
         const menuOpen = menuTarget === f;
@@ -115,14 +136,14 @@ const AssetBrowser: React.FC<Props> = ({
           if (!selected.has(f)) {
             setSelected(new Set([f]));
           }
-          showMenu();
+          showMenu(e.clientX, e.clientY);
         };
         return (
           <div
             key={f}
             className={`p-1 cursor-pointer hover:ring ring-accent relative text-center tooltip ${
               isSelected ? 'ring' : ''
-            }`}
+            } ${noExport.has(f) ? 'opacity-50 border border-gray-400' : ''}`}
             data-tip={`${formatted} \n${name}`}
             tabIndex={0}
             onClick={toggleSelect}
@@ -132,6 +153,7 @@ const AssetBrowser: React.FC<Props> = ({
             onBlur={(e) => {
               if (!e.currentTarget.contains(e.relatedTarget as Node)) {
                 setMenuTarget(null);
+                setMenuPos(null);
               }
             }}
           >
@@ -154,9 +176,10 @@ const AssetBrowser: React.FC<Props> = ({
               </div>
             )}
             <ul
-              className={`menu dropdown-content bg-base-200 rounded-box absolute z-10 w-40 p-1 shadow ${
+              className={`menu dropdown-content bg-base-200 rounded-box fixed z-10 w-40 p-1 shadow ${
                 menuOpen ? 'block' : 'hidden'
               }`}
+              style={{ left: menuPos?.x, top: menuPos?.y }}
               role="menu"
             >
               <li>
@@ -177,6 +200,37 @@ const AssetBrowser: React.FC<Props> = ({
                 >
                   Rename
                 </button>
+              </li>
+              <li>
+                <label className="flex gap-2 items-center cursor-pointer px-2">
+                  <span>No Export</span>
+                  <input
+                    type="checkbox"
+                    className="toggle toggle-sm"
+                    checked={(() => {
+                      const list = selected.has(f) ? Array.from(selected) : [f];
+                      return list.every((x) => noExport.has(x));
+                    })()}
+                    onChange={(e) => {
+                      const files = selected.has(f)
+                        ? Array.from(selected)
+                        : [f];
+                      window.electronAPI?.setNoExport(
+                        projectPath,
+                        files,
+                        e.target.checked
+                      );
+                      setNoExport((prev) => {
+                        const ns = new Set(prev);
+                        files.forEach((file) => {
+                          if (e.target.checked) ns.add(file);
+                          else ns.delete(file);
+                        });
+                        return ns;
+                      });
+                    }}
+                  />
+                </label>
               </li>
               {selected.size > 1 ? (
                 <li>

@@ -7,6 +7,7 @@ import archiver from 'archiver';
 import { packFormatForVersion } from '../shared/packFormat';
 import type { IpcMain } from 'electron';
 import { dialog } from 'electron';
+import { ProjectMetadataSchema } from '../shared/project';
 
 export interface ExportSummary {
   fileCount: number;
@@ -21,6 +22,17 @@ export function exportPack(
   outPath: string,
   version = '1.21.1'
 ): Promise<ExportSummary> {
+  const metaPath = path.join(projectPath, 'project.json');
+  let ignore = new Set<string>();
+  if (fs.existsSync(metaPath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+      const meta = ProjectMetadataSchema.parse(data);
+      ignore = new Set(meta.noExport ?? []);
+    } catch {
+      /* ignore */
+    }
+  }
   return new Promise((resolve, reject) => {
     const output = fs.createWriteStream(outPath);
     const archive = archiver('zip', { zlib: { level: 9 } });
@@ -42,7 +54,22 @@ export function exportPack(
     });
 
     archive.pipe(output);
-    archive.directory(projectPath, false);
+
+    const addDir = (dir: string, prefix = '') => {
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        const rel = path.join(prefix, entry.name).split(path.sep).join('/');
+        if (ignore.has(rel)) continue;
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          addDir(full, rel);
+        } else {
+          archive.file(full, { name: rel });
+        }
+      }
+    };
+
+    addDir(projectPath);
     // Add a default pack.mcmeta so Minecraft recognises the pack.
     const format = packFormatForVersion(version) ?? 15;
     const mcmeta = {
@@ -55,7 +82,7 @@ export function exportPack(
 
 export async function exportProjects(
   baseDir: string,
-  names: string[],
+  names: string[]
 ): Promise<void> {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     title: 'Select Export Folder',
@@ -86,6 +113,6 @@ export function registerExportHandlers(ipc: IpcMain, baseDir: string) {
     }
   );
   ipc.handle('export-projects', (_e, names: string[]) =>
-    exportProjects(baseDir, names),
+    exportProjects(baseDir, names)
   );
 }
