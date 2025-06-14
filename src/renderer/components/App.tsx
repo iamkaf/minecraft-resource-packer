@@ -1,6 +1,5 @@
 import React, { Suspense, useEffect, useState, lazy, useRef } from 'react';
 import ReactCanvasConfetti from 'react-canvas-confetti';
-import Navbar from './Navbar';
 import Spinner from './Spinner';
 import ExportSummaryModal from './ExportSummaryModal';
 import type { ExportSummary } from '../../main/exporter';
@@ -8,7 +7,8 @@ import type { ExportSummary } from '../../main/exporter';
 const AssetBrowser = lazy(() => import('./AssetBrowser'));
 const AssetSelector = lazy(() => import('./AssetSelector'));
 const ProjectManager = lazy(() => import('./ProjectManager'));
-import DrawerLayout from './DrawerLayout';
+import AssetInfoPane from './AssetInfoPane';
+import ShellLayout from './ShellLayout';
 import About from './About';
 
 // Main React component shown in the editor window.  It waits for the main
@@ -18,6 +18,7 @@ import About from './About';
 const App: React.FC = () => {
   const [projectPath, setProjectPath] = useState<string | null>(null);
   const [summary, setSummary] = useState<ExportSummary | null>(null);
+  const [selected, setSelected] = useState<string[]>([]);
   const [view, setView] = useState<'projects' | 'settings' | 'about'>(
     'projects'
   );
@@ -33,25 +34,23 @@ const App: React.FC = () => {
 
   if (view === 'about') {
     return (
-      <DrawerLayout view={view} onNavigate={setView}>
-        <Navbar />
+      <ShellLayout view={view} onNavigate={setView}>
         <main className="p-4">
           <About />
         </main>
-      </DrawerLayout>
+      </ShellLayout>
     );
   }
 
   if (!projectPath) {
     return (
-      <DrawerLayout view={view} onNavigate={setView}>
-        <Navbar />
+      <ShellLayout view={view} onNavigate={setView}>
         <main className="p-4 flex flex-col gap-6">
           <Suspense fallback={<Spinner />}>
             <ProjectManager />
           </Suspense>
         </main>
-      </DrawerLayout>
+      </ShellLayout>
     );
   }
 
@@ -76,8 +75,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <DrawerLayout view={view} onNavigate={setView}>
-      <Navbar />
+    <ShellLayout view={view} onNavigate={setView}>
       <main className="p-4 flex flex-col gap-4">
         <button
           className="link link-primary w-fit"
@@ -89,12 +87,22 @@ const App: React.FC = () => {
         <button className="btn btn-accent mb-2" onClick={handleExport}>
           Export Pack
         </button>
-        <Suspense fallback={<Spinner />}>
-          <AssetSelector path={projectPath} />
-        </Suspense>
-        <Suspense fallback={<Spinner />}>
-          <AssetBrowser path={projectPath} />
-        </Suspense>
+        <div className="flex gap-4 flex-1 overflow-hidden">
+          <div className="w-64 overflow-y-auto">
+            <Suspense fallback={<Spinner />}>
+              <AssetSelector path={projectPath} />
+            </Suspense>
+          </div>
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <Suspense fallback={<Spinner />}>
+              <AssetBrowser
+                path={projectPath}
+                onSelectionChange={setSelected}
+              />
+            </Suspense>
+            <AssetInfoPane project={projectPath} selected={selected} />
+          </div>
+        </div>
       </main>
       {summary && (
         <ExportSummaryModal
@@ -115,7 +123,7 @@ const App: React.FC = () => {
           left: 0,
         }}
       />
-    </DrawerLayout>
+    </ShellLayout>
   );
 };
 

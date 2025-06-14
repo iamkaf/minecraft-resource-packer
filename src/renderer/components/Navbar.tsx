@@ -8,14 +8,6 @@ export default function Navbar() {
         <span className="hidden sm:inline">Minecraft Resource Packer</span>
         <span className="sm:hidden">MRP</span>
       </div>
-      <label
-        htmlFor="nav-drawer"
-        className="btn btn-square btn-ghost md:hidden"
-        aria-label="Open menu"
-        data-testid="drawer-toggle"
-      >
-        ☰
-      </label>
       <button
         className="btn btn-square btn-ghost"
         onClick={toggleTheme}

@@ -112,6 +112,20 @@ describe('AssetBrowser', () => {
     expect(modal).not.toBeInTheDocument();
   });
 
+  it('selects files and deletes with keyboard', async () => {
+    const deleteFile = vi.fn();
+    (
+      window as unknown as { electronAPI: { deleteFile: typeof deleteFile } }
+    ).electronAPI.deleteFile = deleteFile;
+    render(<AssetBrowser path="/proj" />);
+    const item = await screen.findByText('a.txt');
+    fireEvent.click(item); // select
+    fireEvent.keyDown(item, { key: 'Delete' });
+    const modal = await screen.findByTestId('delete-modal');
+    fireEvent.click(within(modal).getByText('Delete'));
+    expect(deleteFile).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
+  });
+
   it('updates when file watcher events fire', async () => {
     let added: ((e: unknown, p: string) => void) | undefined;
     let removed: ((e: unknown, p: string) => void) | undefined;

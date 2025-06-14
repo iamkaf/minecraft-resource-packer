@@ -1,16 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
 import path from 'path';
 import RenameModal from './RenameModal';
-import { formatTextureName } from '../utils/textureNames';
+import AssetItem from './AssetItem';
 
 // Simple file list that updates whenever files inside the project directory
 // change on disk. Updates are received via the IPC file watcher service.
 
 interface Props {
   path: string;
+  onSelectionChange?: (sel: string[]) => void;
 }
 
-const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
+const AssetBrowser: React.FC<Props> = ({
+  path: projectPath,
+  onSelectionChange,
+}) => {
   const [files, setFiles] = useState<string[]>([]);
 
   useEffect(() => {
@@ -38,7 +42,8 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
   }, [projectPath]);
 
   const [menuTarget, setMenuTarget] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string[] | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [renameTarget, setRenameTarget] = useState<string | null>(null);
   const firstItem = useRef<HTMLButtonElement>(null);
 
@@ -48,65 +53,64 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
     }
   }, [menuTarget]);
 
+  useEffect(() => {
+    setSelected(new Set());
+  }, [projectPath]);
+
+  useEffect(() => {
+    onSelectionChange?.(Array.from(selected));
+  }, [selected, onSelectionChange]);
+
   return (
-    <div className="grid grid-cols-6 gap-2" onClick={() => setMenuTarget(null)}>
+    <div
+      className="grid grid-cols-6 gap-2"
+      onClick={() => setMenuTarget(null)}
+      onKeyDown={(e) => {
+        if (
+          (e.key === 'Delete' || e.key === 'Backspace') &&
+          selected.size > 0
+        ) {
+          setConfirmDelete(Array.from(selected));
+        }
+      }}
+    >
       {files.map((f) => {
         const full = path.join(projectPath, f);
-        const name = path.basename(f);
-        const formatted = f.endsWith('.png') ? formatTextureName(name) : name;
-        let thumb: string | null = null;
-        if (f.endsWith('.png')) {
-          const rel = f.split(path.sep).join('/');
-          thumb = `ptex://${rel}`;
-        }
+        const menuOpen = menuTarget === f;
+        const handleSelect = (e: React.MouseEvent | React.KeyboardEvent) => {
+          setMenuTarget(null);
+          setSelected((cur) => {
+            const next = new Set(cur);
+            if (e.metaKey || e.ctrlKey) {
+              if (next.has(f)) next.delete(f);
+              else next.add(f);
+            } else {
+              next.clear();
+              next.add(f);
+            }
+            return next;
+          });
+        };
+        const showMenu = () => {
+          if (!selected.has(f)) {
+            setSelected(new Set([f]));
+          }
+          setMenuTarget(f);
+        };
         const openFolder = () => window.electronAPI?.openInFolder(full);
         const openFile = () => window.electronAPI?.openFile(full);
         const showRename = () => setRenameTarget(f);
-        const confirmDel = () => setConfirmDelete(full);
-        const showMenu = () => setMenuTarget(f);
-        const handleKey = (e: React.KeyboardEvent) => {
-          if (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) {
-            e.preventDefault();
-            showMenu();
-          }
-        };
-        const menuOpen = menuTarget === f;
+        const confirmDel = () => setConfirmDelete(Array.from(selected));
+
         return (
-          <div
-            key={f}
-            className="p-1 cursor-pointer hover:ring ring-accent relative text-center tooltip"
-            data-tip={`${formatted} \n${name}`}
-            tabIndex={0}
-            onDoubleClick={openFile}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              showMenu();
-            }}
-            onKeyDown={handleKey}
-            onBlur={(e) => {
-              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                setMenuTarget(null);
-              }
-            }}
-          >
-            {thumb ? (
-              <>
-                <img
-                  src={thumb}
-                  alt={formatted}
-                  className="w-full aspect-square"
-                  style={{ imageRendering: 'pixelated' }}
-                />
-                <div className="text-xs leading-tight mt-1">
-                  <div>{formatted}</div>
-                  <div className="opacity-50">{name}</div>
-                </div>
-              </>
-            ) : (
-              <div className="w-full aspect-square bg-base-300 flex items-center justify-center">
-                {name}
-              </div>
-            )}
+          <div key={f} className="relative">
+            <AssetItem
+              project={projectPath}
+              file={f}
+              selected={selected.has(f)}
+              onSelect={handleSelect}
+              onOpenMenu={showMenu}
+            />
             <ul
               className={`menu dropdown-content bg-base-200 rounded-box absolute z-10 w-40 p-1 shadow ${
                 menuOpen ? 'block' : 'hidden'
@@ -123,11 +127,13 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
                   Open
                 </button>
               </li>
-              <li>
-                <button role="menuitem" onClick={showRename}>
-                  Rename
-                </button>
-              </li>
+              {selected.size === 1 && (
+                <li>
+                  <button role="menuitem" onClick={showRename}>
+                    Rename
+                  </button>
+                </li>
+              )}
               <li>
                 <button role="menuitem" onClick={confirmDel}>
                   Delete
@@ -141,7 +147,11 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
         <dialog className="modal modal-open" data-testid="delete-modal">
           <div className="modal-box">
             <h3 className="font-bold text-lg mb-2">Confirm Delete</h3>
-            <p>{path.basename(confirmDelete)}</p>
+            <p>
+              {confirmDelete.length === 1
+                ? path.basename(confirmDelete[0])
+                : `Delete ${confirmDelete.length} assets?`}
+            </p>
             <div className="modal-action">
               <button className="btn" onClick={() => setConfirmDelete(null)}>
                 Cancel
@@ -150,7 +160,11 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
                 className="btn btn-error"
                 onClick={() => {
                   if (!confirmDelete) return;
-                  window.electronAPI?.deleteFile(confirmDelete);
+                  confirmDelete.forEach((d) => {
+                    const full = path.join(projectPath, d);
+                    window.electronAPI?.deleteFile(full);
+                  });
+                  setSelected(new Set());
                   setConfirmDelete(null);
                 }}
               >
