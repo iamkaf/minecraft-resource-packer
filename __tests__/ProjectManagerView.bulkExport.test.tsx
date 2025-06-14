@@ -1,9 +1,9 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import ProjectManager from '../src/renderer/components/ProjectManager';
+import ProjectManagerView from '../src/renderer/views/ProjectManagerView';
 
-describe('ProjectManager bulk export', () => {
+describe('ProjectManagerView bulk export', () => {
   const listProjects = vi.fn();
   const listVersions = vi.fn();
   const exportProjects = vi.fn();
@@ -46,7 +46,7 @@ describe('ProjectManager bulk export', () => {
   });
 
   it('calls exportProjects with selected rows', async () => {
-    render(<ProjectManager />);
+    render(<ProjectManagerView />);
     await screen.findAllByRole('checkbox');
     const boxes = screen.getAllByRole('checkbox', { name: /Select/ });
     fireEvent.click(boxes[1]);

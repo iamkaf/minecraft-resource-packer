@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
-import About from '../src/renderer/components/About';
+import AboutView from '../src/renderer/views/AboutView';
 import pkg from '../package.json';
 
 // eslint-disable-next-line no-var
@@ -11,9 +11,9 @@ vi.mock('electron', () => ({
   shell: { openExternal: (openExternalMock = vi.fn()) },
 }));
 
-describe('About', () => {
+describe('AboutView', () => {
   it('shows logo, version and license', () => {
-    render(<About />);
+    render(<AboutView />);
     expect(screen.getByAltText('App logo')).toBeInTheDocument();
     expect(
       screen.getByText(`Minecraft Resource Packer v${pkg.version}`)
@@ -25,7 +25,7 @@ describe('About', () => {
   });
 
   it('opens links externally', () => {
-    render(<About />);
+    render(<AboutView />);
     const gh = screen.getByText('GitHub');
     const docs = screen.getByText('Documentation');
     gh.dispatchEvent(
