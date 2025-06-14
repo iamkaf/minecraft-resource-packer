@@ -21,4 +21,10 @@ describe('PreviewPane', () => {
     const pane = screen.getByTestId('preview-pane');
     expect(pane.className).not.toContain('bg-gray-200');
   });
+
+  it('allows custom protocol', () => {
+    render(<PreviewPane texture="foo.png" protocol="texture" />);
+    const img = screen.getByRole('img');
+    expect(img).toHaveAttribute('src', 'texture://foo.png');
+  });
 });
