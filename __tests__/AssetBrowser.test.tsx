@@ -143,4 +143,34 @@ describe('AssetBrowser', () => {
     expect(screen.queryByText('b.png')).toBeNull();
     expect(screen.getByText('d.png')).toBeInTheDocument();
   });
+
+  it('supports multi selection and delete key', async () => {
+    const deleteFile = vi.fn();
+    interface API {
+      deleteFile: (p: string) => void;
+      watchProject: typeof watchProject;
+      unwatchProject: typeof unwatchProject;
+      onFileAdded: typeof onFileAdded;
+      onFileRemoved: typeof onFileRemoved;
+      onFileRenamed: typeof onFileRenamed;
+    }
+    (window as unknown as { electronAPI: API }).electronAPI = {
+      deleteFile,
+      watchProject,
+      unwatchProject,
+      onFileAdded,
+      onFileRemoved,
+      onFileRenamed,
+    };
+    render(<AssetBrowser path="/proj" />);
+    const a = await screen.findByText('a.txt');
+    const b = screen.getByText('b.png');
+    fireEvent.click(a);
+    fireEvent.click(b, { ctrlKey: true });
+    const wrapper = screen.getByTestId('asset-browser');
+    fireEvent.keyDown(wrapper, { key: 'Delete' });
+    const modal = await screen.findByTestId('delete-modal');
+    fireEvent.click(within(modal).getByText('Delete'));
+    expect(deleteFile).toHaveBeenCalledTimes(2);
+  });
 });
