@@ -51,6 +51,9 @@ const api = {
   deleteFile: (file: string) => invoke('delete-file', file),
   watchProject: (project: string) => invoke('watch-project', project),
   unwatchProject: (project: string) => invoke('unwatch-project', project),
+  getNoExport: (project: string) => invoke('get-no-export', project),
+  setNoExport: (project: string, file: string, flag: boolean) =>
+    invoke('set-no-export', project, file, flag),
   onFileAdded: (listener: (e: unknown, path: string) => void) =>
     on('file-added', listener),
   onFileRemoved: (listener: (e: unknown, path: string) => void) =>

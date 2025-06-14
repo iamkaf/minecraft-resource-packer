@@ -37,4 +37,22 @@ describe('exportPack', () => {
     const data = JSON.parse(buf.toString('utf-8'));
     expect(data.pack.pack_format).toBe(15);
   });
+
+  it('skips files marked no export', async () => {
+    const meta = {
+      name: 'Test',
+      version: '1.20.1',
+      assets: ['file.txt'],
+      noExport: ['file.txt'],
+    };
+    fs.writeFileSync(
+      path.join(projectDir, 'project.json'),
+      JSON.stringify(meta, null, 2)
+    );
+    await exportPack(projectDir, outZip);
+    const dir = await unzipper.Open.file(outZip);
+    const names = dir.files.map((f) => f.path);
+    expect(names).not.toContain('file.txt');
+    expect(names).toContain('pack.mcmeta');
+  });
 });

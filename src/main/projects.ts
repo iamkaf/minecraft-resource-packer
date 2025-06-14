@@ -25,6 +25,7 @@ export async function createProject(
     name,
     version,
     assets: [],
+    noExport: [],
     lastOpened: Date.now(),
   };
   await fs.promises.writeFile(
@@ -155,6 +156,33 @@ export async function savePackMeta(
   await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
 }
 
+export async function getNoExport(projectPath: string): Promise<string[]> {
+  const metaPath = path.join(projectPath, 'project.json');
+  if (!fs.existsSync(metaPath)) return [];
+  try {
+    const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
+    const meta = ProjectMetadataSchema.parse(data);
+    return meta.noExport ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export async function setNoExport(
+  projectPath: string,
+  relPath: string,
+  flag: boolean
+): Promise<void> {
+  const metaPath = path.join(projectPath, 'project.json');
+  const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
+  const meta = ProjectMetadataSchema.parse(data);
+  const set = new Set(meta.noExport ?? []);
+  if (flag) set.add(relPath);
+  else set.delete(relPath);
+  meta.noExport = Array.from(set);
+  await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
+}
+
 export function registerProjectHandlers(
   ipc: IpcMain,
   baseDir: string,
@@ -185,4 +213,13 @@ export function registerProjectHandlers(
   ipc.handle('save-pack-meta', (_e, name: string, meta: PackMeta) => {
     return savePackMeta(baseDir, name, meta);
   });
+  ipc.handle('get-no-export', (_e, projectPath: string) => {
+    return getNoExport(projectPath);
+  });
+  ipc.handle(
+    'set-no-export',
+    (_e, projectPath: string, file: string, flag: boolean) => {
+      return setNoExport(projectPath, file, flag);
+    }
+  );
 }

@@ -173,4 +173,42 @@ describe('AssetBrowser', () => {
     fireEvent.click(within(modal).getByText('Delete'));
     expect(deleteFile).toHaveBeenCalledTimes(2);
   });
+
+  it('toggles no export flag', async () => {
+    const setNoExport = vi.fn();
+    const getNoExport = vi.fn(async () => []);
+    interface API {
+      setNoExport: (p: string, f: string, b: boolean) => void;
+      getNoExport: (p: string) => Promise<string[]>;
+      watchProject: typeof watchProject;
+      unwatchProject: typeof unwatchProject;
+      onFileAdded: typeof onFileAdded;
+      onFileRemoved: typeof onFileRemoved;
+      onFileRenamed: typeof onFileRenamed;
+    }
+    (window as unknown as { electronAPI: API }).electronAPI = {
+      setNoExport,
+      getNoExport,
+      watchProject,
+      unwatchProject,
+      onFileAdded,
+      onFileRemoved,
+      onFileRenamed,
+    };
+    render(<AssetBrowser path="/proj" />);
+    const itemA = await screen.findByText('a.txt');
+    fireEvent.click(itemA);
+    fireEvent.contextMenu(itemA);
+    const checkbox = within(screen.getAllByRole('menu')[0]).getByRole('checkbox');
+    fireEvent.click(checkbox);
+    expect(setNoExport).toHaveBeenNthCalledWith(1, '/proj', 'a.txt', true);
+
+    const itemB = screen.getByText('b.png');
+    fireEvent.click(itemB, { ctrlKey: true });
+    fireEvent.contextMenu(itemB);
+    const cb2 = within(screen.getAllByRole('menu')[0]).getByRole('checkbox');
+    fireEvent.click(cb2);
+    expect(setNoExport).toHaveBeenNthCalledWith(2, '/proj', 'a.txt', true);
+    expect(setNoExport).toHaveBeenNthCalledWith(3, '/proj', 'b.png', true);
+  });
 });

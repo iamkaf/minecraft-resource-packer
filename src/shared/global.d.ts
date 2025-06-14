@@ -36,6 +36,8 @@ declare global {
       deleteFile: IpcInvoke<'delete-file'>;
       watchProject: IpcInvoke<'watch-project'>;
       unwatchProject: IpcInvoke<'unwatch-project'>;
+      getNoExport: IpcInvoke<'get-no-export'>;
+      setNoExport: IpcInvoke<'set-no-export'>;
       onOpenProject: IpcListener<'project-opened'>;
       onFileAdded: IpcListener<'file-added'>;
       onFileRemoved: IpcListener<'file-removed'>;

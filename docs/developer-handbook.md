@@ -96,6 +96,9 @@ Select multiple rows using the checkboxes in the projects table and click
 is zipped to `<name>.zip` in that location. Progress appears in a modal with a
 toast confirming success or failure.
 
+Files in the project browser include a **No Export** toggle. Paths listed under
+`noExport` in `project.json` are skipped when the pack is zipped.
+
 ## Asset Browser
 
 The vanilla asset browser lets you search textures from the selected Minecraft

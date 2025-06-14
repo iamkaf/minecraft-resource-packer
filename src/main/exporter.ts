@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import archiver from 'archiver';
 import { packFormatForVersion } from '../shared/packFormat';
+import { ProjectMetadataSchema } from '../shared/project';
 import type { IpcMain } from 'electron';
 import { dialog } from 'electron';
 
@@ -42,7 +43,21 @@ export function exportPack(
     });
 
     archive.pipe(output);
-    archive.directory(projectPath, false);
+    let skip = new Set<string>();
+    try {
+      const data = JSON.parse(
+        fs.readFileSync(path.join(projectPath, 'project.json'), 'utf-8')
+      );
+      const meta = ProjectMetadataSchema.parse(data);
+      skip = new Set(meta.noExport ?? []);
+    } catch {
+      /* ignore */
+    }
+    archive.directory(projectPath, false, (entry) => {
+      const rel = entry.name.split(path.sep).join('/');
+      if (skip.has(rel)) return false;
+      return entry;
+    });
     // Add a default pack.mcmeta so Minecraft recognises the pack.
     const format = packFormatForVersion(version) ?? 15;
     const mcmeta = {
@@ -55,7 +70,7 @@ export function exportPack(
 
 export async function exportProjects(
   baseDir: string,
-  names: string[],
+  names: string[]
 ): Promise<void> {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     title: 'Select Export Folder',
@@ -86,6 +101,6 @@ export function registerExportHandlers(ipc: IpcMain, baseDir: string) {
     }
   );
   ipc.handle('export-projects', (_e, names: string[]) =>
-    exportProjects(baseDir, names),
+    exportProjects(baseDir, names)
   );
 }

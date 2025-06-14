@@ -55,7 +55,7 @@ describe('AssetSelector', () => {
     expect(section.parentElement).not.toBeNull();
     const itemParent = section.parentElement as HTMLElement;
     expect(
-      within(itemParent).getByRole('button', {
+      await within(itemParent).findByRole('button', {
         name: 'item/axe.png',
       })
     ).toBeInTheDocument();
