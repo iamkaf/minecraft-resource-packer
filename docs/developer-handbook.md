@@ -123,7 +123,9 @@ slider (24–128 px) and textures can be clicked or dragged into the asset bro
 to add them to the project.
 
 Beside the asset information panel, a **Preview Pane** shows the currently
-selected texture under neutral lighting. The pane is lazy loaded and displays a
+selected texture under neutral lighting. The pane renders textures at a 1:1
+pixel scale and includes a zoom slider (1–8×). Scrolling the mouse wheel over
+the pane adjusts the zoom. The pane is lazy loaded and displays a
 `react-loader-spinner` indicator while loading.
 
 ## Windows Paths
