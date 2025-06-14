@@ -73,4 +73,26 @@ describe('AssetBrowserItem', () => {
     fireEvent.click(toggle);
     expect(toggleNoExport).toHaveBeenCalledWith(['a.txt', 'b.txt'], true);
   });
+
+  it('closes context menu on blur', () => {
+    render(
+      <AssetBrowserItem
+        projectPath="/proj"
+        file="a.txt"
+        selected={new Set()}
+        setSelected={() => undefined}
+        noExport={new Set()}
+        toggleNoExport={() => undefined}
+        confirmDelete={() => undefined}
+        openRename={() => undefined}
+      />
+    );
+    const item = screen.getByText('a.txt');
+    const container = item.closest('div[tabindex="0"]') as HTMLElement;
+    fireEvent.contextMenu(container);
+    const menu = screen.getByRole('menu');
+    expect(menu.style.display).toBe('block');
+    fireEvent.blur(container);
+    expect(menu.style.display).toBe('none');
+  });
 });

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import path from 'path';
 import { formatTextureName } from '../utils/textureNames';
+import AssetContextMenu from './file/AssetContextMenu';
 
 interface Props {
   projectPath: string;
@@ -113,77 +114,34 @@ const AssetBrowserItem: React.FC<Props> = ({
           {name}
         </div>
       )}
-      <ul
-        className={`menu dropdown-content bg-base-200 rounded-box fixed z-10 w-40 p-1 shadow ${
-          menuPos ? 'block' : 'hidden'
-        }`}
-        style={{ left: menuPos?.x, top: menuPos?.y }}
-        role="menu"
-      >
-        <li>
-          <button
-            ref={firstItem}
-            role="menuitem"
-            onClick={() => window.electronAPI?.openInFolder(full)}
-          >
-            Reveal
-          </button>
-        </li>
-        <li>
-          <button
-            role="menuitem"
-            onClick={() => window.electronAPI?.openFile(full)}
-          >
-            Open
-          </button>
-        </li>
-        <li>
-          <button
-            role="menuitem"
-            onClick={() => openRename(file)}
-            disabled={selected.size > 1}
-          >
-            Rename
-          </button>
-        </li>
-        <li>
-          <label className="flex gap-2 items-center cursor-pointer px-2">
-            <span>No Export</span>
-            <input
-              type="checkbox"
-              className="toggle toggle-sm"
-              checked={(() => {
-                const list = selected.has(file) ? Array.from(selected) : [file];
-                return list.every((x) => noExport.has(x));
-              })()}
-              onChange={(e) => {
-                const list = selected.has(file) ? Array.from(selected) : [file];
-                toggleNoExport(list, e.target.checked);
-              }}
-            />
-          </label>
-        </li>
-        {selected.size > 1 ? (
-          <li>
-            <button
-              role="menuitem"
-              onClick={() =>
-                confirmDelete(
-                  Array.from(selected).map((s) => path.join(projectPath, s))
-                )
-              }
-            >
-              Delete Selected
-            </button>
-          </li>
-        ) : (
-          <li>
-            <button role="menuitem" onClick={() => confirmDelete([full])}>
-              Delete
-            </button>
-          </li>
-        )}
-      </ul>
+      <AssetContextMenu
+        filePath={full}
+        selectionCount={selected.size}
+        noExportChecked={(() => {
+          const list = selected.has(file) ? Array.from(selected) : [file];
+          return list.every((x) => noExport.has(x));
+        })()}
+        style={{
+          left: menuPos?.x,
+          top: menuPos?.y,
+          display: menuPos ? 'block' : 'none',
+        }}
+        firstItemRef={firstItem}
+        onReveal={() => window.electronAPI?.openInFolder(full)}
+        onOpen={() => window.electronAPI?.openFile(full)}
+        onRename={() => openRename(file)}
+        onDelete={() =>
+          confirmDelete(
+            selected.size > 1
+              ? Array.from(selected).map((s) => path.join(projectPath, s))
+              : [full]
+          )
+        }
+        onToggleNoExport={(flag) => {
+          const list = selected.has(file) ? Array.from(selected) : [file];
+          toggleNoExport(list, flag);
+        }}
+      />
     </div>
   );
 };
