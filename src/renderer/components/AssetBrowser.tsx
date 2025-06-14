@@ -101,7 +101,7 @@ const AssetBrowser: React.FC<Props> = ({
         const toggleSelect = (e: React.MouseEvent) => {
           e.stopPropagation();
           const ns = new Set(selected);
-          if (e.ctrlKey || e.metaKey) {
+          if (e.ctrlKey || e.metaKey || e.shiftKey) {
             if (ns.has(f)) ns.delete(f);
             else ns.add(f);
           } else {
