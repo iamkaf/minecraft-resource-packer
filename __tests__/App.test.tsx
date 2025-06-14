@@ -22,6 +22,11 @@ vi.mock('../src/renderer/components/AssetSelector', () => ({
 vi.mock('../src/renderer/components/AssetBrowser', () => ({
   default: () => <div>browser</div>,
 }));
+vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
+  default: (props: { onExport: () => void }) => (
+    <button onClick={props.onExport}>Export Pack</button>
+  ),
+}));
 vi.mock('../src/renderer/views/ProjectManagerView', () => ({
   default: () => <div>manager</div>,
 }));

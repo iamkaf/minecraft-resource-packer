@@ -3,11 +3,13 @@ import React, { useState } from 'react';
 interface PreviewPaneProps {
   texture: string | null;
   lighting?: 'neutral' | 'none';
+  protocol?: 'ptex' | 'texture' | '';
 }
 
 export default function PreviewPane({
   texture,
   lighting = 'neutral',
+  protocol = 'ptex',
 }: PreviewPaneProps) {
   const [zoom, setZoom] = useState(1);
   const bgClass = lighting === 'neutral' ? 'bg-gray-200' : 'bg-transparent';
@@ -30,8 +32,8 @@ export default function PreviewPane({
       {texture ? (
         <>
           <img
-            src={`ptex://${texture}`}
-            alt={texture}
+            src={protocol ? `${protocol}://${texture}` : (texture ?? '')}
+            alt={texture ?? ''}
             style={{
               imageRendering: 'pixelated',
               transform: `scale(${zoom})`,
