@@ -13,6 +13,14 @@ export function registerFileHandlers(ipc: IpcMain) {
     shell.openPath(file);
   });
 
+  ipc.handle('read-file', (_e, file: string) => {
+    return fs.promises.readFile(file, 'utf-8');
+  });
+
+  ipc.handle('write-file', async (_e, file: string, data: string) => {
+    await fs.promises.writeFile(file, data, 'utf-8');
+  });
+
   ipc.handle('rename-file', async (_e, oldPath: string, newPath: string) => {
     await fs.promises.rename(oldPath, newPath);
     emitRenamed(oldPath, newPath);

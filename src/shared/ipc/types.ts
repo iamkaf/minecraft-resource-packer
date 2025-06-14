@@ -21,6 +21,8 @@ export interface IpcRequestMap {
   'export-projects': [string[]];
   'open-in-folder': [string];
   'open-file': [string];
+  'read-file': [string];
+  'write-file': [string, string];
   'rename-file': [string, string];
   'delete-file': [string];
   'watch-project': [string];
@@ -48,6 +50,8 @@ export interface IpcResponseMap {
   'export-projects': void;
   'open-in-folder': void;
   'open-file': void;
+  'read-file': string;
+  'write-file': void;
   'rename-file': void;
   'delete-file': void;
   'watch-project': string[];

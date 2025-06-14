@@ -32,6 +32,8 @@ declare global {
       exportProjects: IpcInvoke<'export-projects'>;
       openInFolder: IpcInvoke<'open-in-folder'>;
       openFile: IpcInvoke<'open-file'>;
+      readFile: IpcInvoke<'read-file'>;
+      writeFile: IpcInvoke<'write-file'>;
       renameFile: IpcInvoke<'rename-file'>;
       deleteFile: IpcInvoke<'delete-file'>;
       watchProject: IpcInvoke<'watch-project'>;

@@ -46,6 +46,8 @@ const api = {
   randomizeIcon: (project: string) => invoke('randomize-icon', project),
   openInFolder: (file: string) => invoke('open-in-folder', file),
   openFile: (file: string) => invoke('open-file', file),
+  readFile: (file: string) => invoke('read-file', file),
+  writeFile: (file: string, data: string) => invoke('write-file', file, data),
   renameFile: (oldPath: string, newPath: string) =>
     invoke('rename-file', oldPath, newPath),
   deleteFile: (file: string) => invoke('delete-file', file),
