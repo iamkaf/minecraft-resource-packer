@@ -96,6 +96,10 @@ Select multiple rows using the checkboxes in the projects table and click
 is zipped to `<name>.zip` in that location. Progress appears in a modal with a
 toast confirming success or failure.
 
+Each project's `project.json` stores a `noExport` array listing files that
+should be excluded from exports. The asset browser context menu includes a
+**No Export** toggle to manage this flag on one or multiple selected files.
+
 ## Asset Browser
 
 The vanilla asset browser lets you search textures from the selected Minecraft

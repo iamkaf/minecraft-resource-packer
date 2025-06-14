@@ -22,6 +22,8 @@ describe('AssetBrowser', () => {
           onFileAdded: typeof onFileAdded;
           onFileRemoved: typeof onFileRemoved;
           onFileRenamed: typeof onFileRenamed;
+          getNoExport: () => Promise<string[]>;
+          setNoExport: () => void;
         };
       }
     ).electronAPI = {
@@ -30,6 +32,8 @@ describe('AssetBrowser', () => {
       onFileAdded,
       onFileRemoved,
       onFileRenamed,
+      getNoExport: vi.fn(async () => []),
+      setNoExport: vi.fn(),
     };
   });
 
@@ -61,6 +65,8 @@ describe('AssetBrowser', () => {
           onFileAdded: typeof onFileAdded;
           onFileRemoved: typeof onFileRemoved;
           onFileRenamed: typeof onFileRenamed;
+          getNoExport: () => Promise<string[]>;
+          setNoExport: () => void;
         };
       }
     ).electronAPI = {
@@ -73,6 +79,8 @@ describe('AssetBrowser', () => {
       onFileAdded,
       onFileRemoved,
       onFileRenamed,
+      getNoExport: vi.fn(async () => []),
+      setNoExport: vi.fn(),
     };
     render(<AssetBrowser path="/proj" />);
     const item = await screen.findByText('a.txt');
@@ -153,6 +161,8 @@ describe('AssetBrowser', () => {
       onFileAdded: typeof onFileAdded;
       onFileRemoved: typeof onFileRemoved;
       onFileRenamed: typeof onFileRenamed;
+      getNoExport: () => Promise<string[]>;
+      setNoExport: () => void;
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       deleteFile,
@@ -161,6 +171,8 @@ describe('AssetBrowser', () => {
       onFileAdded,
       onFileRemoved,
       onFileRenamed,
+      getNoExport: vi.fn(async () => []),
+      setNoExport: vi.fn(),
     };
     render(<AssetBrowser path="/proj" />);
     const a = await screen.findByText('a.txt');
@@ -172,5 +184,68 @@ describe('AssetBrowser', () => {
     const modal = await screen.findByTestId('delete-modal');
     fireEvent.click(within(modal).getByText('Delete'));
     expect(deleteFile).toHaveBeenCalledTimes(2);
+  });
+
+  it('toggles noExport for selected files', async () => {
+    const setNoExport = vi.fn();
+    const getNoExport = vi.fn(async () => []);
+    interface API {
+      setNoExport: typeof setNoExport;
+      getNoExport: typeof getNoExport;
+      watchProject: typeof watchProject;
+      unwatchProject: typeof unwatchProject;
+      onFileAdded: typeof onFileAdded;
+      onFileRemoved: typeof onFileRemoved;
+      onFileRenamed: typeof onFileRenamed;
+    }
+    (window as unknown as { electronAPI: API }).electronAPI = {
+      setNoExport,
+      getNoExport,
+      watchProject,
+      unwatchProject,
+      onFileAdded,
+      onFileRemoved,
+      onFileRenamed,
+    };
+    render(<AssetBrowser path="/proj" />);
+    const a = await screen.findByText('a.txt');
+    const b = screen.getByText('b.png');
+    fireEvent.click(a);
+    fireEvent.click(b, { ctrlKey: true });
+    fireEvent.contextMenu(a);
+    const menus = await screen.findAllByRole('menu');
+    const menu = menus.find((m) =>
+      m.classList.contains('block')
+    ) as HTMLElement;
+    const toggle = within(menu).getByRole('checkbox', { name: /No Export/i });
+    fireEvent.click(toggle);
+    expect(setNoExport).toHaveBeenCalledWith('/proj', ['a.txt', 'b.png'], true);
+  });
+
+  it('shows noExport files dimmed', async () => {
+    const getNoExport = vi.fn(async () => ['a.txt']);
+    interface API {
+      getNoExport: typeof getNoExport;
+      setNoExport: () => void;
+      watchProject: typeof watchProject;
+      unwatchProject: typeof unwatchProject;
+      onFileAdded: typeof onFileAdded;
+      onFileRemoved: typeof onFileRemoved;
+      onFileRenamed: typeof onFileRenamed;
+    }
+    (window as unknown as { electronAPI: API }).electronAPI = {
+      getNoExport,
+      setNoExport: vi.fn(),
+      watchProject,
+      unwatchProject,
+      onFileAdded,
+      onFileRemoved,
+      onFileRenamed,
+    };
+    render(<AssetBrowser path="/proj" />);
+    const el = await screen.findByText('a.txt');
+    const container = el.closest('div[tabindex="0"]') as HTMLElement;
+    expect(container.className).toMatch(/opacity-50/);
+    expect(container.className).toMatch(/border-gray-400/);
   });
 });
