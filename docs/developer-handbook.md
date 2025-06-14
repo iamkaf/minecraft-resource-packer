@@ -1,6 +1,6 @@
 # Developer Handbook
 
-Welcome to **minecraft-resource-packer**. This workspace uses Electron Forge with a React + TypeScript front end.
+Welcome to **minecraft-resource-packer**. This project uses Electron Forge with a React + TypeScript front end.
 
 ## Getting Started
 
@@ -37,13 +37,11 @@ npm run format
 
 ## Project Structure
 
-- `apps/` – container for Electron applications
-  - `mc-pack-tool/` – main resource pack editor
-    - `src/main/` – Electron entry point and IPC controllers
-    - `src/preload/` – preload script and IPC bindings
-    - `src/renderer/` – React UI with components, hooks, styles and utils
-    - `src/shared/` – utilities and typed IPC definitions shared across processes
-    - `__tests__/` – Vitest unit tests
+- `src/main/` – Electron entry point and IPC controllers
+- `src/preload/` – preload script and IPC bindings
+- `src/renderer/` – React UI with components, hooks, styles and utils
+- `src/shared/` – utilities and typed IPC definitions shared across processes
+- `__tests__/` – Vitest unit tests
 
 ## Adding Functionality
 
