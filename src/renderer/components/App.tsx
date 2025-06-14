@@ -8,8 +8,9 @@ import type { ExportSummary } from '../../main/exporter';
 const AssetBrowser = lazy(() => import('./AssetBrowser'));
 const AssetSelector = lazy(() => import('./AssetSelector'));
 const ProjectManager = lazy(() => import('./ProjectManager'));
-import DrawerLayout from './DrawerLayout';
+import DesktopLayout from './DesktopLayout';
 import About from './About';
+import AssetInfo from './AssetInfo';
 
 // Main React component shown in the editor window.  It waits for the main
 // process to notify which project is open and then displays an AssetBrowser for
@@ -21,6 +22,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<'projects' | 'settings' | 'about'>(
     'projects'
   );
+  const [selected, setSelected] = useState<string[]>([]);
   const confetti = useRef<((opts: unknown) => void) | null>(null);
 
   useEffect(() => {
@@ -33,25 +35,25 @@ const App: React.FC = () => {
 
   if (view === 'about') {
     return (
-      <DrawerLayout view={view} onNavigate={setView}>
+      <DesktopLayout view={view} onNavigate={setView}>
         <Navbar />
         <main className="p-4">
           <About />
         </main>
-      </DrawerLayout>
+      </DesktopLayout>
     );
   }
 
   if (!projectPath) {
     return (
-      <DrawerLayout view={view} onNavigate={setView}>
+      <DesktopLayout view={view} onNavigate={setView}>
         <Navbar />
         <main className="p-4 flex flex-col gap-6">
           <Suspense fallback={<Spinner />}>
             <ProjectManager />
           </Suspense>
         </main>
-      </DrawerLayout>
+      </DesktopLayout>
     );
   }
 
@@ -76,7 +78,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <DrawerLayout view={view} onNavigate={setView}>
+    <DesktopLayout view={view} onNavigate={setView}>
       <Navbar />
       <main className="p-4 flex flex-col gap-4">
         <button
@@ -89,12 +91,22 @@ const App: React.FC = () => {
         <button className="btn btn-accent mb-2" onClick={handleExport}>
           Export Pack
         </button>
-        <Suspense fallback={<Spinner />}>
-          <AssetSelector path={projectPath} />
-        </Suspense>
-        <Suspense fallback={<Spinner />}>
-          <AssetBrowser path={projectPath} />
-        </Suspense>
+        <div className="flex gap-4 flex-1">
+          <div className="w-64 overflow-y-auto">
+            <Suspense fallback={<Spinner />}>
+              <AssetSelector path={projectPath} />
+            </Suspense>
+          </div>
+          <div className="flex-1 flex flex-col">
+            <Suspense fallback={<Spinner />}>
+              <AssetBrowser
+                path={projectPath}
+                onSelectionChange={(sel) => setSelected(sel)}
+              />
+            </Suspense>
+            <AssetInfo asset={selected[0] ?? null} />
+          </div>
+        </div>
       </main>
       {summary && (
         <ExportSummaryModal
@@ -115,7 +127,7 @@ const App: React.FC = () => {
           left: 0,
         }}
       />
-    </DrawerLayout>
+    </DesktopLayout>
   );
 };
 
