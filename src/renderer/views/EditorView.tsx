@@ -67,7 +67,11 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
               onSelectionChange={(sel) => setSelected(sel)}
             />
           </Suspense>
-          <AssetInfo asset={selected[0] ?? null} />
+          <AssetInfo
+            projectPath={projectPath}
+            asset={selected[0] ?? null}
+            count={selected.length}
+          />
         </div>
       </div>
       {summary && (
