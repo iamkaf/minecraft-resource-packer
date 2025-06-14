@@ -22,7 +22,7 @@ vi.mock('../src/renderer/components/AssetSelector', () => ({
 vi.mock('../src/renderer/components/AssetBrowser', () => ({
   default: () => <div>browser</div>,
 }));
-vi.mock('../src/renderer/components/ProjectManager', () => ({
+vi.mock('../src/renderer/views/ProjectManagerView', () => ({
   default: () => <div>manager</div>,
 }));
 
@@ -63,7 +63,7 @@ describe('App', () => {
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
-    expect(screen.getByText(/Project: \/tmp\/proj/)).toBeInTheDocument();
+    await screen.findByText(/Project: \/tmp\/proj/);
   });
 
   it('invokes exportProject when button clicked', async () => {

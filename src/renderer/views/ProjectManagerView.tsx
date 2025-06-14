@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import Fuse from 'fuse.js';
-import { useToast } from './ToastProvider';
-import ProjectSidebar from './ProjectSidebar';
-import Spinner from './Spinner';
-import ProjectForm from './project/ProjectForm';
-import ProjectTable, { ProjectInfo } from './project/ProjectTable';
-import { useProjectModals } from './project/ProjectModals';
+import { useToast } from '../components/ToastProvider';
+import ProjectSidebar from '../components/ProjectSidebar';
+import Spinner from '../components/Spinner';
+import ProjectForm from '../components/project/ProjectForm';
+import ProjectTable, { ProjectInfo } from '../components/project/ProjectTable';
+import { useProjectModals } from '../components/project/ProjectModals';
 
 // Lists all available projects and lets the user open them.
 
-const ProjectManager: React.FC = () => {
+const ProjectManagerView: React.FC = () => {
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [sortKey, setSortKey] = useState<keyof ProjectInfo>('name');
   const [asc, setAsc] = useState(true);
@@ -178,4 +178,4 @@ const ProjectManager: React.FC = () => {
     </section>
   );
 };
-export default ProjectManager;
+export default ProjectManagerView;

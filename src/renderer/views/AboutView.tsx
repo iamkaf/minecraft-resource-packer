@@ -3,9 +3,8 @@ import pkg from '../../../package.json';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - webpack replaces import with URL string
 import iconPath from '../../../resources/icon.png';
-import ExternalLink from './ExternalLink';
-
-export default function About() {
+import ExternalLink from '../components/ExternalLink';
+export default function AboutView() {
   return (
     <section
       className="p-4 flex flex-col gap-4 items-center"

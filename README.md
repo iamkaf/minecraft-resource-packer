@@ -31,6 +31,7 @@ Run unit tests and lint the codebase with:
 ```bash
 npm test
 npm run lint
+npm run typecheck
 ```
 
 Format all files using Prettier:
