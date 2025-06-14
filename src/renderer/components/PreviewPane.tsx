@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface PreviewPaneProps {
   texture: string | null;
@@ -9,19 +9,46 @@ export default function PreviewPane({
   texture,
   lighting = 'neutral',
 }: PreviewPaneProps) {
+  const [zoom, setZoom] = useState(1);
   const bgClass = lighting === 'neutral' ? 'bg-gray-200' : 'bg-transparent';
+
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (!texture) return;
+    e.preventDefault();
+    setZoom((z) => {
+      const next = z + (e.deltaY < 0 ? 1 : -1);
+      return Math.min(8, Math.max(1, next));
+    });
+  };
+
   return (
     <div
       data-testid="preview-pane"
-      className={`w-32 h-32 flex items-center justify-center border ${bgClass}`}
+      onWheel={handleWheel}
+      className={`border p-2 flex flex-col items-center ${bgClass}`}
     >
       {texture ? (
-        <img
-          src={`ptex://${texture}`}
-          alt={texture}
-          className="max-w-full max-h-full"
-          style={{ imageRendering: 'pixelated' }}
-        />
+        <>
+          <img
+            src={`ptex://${texture}`}
+            alt={texture}
+            style={{
+              imageRendering: 'pixelated',
+              transform: `scale(${zoom})`,
+              transformOrigin: 'top left',
+            }}
+          />
+          <input
+            type="range"
+            min={1}
+            max={8}
+            step={1}
+            value={zoom}
+            aria-label="Zoom"
+            onChange={(e) => setZoom(Number(e.target.value))}
+            className="range range-xs w-32 mt-2"
+          />
+        </>
       ) : (
         <span>No preview</span>
       )}
