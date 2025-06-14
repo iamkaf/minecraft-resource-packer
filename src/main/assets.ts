@@ -28,6 +28,11 @@ let activeProjectDir = '';
 
 /**
  * Fetch a JSON document from the given URL.
+ *
+ * The request is performed using `fetch` and the body parsed as JSON. When the
+ * manifest URL is requested and the network is unavailable, a bundled copy is
+ * used as a fallback.
+ *
  * @throws if the request fails.
  */
 async function fetchJson<T>(url: string): Promise<T> {
@@ -48,6 +53,9 @@ async function fetchJson<T>(url: string): Promise<T> {
 
 /**
  * Download a file from the given URL and write it to disk.
+ *
+ * The target directory is created if it does not exist. The body is saved as a
+ * binary buffer so any file type can be retrieved.
  */
 async function downloadFile(url: string, dest: string): Promise<void> {
   const res = await fetch(url);
@@ -58,8 +66,34 @@ async function downloadFile(url: string, dest: string): Promise<void> {
 }
 
 /**
- * Ensure that the assets for the given Minecraft version are downloaded and
- * extracted. Returns the path to the extracted client folder.
+ * Extract all files from a zip archive to the given directory.
+ *
+ * The operation streams the archive to disk to avoid buffering large files in
+ * memory.
+ */
+async function extractZip(src: string, dest: string): Promise<void> {
+  await new Promise<void>((resolve, reject) => {
+    fs.createReadStream(src)
+      .pipe(unzipper.Extract({ path: dest }))
+      .on('close', resolve)
+      .on('error', reject);
+  });
+}
+
+/**
+ * Ensure that the assets for the given Minecraft version are available locally.
+ *
+ * Algorithm:
+ * 1. Build a version specific cache directory and check if textures already
+ *    exist.
+ * 2. If present return the path immediately.
+ * 3. Otherwise download the corresponding client JAR from Mojang using the
+ *    version manifest.
+ * 4. Extract the JAR into the cache so individual textures can be accessed.
+ *
+ * @param version Minecraft version string, e.g. `1.21.1`.
+ * @returns Absolute path to the extracted client folder containing `assets/`.
+ * @throws If the version cannot be resolved or downloads fail.
  */
 async function ensureAssets(version: string): Promise<string> {
   const base = path.join(cacheDir, version);
@@ -79,12 +113,7 @@ async function ensureAssets(version: string): Promise<string> {
   const jarUrl = ver.downloads.client.url;
   const jarPath = path.join(base, 'client.jar');
   if (!fs.existsSync(jarPath)) await downloadFile(jarUrl, jarPath);
-  await new Promise((resolve, reject) => {
-    fs.createReadStream(jarPath)
-      .pipe(unzipper.Extract({ path: assetsPath }))
-      .on('close', resolve)
-      .on('error', reject);
-  });
+  await extractZip(jarPath, assetsPath);
   return assetsPath;
 }
 
