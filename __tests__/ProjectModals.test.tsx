@@ -26,7 +26,14 @@ function Wrapper({
 describe('ProjectModals', () => {
   it('duplicates project via modal', async () => {
     const duplicateProject = vi.fn().mockResolvedValue(undefined);
-    (window as unknown as { electronAPI: { duplicateProject: typeof duplicateProject; deleteProject: () => void } }).electronAPI = {
+    (
+      window as unknown as {
+        electronAPI: {
+          duplicateProject: typeof duplicateProject;
+          deleteProject: () => void;
+        };
+      }
+    ).electronAPI = {
       duplicateProject,
       deleteProject: vi.fn(),
     };
@@ -45,7 +52,14 @@ describe('ProjectModals', () => {
 
   it('deletes project via modal', async () => {
     const deleteProject = vi.fn().mockResolvedValue(undefined);
-    (window as unknown as { electronAPI: { duplicateProject: () => void; deleteProject: typeof deleteProject } }).electronAPI = {
+    (
+      window as unknown as {
+        electronAPI: {
+          duplicateProject: () => void;
+          deleteProject: typeof deleteProject;
+        };
+      }
+    ).electronAPI = {
       duplicateProject: vi.fn(),
       deleteProject,
     };

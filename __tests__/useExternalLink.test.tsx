@@ -7,7 +7,9 @@ import ToastProvider from '../src/renderer/components/ToastProvider';
 vi.useFakeTimers();
 // eslint-disable-next-line no-var
 var openExternal: ReturnType<typeof vi.fn>;
-vi.mock('electron', () => ({ shell: { openExternal: (openExternal = vi.fn()) } }));
+vi.mock('electron', () => ({
+  shell: { openExternal: (openExternal = vi.fn()) },
+}));
 
 beforeEach(() => {
   openExternal.mockResolvedValue(undefined);

@@ -34,9 +34,11 @@ describe('EditorView', () => {
   beforeEach(() => {
     interface API {
       exportProject: (path: string) => Promise<typeof summary>;
+      loadPackMeta: (name: string) => Promise<{ description: string }>;
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       exportProject,
+      loadPackMeta: vi.fn(async () => ({ description: '' })),
     };
     exportProject.mockResolvedValue(summary);
     openExternalMock.mockResolvedValue(undefined);
@@ -45,7 +47,7 @@ describe('EditorView', () => {
 
   it('shows project path and exports pack', async () => {
     render(<EditorView projectPath="/tmp/proj" onBack={() => undefined} />);
-    expect(screen.getByText('Project: /tmp/proj')).toBeInTheDocument();
+    expect(screen.getAllByText('Project: /tmp/proj').length).toBeGreaterThan(0);
     const btn = screen.getByText('Export Pack');
     await act(async () => {
       fireEvent.click(btn);

@@ -63,7 +63,7 @@ describe('App', () => {
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
-    await screen.findByText(/Project: \/tmp\/proj/);
+    await screen.findAllByText(/Project: \/tmp\/proj/);
   });
 
   it('invokes exportProject when button clicked', async () => {
