@@ -2,6 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import AssetBrowserItem from '../src/renderer/components/AssetBrowserItem';
+import path from 'path';
 
 const openInFolder = vi.fn();
 const openFile = vi.fn();
@@ -40,16 +41,16 @@ describe('AssetBrowserItem', () => {
     const item = screen.getByText('a.txt');
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Reveal' }));
-    expect(openInFolder).toHaveBeenCalledWith('/proj/a.txt');
+    expect(openInFolder).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Open' }));
-    expect(openFile).toHaveBeenCalledWith('/proj/a.txt');
+    expect(openFile).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Rename' }));
     expect(openRename).toHaveBeenCalledWith('a.txt');
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Delete' }));
-    expect(confirmDelete).toHaveBeenCalledWith(['/proj/a.txt']);
+    expect(confirmDelete).toHaveBeenCalledWith([path.join('/proj', 'a.txt')]);
   });
 
   it('toggles noExport for selected files', () => {
@@ -94,5 +95,24 @@ describe('AssetBrowserItem', () => {
     expect(menu.style.display).toBe('block');
     fireEvent.blur(container);
     expect(menu.style.display).toBe('none');
+  });
+
+  it('menu is not dimmed when item is flagged noExport', () => {
+    render(
+      <AssetBrowserItem
+        projectPath="/proj"
+        file="a.txt"
+        selected={new Set()}
+        setSelected={() => undefined}
+        noExport={new Set(['a.txt'])}
+        toggleNoExport={() => undefined}
+        confirmDelete={() => undefined}
+        openRename={() => undefined}
+      />
+    );
+    const item = screen.getByText('a.txt');
+    fireEvent.contextMenu(item);
+    const menu = screen.getByRole('menu');
+    expect(menu.className).not.toMatch('opacity-50');
   });
 });

@@ -38,6 +38,31 @@ describe('ProjectTable', () => {
     expect(del).toHaveBeenCalledWith('Alpha');
   });
 
+  it('opens and deletes via keyboard', () => {
+    const open = vi.fn();
+    const del = vi.fn();
+    render(
+      <ProjectTable
+        projects={projects}
+        sortKey="name"
+        asc
+        onSort={() => {}}
+        selected={new Set()}
+        onSelect={() => {}}
+        onSelectAll={() => {}}
+        onOpen={open}
+        onDuplicate={() => {}}
+        onDelete={del}
+        onRowClick={() => {}}
+      />
+    );
+    const row = screen.getAllByRole('row')[1];
+    fireEvent.doubleClick(row);
+    expect(open).toHaveBeenCalledWith('Alpha');
+    fireEvent.keyDown(row, { key: 'Delete' });
+    expect(del).toHaveBeenCalledWith('Alpha');
+  });
+
   it('selects rows and toggles all', () => {
     const select = vi.fn();
     const selectAll = vi.fn();

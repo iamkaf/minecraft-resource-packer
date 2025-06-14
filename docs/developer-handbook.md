@@ -117,3 +117,9 @@ version. Results are grouped into collapsible **Blocks**, **Items**, **Entity**,
 **UI**, **Audio** and **Misc** sections using daisyUI's collapse component. Only assets
 that match the search query appear in each section. Thumbnails respect the zoom
 slider (24–128 px) and clicking a texture adds it to the project.
+
+## Windows Paths
+
+When writing tests or other code that constructs file system paths, prefer
+`path.join()` over string concatenation. Hard coded `/` separators can cause
+failures on Windows where the standard separator is `\`.

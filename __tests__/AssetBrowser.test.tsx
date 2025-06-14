@@ -245,7 +245,8 @@ describe('AssetBrowser', () => {
     render(<AssetBrowser path="/proj" />);
     const el = await screen.findByText('a.txt');
     const container = el.closest('div[tabindex="0"]') as HTMLElement;
-    expect(container.className).toMatch(/opacity-50/);
     expect(container.className).toMatch(/border-gray-400/);
+    const inner = container.querySelector('div') as HTMLElement;
+    expect(inner.className).toMatch(/opacity-50/);
   });
 });
