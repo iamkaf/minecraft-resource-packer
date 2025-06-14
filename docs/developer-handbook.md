@@ -43,6 +43,16 @@ npm run format
 - `src/shared/` – utilities and typed IPC definitions shared across processes
 - `__tests__/` – Vitest unit tests
 
+## Views
+
+The renderer separates the interface into four top‑level views found under
+`src/renderer/views`:
+
+- **Project Manager** – choose, create or import projects.
+- **Editor** – edit project assets and export the finished pack.
+- **Settings** – application preferences.
+- **About** – version information, license and links.
+
 ## Adding Functionality
 
 When adding features that need access to Node APIs:
