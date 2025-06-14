@@ -15,9 +15,18 @@ export default function AboutView() {
         alt="App logo"
         className="w-32 h-32"
       />
-      <h2 className="font-display text-xl">
-        Minecraft Resource Packer v{pkg.version}
-      </h2>
+      <div className="flex items-center gap-2">
+        <h2 className="font-display text-xl flex-1">
+          Minecraft Resource Packer v{pkg.version}
+        </h2>
+        <ExternalLink
+          href="https://minecraft.wiki/w/Minecraft_Wiki:About"
+          aria-label="Help"
+          className="btn btn-circle btn-ghost btn-sm"
+        >
+          ?
+        </ExternalLink>
+      </div>
       <p>
         <ExternalLink
           className="link link-primary"

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import Fuse from 'fuse.js';
 import { useToast } from '../components/ToastProvider';
+import ExternalLink from '../components/ExternalLink';
 import ProjectSidebar from '../components/ProjectSidebar';
 import ProjectForm from '../components/project/ProjectForm';
 import ProjectTable, { ProjectInfo } from '../components/project/ProjectTable';
@@ -114,7 +115,16 @@ const ProjectManagerView: React.FC = () => {
   return (
     <section className="flex gap-4">
       <div className="flex-1">
-        <h2 className="font-display text-xl mb-2">Projects</h2>
+        <div className="flex items-center mb-2 gap-2">
+          <h2 className="font-display text-xl flex-1">Projects</h2>
+          <ExternalLink
+            href="https://minecraft.wiki/w/Tutorials/Creating_a_resource_pack"
+            aria-label="Help"
+            className="btn btn-circle btn-ghost btn-sm"
+          >
+            ?
+          </ExternalLink>
+        </div>
         <ProjectForm
           versions={versions}
           onCreate={handleCreate}

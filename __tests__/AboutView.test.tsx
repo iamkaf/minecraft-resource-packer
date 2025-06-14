@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
 import AboutView from '../src/renderer/views/AboutView';
@@ -12,6 +12,9 @@ vi.mock('electron', () => ({
 }));
 
 describe('AboutView', () => {
+  beforeEach(() => {
+    openExternalMock.mockResolvedValue(undefined);
+  });
   it('shows logo, version and license', () => {
     render(<AboutView />);
     expect(screen.getByAltText('App logo')).toBeInTheDocument();
@@ -28,10 +31,14 @@ describe('AboutView', () => {
     render(<AboutView />);
     const gh = screen.getByText('GitHub');
     const docs = screen.getByText('Documentation');
+    const help = screen.getByRole('link', { name: 'Help' });
     gh.dispatchEvent(
       new MouseEvent('click', { bubbles: true, cancelable: true })
     );
     docs.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, cancelable: true })
+    );
+    help.dispatchEvent(
       new MouseEvent('click', { bubbles: true, cancelable: true })
     );
     expect(openExternalMock).toHaveBeenCalledWith(
@@ -39,6 +46,9 @@ describe('AboutView', () => {
     );
     expect(openExternalMock).toHaveBeenCalledWith(
       'https://github.com/iamkaf/minecraft-resource-packer/blob/main/docs/developer-handbook.md'
+    );
+    expect(openExternalMock).toHaveBeenCalledWith(
+      'https://minecraft.wiki/w/Minecraft_Wiki:About'
     );
   });
 });

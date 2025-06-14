@@ -5,6 +5,7 @@ import AssetSelector from '../components/AssetSelector';
 import AssetInfo from '../components/AssetInfo';
 import Spinner from '../components/Spinner';
 import ExportSummaryModal from '../components/ExportSummaryModal';
+import ExternalLink from '../components/ExternalLink';
 import type { ExportSummary } from '../../main/exporter';
 
 interface EditorViewProps {
@@ -40,7 +41,16 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
       <button className="link link-primary w-fit" onClick={onBack}>
         Back to Projects
       </button>
-      <h1 className="font-display text-xl mb-2">Project: {projectPath}</h1>
+      <div className="flex items-center gap-2 mb-2">
+        <h1 className="font-display text-xl flex-1">Project: {projectPath}</h1>
+        <ExternalLink
+          href="https://minecraft.wiki/w/Resource_pack"
+          aria-label="Help"
+          className="btn btn-circle btn-ghost btn-sm"
+        >
+          ?
+        </ExternalLink>
+      </div>
       <button className="btn btn-accent mb-2" onClick={handleExport}>
         Export Pack
       </button>
