@@ -8,9 +8,15 @@ import { formatTextureName } from '../utils/textureNames';
 
 interface Props {
   path: string;
+  selected: string[];
+  onSelectionChange: (sel: string[]) => void;
 }
 
-const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
+const AssetBrowser: React.FC<Props> = ({
+  path: projectPath,
+  selected,
+  onSelectionChange,
+}) => {
   const [files, setFiles] = useState<string[]>([]);
 
   useEffect(() => {
@@ -38,9 +44,10 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
   }, [projectPath]);
 
   const [menuTarget, setMenuTarget] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string[] | null>(null);
   const [renameTarget, setRenameTarget] = useState<string | null>(null);
   const firstItem = useRef<HTMLButtonElement>(null);
+  const lastIndex = useRef<number>(-1);
 
   useEffect(() => {
     if (menuTarget && firstItem.current) {
@@ -48,8 +55,27 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
     }
   }, [menuTarget]);
 
+  const handleDelete = (filesToDel: string[]) => {
+    setConfirmDelete(filesToDel);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Delete' && selected.length > 0) {
+      e.preventDefault();
+      handleDelete(selected);
+    }
+  };
+
   return (
-    <div className="grid grid-cols-6 gap-2" onClick={() => setMenuTarget(null)}>
+    <div
+      className="grid grid-cols-6 gap-2"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      onClick={() => {
+        setMenuTarget(null);
+        onSelectionChange([]);
+      }}
+    >
       {files.map((f) => {
         const full = path.join(projectPath, f);
         const name = path.basename(f);
@@ -62,8 +88,33 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
         const openFolder = () => window.electronAPI?.openInFolder(full);
         const openFile = () => window.electronAPI?.openFile(full);
         const showRename = () => setRenameTarget(f);
-        const confirmDel = () => setConfirmDelete(full);
-        const showMenu = () => setMenuTarget(f);
+        const confirmDel = () =>
+          handleDelete(selected.includes(f) ? selected : [f]);
+        const showMenu = () => {
+          if (!selected.includes(f)) onSelectionChange([f]);
+          setMenuTarget(f);
+        };
+        const index = files.indexOf(f);
+        const handleSelect = (e: React.MouseEvent) => {
+          e.stopPropagation();
+          if (e.shiftKey && lastIndex.current !== -1) {
+            const start = Math.min(lastIndex.current, index);
+            const end = Math.max(lastIndex.current, index);
+            const range = files.slice(start, end + 1);
+            const set = new Set(selected);
+            range.forEach((r) => set.add(r));
+            onSelectionChange(Array.from(set));
+          } else if (e.metaKey || e.ctrlKey) {
+            const set = new Set(selected);
+            if (set.has(f)) set.delete(f);
+            else set.add(f);
+            onSelectionChange(Array.from(set));
+            lastIndex.current = index;
+          } else {
+            onSelectionChange([f]);
+            lastIndex.current = index;
+          }
+        };
         const handleKey = (e: React.KeyboardEvent) => {
           if (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) {
             e.preventDefault();
@@ -71,10 +122,11 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
           }
         };
         const menuOpen = menuTarget === f;
+        const isSelected = selected.includes(f);
         return (
           <div
             key={f}
-            className="p-1 cursor-pointer hover:ring ring-accent relative text-center tooltip"
+            className={`p-1 cursor-pointer hover:ring ring-accent relative text-center tooltip ${isSelected ? 'ring ring-primary' : ''}`}
             data-tip={`${formatted} \n${name}`}
             tabIndex={0}
             onDoubleClick={openFile}
@@ -83,6 +135,7 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
               showMenu();
             }}
             onKeyDown={handleKey}
+            onClick={handleSelect}
             onBlur={(e) => {
               if (!e.currentTarget.contains(e.relatedTarget as Node)) {
                 setMenuTarget(null);
@@ -141,7 +194,7 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
         <dialog className="modal modal-open" data-testid="delete-modal">
           <div className="modal-box">
             <h3 className="font-bold text-lg mb-2">Confirm Delete</h3>
-            <p>{path.basename(confirmDelete)}</p>
+            <p>{confirmDelete.length} asset(s)</p>
             <div className="modal-action">
               <button className="btn" onClick={() => setConfirmDelete(null)}>
                 Cancel
@@ -149,9 +202,12 @@ const AssetBrowser: React.FC<Props> = ({ path: projectPath }) => {
               <button
                 className="btn btn-error"
                 onClick={() => {
-                  if (!confirmDelete) return;
-                  window.electronAPI?.deleteFile(confirmDelete);
+                  for (const f of confirmDelete) {
+                    const full = path.join(projectPath, f);
+                    window.electronAPI?.deleteFile(full);
+                  }
                   setConfirmDelete(null);
+                  onSelectionChange([]);
                 }}
               >
                 Delete

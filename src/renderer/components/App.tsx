@@ -8,7 +8,8 @@ import type { ExportSummary } from '../../main/exporter';
 const AssetBrowser = lazy(() => import('./AssetBrowser'));
 const AssetSelector = lazy(() => import('./AssetSelector'));
 const ProjectManager = lazy(() => import('./ProjectManager'));
-import DrawerLayout from './DrawerLayout';
+import ShellLayout from './ShellLayout';
+import AssetInfoPane from './AssetInfoPane';
 import About from './About';
 
 // Main React component shown in the editor window.  It waits for the main
@@ -22,6 +23,7 @@ const App: React.FC = () => {
     'projects'
   );
   const confetti = useRef<((opts: unknown) => void) | null>(null);
+  const [selected, setSelected] = useState<string[]>([]);
 
   useEffect(() => {
     // Listen for the main process telling us which project to load.
@@ -33,25 +35,25 @@ const App: React.FC = () => {
 
   if (view === 'about') {
     return (
-      <DrawerLayout view={view} onNavigate={setView}>
+      <ShellLayout view={view} onNavigate={setView}>
         <Navbar />
         <main className="p-4">
           <About />
         </main>
-      </DrawerLayout>
+      </ShellLayout>
     );
   }
 
   if (!projectPath) {
     return (
-      <DrawerLayout view={view} onNavigate={setView}>
+      <ShellLayout view={view} onNavigate={setView}>
         <Navbar />
         <main className="p-4 flex flex-col gap-6">
           <Suspense fallback={<Spinner />}>
             <ProjectManager />
           </Suspense>
         </main>
-      </DrawerLayout>
+      </ShellLayout>
     );
   }
 
@@ -76,25 +78,36 @@ const App: React.FC = () => {
   };
 
   return (
-    <DrawerLayout view={view} onNavigate={setView}>
+    <ShellLayout view={view} onNavigate={setView}>
       <Navbar />
-      <main className="p-4 flex flex-col gap-4">
-        <button
-          className="link link-primary w-fit"
-          onClick={() => setProjectPath(null)}
-        >
-          Back to Projects
-        </button>
-        <h1 className="font-display text-xl mb-2">Project: {projectPath}</h1>
-        <button className="btn btn-accent mb-2" onClick={handleExport}>
-          Export Pack
-        </button>
-        <Suspense fallback={<Spinner />}>
-          <AssetSelector path={projectPath} />
-        </Suspense>
-        <Suspense fallback={<Spinner />}>
-          <AssetBrowser path={projectPath} />
-        </Suspense>
+      <main className="p-4 flex-1 flex overflow-hidden gap-4">
+        <div className="w-60 overflow-y-auto">
+          <button
+            className="link link-primary w-fit"
+            onClick={() => setProjectPath(null)}
+          >
+            Back to Projects
+          </button>
+          <h1 className="font-display text-xl mb-2">Project: {projectPath}</h1>
+          <button className="btn btn-accent mb-2" onClick={handleExport}>
+            Export Pack
+          </button>
+          <Suspense fallback={<Spinner />}>
+            <AssetSelector path={projectPath} />
+          </Suspense>
+        </div>
+        <div className="flex-1 grid grid-rows-[1fr_auto] overflow-hidden">
+          <div className="overflow-auto">
+            <Suspense fallback={<Spinner />}>
+              <AssetBrowser
+                path={projectPath}
+                selected={selected}
+                onSelectionChange={setSelected}
+              />
+            </Suspense>
+          </div>
+          <AssetInfoPane selection={selected} />
+        </div>
       </main>
       {summary && (
         <ExportSummaryModal
@@ -115,7 +128,7 @@ const App: React.FC = () => {
           left: 0,
         }}
       />
-    </DrawerLayout>
+    </ShellLayout>
   );
 };
 

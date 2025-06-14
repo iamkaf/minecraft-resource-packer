@@ -51,13 +51,9 @@ describe('AssetSelector', () => {
     render(<AssetSelector path="/proj" />);
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'axe' } });
-    const section = await screen.findByText('items');
-    expect(section.parentElement).not.toBeNull();
-    const itemParent = section.parentElement as HTMLElement;
+    await screen.findByText('items');
     expect(
-      within(itemParent).getByRole('button', {
-        name: 'item/axe.png',
-      })
+      await screen.findByRole('button', { name: 'item/axe.png' })
     ).toBeInTheDocument();
   });
 

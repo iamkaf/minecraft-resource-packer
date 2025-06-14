@@ -34,7 +34,9 @@ describe('AssetBrowser', () => {
   });
 
   it('renders files from directory', async () => {
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <AssetBrowser path="/proj" selected={[]} onSelectionChange={() => {}} />
+    );
     expect(watchProject).toHaveBeenCalledWith('/proj');
     expect(await screen.findByText('a.txt')).toBeInTheDocument();
     const img = screen.getByAltText('B') as HTMLImageElement;
@@ -74,7 +76,9 @@ describe('AssetBrowser', () => {
       onFileRemoved,
       onFileRenamed,
     };
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <AssetBrowser path="/proj" selected={[]} onSelectionChange={() => {}} />
+    );
     const item = await screen.findByText('a.txt');
     fireEvent.contextMenu(item);
     const revealBtn = (
@@ -128,7 +132,9 @@ describe('AssetBrowser', () => {
       renamed = cb;
     });
 
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <AssetBrowser path="/proj" selected={[]} onSelectionChange={() => {}} />
+    );
     await screen.findByText('a.txt');
 
     added?.({}, 'c.txt');
@@ -142,5 +148,33 @@ describe('AssetBrowser', () => {
     await screen.findByText('d.png');
     expect(screen.queryByText('b.png')).toBeNull();
     expect(screen.getByText('d.png')).toBeInTheDocument();
+  });
+
+  it('supports multi-selection and delete key', async () => {
+    const deleteFile = vi.fn();
+    interface API {
+      deleteFile: typeof deleteFile;
+    }
+    const existing =
+      (window as unknown as { electronAPI: Partial<API> }).electronAPI || {};
+    (window as unknown as { electronAPI: API }).electronAPI = {
+      ...existing,
+      deleteFile,
+    };
+    const Wrapper = () => {
+      const [sel, setSel] = React.useState<string[]>([]);
+      return (
+        <AssetBrowser path="/proj" selected={sel} onSelectionChange={setSel} />
+      );
+    };
+    const { container } = render(<Wrapper />);
+    const first = await screen.findByText('a.txt');
+    const second = screen.getByText('b.png');
+    fireEvent.click(first);
+    fireEvent.click(second, { ctrlKey: true });
+    fireEvent.keyDown(container.firstChild as Element, { key: 'Delete' });
+    const modal = await screen.findByTestId('delete-modal');
+    fireEvent.click(within(modal).getByText('Delete'));
+    expect(deleteFile).toHaveBeenCalledTimes(2);
   });
 });
