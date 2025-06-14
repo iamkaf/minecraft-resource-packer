@@ -83,7 +83,7 @@ const AssetBrowserItem: React.FC<Props> = ({
     <div
       className={`p-1 cursor-pointer hover:ring ring-accent relative text-center tooltip ${
         isSelected ? 'ring' : ''
-      } ${noExport.has(file) ? 'opacity-50 border border-gray-400' : ''}`}
+      } ${noExport.has(file) ? 'border border-gray-400' : ''}`}
       data-tip={`${formatted} \n${name}`}
       tabIndex={0}
       onClick={toggleSelect}
@@ -96,24 +96,26 @@ const AssetBrowserItem: React.FC<Props> = ({
         }
       }}
     >
-      {thumb ? (
-        <>
-          <img
-            src={thumb}
-            alt={formatted}
-            className="w-full aspect-square"
-            style={{ imageRendering: 'pixelated' }}
-          />
-          <div className="text-xs leading-tight mt-1">
-            <div>{formatted}</div>
-            <div className="opacity-50">{name}</div>
+      <div className={noExport.has(file) ? 'opacity-50' : ''}>
+        {thumb ? (
+          <>
+            <img
+              src={thumb}
+              alt={formatted}
+              className="w-full aspect-square"
+              style={{ imageRendering: 'pixelated' }}
+            />
+            <div className="text-xs leading-tight mt-1">
+              <div>{formatted}</div>
+              <div className="opacity-50">{name}</div>
+            </div>
+          </>
+        ) : (
+          <div className="w-full aspect-square bg-base-300 flex items-center justify-center">
+            {name}
           </div>
-        </>
-      ) : (
-        <div className="w-full aspect-square bg-base-300 flex items-center justify-center">
-          {name}
-        </div>
-      )}
+        )}
+      </div>
       <AssetContextMenu
         filePath={full}
         selectionCount={selected.size}

@@ -27,7 +27,7 @@ export default function AssetContextMenu({
 }: Props) {
   return (
     <ul
-      className="menu dropdown-content bg-base-200 rounded-box fixed z-10 w-40 p-1 shadow"
+      className="menu dropdown-content bg-base-200 rounded-box fixed z-50 w-40 p-1 shadow"
       style={style}
       role="menu"
     >
