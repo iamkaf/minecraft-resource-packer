@@ -89,6 +89,13 @@ row loads `pack.json` via IPC and displays the pack description, author, related
 URLs and creation timestamps. Use the **Edit** button to modify these fields and
 save back to `pack.json`.
 
+## Bulk Export
+
+Select multiple rows using the checkboxes in the projects table and click
+**Bulk Export**. Choose a destination folder when prompted and each project
+is zipped to `<name>.zip` in that location. Progress appears in a modal with a
+toast confirming success or failure.
+
 ## Asset Browser
 
 The vanilla asset browser lets you search textures from the selected Minecraft

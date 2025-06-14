@@ -60,7 +60,7 @@ registerProjectHandlers(ipcMain, projectsDir, (p) => {
 });
 
 registerAssetHandlers(ipcMain);
-registerExportHandlers(ipcMain);
+registerExportHandlers(ipcMain, projectsDir);
 
 // Register file-related IPC handlers
 registerFileHandlers(ipcMain);

@@ -27,7 +27,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Placeholder names generated with `unique-names-generator`
 - [x] Create • Import • Duplicate • Delete (confirm) • Open actions
 - [x] Fuzzy search + version filter chips
-- [ ] Bulk export selected rows
+- [x] Bulk export selected rows
 - [x] Rich metadata sidebar (Description, Author, URLs, etc.)
 
 ---

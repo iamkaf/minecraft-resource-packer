@@ -29,6 +29,7 @@ declare global {
       getTextureUrl: IpcInvoke<'get-texture-url'>;
       randomizeIcon: IpcInvoke<'randomize-icon'>;
       exportProject: IpcInvoke<'export-project'>;
+      exportProjects: IpcInvoke<'export-projects'>;
       openInFolder: IpcInvoke<'open-in-folder'>;
       openFile: IpcInvoke<'open-file'>;
       renameFile: IpcInvoke<'rename-file'>;
