@@ -18,6 +18,7 @@ export interface IpcRequestMap {
   'get-texture-path': [string, string];
   'get-texture-url': [string, string];
   'randomize-icon': [string];
+  'save-pack-icon': [string, string, string];
   'export-project': [string];
   'export-projects': [string[]];
   'open-in-folder': [string];
@@ -53,6 +54,7 @@ export interface IpcResponseMap {
   'get-texture-path': string;
   'get-texture-url': string;
   'randomize-icon': void;
+  'save-pack-icon': void;
   'export-project': ExportSummary | void;
   'export-projects': void;
   'open-in-folder': void;

@@ -44,6 +44,8 @@ const api = {
   getTextureUrl: (project: string, name: string) =>
     invoke('get-texture-url', project, name),
   randomizeIcon: (project: string) => invoke('randomize-icon', project),
+  savePackIcon: (project: string, file: string, border: string) =>
+    invoke('save-pack-icon', project, file, border),
   openInFolder: (file: string) => invoke('open-in-folder', file),
   openFile: (file: string) => invoke('open-file', file),
   openExternalEditor: (file: string) => invoke('open-external-editor', file),

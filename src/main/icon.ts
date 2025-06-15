@@ -39,3 +39,29 @@ export async function generatePackIcon(projectPath: string): Promise<void> {
     .composite([{ input: itemBuf, gravity: 'center' }])
     .toFile(path.join(projectPath, 'pack.png'));
 }
+
+/** Save a custom icon file to `projectPath/pack.png` with a coloured border. */
+export async function savePackIcon(
+  projectPath: string,
+  file: string,
+  border: string
+): Promise<void> {
+  const inner = await sharp(file)
+    .resize(120, 120, { fit: 'contain' })
+    .png()
+    .toBuffer();
+  await sharp({
+    create: { width: 128, height: 128, channels: 4, background: border },
+  })
+    .composite([{ input: inner, top: 4, left: 4 }])
+    .png()
+    .toFile(path.join(projectPath, 'pack.png'));
+}
+
+export function registerIconHandlers(ipc: import('electron').IpcMain): void {
+  ipc.handle(
+    'save-pack-icon',
+    (_e, project: string, file: string, border: string) =>
+      savePackIcon(project, file, border)
+  );
+}
