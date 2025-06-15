@@ -17,6 +17,7 @@ An Electron-based tool for creating Minecraft resource packs. The interface is d
 - **Live Asset Browser** – the Editor view lists all files in the project directory and automatically reloads when something changes.
 - **Random pack icon** – new packs start with a pastel background and random item image; you can regenerate from pack settings.
 - **Export** – generate a zipped resource pack containing the selected files along with a valid `pack.mcmeta`. The output is ready to drop into Minecraft.
+- **External Editing** – configure your favourite image editor in **Settings** and launch it from the asset info panel.
 
 ## Development
 
@@ -57,3 +58,9 @@ This project uses **Tailwind CSS** with the
 Texture filenames are displayed in a friendlier form by removing the path and
 extension, replacing underscores with spaces and capitalising each word. The
 original filename is still shown alongside the formatted name and in tooltips.
+
+### External Editor
+
+Specify the path to your preferred image editor under **Settings**. PNG textures
+can then be opened directly from the asset info panel using the **Edit
+Externally** button.
