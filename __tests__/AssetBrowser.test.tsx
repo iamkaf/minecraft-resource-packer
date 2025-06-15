@@ -263,4 +263,17 @@ describe('AssetBrowser', () => {
     fireEvent.change(slider, { target: { value: '80' } });
     expect(img.style.width).toBe('80px');
   });
+
+  it('filters files by category chip', async () => {
+    watchProject.mockResolvedValue([
+      'assets/minecraft/textures/block/stone.png',
+      'assets/minecraft/textures/item/apple.png',
+    ]);
+    render(<AssetBrowser path="/proj" />);
+    await screen.findByText('stone.png');
+    const chip = screen.getByText('Items');
+    fireEvent.click(chip);
+    expect(screen.queryByText('stone.png')).toBeNull();
+    expect(screen.getByText('apple.png')).toBeInTheDocument();
+  });
 });

@@ -21,22 +21,29 @@ export default function ProjectInfoPanel({
   }, [name]);
 
   return (
-    <div
-      className="p-2 flex flex-col items-center gap-2"
-      data-testid="project-info"
-    >
-      <button className="link link-primary self-start" onClick={onBack}>
-        Back to Projects
-      </button>
-      <img src="ptex://pack.png" alt="Pack icon" className="w-16 h-16" />
-      <h2 className="font-display text-lg">{name}</h2>
-      <p className="text-xs break-all">{projectPath}</p>
-      <p className="text-sm text-center break-all flex-1">
-        {meta?.description}
-      </p>
-      <button className="btn btn-accent btn-sm mt-auto" onClick={onExport}>
-        Export Pack
-      </button>
+    <div className="card bg-base-100 shadow flex-1" data-testid="project-info">
+      <div className="card-body p-4 flex flex-col">
+        <button className="link link-primary self-start" onClick={onBack}>
+          Back to Projects
+        </button>
+        <figure className="mt-2">
+          <img src="ptex://pack.png" alt="Pack icon" className="w-16 h-16" />
+        </figure>
+        <h2 className="card-title break-all">{name}</h2>
+        <p className="text-xs break-all">{projectPath}</p>
+        <p className="text-sm break-all flex-1">{meta?.description}</p>
+        <div className="card-actions justify-end">
+          <button
+            className="btn btn-sm"
+            onClick={() => window.electronAPI?.openInFolder(projectPath)}
+          >
+            Open Folder
+          </button>
+          <button className="btn btn-accent btn-sm" onClick={onExport}>
+            Export Pack
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

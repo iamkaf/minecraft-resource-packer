@@ -58,7 +58,7 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
   };
 
   return (
-    <main className="p-4 flex flex-col gap-4 h-full" data-testid="editor-view">
+    <main className="p-4 flex flex-col gap-4 flex-1" data-testid="editor-view">
       <div className="flex items-center justify-end mb-2">
         <ExternalLink
           href="https://minecraft.wiki/w/Resource_pack"

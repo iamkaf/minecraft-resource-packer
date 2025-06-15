@@ -14,16 +14,23 @@ const FILTERS = ['blocks', 'items', 'entity', 'ui', 'audio'] as const;
 type Filter = (typeof FILTERS)[number];
 
 const getCategory = (name: string): Filter | 'misc' => {
-  if (name.startsWith('block/')) return 'blocks';
-  if (name.startsWith('item/')) return 'items';
-  if (name.startsWith('entity/')) return 'entity';
+  const norm = (() => {
+    const parts = name.split('/');
+    const tIndex = parts.indexOf('textures');
+    if (tIndex !== -1 && parts.length > tIndex + 1)
+      return parts.slice(tIndex + 1).join('/');
+    return name;
+  })();
+  if (norm.startsWith('block/')) return 'blocks';
+  if (norm.startsWith('item/')) return 'items';
+  if (norm.startsWith('entity/')) return 'entity';
   if (
-    name.startsWith('gui/') ||
-    name.startsWith('font/') ||
-    name.startsWith('misc/')
+    norm.startsWith('gui/') ||
+    norm.startsWith('font/') ||
+    norm.startsWith('misc/')
   )
     return 'ui';
-  if (name.startsWith('sound/') || name.startsWith('sounds/')) return 'audio';
+  if (norm.startsWith('sound/') || norm.startsWith('sounds/')) return 'audio';
   return 'misc';
 };
 

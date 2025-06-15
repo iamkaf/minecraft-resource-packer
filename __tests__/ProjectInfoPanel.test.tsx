@@ -9,12 +9,19 @@ describe('ProjectInfoPanel', () => {
   const load = vi.fn();
   const onExport = vi.fn();
   const onBack = vi.fn();
+  const openInFolder = vi.fn();
 
   beforeEach(() => {
     (
-      window as unknown as { electronAPI: { loadPackMeta: typeof load } }
+      window as unknown as {
+        electronAPI: {
+          loadPackMeta: typeof load;
+          openInFolder: typeof openInFolder;
+        };
+      }
     ).electronAPI = {
       loadPackMeta: load,
+      openInFolder,
     } as never;
     load.mockResolvedValue(meta);
     vi.clearAllMocks();
@@ -32,6 +39,8 @@ describe('ProjectInfoPanel', () => {
     await screen.findByText('desc');
     fireEvent.click(screen.getByText('Export Pack'));
     expect(onExport).toHaveBeenCalled();
+    fireEvent.click(screen.getByText('Open Folder'));
+    expect(openInFolder).toHaveBeenCalledWith('/p/Pack');
     fireEvent.click(screen.getByText('Back to Projects'));
     expect(onBack).toHaveBeenCalled();
     expect(screen.getByText('/p/Pack')).toBeInTheDocument();
