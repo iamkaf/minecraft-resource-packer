@@ -6,12 +6,14 @@ interface Props {
   projectPath: string;
   onExport: () => void;
   onBack: () => void;
+  onSettings: () => void;
 }
 
 export default function ProjectInfoPanel({
   projectPath,
   onExport,
   onBack,
+  onSettings
 }: Props) {
   const [meta, setMeta] = useState<PackMeta | null>(null);
   const name = path.basename(projectPath);
@@ -25,6 +27,9 @@ export default function ProjectInfoPanel({
       <div className="card-body items-center gap-2 p-2">
         <button className="link link-primary self-start" onClick={onBack}>
           Back to Projects
+        </button>
+        <button className="link link-primary self-start" onClick={onSettings}>
+          Settings
         </button>
         <img src="ptex://pack.png" alt="Pack icon" className="w-16 h-16" />
         <h2 className="card-title text-lg font-display">{name}</h2>
