@@ -104,7 +104,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## 10. Preferences / About
 
 - [ ] Paths (override `.minecraft`, external editor)
-- [ ] Theme (Minecraft inspired Light / Minecraft inspired Dark / System)
+- [x] Theme (Minecraft inspired Light / Minecraft inspired Dark / System)
 - [ ] Editable keyboard shortcuts
 - [ ] Update channel + analytics opt‑in
 - [x] About pane (logo, version, links, license)

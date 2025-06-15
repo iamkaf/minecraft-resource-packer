@@ -81,8 +81,15 @@ as they are.
 ## Styling
 
 Tailwind CSS is configured with the `daisyUI` plugin. The `tailwind.config.js`
-file defines a custom **minecraft** theme with matching light and dark modes.
-You can switch themes using the `data-theme` attribute on any element.
+file defines a custom **minecraft** theme. The application supports three
+themes:
+
+- **light** – bright variant inspired by Minecraft's UI
+- **dark** – the default "minecraft" theme
+- **system** – automatically picks light or dark based on OS settings
+
+The current theme is stored in Electron's settings store and applied by setting
+`data-theme` on the root element.
 
 ## Custom Protocols
 
