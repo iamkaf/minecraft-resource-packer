@@ -7,18 +7,25 @@ import unzipper from 'unzipper';
 // eslint-disable-next-line no-var
 var showOpenDialogMock: ReturnType<typeof vi.fn>;
 
-vi.mock('electron', () => {
-  showOpenDialogMock = vi.fn();
-  return { dialog: { showOpenDialog: showOpenDialogMock } };
-});
-
-import { exportProjects } from '../src/main/exporter';
-
 const tmpDir = path.join(os.tmpdir(), `bulk-${uuid()}`);
 const baseDir = path.join(tmpDir, 'projects');
 const projA = path.join(baseDir, 'A');
 const projB = path.join(baseDir, 'B');
 const outDir = path.join(tmpDir, 'out');
+
+vi.mock('electron', () => {
+  showOpenDialogMock = vi.fn();
+  return {
+    dialog: { showOpenDialog: showOpenDialogMock },
+    app: { getPath: () => '/tmp' },
+  };
+});
+
+vi.mock('../src/main/layout', () => ({
+  getDefaultExportDir: () => outDir,
+}));
+
+import { exportProjects } from '../src/main/exporter';
 
 beforeAll(() => {
   fs.mkdirSync(baseDir, { recursive: true });
@@ -46,5 +53,13 @@ describe('exportProjects', () => {
     const dirB = await unzipper.Open.file(path.join(outDir, 'B.zip'));
     const namesB = dirB.files.map((f) => f.path);
     expect(namesB).toContain('b.txt');
+  });
+
+  it('uses default directory for dialog', async () => {
+    showOpenDialogMock.mockResolvedValue({ canceled: true, filePaths: [] });
+    await exportProjects(baseDir, []);
+    expect(showOpenDialogMock).toHaveBeenCalledWith(
+      expect.objectContaining({ defaultPath: outDir })
+    );
   });
 });

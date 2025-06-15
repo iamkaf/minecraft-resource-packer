@@ -6,6 +6,7 @@ export default function SettingsView() {
   const [editor, setEditor] = useState('');
   const [theme, setTheme] = useState<Theme>('system');
   const [confetti, setConfetti] = useState(true);
+  const [exportDir, setExportDir] = useState('');
 
   useEffect(() => {
     window.electronAPI?.getTextureEditor().then((p) => setEditor(p));
@@ -13,6 +14,7 @@ export default function SettingsView() {
       setTheme(t);
     });
     window.electronAPI?.getConfetti().then((c) => setConfetti(c));
+    window.electronAPI?.getDefaultExportDir().then((d) => setExportDir(d));
   }, []);
 
   const saveEditor = () => {
@@ -23,6 +25,10 @@ export default function SettingsView() {
     setTheme(t);
     await window.electronAPI?.setTheme(t);
     applyTheme(t);
+  };
+
+  const saveExportDir = () => {
+    window.electronAPI?.setDefaultExportDir(exportDir);
   };
 
   const toggleConfetti = async () => {
@@ -54,6 +60,21 @@ export default function SettingsView() {
           onChange={(e) => setEditor(e.target.value)}
         />
         <button className="btn btn-primary btn-sm mt-2" onClick={saveEditor}>
+          Save
+        </button>
+      </div>
+      <div className="form-control max-w-md mt-4">
+        <label className="label" htmlFor="export-dir">
+          <span className="label-text">Default export folder</span>
+        </label>
+        <input
+          id="export-dir"
+          className="input input-bordered"
+          type="text"
+          value={exportDir}
+          onChange={(e) => setExportDir(e.target.value)}
+        />
+        <button className="btn btn-primary btn-sm mt-2" onClick={saveExportDir}>
           Save
         </button>
       </div>

@@ -7,6 +7,7 @@ import archiver from 'archiver';
 import { packFormatForVersion } from '../shared/packFormat';
 import type { IpcMain } from 'electron';
 import { dialog } from 'electron';
+import { getDefaultExportDir } from './layout';
 import { ProjectMetadataSchema } from '../shared/project';
 
 export interface ExportSummary {
@@ -106,6 +107,7 @@ export async function exportProjects(
 ): Promise<void> {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     title: 'Select Export Folder',
+    defaultPath: getDefaultExportDir(),
     properties: ['openDirectory', 'createDirectory'],
   });
   if (canceled || filePaths.length === 0) return;
@@ -125,7 +127,10 @@ export function registerExportHandlers(ipc: IpcMain, baseDir: string) {
     async (_e, projectPath: string): Promise<ExportSummary | void> => {
       const { canceled, filePath } = await dialog.showSaveDialog({
         title: 'Export Pack',
-        defaultPath: `${projectPath}/pack.zip`,
+        defaultPath: path.join(
+          getDefaultExportDir(),
+          `${path.basename(projectPath)}.zip`
+        ),
         filters: [{ name: 'Zip Files', extensions: ['zip'] }],
       });
       if (canceled || !filePath) return;

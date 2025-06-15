@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import fs from 'fs';
 import path from 'path';
+vi.mock('electron', () => ({ app: { getPath: () => '/tmp' } }));
 import { exportPack } from '../src/main/exporter';
 import unzipper from 'unzipper';
 import os from 'os';

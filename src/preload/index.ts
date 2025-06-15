@@ -71,6 +71,8 @@ const api = {
   setTheme: (t: 'light' | 'dark' | 'system') => invoke('set-theme', t),
   getConfetti: () => invoke('get-confetti'),
   setConfetti: (c: boolean) => invoke('set-confetti', c),
+  getDefaultExportDir: () => invoke('get-default-export-dir'),
+  setDefaultExportDir: (d: string) => invoke('set-default-export-dir', d),
   onFileAdded: (listener: (e: unknown, path: string) => void) =>
     on('file-added', listener),
   onFileRemoved: (listener: (e: unknown, path: string) => void) =>

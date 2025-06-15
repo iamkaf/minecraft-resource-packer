@@ -41,6 +41,8 @@ export interface IpcRequestMap {
   'set-theme': ['light' | 'dark' | 'system'];
   'get-confetti': [];
   'set-confetti': [boolean];
+  'get-default-export-dir': [];
+  'set-default-export-dir': [string];
 }
 
 export interface IpcResponseMap {
@@ -81,6 +83,8 @@ export interface IpcResponseMap {
   'set-theme': void;
   'get-confetti': boolean;
   'set-confetti': void;
+  'get-default-export-dir': string;
+  'set-default-export-dir': void;
 }
 
 export interface IpcEventMap {
