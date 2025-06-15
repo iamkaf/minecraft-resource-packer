@@ -1,14 +1,22 @@
 import React from 'react';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import Navbar from '../src/renderer/components/Navbar';
 
 // Ensure consistent DOM for each test
+let getTheme: ReturnType<typeof vi.fn>;
+let setTheme: ReturnType<typeof vi.fn>;
+
 beforeEach(() => {
   document.body.innerHTML = '';
   document.documentElement.setAttribute('data-theme', 'minecraft');
-  localStorage.clear();
+  getTheme = vi.fn().mockResolvedValue('dark');
+  setTheme = vi.fn();
+  (window as unknown as { electronAPI: unknown }).electronAPI = {
+    getTheme,
+    setTheme,
+  } as never;
 });
 
 describe('Navbar', () => {
@@ -19,11 +27,12 @@ describe('Navbar', () => {
     );
   });
 
-  it('toggles theme and saves preference', () => {
+  it('toggles theme and calls setTheme', async () => {
     render(<Navbar />);
     const button = screen.getByLabelText('Toggle theme');
-    fireEvent.click(button);
+    await fireEvent.click(button);
+    await Promise.resolve();
+    expect(setTheme).toHaveBeenCalledWith('light');
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
-    expect(localStorage.getItem('theme')).toBe('light');
   });
 });

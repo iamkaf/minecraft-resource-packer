@@ -37,6 +37,8 @@ export interface IpcRequestMap {
   'set-editor-layout': [number[]];
   'get-texture-editor': [];
   'set-texture-editor': [string];
+  'get-theme': [];
+  'set-theme': ['light' | 'dark' | 'system'];
 }
 
 export interface IpcResponseMap {
@@ -73,6 +75,8 @@ export interface IpcResponseMap {
   'set-editor-layout': void;
   'get-texture-editor': string;
   'set-texture-editor': void;
+  'get-theme': 'light' | 'dark' | 'system';
+  'set-theme': void;
 }
 
 export interface IpcEventMap {

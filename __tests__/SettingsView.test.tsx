@@ -8,6 +8,8 @@ import SettingsView from '../src/renderer/views/SettingsView';
 var openExternalMock: ReturnType<typeof vi.fn>;
 const getTextureEditor = vi.fn();
 const setTextureEditor = vi.fn();
+const getTheme = vi.fn();
+const setTheme = vi.fn();
 vi.mock('electron', () => ({
   shell: { openExternal: (openExternalMock = vi.fn()) },
 }));
@@ -20,11 +22,20 @@ describe('SettingsView', () => {
         electronAPI: {
           getTextureEditor: typeof getTextureEditor;
           setTextureEditor: typeof setTextureEditor;
+          getTheme: typeof getTheme;
+          setTheme: typeof setTheme;
         };
       }
-    ).electronAPI = { getTextureEditor, setTextureEditor } as never;
+    ).electronAPI = {
+      getTextureEditor,
+      setTextureEditor,
+      getTheme,
+      setTheme,
+    } as never;
     getTextureEditor.mockResolvedValue('/usr/bin/gimp');
     setTextureEditor.mockResolvedValue(undefined);
+    getTheme.mockResolvedValue('system');
+    setTheme.mockResolvedValue(undefined);
   });
 
   it('renders placeholder heading', () => {
@@ -51,5 +62,16 @@ describe('SettingsView', () => {
     fireEvent.change(input, { target: { value: '/opt/editor' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
     expect(setTextureEditor).toHaveBeenCalledWith('/opt/editor');
+  });
+
+  it('changes theme via dropdown', async () => {
+    render(<SettingsView />);
+    const select = await screen.findByLabelText('Theme');
+    fireEvent.change(select, { target: { value: 'dark' } });
+    await Promise.resolve();
+    expect(setTheme).toHaveBeenCalledWith('dark');
+    expect(document.documentElement.getAttribute('data-theme')).toBe(
+      'minecraft'
+    );
   });
 });

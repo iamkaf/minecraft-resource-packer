@@ -46,6 +46,8 @@ declare global {
       setEditorLayout: IpcInvoke<'set-editor-layout'>;
       getTextureEditor: IpcInvoke<'get-texture-editor'>;
       setTextureEditor: IpcInvoke<'set-texture-editor'>;
+      getTheme: IpcInvoke<'get-theme'>;
+      setTheme: IpcInvoke<'set-theme'>;
       openExternalEditor: IpcInvoke<'open-external-editor'>;
       onOpenProject: IpcListener<'project-opened'>;
       onFileAdded: IpcListener<'file-added'>;

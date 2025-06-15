@@ -67,6 +67,8 @@ const api = {
   setEditorLayout: (layout: number[]) => invoke('set-editor-layout', layout),
   getTextureEditor: () => invoke('get-texture-editor'),
   setTextureEditor: (path: string) => invoke('set-texture-editor', path),
+  getTheme: () => invoke('get-theme'),
+  setTheme: (t: 'light' | 'dark' | 'system') => invoke('set-theme', t),
   onFileAdded: (listener: (e: unknown, path: string) => void) =>
     on('file-added', listener),
   onFileRemoved: (listener: (e: unknown, path: string) => void) =>
