@@ -10,6 +10,8 @@ const getTextureEditor = vi.fn();
 const setTextureEditor = vi.fn();
 const getTheme = vi.fn();
 const setTheme = vi.fn();
+const getConfetti = vi.fn();
+const setConfetti = vi.fn();
 vi.mock('electron', () => ({
   shell: { openExternal: (openExternalMock = vi.fn()) },
 }));
@@ -24,6 +26,8 @@ describe('SettingsView', () => {
           setTextureEditor: typeof setTextureEditor;
           getTheme: typeof getTheme;
           setTheme: typeof setTheme;
+          getConfetti: typeof getConfetti;
+          setConfetti: typeof setConfetti;
         };
       }
     ).electronAPI = {
@@ -31,11 +35,15 @@ describe('SettingsView', () => {
       setTextureEditor,
       getTheme,
       setTheme,
+      getConfetti,
+      setConfetti,
     } as never;
     getTextureEditor.mockResolvedValue('/usr/bin/gimp');
     setTextureEditor.mockResolvedValue(undefined);
     getTheme.mockResolvedValue('system');
     setTheme.mockResolvedValue(undefined);
+    getConfetti.mockResolvedValue(true);
+    setConfetti.mockResolvedValue(undefined);
   });
 
   it('renders placeholder heading', () => {
@@ -73,5 +81,13 @@ describe('SettingsView', () => {
     expect(document.documentElement.getAttribute('data-theme')).toBe(
       'minecraft'
     );
+  });
+
+  it('toggles confetti preference', async () => {
+    render(<SettingsView />);
+    const toggle = await screen.findByLabelText('Confetti effects');
+    expect(toggle).toBeChecked();
+    fireEvent.click(toggle);
+    expect(setConfetti).toHaveBeenCalledWith(false);
   });
 });

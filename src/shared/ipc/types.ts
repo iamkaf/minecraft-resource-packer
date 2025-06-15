@@ -39,6 +39,8 @@ export interface IpcRequestMap {
   'set-texture-editor': [string];
   'get-theme': [];
   'set-theme': ['light' | 'dark' | 'system'];
+  'get-confetti': [];
+  'set-confetti': [boolean];
 }
 
 export interface IpcResponseMap {
@@ -77,6 +79,8 @@ export interface IpcResponseMap {
   'set-texture-editor': void;
   'get-theme': 'light' | 'dark' | 'system';
   'set-theme': void;
+  'get-confetti': boolean;
+  'set-confetti': void;
 }
 
 export interface IpcEventMap {

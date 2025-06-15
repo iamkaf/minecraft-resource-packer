@@ -7,8 +7,14 @@ const store = new Store<{
   editorLayout: number[];
   textureEditor: string;
   theme: ThemePref;
+  confetti: boolean;
 }>({
-  defaults: { editorLayout: [20, 80], textureEditor: '', theme: 'system' },
+  defaults: {
+    editorLayout: [20, 80],
+    textureEditor: '',
+    theme: 'system',
+    confetti: true,
+  },
 });
 
 export function getEditorLayout(): number[] {
@@ -35,6 +41,14 @@ export function setTheme(pref: ThemePref): void {
   store.set('theme', pref);
 }
 
+export function getConfetti(): boolean {
+  return store.get('confetti');
+}
+
+export function setConfetti(flag: boolean): void {
+  store.set('confetti', flag);
+}
+
 export function registerLayoutHandlers(ipc: IpcMain): void {
   ipc.handle('get-editor-layout', () => getEditorLayout());
   ipc.handle('set-editor-layout', (_e, layout: number[]) =>
@@ -44,4 +58,6 @@ export function registerLayoutHandlers(ipc: IpcMain): void {
   ipc.handle('set-texture-editor', (_e, p: string) => setTextureEditor(p));
   ipc.handle('get-theme', () => getTheme());
   ipc.handle('set-theme', (_e, t: ThemePref) => setTheme(t));
+  ipc.handle('get-confetti', () => getConfetti());
+  ipc.handle('set-confetti', (_e, c: boolean) => setConfetti(c));
 }

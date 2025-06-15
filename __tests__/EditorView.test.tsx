@@ -53,17 +53,20 @@ describe('EditorView', () => {
 
   const getLayout = vi.fn(async () => [20, 80]);
   const setLayout = vi.fn();
+  const getConfetti = vi.fn(async () => true);
 
   beforeEach(() => {
     interface API {
       exportProject: (path: string) => Promise<typeof summary>;
       getEditorLayout: () => Promise<number[]>;
       setEditorLayout: (l: number[]) => void;
+      getConfetti: () => Promise<boolean>;
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       exportProject,
       getEditorLayout: getLayout,
       setEditorLayout: setLayout,
+      getConfetti,
     };
     exportProject.mockResolvedValue(summary);
     openExternalMock.mockResolvedValue(undefined);
