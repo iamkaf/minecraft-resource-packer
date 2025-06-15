@@ -48,6 +48,7 @@ const api = {
     invoke('save-pack-icon', project, file, border),
   openInFolder: (file: string) => invoke('open-in-folder', file),
   openFile: (file: string) => invoke('open-file', file),
+  openExternalEditor: (file: string) => invoke('open-external-editor', file),
   readFile: (file: string) => invoke('read-file', file),
   writeFile: (file: string, data: string) => invoke('write-file', file, data),
   renameFile: (oldPath: string, newPath: string) =>
@@ -64,6 +65,8 @@ const api = {
     invoke('set-no-export', project, files, flag),
   getEditorLayout: () => invoke('get-editor-layout'),
   setEditorLayout: (layout: number[]) => invoke('set-editor-layout', layout),
+  getTextureEditor: () => invoke('get-texture-editor'),
+  setTextureEditor: (path: string) => invoke('set-texture-editor', path),
   onFileAdded: (listener: (e: unknown, path: string) => void) =>
     on('file-added', listener),
   onFileRemoved: (listener: (e: unknown, path: string) => void) =>

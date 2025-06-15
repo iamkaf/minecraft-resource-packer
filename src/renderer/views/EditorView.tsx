@@ -21,9 +21,10 @@ import {
 interface EditorViewProps {
   projectPath: string;
   onBack: () => void;
+  onSettings: () => void;
 }
 
-export default function EditorView({ projectPath, onBack }: EditorViewProps) {
+export default function EditorView({ projectPath, onBack, onSettings }: EditorViewProps) {
   const [selected, setSelected] = useState<string[]>([]);
   const [selectorAsset, setSelectorAsset] = useState<string | null>(null);
   const [layout, setLayout] = useState<number[]>([20, 80]);
@@ -97,6 +98,7 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
             projectPath={projectPath}
             onExport={handleExport}
             onBack={onBack}
+            onSettings={onSettings}
           />
         </Panel>
         <PanelResizeHandle className="flex items-center" tagName="div">

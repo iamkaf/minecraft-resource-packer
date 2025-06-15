@@ -44,6 +44,9 @@ declare global {
       setNoExport: IpcInvoke<'set-no-export'>;
       getEditorLayout: IpcInvoke<'get-editor-layout'>;
       setEditorLayout: IpcInvoke<'set-editor-layout'>;
+      getTextureEditor: IpcInvoke<'get-texture-editor'>;
+      setTextureEditor: IpcInvoke<'set-texture-editor'>;
+      openExternalEditor: IpcInvoke<'open-external-editor'>;
       onOpenProject: IpcListener<'project-opened'>;
       onFileAdded: IpcListener<'file-added'>;
       onFileRemoved: IpcListener<'file-removed'>;

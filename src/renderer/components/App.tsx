@@ -25,12 +25,17 @@ export default function App() {
     setView('manager');
   };
 
+  const toSettings = () => {
+    setProjectPath(null);
+    setView('settings');
+  }
+
   let content: React.ReactNode = null;
   switch (view) {
     case 'editor':
       content = projectPath ? (
         <Suspense fallback={<Spinner />}>
-          <EditorView projectPath={projectPath} onBack={toManager} />
+          <EditorView projectPath={projectPath} onBack={toManager} onSettings={toSettings} />
         </Suspense>
       ) : null;
       break;

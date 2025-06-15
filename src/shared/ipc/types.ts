@@ -23,6 +23,7 @@ export interface IpcRequestMap {
   'export-projects': [string[]];
   'open-in-folder': [string];
   'open-file': [string];
+  'open-external-editor': [string];
   'read-file': [string];
   'write-file': [string, string];
   'rename-file': [string, string];
@@ -34,6 +35,8 @@ export interface IpcRequestMap {
   'set-no-export': [string, string[], boolean];
   'get-editor-layout': [];
   'set-editor-layout': [number[]];
+  'get-texture-editor': [];
+  'set-texture-editor': [string];
 }
 
 export interface IpcResponseMap {
@@ -56,6 +59,7 @@ export interface IpcResponseMap {
   'export-projects': void;
   'open-in-folder': void;
   'open-file': void;
+  'open-external-editor': void;
   'read-file': string;
   'write-file': void;
   'rename-file': void;
@@ -67,6 +71,8 @@ export interface IpcResponseMap {
   'set-no-export': void;
   'get-editor-layout': number[];
   'set-editor-layout': void;
+  'get-texture-editor': string;
+  'set-texture-editor': void;
 }
 
 export interface IpcEventMap {

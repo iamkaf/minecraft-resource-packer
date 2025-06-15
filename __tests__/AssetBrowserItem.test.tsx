@@ -39,7 +39,7 @@ describe('AssetBrowserItem', () => {
         zoom={64}
       />
     );
-    const item = screen.getByText('a.txt');
+    const item = screen.getAllByText('a.txt')[0];
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Reveal' }));
     expect(openInFolder).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
@@ -70,7 +70,7 @@ describe('AssetBrowserItem', () => {
         zoom={64}
       />
     );
-    const item = screen.getByText('a.txt');
+    const item = screen.getAllByText('a.txt')[0];
     fireEvent.contextMenu(item);
     const toggle = screen.getByRole('checkbox', { name: /No Export/i });
     fireEvent.click(toggle);
@@ -91,7 +91,7 @@ describe('AssetBrowserItem', () => {
         zoom={64}
       />
     );
-    const item = screen.getByText('a.txt');
+    const item = screen.getAllByText('a.txt')[0];
     const container = item.closest('div[tabindex="0"]') as HTMLElement;
     fireEvent.contextMenu(container);
     const menu = screen.getByRole('menu');
@@ -114,7 +114,7 @@ describe('AssetBrowserItem', () => {
         zoom={64}
       />
     );
-    const item = screen.getByText('a.txt');
+    const item = screen.getAllByText('a.txt')[0];
     fireEvent.contextMenu(item);
     const menu = screen.getByRole('menu');
     expect(menu.className).not.toMatch('opacity-50');

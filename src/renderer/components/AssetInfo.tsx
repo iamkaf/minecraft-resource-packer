@@ -98,12 +98,20 @@ export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
           </>
         )}
         {isPng && count === 1 && (
-          <button
-            className="btn btn-secondary btn-sm mt-2"
-            onClick={() => setLab(true)}
-          >
-            Open Texture Lab
-          </button>
+          <div className="flex flex-col gap-2 mt-2">
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={() => setLab(true)}
+            >
+              Open Texture Lab
+            </button>
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={() => window.electronAPI?.openExternalEditor(full)}
+            >
+              Edit Externally
+            </button>
+          </div>
         )}
         {lab && (
           <Suspense fallback={<Spinner />}>
