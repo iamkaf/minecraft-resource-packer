@@ -51,7 +51,7 @@ const summary = {
 describe('EditorView', () => {
   const exportProject = vi.fn();
 
-  const getLayout = vi.fn(async () => [20, 40, 40]);
+  const getLayout = vi.fn(async () => [20, 80]);
   const setLayout = vi.fn();
 
   beforeEach(() => {
@@ -98,5 +98,11 @@ describe('EditorView', () => {
     expect(openExternalMock).toHaveBeenCalledWith(
       'https://minecraft.wiki/w/Resource_pack'
     );
+  });
+
+  it('opens asset selector modal', () => {
+    render(<EditorView projectPath="/tmp" onBack={() => undefined} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Add Assets' }));
+    expect(screen.getByTestId('asset-selector-modal')).toBeInTheDocument();
   });
 });

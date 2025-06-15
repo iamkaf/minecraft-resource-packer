@@ -26,15 +26,17 @@ interface EditorViewProps {
 export default function EditorView({ projectPath, onBack }: EditorViewProps) {
   const [selected, setSelected] = useState<string[]>([]);
   const [selectorAsset, setSelectorAsset] = useState<string | null>(null);
-  const [layout, setLayout] = useState<number[]>([20, 40, 40]);
+  const [layout, setLayout] = useState<number[]>([20, 80]);
   const [summary, setSummary] = useState<ExportSummary | null>(null);
+  const [selectorOpen, setSelectorOpen] = useState(false);
   const confetti = useRef<((opts: unknown) => void) | null>(null);
   const groupRef = useRef<ImperativePanelGroupHandle>(null);
 
   useEffect(() => {
     window.electronAPI?.getEditorLayout().then((l) => {
       if (Array.isArray(l)) {
-        setLayout(l);
+        if (l.length === 2) setLayout(l);
+        else if (l.length === 3) setLayout([l[0], l[1] + l[2]]);
       }
     });
   }, []);
@@ -62,7 +64,13 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
       className="p-4 flex flex-col gap-4 flex-1 min-h-0"
       data-testid="editor-view"
     >
-      <div className="flex items-center justify-end mb-2">
+      <div className="flex items-center justify-end mb-2 gap-2">
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={() => setSelectorOpen(true)}
+        >
+          Add Assets
+        </button>
         <ExternalLink
           href="https://minecraft.wiki/w/Resource_pack"
           aria-label="Help"
@@ -102,34 +110,6 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
           <PanelGroup direction="vertical" className="h-full">
             <Panel defaultSize={70} className="overflow-y-auto">
               <Suspense fallback={<Spinner />}>
-                <AssetSelector
-                  path={projectPath}
-                  onAssetSelect={(n) => setSelectorAsset(n)}
-                />
-              </Suspense>
-            </Panel>
-            <PanelResizeHandle className="flex items-center" tagName="div">
-              <div className="w-full h-px bg-base-content"></div>
-            </PanelResizeHandle>
-            <Panel defaultSize={30} className="overflow-y-auto">
-              <AssetSelectorInfoPanel
-                projectPath={projectPath}
-                asset={selectorAsset}
-              />
-            </Panel>
-          </PanelGroup>
-        </Panel>
-        <PanelResizeHandle className="flex items-center" tagName="div">
-          <div className="w-1 bg-base-content h-full mx-auto"></div>
-        </PanelResizeHandle>
-        <Panel
-          minSize={20}
-          defaultSize={layout[2]}
-          className="overflow-hidden bg-base-100 border border-base-300 rounded"
-        >
-          <PanelGroup direction="vertical" className="h-full">
-            <Panel defaultSize={70} className="overflow-y-auto">
-              <Suspense fallback={<Spinner />}>
                 <AssetBrowser
                   path={projectPath}
                   onSelectionChange={(sel) => setSelected(sel)}
@@ -154,6 +134,34 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
           summary={summary}
           onClose={() => setSummary(null)}
         />
+      )}
+      {selectorOpen && (
+        <dialog className="modal modal-open" data-testid="asset-selector-modal">
+          <div className="modal-box w-11/12 max-w-5xl">
+            <h3 className="font-bold text-lg mb-2">Add Assets</h3>
+            <div className="flex gap-4 max-h-[70vh]">
+              <div className="flex-1 overflow-y-auto">
+                <Suspense fallback={<Spinner />}>
+                  <AssetSelector
+                    path={projectPath}
+                    onAssetSelect={(n) => setSelectorAsset(n)}
+                  />
+                </Suspense>
+              </div>
+              <div className="w-48 overflow-y-auto">
+                <AssetSelectorInfoPanel
+                  projectPath={projectPath}
+                  asset={selectorAsset}
+                />
+              </div>
+            </div>
+            <div className="modal-action">
+              <button className="btn" onClick={() => setSelectorOpen(false)}>
+                Close
+              </button>
+            </div>
+          </div>
+        </dialog>
       )}
       <ReactCanvasConfetti
         onInit={({ confetti: c }) => {

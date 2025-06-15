@@ -3,7 +3,6 @@ import path from 'path';
 import RenameModal from './RenameModal';
 import AssetBrowserItem from './AssetBrowserItem';
 import { useProjectFiles } from './file/useProjectFiles';
-import { useToast } from './ToastProvider';
 import FileTree from './FileTree';
 
 interface Props {
@@ -51,7 +50,6 @@ const AssetBrowser: React.FC<Props> = ({
   const [filters, setFilters] = useState<Filter[]>([]);
   const [view, setView] = useState<'grid' | 'tree'>('grid');
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const toast = useToast();
 
   useEffect(() => {
     onSelectionChange?.(Array.from(selected));
@@ -96,21 +94,10 @@ const AssetBrowser: React.FC<Props> = ({
     );
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const tex = e.dataTransfer.getData('text/plain');
-    if (!tex) return;
-    window.electronAPI?.addTexture(projectPath, tex).then(() => {
-      toast('Texture added', 'success');
-    });
-  };
-
   return (
     <div
       data-testid="asset-browser"
       ref={wrapperRef}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={handleDrop}
       onKeyDown={(e) => {
         if (e.key === 'Delete' && selected.size > 0) {
           e.preventDefault();
