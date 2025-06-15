@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import path from 'path';
 import { formatTextureName } from '../utils/textureNames';
 import AssetContextMenu from './file/AssetContextMenu';
+import TextureThumb from './TextureThumb';
 
 interface Props {
   projectPath: string;
@@ -38,11 +39,8 @@ const AssetBrowserItem: React.FC<Props> = ({
   const full = path.join(projectPath, file);
   const name = path.basename(file);
   const formatted = file.endsWith('.png') ? formatTextureName(name) : name;
-  let thumb: string | null = null;
-  if (file.endsWith('.png')) {
-    const rel = file.split(path.sep).join('/');
-    thumb = `ptex://${rel}`;
-  }
+  const texPath = file.endsWith('.png') ? file : null;
+  const altText = texPath ? formatted : name;
 
   const isSelected = selected.has(file);
 
@@ -99,24 +97,7 @@ const AssetBrowserItem: React.FC<Props> = ({
       }}
     >
       <figure className={noExport.has(file) ? 'opacity-50' : ''}>
-        {thumb ? (
-          <img
-            src={thumb}
-            alt={formatted}
-            style={{
-              width: zoom,
-              height: zoom,
-              imageRendering: 'pixelated',
-            }}
-          />
-        ) : (
-          <div
-            style={{ width: zoom, height: zoom }}
-            className="bg-base-300 flex items-center justify-center"
-          >
-            {name}
-          </div>
-        )}
+        <TextureThumb texture={texPath} alt={altText} size={zoom} simplified />
       </figure>
       <div className="card-body p-1">
         <div className="text-xs leading-tight">
