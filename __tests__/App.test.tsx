@@ -49,6 +49,7 @@ vi.mock('../src/renderer/components/AssetSelectorInfoPanel', () => ({
 describe('App', () => {
   let openHandler: ((e: unknown, path: string) => void) | undefined;
   const exportProject = vi.fn();
+  const getConfetti = vi.fn();
 
   beforeEach(() => {
     window.matchMedia = vi.fn().mockReturnValue({
@@ -67,6 +68,7 @@ describe('App', () => {
       getEditorLayout: () => Promise<number[]>;
       setEditorLayout: (l: number[]) => void;
       loadPackMeta: () => Promise<unknown>;
+      getConfetti: () => Promise<boolean>;
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       onOpenProject: (cb) => {
@@ -76,7 +78,9 @@ describe('App', () => {
       getEditorLayout: vi.fn(async () => [20, 40, 40]),
       setEditorLayout: vi.fn(),
       loadPackMeta: vi.fn(async () => ({ description: '' })),
+      getConfetti,
     };
+    getConfetti.mockResolvedValue(true);
   });
 
   it('shows manager then project name', async () => {
@@ -143,6 +147,28 @@ describe('App', () => {
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
+    exportProject.mockResolvedValueOnce({
+      fileCount: 1,
+      totalSize: 1,
+      durationMs: 1,
+      warnings: [],
+    });
+    const btn = screen.getByText('Export Pack');
+    await act(async () => {
+      fire.mockClear();
+      fireEvent.click(btn);
+      await Promise.resolve();
+    });
+    expect(fire).not.toHaveBeenCalled();
+  });
+
+  it('skips confetti when preference disabled', async () => {
+    getConfetti.mockResolvedValueOnce(false);
+    render(<App />);
+    act(() => {
+      openHandler?.({}, '/tmp/proj');
+    });
+    await screen.findByText('Export Pack');
     exportProject.mockResolvedValueOnce({
       fileCount: 1,
       totalSize: 1,

@@ -48,6 +48,8 @@ declare global {
       setTextureEditor: IpcInvoke<'set-texture-editor'>;
       getTheme: IpcInvoke<'get-theme'>;
       setTheme: IpcInvoke<'set-theme'>;
+      getConfetti: IpcInvoke<'get-confetti'>;
+      setConfetti: IpcInvoke<'set-confetti'>;
       openExternalEditor: IpcInvoke<'open-external-editor'>;
       onOpenProject: IpcListener<'project-opened'>;
       onFileAdded: IpcListener<'file-added'>;

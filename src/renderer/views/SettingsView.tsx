@@ -5,12 +5,14 @@ import { applyTheme, Theme } from '../utils/theme';
 export default function SettingsView() {
   const [editor, setEditor] = useState('');
   const [theme, setTheme] = useState<Theme>('system');
+  const [confetti, setConfetti] = useState(true);
 
   useEffect(() => {
     window.electronAPI?.getTextureEditor().then((p) => setEditor(p));
     window.electronAPI?.getTheme().then((t) => {
       setTheme(t);
     });
+    window.electronAPI?.getConfetti().then((c) => setConfetti(c));
   }, []);
 
   const saveEditor = () => {
@@ -21,6 +23,12 @@ export default function SettingsView() {
     setTheme(t);
     await window.electronAPI?.setTheme(t);
     applyTheme(t);
+  };
+
+  const toggleConfetti = async () => {
+    const next = !confetti;
+    setConfetti(next);
+    await window.electronAPI?.setConfetti(next);
   };
   return (
     <section className="p-4" data-testid="settings-view">
@@ -63,6 +71,18 @@ export default function SettingsView() {
           <option value="dark">Dark</option>
           <option value="system">System</option>
         </select>
+      </div>
+      <div className="form-control max-w-md mt-4">
+        <label className="cursor-pointer label" htmlFor="confetti-toggle">
+          <span className="label-text">Confetti effects</span>
+          <input
+            id="confetti-toggle"
+            type="checkbox"
+            className="toggle"
+            checked={confetti}
+            onChange={toggleConfetti}
+          />
+        </label>
       </div>
     </section>
   );
