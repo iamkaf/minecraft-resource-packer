@@ -50,6 +50,8 @@ declare global {
       setTheme: IpcInvoke<'set-theme'>;
       getConfetti: IpcInvoke<'get-confetti'>;
       setConfetti: IpcInvoke<'set-confetti'>;
+      getDefaultExportDir: IpcInvoke<'get-default-export-dir'>;
+      setDefaultExportDir: IpcInvoke<'set-default-export-dir'>;
       openExternalEditor: IpcInvoke<'open-external-editor'>;
       onOpenProject: IpcListener<'project-opened'>;
       onFileAdded: IpcListener<'file-added'>;

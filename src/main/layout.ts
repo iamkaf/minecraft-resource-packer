@@ -1,4 +1,5 @@
 import type { IpcMain } from 'electron';
+import { app } from 'electron';
 import Store from 'electron-store';
 
 type ThemePref = 'light' | 'dark' | 'system';
@@ -8,12 +9,14 @@ const store = new Store<{
   textureEditor: string;
   theme: ThemePref;
   confetti: boolean;
+  defaultExportDir: string;
 }>({
   defaults: {
     editorLayout: [20, 80],
     textureEditor: '',
     theme: 'system',
     confetti: true,
+    defaultExportDir: app.getPath('downloads'),
   },
 });
 
@@ -49,6 +52,14 @@ export function setConfetti(flag: boolean): void {
   store.set('confetti', flag);
 }
 
+export function getDefaultExportDir(): string {
+  return store.get('defaultExportDir');
+}
+
+export function setDefaultExportDir(dir: string): void {
+  store.set('defaultExportDir', dir);
+}
+
 export function registerLayoutHandlers(ipc: IpcMain): void {
   ipc.handle('get-editor-layout', () => getEditorLayout());
   ipc.handle('set-editor-layout', (_e, layout: number[]) =>
@@ -60,4 +71,8 @@ export function registerLayoutHandlers(ipc: IpcMain): void {
   ipc.handle('set-theme', (_e, t: ThemePref) => setTheme(t));
   ipc.handle('get-confetti', () => getConfetti());
   ipc.handle('set-confetti', (_e, c: boolean) => setConfetti(c));
+  ipc.handle('get-default-export-dir', () => getDefaultExportDir());
+  ipc.handle('set-default-export-dir', (_e, d: string) =>
+    setDefaultExportDir(d)
+  );
 }

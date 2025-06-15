@@ -12,6 +12,8 @@ const getTheme = vi.fn();
 const setTheme = vi.fn();
 const getConfetti = vi.fn();
 const setConfetti = vi.fn();
+const getDefaultExportDir = vi.fn();
+const setDefaultExportDir = vi.fn();
 vi.mock('electron', () => ({
   shell: { openExternal: (openExternalMock = vi.fn()) },
 }));
@@ -28,6 +30,8 @@ describe('SettingsView', () => {
           setTheme: typeof setTheme;
           getConfetti: typeof getConfetti;
           setConfetti: typeof setConfetti;
+          getDefaultExportDir: typeof getDefaultExportDir;
+          setDefaultExportDir: typeof setDefaultExportDir;
         };
       }
     ).electronAPI = {
@@ -37,6 +41,8 @@ describe('SettingsView', () => {
       setTheme,
       getConfetti,
       setConfetti,
+      getDefaultExportDir,
+      setDefaultExportDir,
     } as never;
     getTextureEditor.mockResolvedValue('/usr/bin/gimp');
     setTextureEditor.mockResolvedValue(undefined);
@@ -44,6 +50,8 @@ describe('SettingsView', () => {
     setTheme.mockResolvedValue(undefined);
     getConfetti.mockResolvedValue(true);
     setConfetti.mockResolvedValue(undefined);
+    getDefaultExportDir.mockResolvedValue('/home');
+    setDefaultExportDir.mockResolvedValue(undefined);
   });
 
   it('renders placeholder heading', () => {
@@ -68,8 +76,18 @@ describe('SettingsView', () => {
     const input = await screen.findByLabelText('External texture editor');
     expect(input).toHaveValue('/usr/bin/gimp');
     fireEvent.change(input, { target: { value: '/opt/editor' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Save' })[0]);
     expect(setTextureEditor).toHaveBeenCalledWith('/opt/editor');
+  });
+
+  it('loads and saves default export folder', async () => {
+    render(<SettingsView />);
+    const input = await screen.findByLabelText('Default export folder');
+    expect(input).toHaveValue('/home');
+    fireEvent.change(input, { target: { value: '/out' } });
+    const btn = screen.getAllByRole('button', { name: 'Save' })[1];
+    fireEvent.click(btn);
+    expect(setDefaultExportDir).toHaveBeenCalledWith('/out');
   });
 
   it('changes theme via dropdown', async () => {
