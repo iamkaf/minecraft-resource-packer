@@ -17,6 +17,7 @@ import {
   registerTextureProtocol,
   registerProjectTextureProtocol,
 } from './assets';
+import { registerTextureLabHandlers } from './textureLab';
 import { registerLayoutHandlers } from './layout';
 
 protocol.registerSchemesAsPrivileged([
@@ -65,6 +66,7 @@ registerAssetHandlers(ipcMain);
 registerExportHandlers(ipcMain, projectsDir);
 registerNoExportHandlers(ipcMain);
 registerLayoutHandlers(ipcMain);
+registerTextureLabHandlers(ipcMain);
 
 // Register file-related IPC handlers
 registerFileHandlers(ipcMain);

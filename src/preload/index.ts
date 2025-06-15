@@ -51,6 +51,10 @@ const api = {
   renameFile: (oldPath: string, newPath: string) =>
     invoke('rename-file', oldPath, newPath),
   deleteFile: (file: string) => invoke('delete-file', file),
+  editTexture: (
+    file: string,
+    opts: import('../shared/texture').TextureEditOptions
+  ) => invoke('edit-texture', file, opts),
   watchProject: (project: string) => invoke('watch-project', project),
   unwatchProject: (project: string) => invoke('unwatch-project', project),
   getNoExport: (project: string) => invoke('get-no-export', project),

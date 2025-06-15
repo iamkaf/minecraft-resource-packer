@@ -58,7 +58,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 - [x] 1 : 1 pixel preview + zoom slider
 - [ ] External edit button (auto‑reload on save)
-- [ ] Sharp mini‑lab: Hue‑shift • Rotate 90° • Gray‑scale • ±Saturation • ±Brightness
+- [x] Sharp mini‑lab: Hue‑shift • Rotate 90° • Gray‑scale • ±Saturation • ±Brightness
 - [ ] Revision history (max 20)
 
 ---

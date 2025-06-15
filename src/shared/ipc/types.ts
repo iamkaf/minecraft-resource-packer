@@ -1,6 +1,7 @@
 import type { ProjectInfo } from '../../main/projects';
 import type { PackMeta } from '../project';
 import type { ExportSummary } from '../../main/exporter';
+import type { TextureEditOptions } from '../texture';
 
 export interface IpcRequestMap {
   'list-projects': [];
@@ -25,6 +26,7 @@ export interface IpcRequestMap {
   'write-file': [string, string];
   'rename-file': [string, string];
   'delete-file': [string];
+  'edit-texture': [string, TextureEditOptions];
   'watch-project': [string];
   'unwatch-project': [string];
   'get-no-export': [string];
@@ -56,6 +58,7 @@ export interface IpcResponseMap {
   'write-file': void;
   'rename-file': void;
   'delete-file': void;
+  'edit-texture': void;
   'watch-project': string[];
   'unwatch-project': void;
   'get-no-export': string[];

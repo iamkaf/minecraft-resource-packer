@@ -128,6 +128,11 @@ pixel scale and includes a zoom slider (1–8×). Scrolling the mouse wheel over
 the pane adjusts the zoom. The pane is lazy loaded and displays a
 `react-loader-spinner` indicator while loading.
 
+The **Texture Lab** modal lets you adjust PNG textures without leaving the app.
+It exposes hue shift, rotation, grayscale, saturation and brightness controls.
+Edits are processed in the main process via Sharp and the modal shows a spinner
+while the file is being updated.
+
 ## Windows Paths
 
 When writing tests or other code that constructs file system paths, prefer

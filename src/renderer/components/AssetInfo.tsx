@@ -2,8 +2,10 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 import path from 'path';
 import { Oval } from 'react-loader-spinner';
 import { useToast } from './ToastProvider';
+import Spinner from './Spinner';
 
 const PreviewPane = lazy(() => import('./PreviewPane'));
+const TextureLab = lazy(() => import('./TextureLab'));
 
 interface Props {
   projectPath: string;
@@ -16,6 +18,7 @@ export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
   const [text, setText] = useState('');
   const [orig, setOrig] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [lab, setLab] = useState(false);
 
   const full = asset ? path.join(projectPath, asset) : '';
 
@@ -25,6 +28,7 @@ export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
   const isJson = asset
     ? ['.json', '.mcmeta'].includes(path.extname(asset).toLowerCase())
     : false;
+  const isPng = asset ? path.extname(asset).toLowerCase() === '.png' : false;
 
   useEffect(() => {
     if (asset && count === 1 && isText) {
@@ -92,6 +96,19 @@ export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
               </button>
             </div>
           </>
+        )}
+        {isPng && count === 1 && (
+          <button
+            className="btn btn-secondary btn-sm mt-2"
+            onClick={() => setLab(true)}
+          >
+            Open Texture Lab
+          </button>
+        )}
+        {lab && (
+          <Suspense fallback={<Spinner />}>
+            <TextureLab file={full} onClose={() => setLab(false)} />
+          </Suspense>
         )}
       </div>
     </div>
