@@ -59,7 +59,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
       <Navbar />
-      {content}
+      <div className="flex-1 flex flex-col">{content}</div>
     </div>
   );
 }

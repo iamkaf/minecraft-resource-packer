@@ -21,8 +21,20 @@ vi.mock('../src/renderer/components/AssetBrowser', () => ({
   default: () => <div>browser</div>,
 }));
 vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
-  default: ({ onExport }: { onExport: () => void }) => (
-    <button onClick={onExport}>Export Pack</button>
+  default: ({
+    onExport,
+    onBack,
+    projectPath,
+  }: {
+    onExport: () => void;
+    onBack: () => void;
+    projectPath: string;
+  }) => (
+    <div>
+      <button onClick={onExport}>Export Pack</button>
+      <button onClick={onBack}>Back to Projects</button>
+      <span>{projectPath}</span>
+    </div>
   ),
 }));
 vi.mock('../src/renderer/components/AssetSelectorInfoPanel', () => ({
@@ -60,7 +72,7 @@ describe('EditorView', () => {
 
   it('shows project path and exports pack', async () => {
     render(<EditorView projectPath="/tmp/proj" onBack={() => undefined} />);
-    expect(screen.getByText('Project: /tmp/proj')).toBeInTheDocument();
+    expect(screen.getByText('/tmp/proj')).toBeInTheDocument();
     const btn = screen.getByText('Export Pack');
     await act(async () => {
       fireEvent.click(btn);

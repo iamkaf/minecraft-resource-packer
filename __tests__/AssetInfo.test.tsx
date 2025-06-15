@@ -2,6 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import AssetInfo from '../src/renderer/components/AssetInfo';
+import path from 'path';
 
 describe('AssetInfo', () => {
   const readFile = vi.fn();
@@ -36,7 +37,7 @@ describe('AssetInfo', () => {
     expect(box).toHaveValue('hello');
     fireEvent.change(box, { target: { value: 'new' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-    expect(writeFile).toHaveBeenCalledWith('/p/a.txt', 'new');
+    expect(writeFile).toHaveBeenCalledWith(path.join('/p', 'a.txt'), 'new');
   });
 
   it('blocks invalid json', async () => {

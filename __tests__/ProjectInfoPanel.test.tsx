@@ -8,6 +8,7 @@ const meta = { description: 'desc', author: '', urls: [], created: 0 };
 describe('ProjectInfoPanel', () => {
   const load = vi.fn();
   const onExport = vi.fn();
+  const onBack = vi.fn();
 
   beforeEach(() => {
     (
@@ -20,10 +21,19 @@ describe('ProjectInfoPanel', () => {
   });
 
   it('loads metadata and triggers export', async () => {
-    render(<ProjectInfoPanel projectPath="/p/Pack" onExport={onExport} />);
+    render(
+      <ProjectInfoPanel
+        projectPath="/p/Pack"
+        onExport={onExport}
+        onBack={onBack}
+      />
+    );
     expect(load).toHaveBeenCalledWith('Pack');
     await screen.findByText('desc');
     fireEvent.click(screen.getByText('Export Pack'));
     expect(onExport).toHaveBeenCalled();
+    fireEvent.click(screen.getByText('Back to Projects'));
+    expect(onBack).toHaveBeenCalled();
+    expect(screen.getByText('/p/Pack')).toBeInTheDocument();
   });
 });

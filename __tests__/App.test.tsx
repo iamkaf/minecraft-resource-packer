@@ -26,8 +26,20 @@ vi.mock('../src/renderer/views/ProjectManagerView', () => ({
   default: () => <div>manager</div>,
 }));
 vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
-  default: ({ onExport }: { onExport: () => void }) => (
-    <button onClick={onExport}>Export Pack</button>
+  default: ({
+    onExport,
+    onBack,
+    projectPath,
+  }: {
+    onExport: () => void;
+    onBack: () => void;
+    projectPath: string;
+  }) => (
+    <div>
+      <button onClick={onExport}>Export Pack</button>
+      <button onClick={onBack}>Back to Projects</button>
+      <span>{projectPath}</span>
+    </div>
   ),
 }));
 vi.mock('../src/renderer/components/AssetSelectorInfoPanel', () => ({
@@ -77,7 +89,7 @@ describe('App', () => {
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
-    await screen.findByText(/Project: \/tmp\/proj/);
+    await screen.findByText('/tmp/proj');
   });
 
   it('invokes exportProject when button clicked', async () => {

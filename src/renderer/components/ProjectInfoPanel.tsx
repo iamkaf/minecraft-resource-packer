@@ -5,9 +5,14 @@ import type { PackMeta } from '../../main/projects';
 interface Props {
   projectPath: string;
   onExport: () => void;
+  onBack: () => void;
 }
 
-export default function ProjectInfoPanel({ projectPath, onExport }: Props) {
+export default function ProjectInfoPanel({
+  projectPath,
+  onExport,
+  onBack,
+}: Props) {
   const [meta, setMeta] = useState<PackMeta | null>(null);
   const name = path.basename(projectPath);
 
@@ -20,8 +25,12 @@ export default function ProjectInfoPanel({ projectPath, onExport }: Props) {
       className="p-2 flex flex-col items-center gap-2"
       data-testid="project-info"
     >
+      <button className="link link-primary self-start" onClick={onBack}>
+        Back to Projects
+      </button>
       <img src="ptex://pack.png" alt="Pack icon" className="w-16 h-16" />
       <h2 className="font-display text-lg">{name}</h2>
+      <p className="text-xs break-all">{projectPath}</p>
       <p className="text-sm text-center break-all flex-1">
         {meta?.description}
       </p>

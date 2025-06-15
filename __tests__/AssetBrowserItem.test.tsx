@@ -36,6 +36,7 @@ describe('AssetBrowserItem', () => {
         toggleNoExport={() => undefined}
         confirmDelete={confirmDelete}
         openRename={openRename}
+        zoom={64}
       />
     );
     const item = screen.getByText('a.txt');
@@ -66,6 +67,7 @@ describe('AssetBrowserItem', () => {
         toggleNoExport={toggleNoExport}
         confirmDelete={() => undefined}
         openRename={() => undefined}
+        zoom={64}
       />
     );
     const item = screen.getByText('a.txt');
@@ -86,6 +88,7 @@ describe('AssetBrowserItem', () => {
         toggleNoExport={() => undefined}
         confirmDelete={() => undefined}
         openRename={() => undefined}
+        zoom={64}
       />
     );
     const item = screen.getByText('a.txt');
@@ -108,6 +111,7 @@ describe('AssetBrowserItem', () => {
         toggleNoExport={() => undefined}
         confirmDelete={() => undefined}
         openRename={() => undefined}
+        zoom={64}
       />
     );
     const item = screen.getByText('a.txt');
