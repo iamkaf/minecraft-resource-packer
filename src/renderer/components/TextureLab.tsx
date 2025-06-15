@@ -46,7 +46,7 @@ export default function TextureLab({
         }}
       >
         <h3 className="font-bold text-lg">Texture Lab</h3>
-        <div className="flex justify-center">
+        <div style={{height: '64px'}} className="flex justify-center">
           <img
             src={`ptex://${rel}`}
             alt="preview"
@@ -54,6 +54,8 @@ export default function TextureLab({
               imageRendering: 'pixelated',
               transform: `rotate(${rotate}deg)`,
               filter,
+              height: '64px',
+              width: '64px'
             }}
           />
         </div>
