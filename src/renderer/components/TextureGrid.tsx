@@ -40,11 +40,6 @@ const Cell: React.FC<GridChildComponentProps<CellData>> = ({
         <button
           aria-label={tex.name}
           onClick={() => data.onSelect(tex.name)}
-          onDragStart={(e) => {
-            e.dataTransfer.setData('text/plain', tex.name);
-            e.dataTransfer.effectAllowed = 'copy';
-          }}
-          draggable
           className="p-1 hover:ring ring-accent rounded"
         >
           <img

@@ -2,7 +2,7 @@ import type { IpcMain } from 'electron';
 import Store from 'electron-store';
 
 const store = new Store<{ editorLayout: number[] }>({
-  defaults: { editorLayout: [20, 40, 40] },
+  defaults: { editorLayout: [20, 80] },
 });
 
 export function getEditorLayout(): number[] {

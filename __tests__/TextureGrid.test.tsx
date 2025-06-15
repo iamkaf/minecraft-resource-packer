@@ -10,7 +10,7 @@ const textures: TextureInfo[] = [
   { name: 'block/dirt.png', url: 'texture://dirt' },
 ];
 
-describe('TextureGrid drag and click', () => {
+describe('TextureGrid', () => {
   it('triggers onSelect on click', () => {
     const onSelect = vi.fn();
     render(<TextureGrid textures={textures} zoom={64} onSelect={onSelect} />);
@@ -19,21 +19,9 @@ describe('TextureGrid drag and click', () => {
     expect(onSelect).toHaveBeenCalledWith('block/stone.png');
   });
 
-  it('sets drag data with texture name', () => {
-    const onSelect = vi.fn();
-    render(<TextureGrid textures={textures} zoom={64} onSelect={onSelect} />);
+  it('is not draggable', () => {
+    render(<TextureGrid textures={textures} zoom={64} onSelect={vi.fn()} />);
     const btn = screen.getByRole('button', { name: 'block/stone.png' });
-    const store: Record<string, string> = {};
-    const transfer = {
-      setData: (t: string, v: string) => {
-        store[t] = v;
-      },
-      getData: (t: string) => store[t] ?? '',
-      effectAllowed: '',
-    } as DataTransfer;
-    fireEvent.dragStart(btn, { dataTransfer: transfer });
-    expect(store['text/plain']).toBe('block/stone.png');
-    expect(transfer.effectAllowed).toBe('copy');
-    expect(onSelect).not.toHaveBeenCalled();
+    expect(btn.getAttribute('draggable')).toBe(null);
   });
 });
