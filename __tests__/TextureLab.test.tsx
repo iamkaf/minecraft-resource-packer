@@ -5,8 +5,12 @@ import TextureLab from '../src/renderer/components/TextureLab';
 
 describe('TextureLab', () => {
   it('renders modal with controls', () => {
-    render(<TextureLab file="foo.png" onClose={() => {}} />);
+    render(
+      <TextureLab file="/proj/foo.png" projectPath="/proj" onClose={() => {}} />
+    );
     expect(screen.getByTestId('texture-lab')).toBeInTheDocument();
     expect(screen.getByText('Texture Lab')).toBeInTheDocument();
+    const img = screen.getByAltText('preview');
+    expect(img).toHaveAttribute('src', 'ptex://foo.png');
   });
 });

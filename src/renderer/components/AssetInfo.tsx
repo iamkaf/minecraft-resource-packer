@@ -107,7 +107,11 @@ export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
         )}
         {lab && (
           <Suspense fallback={<Spinner />}>
-            <TextureLab file={full} onClose={() => setLab(false)} />
+            <TextureLab
+              file={full}
+              projectPath={projectPath}
+              onClose={() => setLab(false)}
+            />
           </Suspense>
         )}
       </div>

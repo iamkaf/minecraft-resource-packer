@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
+import path from 'path';
 import Spinner from './Spinner';
 import type { TextureEditOptions } from '../../shared/texture';
 
 export default function TextureLab({
   file,
+  projectPath,
   onClose,
 }: {
   file: string;
+  projectPath: string;
   onClose: () => void;
 }) {
   const [hue, setHue] = useState(0);
@@ -15,6 +18,11 @@ export default function TextureLab({
   const [sat, setSat] = useState(1);
   const [bright, setBright] = useState(1);
   const [busy, setBusy] = useState(false);
+
+  const rel = path.relative(projectPath, file).split(path.sep).join('/');
+  const filter = `hue-rotate(${hue}deg) saturate(${sat}) brightness(${bright})${
+    gray ? ' grayscale(1)' : ''
+  }`;
 
   const apply = () => {
     const opts: TextureEditOptions = {
@@ -38,6 +46,19 @@ export default function TextureLab({
         }}
       >
         <h3 className="font-bold text-lg">Texture Lab</h3>
+        <div style={{height: '64px'}} className="flex justify-center">
+          <img
+            src={`ptex://${rel}`}
+            alt="preview"
+            style={{
+              imageRendering: 'pixelated',
+              transform: `rotate(${rotate}deg)`,
+              filter,
+              height: '64px',
+              width: '64px'
+            }}
+          />
+        </div>
         <label className="flex items-center gap-2">
           Hue
           <input

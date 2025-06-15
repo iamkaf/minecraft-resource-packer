@@ -25,7 +25,8 @@ export default function PreviewPane({
     <div
       data-testid="preview-pane"
       onWheel={handleWheel}
-      className={`border p-2 flex flex-col items-center ${bgClass}`}
+      style={{ height: '128px', width: '128px' }}
+      className={`border p-2 flex flex-col items-center justify-center ${bgClass}`}
     >
       {texture ? (
         <>
@@ -35,18 +36,8 @@ export default function PreviewPane({
             style={{
               imageRendering: 'pixelated',
               transform: `scale(${zoom})`,
-              transformOrigin: 'top left',
+              transformOrigin: 'center',
             }}
-          />
-          <input
-            type="range"
-            min={1}
-            max={8}
-            step={1}
-            value={zoom}
-            aria-label="Zoom"
-            onChange={(e) => setZoom(Number(e.target.value))}
-            className="range range-xs w-32 mt-2"
           />
         </>
       ) : (
