@@ -41,11 +41,11 @@ describe('AssetBrowser', () => {
   it('renders files from directory', async () => {
     render(<AssetBrowser path="/proj" />);
     expect(watchProject).toHaveBeenCalledWith('/proj');
-    expect(await screen.findByText('a.txt')).toBeInTheDocument();
+    expect((await screen.findAllByText('a.txt'))[0]).toBeInTheDocument();
     const img = screen.getByAltText('B') as HTMLImageElement;
     expect(img.src).toContain('ptex://b.png');
     expect(screen.getByText('B')).toBeInTheDocument();
-    expect(screen.getByText('b.png')).toBeInTheDocument();
+    expect(screen.getAllByText('b.png')[0]).toBeInTheDocument();
     expect(img.style.imageRendering).toBe('pixelated');
   });
 
@@ -84,7 +84,7 @@ describe('AssetBrowser', () => {
       setNoExport: vi.fn(),
     };
     render(<AssetBrowser path="/proj" />);
-    const item = await screen.findByText('a.txt');
+    const item = (await screen.findAllByText('a.txt'))[0];
     fireEvent.contextMenu(item);
     const revealBtn = (
       await screen.findAllByRole('menuitem', { name: 'Reveal' })
@@ -138,19 +138,19 @@ describe('AssetBrowser', () => {
     });
 
     render(<AssetBrowser path="/proj" />);
-    await screen.findByText('a.txt');
+    await screen.findAllByText('a.txt');
 
     added?.({}, 'c.txt');
-    expect(await screen.findByText('c.txt')).toBeInTheDocument();
+    expect((await screen.findAllByText('c.txt'))[0]).toBeInTheDocument();
 
     removed?.({}, 'a.txt');
-    await screen.findByText('c.txt');
+    await screen.findAllByText('c.txt');
     expect(screen.queryByText('a.txt')).toBeNull();
 
     renamed?.({}, { oldPath: 'b.png', newPath: 'd.png' });
-    await screen.findByText('d.png');
+    await screen.findAllByText('d.png');
     expect(screen.queryByText('b.png')).toBeNull();
-    expect(screen.getByText('d.png')).toBeInTheDocument();
+    expect(screen.getAllByText('d.png')[0]).toBeInTheDocument();
   });
 
   it('supports multi selection and delete key', async () => {
@@ -176,8 +176,8 @@ describe('AssetBrowser', () => {
       setNoExport: vi.fn(),
     };
     render(<AssetBrowser path="/proj" />);
-    const a = await screen.findByText('a.txt');
-    const b = screen.getByText('b.png');
+    const a = (await screen.findAllByText('a.txt'))[0];
+    const b = screen.getAllByText('b.png')[0];
     fireEvent.click(a);
     fireEvent.click(b, { ctrlKey: true });
     const wrapper = screen.getByTestId('asset-browser');
@@ -209,8 +209,8 @@ describe('AssetBrowser', () => {
       onFileRenamed,
     };
     render(<AssetBrowser path="/proj" />);
-    const a = await screen.findByText('a.txt');
-    const b = screen.getByText('b.png');
+    const a = (await screen.findAllByText('a.txt'))[0];
+    const b = screen.getAllByText('b.png')[0];
     fireEvent.click(a);
     fireEvent.click(b, { ctrlKey: true });
     fireEvent.contextMenu(a);
@@ -244,20 +244,20 @@ describe('AssetBrowser', () => {
       onFileRenamed,
     };
     render(<AssetBrowser path="/proj" />);
-    const el = await screen.findByText('a.txt');
+    const el = (await screen.findAllByText('a.txt'))[0];
     const container = el.closest('div[tabindex="0"]') as HTMLElement;
     expect(container.className).toMatch(/border-gray-400/);
-    const inner = container.querySelector('div') as HTMLElement;
+    const inner = container.querySelector('figure') as HTMLElement;
     expect(inner.className).toMatch(/opacity-50/);
   });
 
   it('filters by search and adjusts zoom', async () => {
     render(<AssetBrowser path="/proj" />);
-    await screen.findByText('a.txt');
+    await screen.findAllByText('a.txt');
     const search = screen.getByPlaceholderText('Search files');
     fireEvent.change(search, { target: { value: 'b.png' } });
     expect(screen.queryByText('a.txt')).toBeNull();
-    expect(screen.getByText('b.png')).toBeInTheDocument();
+    expect(screen.getAllByText('b.png')[0]).toBeInTheDocument();
     const slider = screen.getByLabelText('Zoom');
     const img = screen.getByAltText('B') as HTMLImageElement;
     expect(img.style.width).toBe('64px');
@@ -271,18 +271,18 @@ describe('AssetBrowser', () => {
       'assets/minecraft/textures/item/apple.png',
     ]);
     render(<AssetBrowser path="/proj" />);
-    await screen.findByText('stone.png');
+    await screen.findAllByText('stone.png');
     const itemsChip = screen.getByText('Items');
     fireEvent.click(itemsChip);
     expect(screen.queryByText('stone.png')).toBeNull();
-    expect(screen.getByText('apple.png')).toBeInTheDocument();
+    expect(screen.getAllByText('apple.png')[0]).toBeInTheDocument();
   });
 
   it('shows tree view', async () => {
     render(<AssetBrowser path="/proj" />);
-    await screen.findByText('a.txt');
+    await screen.findAllByText('a.txt');
     fireEvent.click(screen.getByText('Tree'));
     expect(screen.getByTestId('file-tree')).toBeInTheDocument();
-    expect(screen.getByText('a.txt')).toBeInTheDocument();
+    expect(screen.getAllByText('a.txt')[0]).toBeInTheDocument();
   });
 });

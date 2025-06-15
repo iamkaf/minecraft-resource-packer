@@ -83,7 +83,7 @@ const AssetBrowserItem: React.FC<Props> = ({
 
   return (
     <div
-      className={`p-1 cursor-pointer hover:ring ring-accent relative text-center tooltip ${
+      className={`card card-compact cursor-pointer hover:ring ring-accent relative text-center tooltip ${
         isSelected ? 'ring' : ''
       } ${noExport.has(file) ? 'border border-gray-400' : ''}`}
       data-tip={`${formatted} \n${name}`}
@@ -98,23 +98,17 @@ const AssetBrowserItem: React.FC<Props> = ({
         }
       }}
     >
-      <div className={noExport.has(file) ? 'opacity-50' : ''}>
+      <figure className={noExport.has(file) ? 'opacity-50' : ''}>
         {thumb ? (
-          <>
-            <img
-              src={thumb}
-              alt={formatted}
-              style={{
-                width: zoom,
-                height: zoom,
-                imageRendering: 'pixelated',
-              }}
-            />
-            <div className="text-xs leading-tight mt-1">
-              <div>{formatted}</div>
-              <div className="opacity-50">{name}</div>
-            </div>
-          </>
+          <img
+            src={thumb}
+            alt={formatted}
+            style={{
+              width: zoom,
+              height: zoom,
+              imageRendering: 'pixelated',
+            }}
+          />
         ) : (
           <div
             style={{ width: zoom, height: zoom }}
@@ -123,6 +117,16 @@ const AssetBrowserItem: React.FC<Props> = ({
             {name}
           </div>
         )}
+      </figure>
+      <div className="card-body p-1">
+        <div className="text-xs leading-tight">
+          <div className="truncate" style={{ width: zoom }}>
+            {formatted}
+          </div>
+          <div className="opacity-50 truncate" style={{ width: zoom }}>
+            {name}
+          </div>
+        </div>
       </div>
       <AssetContextMenu
         filePath={full}
