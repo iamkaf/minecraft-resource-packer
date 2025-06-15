@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TextureGrid, { TextureInfo } from './TextureGrid';
+import { Tree, NodeRendererProps } from 'react-arborist';
+import { formatTextureName } from '../utils/textureNames';
 
 interface Props {
   path: string;
@@ -8,6 +10,13 @@ interface Props {
 
 const FILTERS = ['blocks', 'items', 'entity', 'ui', 'audio'] as const;
 type Filter = (typeof FILTERS)[number];
+
+interface NodeData {
+  id: string;
+  name: string;
+  url?: string;
+  children?: NodeData[];
+}
 
 const getCategory = (name: string): Filter | 'misc' => {
   if (name.startsWith('block/')) return 'blocks';
@@ -31,6 +40,7 @@ const AssetSelector: React.FC<Props> = ({
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);
   const [filters, setFilters] = useState<Filter[]>([]);
+  const [view, setView] = useState<'grid' | 'tree'>('grid');
 
   useEffect(() => {
     const load = async () => {
@@ -78,14 +88,52 @@ const AssetSelector: React.FC<Props> = ({
     return out;
   }, [filtered]);
 
+  const treeData = React.useMemo<NodeData[]>(() => {
+    const out: NodeData[] = [];
+    (['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).forEach(
+      (key) => {
+        const list = categories[key];
+        if (list.length === 0) return;
+        out.push({
+          id: key,
+          name: key,
+          children: list.map((t) => ({ id: t.name, name: t.name, url: t.url })),
+        });
+      }
+    );
+    return out;
+  }, [categories]);
+
   const handleSelect = (name: string) => {
-    window.electronAPI?.addTexture(projectPath, name);
     onAssetSelect?.(name);
   };
 
   const toggleFilter = (f: Filter) => {
     setFilters((prev) =>
       prev.includes(f) ? prev.filter((p) => p !== f) : [...prev, f]
+    );
+  };
+
+  const SelectorNode: React.FC<
+    NodeRendererProps<NodeData> & { zoom: number }
+  > = ({ node, style }) => {
+    return (
+      <div style={style} className="flex items-center gap-1">
+        {node.isLeaf && node.data.url && (
+          <img
+            src={node.data.url}
+            alt={formatTextureName(node.data.name)}
+            style={{
+              width: zoom,
+              height: zoom,
+              imageRendering: 'pixelated',
+            }}
+          />
+        )}
+        <span className={node.isLeaf ? '' : 'font-bold capitalize'}>
+          {node.data.name}
+        </span>
+      </div>
     );
   };
 
@@ -110,6 +158,22 @@ const AssetSelector: React.FC<Props> = ({
           className="range range-xs w-32"
         />
       </div>
+      <div className="flex gap-2 mb-2">
+        <button
+          className={`btn btn-xs ${view === 'grid' ? 'btn-primary' : ''}`}
+          onClick={() => setView('grid')}
+          aria-label="Grid view"
+        >
+          Grid
+        </button>
+        <button
+          className={`btn btn-xs ${view === 'tree' ? 'btn-primary' : ''}`}
+          onClick={() => setView('tree')}
+          aria-label="Tree view"
+        >
+          Tree
+        </button>
+      </div>
       <div className="flex gap-1 mb-2">
         {FILTERS.map((f) => (
           <span
@@ -126,25 +190,45 @@ const AssetSelector: React.FC<Props> = ({
           </span>
         ))}
       </div>
-      {(['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
-        (key) => {
-          const list = categories[key];
-          if (list.length === 0) return null;
-          return (
-            <div className="collapse collapse-arrow mb-2" key={key}>
-              <input type="checkbox" defaultChecked />
-              <div className="collapse-title font-medium capitalize">{key}</div>
-              <div className="collapse-content">
-                <TextureGrid
-                  testId="texture-grid"
-                  textures={list}
-                  zoom={zoom}
-                  onSelect={handleSelect}
-                />
+      {view === 'grid' ? (
+        (['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
+          (key) => {
+            const list = categories[key];
+            if (list.length === 0) return null;
+            return (
+              <div className="collapse collapse-arrow mb-2" key={key}>
+                <input type="checkbox" defaultChecked />
+                <div className="collapse-title font-medium capitalize">
+                  {key}
+                </div>
+                <div className="collapse-content">
+                  <TextureGrid
+                    testId="texture-grid"
+                    textures={list}
+                    zoom={zoom}
+                    onSelect={handleSelect}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        }
+            );
+          }
+        )
+      ) : (
+        <Tree
+          data={treeData}
+          openByDefault
+          width={300}
+          height={192}
+          rowHeight={zoom + 24}
+          onSelect={(nodes) => {
+            const n = nodes[0];
+            if (n && n.isLeaf) {
+              handleSelect(n.id);
+            }
+          }}
+        >
+          {(props) => <SelectorNode {...props} zoom={zoom} />}
+        </Tree>
       )}
     </div>
   );

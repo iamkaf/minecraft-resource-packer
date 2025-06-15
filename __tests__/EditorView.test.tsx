@@ -38,7 +38,17 @@ vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
   ),
 }));
 vi.mock('../src/renderer/components/AssetSelectorInfoPanel', () => ({
-  default: () => <div>info</div>,
+  default: ({
+    asset,
+    projectPath,
+  }: {
+    asset: string | null;
+    projectPath: string;
+  }) => (
+    <div>
+      info {asset} {projectPath}
+    </div>
+  ),
 }));
 
 const summary = {

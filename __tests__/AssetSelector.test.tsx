@@ -7,6 +7,7 @@ import AssetSelector from '../src/renderer/components/AssetSelector';
 describe('AssetSelector', () => {
   const listTextures = vi.fn();
   const addTexture = vi.fn();
+  const onSelect = vi.fn();
   const getTextureUrl = vi.fn();
 
   beforeEach(() => {
@@ -27,10 +28,11 @@ describe('AssetSelector', () => {
     ]);
     getTextureUrl.mockImplementation((_p, n) => `texture://${n}`);
     vi.clearAllMocks();
+    onSelect.mockClear();
   });
 
   it('lists textures and handles selection', async () => {
-    render(<AssetSelector path="/proj" />);
+    render(<AssetSelector path="/proj" onAssetSelect={onSelect} />);
     expect(listTextures).toHaveBeenCalledWith('/proj');
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });
@@ -44,7 +46,8 @@ describe('AssetSelector', () => {
     expect(getTextureUrl).toHaveBeenCalledWith('/proj', 'block/grass.png');
     expect(img.src).toContain('texture://block/grass.png');
     fireEvent.click(button);
-    expect(addTexture).toHaveBeenCalledWith('/proj', 'block/grass.png');
+    expect(addTexture).not.toHaveBeenCalled();
+    expect(onSelect).toHaveBeenCalledWith('block/grass.png');
   });
 
   it('shows items in the items category', async () => {
@@ -98,5 +101,14 @@ describe('AssetSelector', () => {
     expect(
       screen.getAllByRole('button', { name: /block\/test/ }).length
     ).toBeLessThan(50);
+  });
+
+  it('toggles tree view', async () => {
+    render(<AssetSelector path="/proj" />);
+    const input = screen.getByPlaceholderText('Search texture');
+    fireEvent.change(input, { target: { value: 'grass' } });
+    await screen.findByText('blocks');
+    fireEvent.click(screen.getByRole('button', { name: 'Tree view' }));
+    expect(await screen.findByText('block/grass.png')).toBeInTheDocument();
   });
 });
