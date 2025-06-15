@@ -13,6 +13,16 @@ interface Props {
 const FILTERS = ['blocks', 'items', 'entity', 'ui', 'audio'] as const;
 type Filter = (typeof FILTERS)[number];
 
+const normalizeForCategory = (file: string) => {
+  const texIdx = file.indexOf('textures/');
+  if (texIdx >= 0) return file.slice(texIdx + 'textures/'.length);
+  const soundIdx = file.indexOf('sounds/');
+  if (soundIdx >= 0) return file.slice(soundIdx);
+  const soundIdx2 = file.indexOf('sound/');
+  if (soundIdx2 >= 0) return file.slice(soundIdx2);
+  return file;
+};
+
 const getCategory = (name: string): Filter | 'misc' => {
   if (name.startsWith('block/')) return 'blocks';
   if (name.startsWith('item/')) return 'items';
@@ -47,13 +57,30 @@ const AssetBrowser: React.FC<Props> = ({
 
   const visible = files.filter((f) => {
     if (query && !f.includes(query)) return false;
+    const cat = getCategory(normalizeForCategory(f));
     if (filters.length > 0) {
-      const cat = getCategory(f);
       if (cat === 'misc') return false;
       if (!filters.includes(cat)) return false;
     }
     return true;
   });
+
+  const categories = React.useMemo(() => {
+    const out: Record<Filter | 'misc', string[]> = {
+      blocks: [],
+      items: [],
+      entity: [],
+      ui: [],
+      audio: [],
+      misc: [],
+    };
+    for (const f of visible) {
+      const cat = getCategory(normalizeForCategory(f));
+      if (out[cat]) out[cat].push(f);
+      else out.misc.push(f);
+    }
+    return out;
+  }, [visible]);
 
   const toggleFilter = (f: Filter) => {
     setFilters((prev) =>
@@ -125,22 +152,36 @@ const AssetBrowser: React.FC<Props> = ({
           </span>
         ))}
       </div>
-      <div className="grid grid-cols-6 gap-2">
-        {visible.map((f) => (
-          <AssetBrowserItem
-            key={f}
-            projectPath={projectPath}
-            file={f}
-            selected={selected}
-            setSelected={setSelected}
-            noExport={noExport}
-            toggleNoExport={toggleNoExport}
-            confirmDelete={(files) => setConfirmDelete(files)}
-            openRename={(file) => setRenameTarget(file)}
-            zoom={zoom}
-          />
-        ))}
-      </div>
+      {(['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
+        (key) => {
+          const list = categories[key];
+          if (list.length === 0) return null;
+          return (
+            <div className="collapse collapse-arrow mb-2" key={key}>
+              <input type="checkbox" defaultChecked />
+              <div className="collapse-title font-medium capitalize">{key}</div>
+              <div className="collapse-content">
+                <div className="grid grid-cols-6 gap-2">
+                  {list.map((f) => (
+                    <AssetBrowserItem
+                      key={f}
+                      projectPath={projectPath}
+                      file={f}
+                      selected={selected}
+                      setSelected={setSelected}
+                      noExport={noExport}
+                      toggleNoExport={toggleNoExport}
+                      confirmDelete={(files) => setConfirmDelete(files)}
+                      openRename={(file) => setRenameTarget(file)}
+                      zoom={zoom}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        }
+      )}
       {confirmDelete && (
         <dialog className="modal modal-open" data-testid="delete-modal">
           <div className="modal-box">

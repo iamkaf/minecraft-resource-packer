@@ -51,7 +51,10 @@ const AssetSelector: React.FC<Props> = ({
   const filtered = query
     ? all.filter((t) => {
         if (!t.name.includes(query)) return false;
-        if (filters.length > 0 && !filters.includes(getCategory(t.name))) {
+        if (
+          filters.length > 0 &&
+          !filters.includes(getCategory(t.name) as Filter)
+        ) {
           return false;
         }
         return true;
