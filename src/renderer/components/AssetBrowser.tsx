@@ -10,6 +10,23 @@ interface Props {
   onSelectionChange?: (sel: string[]) => void;
 }
 
+const FILTERS = ['blocks', 'items', 'entity', 'ui', 'audio'] as const;
+type Filter = (typeof FILTERS)[number];
+
+const getCategory = (name: string): Filter | 'misc' => {
+  if (name.startsWith('block/')) return 'blocks';
+  if (name.startsWith('item/')) return 'items';
+  if (name.startsWith('entity/')) return 'entity';
+  if (
+    name.startsWith('gui/') ||
+    name.startsWith('font/') ||
+    name.startsWith('misc/')
+  )
+    return 'ui';
+  if (name.startsWith('sound/') || name.startsWith('sounds/')) return 'audio';
+  return 'misc';
+};
+
 const AssetBrowser: React.FC<Props> = ({
   path: projectPath,
   onSelectionChange,
@@ -18,12 +35,31 @@ const AssetBrowser: React.FC<Props> = ({
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [confirmDelete, setConfirmDelete] = useState<string[] | null>(null);
   const [renameTarget, setRenameTarget] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
+  const [zoom, setZoom] = useState(64);
+  const [filters, setFilters] = useState<Filter[]>([]);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const toast = useToast();
 
   useEffect(() => {
     onSelectionChange?.(Array.from(selected));
   }, [selected, onSelectionChange]);
+
+  const visible = files.filter((f) => {
+    if (query && !f.includes(query)) return false;
+    if (filters.length > 0) {
+      const cat = getCategory(f);
+      if (cat === 'misc') return false;
+      if (!filters.includes(cat)) return false;
+    }
+    return true;
+  });
+
+  const toggleFilter = (f: Filter) => {
+    setFilters((prev) =>
+      prev.includes(f) ? prev.filter((p) => p !== f) : [...prev, f]
+    );
+  };
 
   const handleDeleteSelected = () => {
     setConfirmDelete(
@@ -44,7 +80,6 @@ const AssetBrowser: React.FC<Props> = ({
     <div
       data-testid="asset-browser"
       ref={wrapperRef}
-      className="grid grid-cols-6 gap-2"
       onDragOver={(e) => e.preventDefault()}
       onDrop={handleDrop}
       onKeyDown={(e) => {
@@ -55,19 +90,57 @@ const AssetBrowser: React.FC<Props> = ({
       }}
       tabIndex={0}
     >
-      {files.map((f) => (
-        <AssetBrowserItem
-          key={f}
-          projectPath={projectPath}
-          file={f}
-          selected={selected}
-          setSelected={setSelected}
-          noExport={noExport}
-          toggleNoExport={toggleNoExport}
-          confirmDelete={(files) => setConfirmDelete(files)}
-          openRename={(file) => setRenameTarget(file)}
+      <div className="flex items-center gap-2 mb-2">
+        <input
+          className="border px-1 flex-1"
+          placeholder="Search files"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
         />
-      ))}
+        <input
+          type="range"
+          min={24}
+          max={128}
+          step={1}
+          value={zoom}
+          aria-label="Zoom"
+          data-testid="zoom-range"
+          onChange={(e) => setZoom(Number(e.target.value))}
+          className="range range-xs w-32"
+        />
+      </div>
+      <div className="flex gap-1 mb-2">
+        {FILTERS.map((f) => (
+          <span
+            key={f}
+            role="button"
+            tabIndex={0}
+            onClick={() => toggleFilter(f)}
+            onKeyDown={(e) => e.key === 'Enter' && toggleFilter(f)}
+            className={`badge badge-outline cursor-pointer select-none ${
+              filters.includes(f) ? 'badge-primary' : ''
+            }`}
+          >
+            {f.charAt(0).toUpperCase() + f.slice(1)}
+          </span>
+        ))}
+      </div>
+      <div className="grid grid-cols-6 gap-2">
+        {visible.map((f) => (
+          <AssetBrowserItem
+            key={f}
+            projectPath={projectPath}
+            file={f}
+            selected={selected}
+            setSelected={setSelected}
+            noExport={noExport}
+            toggleNoExport={toggleNoExport}
+            confirmDelete={(files) => setConfirmDelete(files)}
+            openRename={(file) => setRenameTarget(file)}
+            zoom={zoom}
+          />
+        ))}
+      </div>
       {confirmDelete && (
         <dialog className="modal modal-open" data-testid="delete-modal">
           <div className="modal-box">

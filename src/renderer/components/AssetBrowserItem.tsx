@@ -12,6 +12,7 @@ interface Props {
   toggleNoExport: (files: string[], flag: boolean) => void;
   confirmDelete: (files: string[]) => void;
   openRename: (file: string) => void;
+  zoom: number;
 }
 
 const AssetBrowserItem: React.FC<Props> = ({
@@ -23,6 +24,7 @@ const AssetBrowserItem: React.FC<Props> = ({
   toggleNoExport,
   confirmDelete,
   openRename,
+  zoom,
 }) => {
   const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
   const firstItem = useRef<HTMLButtonElement>(null);
@@ -102,8 +104,11 @@ const AssetBrowserItem: React.FC<Props> = ({
             <img
               src={thumb}
               alt={formatted}
-              className="w-full aspect-square"
-              style={{ imageRendering: 'pixelated' }}
+              style={{
+                width: zoom,
+                height: zoom,
+                imageRendering: 'pixelated',
+              }}
             />
             <div className="text-xs leading-tight mt-1">
               <div>{formatted}</div>
@@ -111,7 +116,10 @@ const AssetBrowserItem: React.FC<Props> = ({
             </div>
           </>
         ) : (
-          <div className="w-full aspect-square bg-base-300 flex items-center justify-center">
+          <div
+            style={{ width: zoom, height: zoom }}
+            className="bg-base-300 flex items-center justify-center"
+          >
             {name}
           </div>
         )}

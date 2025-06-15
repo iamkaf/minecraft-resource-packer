@@ -249,4 +249,18 @@ describe('AssetBrowser', () => {
     const inner = container.querySelector('div') as HTMLElement;
     expect(inner.className).toMatch(/opacity-50/);
   });
+
+  it('filters by search and adjusts zoom', async () => {
+    render(<AssetBrowser path="/proj" />);
+    await screen.findByText('a.txt');
+    const search = screen.getByPlaceholderText('Search files');
+    fireEvent.change(search, { target: { value: 'b.png' } });
+    expect(screen.queryByText('a.txt')).toBeNull();
+    expect(screen.getByText('b.png')).toBeInTheDocument();
+    const slider = screen.getByLabelText('Zoom');
+    const img = screen.getByAltText('B') as HTMLImageElement;
+    expect(img.style.width).toBe('64px');
+    fireEvent.change(slider, { target: { value: '80' } });
+    expect(img.style.width).toBe('80px');
+  });
 });

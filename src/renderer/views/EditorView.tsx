@@ -9,8 +9,14 @@ import Spinner from '../components/Spinner';
 import ExportSummaryModal from '../components/ExportSummaryModal';
 import ExternalLink from '../components/ExternalLink';
 import type { ExportSummary } from '../../main/exporter';
-// eslint-disable-next-line import/no-unresolved
-import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
+/* eslint-disable import/no-unresolved */
+import {
+  PanelGroup,
+  Panel,
+  PanelResizeHandle,
+  ImperativePanelGroupHandle,
+} from 'react-resizable-panels';
+/* eslint-enable import/no-unresolved */
 
 interface EditorViewProps {
   projectPath: string;
@@ -23,10 +29,13 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
   const [layout, setLayout] = useState<number[]>([20, 40, 40]);
   const [summary, setSummary] = useState<ExportSummary | null>(null);
   const confetti = useRef<((opts: unknown) => void) | null>(null);
+  const groupRef = useRef<ImperativePanelGroupHandle>(null);
 
   useEffect(() => {
     window.electronAPI?.getEditorLayout().then((l) => {
-      if (Array.isArray(l)) setLayout(l);
+      if (Array.isArray(l)) {
+        setLayout(l);
+      }
     });
   }, []);
 
@@ -50,11 +59,7 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
 
   return (
     <main className="p-4 flex flex-col gap-4 h-full" data-testid="editor-view">
-      <button className="link link-primary w-fit" onClick={onBack}>
-        Back to Projects
-      </button>
-      <div className="flex items-center gap-2 mb-2">
-        <h1 className="font-display text-xl flex-1">Project: {projectPath}</h1>
+      <div className="flex items-center justify-end mb-2">
         <ExternalLink
           href="https://minecraft.wiki/w/Resource_pack"
           aria-label="Help"
@@ -64,21 +69,33 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
         </ExternalLink>
       </div>
       <PanelGroup
+        ref={groupRef}
         direction="horizontal"
-        layout={layout}
         onLayout={(l) => {
           setLayout(l);
           window.electronAPI?.setEditorLayout(l);
         }}
         className="flex-1"
       >
-        <Panel minSize={15} defaultSize={layout[0]}>
-          <ProjectInfoPanel projectPath={projectPath} onExport={handleExport} />
+        <Panel
+          minSize={15}
+          defaultSize={layout[0]}
+          className="bg-base-100 border border-base-300 rounded flex flex-col"
+        >
+          <ProjectInfoPanel
+            projectPath={projectPath}
+            onExport={handleExport}
+            onBack={onBack}
+          />
         </Panel>
         <PanelResizeHandle className="flex items-center" tagName="div">
           <div className="w-1 bg-base-content h-full mx-auto"></div>
         </PanelResizeHandle>
-        <Panel minSize={20} defaultSize={layout[1]} className="overflow-hidden">
+        <Panel
+          minSize={20}
+          defaultSize={layout[1]}
+          className="overflow-hidden bg-base-100 border border-base-300 rounded"
+        >
           <PanelGroup direction="vertical" className="h-full">
             <Panel defaultSize={70} className="overflow-y-auto">
               <Suspense fallback={<Spinner />}>
@@ -99,7 +116,11 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
         <PanelResizeHandle className="flex items-center" tagName="div">
           <div className="w-1 bg-base-content h-full mx-auto"></div>
         </PanelResizeHandle>
-        <Panel minSize={20} defaultSize={layout[2]} className="overflow-hidden">
+        <Panel
+          minSize={20}
+          defaultSize={layout[2]}
+          className="overflow-hidden bg-base-100 border border-base-300 rounded"
+        >
           <PanelGroup direction="vertical" className="h-full">
             <Panel defaultSize={70} className="overflow-y-auto">
               <Suspense fallback={<Spinner />}>

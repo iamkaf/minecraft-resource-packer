@@ -40,6 +40,8 @@ declare global {
       unwatchProject: IpcInvoke<'unwatch-project'>;
       getNoExport: IpcInvoke<'get-no-export'>;
       setNoExport: IpcInvoke<'set-no-export'>;
+      getEditorLayout: IpcInvoke<'get-editor-layout'>;
+      setEditorLayout: IpcInvoke<'set-editor-layout'>;
       onOpenProject: IpcListener<'project-opened'>;
       onFileAdded: IpcListener<'file-added'>;
       onFileRemoved: IpcListener<'file-removed'>;
