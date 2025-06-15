@@ -69,7 +69,7 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
           className="btn btn-primary btn-sm"
           onClick={() => setSelectorOpen(true)}
         >
-          Add Assets
+          Add From Vanilla
         </button>
         <ExternalLink
           href="https://minecraft.wiki/w/Resource_pack"
