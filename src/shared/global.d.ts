@@ -36,6 +36,7 @@ declare global {
       writeFile: IpcInvoke<'write-file'>;
       renameFile: IpcInvoke<'rename-file'>;
       deleteFile: IpcInvoke<'delete-file'>;
+      editTexture: IpcInvoke<'edit-texture'>;
       watchProject: IpcInvoke<'watch-project'>;
       unwatchProject: IpcInvoke<'unwatch-project'>;
       getNoExport: IpcInvoke<'get-no-export'>;
