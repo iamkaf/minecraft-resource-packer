@@ -20,3 +20,7 @@ export const PackMetaSchema = z.object({
 });
 
 export type PackMeta = z.infer<typeof PackMetaSchema>;
+
+/** Combined schema used for the single `pack.json` file */
+export const PackFileSchema = ProjectMetadataSchema.merge(PackMetaSchema);
+export type PackFile = z.infer<typeof PackFileSchema>;

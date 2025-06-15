@@ -44,11 +44,13 @@ describe('exportPack', () => {
       version: '1.21.1',
       assets: [],
       noExport: ['skip.txt'],
+      description: '',
+      license: '',
+      authors: [],
+      urls: [],
+      created: 0,
     };
-    fs.writeFileSync(
-      path.join(projectDir, 'project.json'),
-      JSON.stringify(meta)
-    );
+    fs.writeFileSync(path.join(projectDir, 'pack.json'), JSON.stringify(meta));
     fs.writeFileSync(path.join(projectDir, 'skip.txt'), 'x');
     fs.writeFileSync(path.join(projectDir, 'keep.txt'), 'y');
     await exportPack(projectDir, outZip);
@@ -64,11 +66,13 @@ describe('exportPack', () => {
       version: '1.21.1',
       assets: [],
       noExport: ['folder/skip.txt'],
+      description: '',
+      license: '',
+      authors: [],
+      urls: [],
+      created: 0,
     };
-    fs.writeFileSync(
-      path.join(projectDir, 'project.json'),
-      JSON.stringify(meta)
-    );
+    fs.writeFileSync(path.join(projectDir, 'pack.json'), JSON.stringify(meta));
     const folder = path.join(projectDir, 'folder');
     fs.mkdirSync(folder, { recursive: true });
     fs.writeFileSync(path.join(folder, 'skip.txt'), 'x');

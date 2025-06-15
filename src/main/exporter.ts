@@ -7,7 +7,7 @@ import archiver from 'archiver';
 import { packFormatForVersion } from '../shared/packFormat';
 import type { IpcMain } from 'electron';
 import { dialog } from 'electron';
-import { ProjectMetadataSchema, PackMetaSchema } from '../shared/project';
+import { PackFileSchema, PackMetaSchema } from '../shared/project';
 
 export interface ExportSummary {
   fileCount: number;
@@ -42,7 +42,7 @@ function addDirectory(
  * Export the contents of `projectPath` into `outPath` as a zip archive.
  *
  * Algorithm:
- * 1. Read `project.json` if present to obtain the list of files that should be
+ * 1. Read `pack.json` if present to obtain the list of files that should be
  *    excluded from the archive.
  * 2. Create an archiver instance and stream a zip to `outPath`.
  * 3. Recursively walk the project directory, adding all files that are not
@@ -56,12 +56,12 @@ export function exportPack(
   outPath: string,
   version = '1.21.1'
 ): Promise<ExportSummary> {
-  const metaPath = path.join(projectPath, 'project.json');
+  const metaPath = path.join(projectPath, 'pack.json');
   let ignore = new Set<string>();
   if (fs.existsSync(metaPath)) {
     try {
       const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-      const meta = ProjectMetadataSchema.parse(data);
+      const meta = PackFileSchema.parse(data);
       ignore = new Set(meta.noExport ?? []);
     } catch {
       /* ignore */

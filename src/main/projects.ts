@@ -3,10 +3,10 @@ import path from 'path';
 import type { IpcMain } from 'electron';
 import { dialog } from 'electron';
 import {
-  ProjectMetadata,
-  ProjectMetadataSchema,
   PackMeta,
   PackMetaSchema,
+  PackFileSchema,
+  type PackFile,
 } from '../shared/project';
 import { listVersions, setActiveProject } from './assets';
 
@@ -21,15 +21,20 @@ export async function createProject(
 ): Promise<void> {
   const dir = path.join(baseDir, name);
   if (!fs.existsSync(dir)) await fs.promises.mkdir(dir, { recursive: true });
-  const meta: ProjectMetadata = {
+  const meta: PackFile = {
     name,
     version,
     assets: [],
     noExport: [],
     lastOpened: Date.now(),
+    description: '',
+    license: '',
+    authors: [],
+    urls: [],
+    created: Date.now(),
   };
   await fs.promises.writeFile(
-    path.join(dir, 'project.json'),
+    path.join(dir, 'pack.json'),
     JSON.stringify(meta, null, 2)
   );
   await generatePackIcon(dir);
@@ -50,11 +55,11 @@ export async function listProjects(baseDir: string): Promise<ProjectInfo[]> {
   for (const name of entries) {
     const stat = await fs.promises.stat(path.join(baseDir, name));
     if (!stat.isDirectory()) continue;
-    const metaPath = path.join(baseDir, name, 'project.json');
+    const metaPath = path.join(baseDir, name, 'pack.json');
     if (fs.existsSync(metaPath)) {
       try {
         const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-        const meta = ProjectMetadataSchema.parse(data);
+        const meta = PackFileSchema.parse(data);
         out.push({
           name: meta.name,
           version: meta.version,
@@ -78,11 +83,11 @@ export async function openProject(
   const projectPath = path.join(baseDir, name);
   if (!fs.existsSync(projectPath))
     await fs.promises.mkdir(projectPath, { recursive: true });
-  const metaPath = path.join(projectPath, 'project.json');
+  const metaPath = path.join(projectPath, 'pack.json');
   if (fs.existsSync(metaPath)) {
     try {
       const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-      const meta = ProjectMetadataSchema.parse(data);
+      const meta = PackFileSchema.parse(data);
       meta.lastOpened = Date.now();
       await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
     } catch {
@@ -100,11 +105,11 @@ export async function duplicateProject(
   const src = path.join(baseDir, name);
   const dest = path.join(baseDir, newName);
   await fs.promises.cp(src, dest, { recursive: true });
-  const metaPath = path.join(dest, 'project.json');
+  const metaPath = path.join(dest, 'pack.json');
   if (fs.existsSync(metaPath)) {
     try {
       const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-      const meta = ProjectMetadataSchema.parse(data);
+      const meta = PackFileSchema.parse(data);
       meta.name = newName;
       await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
     } catch {

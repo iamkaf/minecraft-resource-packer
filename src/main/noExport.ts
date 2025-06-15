@@ -1,19 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 import type { IpcMain } from 'electron';
-import { ProjectMetadataSchema, type ProjectMetadata } from '../shared/project';
+import { PackFileSchema, type PackFile } from '../shared/project';
 
-async function readMeta(projectPath: string): Promise<ProjectMetadata> {
-  const p = path.join(projectPath, 'project.json');
+async function readMeta(projectPath: string): Promise<PackFile> {
+  const p = path.join(projectPath, 'pack.json');
   const data = JSON.parse(await fs.promises.readFile(p, 'utf-8'));
-  return ProjectMetadataSchema.parse(data);
+  return PackFileSchema.parse(data);
 }
 
-async function writeMeta(
-  projectPath: string,
-  meta: ProjectMetadata
-): Promise<void> {
-  const p = path.join(projectPath, 'project.json');
+async function writeMeta(projectPath: string, meta: PackFile): Promise<void> {
+  const p = path.join(projectPath, 'pack.json');
   await fs.promises.writeFile(p, JSON.stringify(meta, null, 2));
 }
 

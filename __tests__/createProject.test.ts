@@ -4,7 +4,7 @@ import path from 'path';
 import os from 'os';
 import { v4 as uuid } from 'uuid';
 import { createProject } from '../src/main/projects';
-import { ProjectMetadataSchema } from '../src/shared/project';
+import { PackFileSchema } from '../src/shared/project';
 import * as icon from '../src/main/icon';
 
 const baseDir = path.join(os.tmpdir(), `projtest-${uuid()}`);
@@ -19,12 +19,12 @@ afterAll(() => {
 });
 
 describe('createProject', () => {
-  it('writes valid project.json', async () => {
+  it('writes valid pack.json', async () => {
     await createProject(baseDir, 'Test', '1.20');
     const data = JSON.parse(
-      fs.readFileSync(path.join(baseDir, 'Test', 'project.json'), 'utf-8')
+      fs.readFileSync(path.join(baseDir, 'Test', 'pack.json'), 'utf-8')
     );
-    const meta = ProjectMetadataSchema.parse(data);
+    const meta = PackFileSchema.parse(data);
     expect(meta.name).toBe('Test');
     expect(meta.version).toBe('1.20');
   });
