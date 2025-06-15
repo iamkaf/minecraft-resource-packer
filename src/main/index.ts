@@ -18,6 +18,7 @@ import {
   registerProjectTextureProtocol,
 } from './assets';
 import { registerLayoutHandlers } from './layout';
+import { registerTextureLabHandlers } from './textureLab';
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'texture', privileges: { standard: true, secure: true } },
@@ -52,6 +53,7 @@ const createMainWindow = () => {
   });
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
   registerFileWatcherHandlers(ipcMain, mainWindow);
+  registerTextureLabHandlers(ipcMain, mainWindow);
   mainWindow.on('closed', () => {
     mainWindow = null;
   });

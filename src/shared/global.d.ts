@@ -42,10 +42,12 @@ declare global {
       setNoExport: IpcInvoke<'set-no-export'>;
       getEditorLayout: IpcInvoke<'get-editor-layout'>;
       setEditorLayout: IpcInvoke<'set-editor-layout'>;
+      applyTextureOps: IpcInvoke<'apply-texture-ops'>;
       onOpenProject: IpcListener<'project-opened'>;
       onFileAdded: IpcListener<'file-added'>;
       onFileRemoved: IpcListener<'file-removed'>;
       onFileRenamed: IpcListener<'file-renamed'>;
+      onTextureProgress: IpcListener<'texture-progress'>;
     };
   }
 }

@@ -133,3 +133,7 @@ the pane adjusts the zoom. The pane is lazy loaded and displays a
 When writing tests or other code that constructs file system paths, prefer
 `path.join()` over string concatenation. Hard coded `/` separators can cause
 failures on Windows where the standard separator is `\`.
+
+## Texture Mini-Lab
+
+The texture inspector includes a modal lab for quick edits. Sliders let you shift hue, apply 90° rotations, toggle gray-scale and adjust saturation and brightness. These operations are processed via Sharp in the main process using IPC. Progress events are emitted as `texture-progress`.

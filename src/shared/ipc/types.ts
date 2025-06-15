@@ -31,6 +31,7 @@ export interface IpcRequestMap {
   'set-no-export': [string, string[], boolean];
   'get-editor-layout': [];
   'set-editor-layout': [number[]];
+  'apply-texture-ops': [string, import('../../main/textureLab').TextureOps];
 }
 
 export interface IpcResponseMap {
@@ -62,6 +63,7 @@ export interface IpcResponseMap {
   'set-no-export': void;
   'get-editor-layout': number[];
   'set-editor-layout': void;
+  'apply-texture-ops': void;
 }
 
 export interface IpcEventMap {
@@ -69,4 +71,5 @@ export interface IpcEventMap {
   'file-added': string;
   'file-removed': string;
   'file-renamed': { oldPath: string; newPath: string };
+  'texture-progress': number;
 }

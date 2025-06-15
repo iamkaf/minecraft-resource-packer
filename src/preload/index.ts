@@ -58,6 +58,10 @@ const api = {
     invoke('set-no-export', project, files, flag),
   getEditorLayout: () => invoke('get-editor-layout'),
   setEditorLayout: (layout: number[]) => invoke('set-editor-layout', layout),
+  applyTextureOps: (
+    file: string,
+    ops: import('../main/textureLab').TextureOps
+  ) => invoke('apply-texture-ops', file, ops),
   onFileAdded: (listener: (e: unknown, path: string) => void) =>
     on('file-added', listener),
   onFileRemoved: (listener: (e: unknown, path: string) => void) =>
@@ -68,6 +72,8 @@ const api = {
   loadPackMeta: (name: string) => invoke('load-pack-meta', name),
   savePackMeta: (name: string, meta: import('../main/projects').PackMeta) =>
     invoke('save-pack-meta', name, meta),
+  onTextureProgress: (listener: (e: unknown, p: number) => void) =>
+    on('texture-progress', listener),
 };
 
 if (process.contextIsolated) {
