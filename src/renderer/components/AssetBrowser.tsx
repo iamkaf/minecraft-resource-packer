@@ -4,6 +4,7 @@ import RenameModal from './RenameModal';
 import AssetBrowserItem from './AssetBrowserItem';
 import { useProjectFiles } from './file/useProjectFiles';
 import { useToast } from './ToastProvider';
+import FileTree from './FileTree';
 
 interface Props {
   path: string;
@@ -48,6 +49,7 @@ const AssetBrowser: React.FC<Props> = ({
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);
   const [filters, setFilters] = useState<Filter[]>([]);
+  const [view, setView] = useState<'grid' | 'tree'>('grid');
   const wrapperRef = useRef<HTMLDivElement>(null);
   const toast = useToast();
 
@@ -135,6 +137,20 @@ const AssetBrowser: React.FC<Props> = ({
           onChange={(e) => setZoom(Number(e.target.value))}
           className="range range-xs w-32"
         />
+        <div className="btn-group">
+          <button
+            className={`btn btn-xs ${view === 'grid' ? 'btn-primary' : ''}`}
+            onClick={() => setView('grid')}
+          >
+            Grid
+          </button>
+          <button
+            className={`btn btn-xs ${view === 'tree' ? 'btn-primary' : ''}`}
+            onClick={() => setView('tree')}
+          >
+            Tree
+          </button>
+        </div>
       </div>
       <div className="flex gap-1 mb-2">
         {FILTERS.map((f) => (
@@ -152,35 +168,45 @@ const AssetBrowser: React.FC<Props> = ({
           </span>
         ))}
       </div>
-      {(['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
-        (key) => {
-          const list = categories[key];
-          if (list.length === 0) return null;
-          return (
-            <div className="collapse collapse-arrow mb-2" key={key}>
-              <input type="checkbox" defaultChecked />
-              <div className="collapse-title font-medium capitalize">{key}</div>
-              <div className="collapse-content">
-                <div className="grid grid-cols-6 gap-2">
-                  {list.map((f) => (
-                    <AssetBrowserItem
-                      key={f}
-                      projectPath={projectPath}
-                      file={f}
-                      selected={selected}
-                      setSelected={setSelected}
-                      noExport={noExport}
-                      toggleNoExport={toggleNoExport}
-                      confirmDelete={(files) => setConfirmDelete(files)}
-                      openRename={(file) => setRenameTarget(file)}
-                      zoom={zoom}
-                    />
-                  ))}
+      {view === 'grid' ? (
+        (['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
+          (key) => {
+            const list = categories[key];
+            if (list.length === 0) return null;
+            return (
+              <div className="collapse collapse-arrow mb-2" key={key}>
+                <input type="checkbox" defaultChecked />
+                <div className="collapse-title font-medium capitalize">
+                  {key}
+                </div>
+                <div className="collapse-content">
+                  <div className="grid grid-cols-6 gap-2">
+                    {list.map((f) => (
+                      <AssetBrowserItem
+                        key={f}
+                        projectPath={projectPath}
+                        file={f}
+                        selected={selected}
+                        setSelected={setSelected}
+                        noExport={noExport}
+                        toggleNoExport={toggleNoExport}
+                        confirmDelete={(files) => setConfirmDelete(files)}
+                        openRename={(file) => setRenameTarget(file)}
+                        zoom={zoom}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        }
+            );
+          }
+        )
+      ) : (
+        <FileTree
+          files={visible}
+          selected={selected}
+          setSelected={setSelected}
+        />
       )}
       {confirmDelete && (
         <dialog className="modal modal-open" data-testid="delete-modal">

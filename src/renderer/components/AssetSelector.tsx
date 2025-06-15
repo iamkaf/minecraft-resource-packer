@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import TextureGrid, { TextureInfo } from './TextureGrid';
+import TextureTree from './TextureTree';
 
 interface Props {
   path: string;
@@ -31,6 +32,7 @@ const AssetSelector: React.FC<Props> = ({
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);
   const [filters, setFilters] = useState<Filter[]>([]);
+  const [view, setView] = useState<'grid' | 'tree'>('grid');
 
   useEffect(() => {
     const load = async () => {
@@ -79,7 +81,6 @@ const AssetSelector: React.FC<Props> = ({
   }, [filtered]);
 
   const handleSelect = (name: string) => {
-    window.electronAPI?.addTexture(projectPath, name);
     onAssetSelect?.(name);
   };
 
@@ -109,6 +110,20 @@ const AssetSelector: React.FC<Props> = ({
           onChange={(e) => setZoom(Number(e.target.value))}
           className="range range-xs w-32"
         />
+        <div className="btn-group">
+          <button
+            className={`btn btn-xs ${view === 'grid' ? 'btn-primary' : ''}`}
+            onClick={() => setView('grid')}
+          >
+            Grid
+          </button>
+          <button
+            className={`btn btn-xs ${view === 'tree' ? 'btn-primary' : ''}`}
+            onClick={() => setView('tree')}
+          >
+            Tree
+          </button>
+        </div>
       </div>
       <div className="flex gap-1 mb-2">
         {FILTERS.map((f) => (
@@ -126,25 +141,31 @@ const AssetSelector: React.FC<Props> = ({
           </span>
         ))}
       </div>
-      {(['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
-        (key) => {
-          const list = categories[key];
-          if (list.length === 0) return null;
-          return (
-            <div className="collapse collapse-arrow mb-2" key={key}>
-              <input type="checkbox" defaultChecked />
-              <div className="collapse-title font-medium capitalize">{key}</div>
-              <div className="collapse-content">
-                <TextureGrid
-                  testId="texture-grid"
-                  textures={list}
-                  zoom={zoom}
-                  onSelect={handleSelect}
-                />
+      {view === 'grid' ? (
+        (['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
+          (key) => {
+            const list = categories[key];
+            if (list.length === 0) return null;
+            return (
+              <div className="collapse collapse-arrow mb-2" key={key}>
+                <input type="checkbox" defaultChecked />
+                <div className="collapse-title font-medium capitalize">
+                  {key}
+                </div>
+                <div className="collapse-content">
+                  <TextureGrid
+                    testId="texture-grid"
+                    textures={list}
+                    zoom={zoom}
+                    onSelect={handleSelect}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        }
+            );
+          }
+        )
+      ) : (
+        <TextureTree textures={filtered} onSelect={handleSelect} />
       )}
     </div>
   );
