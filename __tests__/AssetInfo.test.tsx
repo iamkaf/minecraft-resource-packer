@@ -7,14 +7,23 @@ import path from 'path';
 describe('AssetInfo', () => {
   const readFile = vi.fn();
   const writeFile = vi.fn();
+  const openExternalEditor = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
     (
       window as unknown as {
-        electronAPI: { readFile: typeof readFile; writeFile: typeof writeFile };
+        electronAPI: {
+          readFile: typeof readFile;
+          writeFile: typeof writeFile;
+          openExternalEditor: typeof openExternalEditor;
+        };
       }
-    ).electronAPI = { readFile, writeFile } as never;
+    ).electronAPI = {
+      readFile,
+      writeFile,
+      openExternalEditor,
+    } as never;
     readFile.mockResolvedValue('');
     writeFile.mockResolvedValue(undefined);
   });
@@ -28,6 +37,13 @@ describe('AssetInfo', () => {
     render(<AssetInfo projectPath="/p" asset="foo.png" />);
     expect(screen.getByText('foo.png')).toBeInTheDocument();
     expect(await screen.findByTestId('preview-pane')).toBeInTheDocument();
+  });
+
+  it('opens external editor for png', async () => {
+    render(<AssetInfo projectPath="/p" asset="img.png" />);
+    const btn = await screen.findByRole('button', { name: 'Edit Externally' });
+    fireEvent.click(btn);
+    expect(openExternalEditor).toHaveBeenCalledWith(path.join('/p', 'img.png'));
   });
 
   it('edits a text file', async () => {

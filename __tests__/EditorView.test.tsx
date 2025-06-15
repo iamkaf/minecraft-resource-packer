@@ -102,7 +102,7 @@ describe('EditorView', () => {
 
   it('opens asset selector modal', () => {
     render(<EditorView projectPath="/tmp" onBack={() => undefined} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Add Assets' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add From Vanilla' }));
     expect(screen.getByTestId('asset-selector-modal')).toBeInTheDocument();
   });
 });

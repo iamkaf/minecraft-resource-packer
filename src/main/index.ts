@@ -19,6 +19,7 @@ import {
 } from './assets';
 import { registerTextureLabHandlers } from './textureLab';
 import { registerLayoutHandlers } from './layout';
+import { registerExternalEditorHandlers } from './externalEditor';
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'texture', privileges: { standard: true, secure: true } },
@@ -67,6 +68,7 @@ registerExportHandlers(ipcMain, projectsDir);
 registerNoExportHandlers(ipcMain);
 registerLayoutHandlers(ipcMain);
 registerTextureLabHandlers(ipcMain);
+registerExternalEditorHandlers(ipcMain);
 
 // Register file-related IPC handlers
 registerFileHandlers(ipcMain);
