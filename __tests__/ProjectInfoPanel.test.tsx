@@ -3,7 +3,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ProjectInfoPanel from '../src/renderer/components/ProjectInfoPanel';
 
-const meta = { description: 'desc', author: '', urls: [], created: 0 };
+const meta = {
+  description: 'desc',
+  license: 'MIT',
+  authors: ['Me'],
+  urls: [],
+  created: 0,
+};
 
 describe('ProjectInfoPanel', () => {
   const load = vi.fn();

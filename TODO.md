@@ -69,7 +69,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Randomly generated pack icon (pastel bg + border + random Minecraft item texture Sharp)
 - [x] Pack Icon Editor modal (randomise, colour, border, upload custom)
 - [ ] Target resolution radio (16×/32×/64×)
-- [ ] License & authors
+- [x] License & authors
 - [ ] Validation checklist (missing textures, duplicates)
 
 ---

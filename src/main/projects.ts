@@ -144,7 +144,13 @@ export async function loadPackMeta(
       // ignore malformed data
     }
   }
-  return { description: '', author: '', urls: [], created: Date.now() };
+  return {
+    description: '',
+    license: '',
+    authors: [],
+    urls: [],
+    created: Date.now(),
+  };
 }
 
 export async function savePackMeta(

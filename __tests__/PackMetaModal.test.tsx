@@ -8,7 +8,8 @@ describe('PackMetaModal', () => {
   it('submits edited metadata', () => {
     const meta: PackMeta = {
       description: 'desc',
-      author: 'me',
+      license: 'MIT',
+      authors: ['me'],
       urls: ['https://a.com'],
       created: 0,
     };
@@ -25,16 +26,48 @@ describe('PackMetaModal', () => {
     fireEvent.change(screen.getByPlaceholderText('Description'), {
       target: { value: 'new' },
     });
+    fireEvent.change(screen.getByPlaceholderText('License'), {
+      target: { value: 'Apache-2.0' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Authors (one per line)'), {
+      target: { value: 'me\nother' },
+    });
     fireEvent.click(screen.getByText('Save'));
     expect(onSave).toHaveBeenCalledWith(
-      expect.objectContaining({ description: 'new' })
+      expect.objectContaining({
+        description: 'new',
+        license: 'Apache-2.0',
+        authors: ['me', 'other'],
+      })
     );
+  });
+
+  it('requires license and authors', () => {
+    const meta: PackMeta = {
+      description: '',
+      license: '',
+      authors: [],
+      urls: [],
+      created: 0,
+    };
+    const onSave = vi.fn();
+    render(
+      <PackMetaModal
+        project="Pack"
+        meta={meta}
+        onSave={onSave}
+        onCancel={() => {}}
+      />
+    );
+    fireEvent.click(screen.getByText('Save'));
+    expect(onSave).not.toHaveBeenCalled();
   });
 
   it('randomizes icon', () => {
     const meta: PackMeta = {
       description: '',
-      author: '',
+      license: '',
+      authors: [],
       urls: [],
       created: 0,
     };

@@ -26,7 +26,12 @@ export default function ProjectSidebar({
           {meta ? (
             <div className="card bg-base-100 p-4">
               <p>{meta.description}</p>
-              <p className="text-sm mt-1">Author: {meta.author}</p>
+              {meta.license && (
+                <p className="text-sm">License: {meta.license}</p>
+              )}
+              {meta.authors.length > 0 && (
+                <p className="text-sm">Authors: {meta.authors.join(', ')}</p>
+              )}
               <ul className="list-disc list-inside mt-2">
                 {meta.urls.map((u: string) => (
                   <li key={u}>

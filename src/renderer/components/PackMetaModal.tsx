@@ -13,7 +13,8 @@ export default function PackMetaModal({
   onCancel: () => void;
 }) {
   const [desc, setDesc] = useState(meta.description);
-  const [author, setAuthor] = useState(meta.author);
+  const [license, setLicense] = useState(meta.license);
+  const [authors, setAuthors] = useState(meta.authors.join('\n'));
   const [urls, setUrls] = useState(meta.urls.join('\n'));
   return (
     <dialog className="modal modal-open" data-testid="meta-modal">
@@ -21,10 +22,16 @@ export default function PackMetaModal({
         className="modal-box flex flex-col gap-2"
         onSubmit={(e) => {
           e.preventDefault();
+          const authList = authors
+            .split(/\n+/)
+            .map((a: string) => a.trim())
+            .filter((a: string) => a);
+          if (!license.trim() || authList.length === 0) return;
           onSave({
             ...meta,
             description: desc,
-            author,
+            license,
+            authors: authList,
             urls: urls
               .split(/\n+/)
               .map((u: string) => u.trim())
@@ -42,9 +49,15 @@ export default function PackMetaModal({
         />
         <input
           className="input input-bordered"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          placeholder="Author"
+          value={license}
+          onChange={(e) => setLicense(e.target.value)}
+          placeholder="License"
+        />
+        <textarea
+          className="textarea textarea-bordered"
+          value={authors}
+          onChange={(e) => setAuthors(e.target.value)}
+          placeholder="Authors (one per line)"
         />
         <textarea
           className="textarea textarea-bordered"

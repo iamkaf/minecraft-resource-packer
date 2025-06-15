@@ -98,9 +98,13 @@ Both protocols are registered in `src/main/index.ts` when Electron starts.
 ## Project Metadata Sidebar
 
 The projects dashboard includes a sidebar next to the project table. Selecting a
-row loads `pack.json` via IPC and displays the pack description, author, related
-URLs and creation timestamps. Use the **Edit** button to modify these fields and
-save back to `pack.json`.
+row loads `pack.json` via IPC and displays the pack description,
+license, authors, related URLs and creation timestamps. Use the **Edit** button
+to modify these fields and save back to `pack.json`.
+
+The `license` field should contain a valid [SPDX identifier](https://spdx.org/licenses/)
+(e.g. `MIT`, `GPL-3.0`) or a short custom string. List each contributor on a
+separate line in the **Authors** textarea.
 
 ## Bulk Export
 

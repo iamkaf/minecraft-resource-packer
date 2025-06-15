@@ -7,7 +7,8 @@ describe('ProjectSidebar', () => {
   it('loads metadata when given a project', async () => {
     const load = vi.fn().mockResolvedValue({
       description: 'A pack',
-      author: 'Me',
+      license: 'MIT',
+      authors: ['Me'],
       urls: ['https://a.com'],
       created: 0,
     });
@@ -22,6 +23,8 @@ describe('ProjectSidebar', () => {
     render(<ProjectSidebar project="Pack" />);
     expect(load).toHaveBeenCalledWith('Pack');
     await screen.findByText('A pack');
+    expect(screen.getByText('License: MIT')).toBeInTheDocument();
+    expect(screen.getByText('Authors: Me')).toBeInTheDocument();
   });
 
   it('shows placeholder without a project', () => {
@@ -40,13 +43,15 @@ describe('ProjectSidebar', () => {
       .fn()
       .mockResolvedValueOnce({
         description: 'First',
-        author: '',
+        license: '',
+        authors: [],
         urls: [],
         created: 0,
       })
       .mockResolvedValueOnce({
         description: 'Second',
-        author: '',
+        license: '',
+        authors: [],
         urls: [],
         created: 0,
       });
