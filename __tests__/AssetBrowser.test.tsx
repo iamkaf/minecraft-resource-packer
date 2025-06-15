@@ -14,6 +14,7 @@ const onFileRenamed = vi.fn();
 describe('AssetBrowser', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    watchProject.mockResolvedValue(['a.txt', 'b.png']);
     (
       window as unknown as {
         electronAPI: {
@@ -275,5 +276,13 @@ describe('AssetBrowser', () => {
     fireEvent.click(itemsChip);
     expect(screen.queryByText('stone.png')).toBeNull();
     expect(screen.getByText('apple.png')).toBeInTheDocument();
+  });
+
+  it('shows tree view', async () => {
+    render(<AssetBrowser path="/proj" />);
+    await screen.findByText('a.txt');
+    fireEvent.click(screen.getByText('Tree'));
+    expect(screen.getByTestId('file-tree')).toBeInTheDocument();
+    expect(screen.getByText('a.txt')).toBeInTheDocument();
   });
 });

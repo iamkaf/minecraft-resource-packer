@@ -112,7 +112,10 @@ export default function EditorView({ projectPath, onBack }: EditorViewProps) {
               <div className="w-full h-px bg-base-content"></div>
             </PanelResizeHandle>
             <Panel defaultSize={30} className="overflow-y-auto">
-              <AssetSelectorInfoPanel asset={selectorAsset} />
+              <AssetSelectorInfoPanel
+                projectPath={projectPath}
+                asset={selectorAsset}
+              />
             </Panel>
           </PanelGroup>
         </Panel>
