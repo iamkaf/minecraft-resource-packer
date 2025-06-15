@@ -5,7 +5,7 @@ import os from 'os';
 import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
 import { createProject } from '../src/main/projects';
-import { generatePackIcon } from '../src/main/icon';
+import { generatePackIcon, buildIcon } from '../src/main/icon';
 
 const tmpDir = path.join(os.tmpdir(), `icon-${uuid()}`);
 
@@ -45,6 +45,20 @@ describe('generatePackIcon', () => {
     const iconFile = path.join(proj, 'pack.png');
     expect(fs.existsSync(iconFile)).toBe(true);
     const meta = await sharp(iconFile).metadata();
+    expect(meta.width).toBe(128);
+    expect(meta.height).toBe(128);
+  });
+
+  it('buildIcon writes resized image', async () => {
+    const dir = path.join(os.tmpdir(), 'icon-build');
+    fs.mkdirSync(dir, { recursive: true });
+    const buf = await sharp({
+      create: { width: 16, height: 16, channels: 4, background: '#0f0' },
+    })
+      .png()
+      .toBuffer();
+    await buildIcon(dir, { data: buf.toString('base64'), borderColor: '#111' });
+    const meta = await sharp(path.join(dir, 'pack.png')).metadata();
     expect(meta.width).toBe(128);
     expect(meta.height).toBe(128);
   });

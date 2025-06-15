@@ -5,7 +5,8 @@ import type { Protocol, IpcMain } from 'electron';
 import os from 'os';
 import unzipper from 'unzipper';
 import { ProjectMetadataSchema } from '../shared/project';
-import { generatePackIcon } from './icon';
+import { generatePackIcon, buildIcon } from './icon';
+import type { IconOptions } from '../shared/icon';
 
 /** URL pointing to Mojang's version manifest which lists all official releases. */
 const VERSION_MANIFEST =
@@ -287,7 +288,14 @@ export function registerAssetHandlers(ipc: IpcMain) {
     return getTextureURL(projectPath, tex);
   });
 
-  ipc.handle('randomize-icon', (_e, projectPath: string) => {
-    return generatePackIcon(projectPath);
-  });
+  ipc.handle(
+    'randomize-icon',
+    (_e, projectPath: string, borderColor?: string) => {
+      return generatePackIcon(projectPath, borderColor);
+    }
+  );
+
+  ipc.handle('set-pack-icon', (_e, projectPath: string, opts: IconOptions) =>
+    buildIcon(projectPath, opts)
+  );
 }

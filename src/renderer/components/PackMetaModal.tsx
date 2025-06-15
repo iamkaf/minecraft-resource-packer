@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PackIconEditor from './PackIconEditor';
 import type { PackMeta } from '../../main/projects';
 
 export default function PackMetaModal({
@@ -15,6 +16,7 @@ export default function PackMetaModal({
   const [desc, setDesc] = useState(meta.description);
   const [author, setAuthor] = useState(meta.author);
   const [urls, setUrls] = useState(meta.urls.join('\n'));
+  const [iconOpen, setIconOpen] = useState(false);
   return (
     <dialog className="modal modal-open" data-testid="meta-modal">
       <form
@@ -60,6 +62,13 @@ export default function PackMetaModal({
           >
             Randomize Icon
           </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setIconOpen(true)}
+          >
+            Edit Icon
+          </button>
           <button type="button" className="btn" onClick={onCancel}>
             Cancel
           </button>
@@ -68,6 +77,9 @@ export default function PackMetaModal({
           </button>
         </div>
       </form>
+      {iconOpen && (
+        <PackIconEditor project={project} onClose={() => setIconOpen(false)} />
+      )}
     </dialog>
   );
 }

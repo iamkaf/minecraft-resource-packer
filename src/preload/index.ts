@@ -43,7 +43,10 @@ const api = {
     invoke('get-texture-path', project, name),
   getTextureUrl: (project: string, name: string) =>
     invoke('get-texture-url', project, name),
-  randomizeIcon: (project: string) => invoke('randomize-icon', project),
+  randomizeIcon: (project: string, border?: string) =>
+    invoke('randomize-icon', project, border),
+  setPackIcon: (project: string, opts: import('../shared/icon').IconOptions) =>
+    invoke('set-pack-icon', project, opts),
   openInFolder: (file: string) => invoke('open-in-folder', file),
   openFile: (file: string) => invoke('open-file', file),
   readFile: (file: string) => invoke('read-file', file),

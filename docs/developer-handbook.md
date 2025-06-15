@@ -133,6 +133,11 @@ It exposes hue shift, rotation, grayscale, saturation and brightness controls.
 Edits are processed in the main process via Sharp and the modal shows a spinner
 while the file is being updated.
 
+The **Pack Icon Editor** uses a daisyUI modal to customise a project's
+`pack.png`. You can randomise the item/background, change the border colour, or
+upload a custom PNG. The renderer sends your choices via IPC and the main
+process uses Sharp to output a 128×128 icon.
+
 ## Windows Paths
 
 When writing tests or other code that constructs file system paths, prefer

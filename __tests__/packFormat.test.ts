@@ -9,4 +9,8 @@ describe('packFormatForVersion', () => {
   it('returns null for unknown versions', () => {
     expect(packFormatForVersion('0.0.1')).toBeNull();
   });
+
+  it('handles snapshot versions', () => {
+    expect(packFormatForVersion('24w10a')).toBe(28);
+  });
 });
