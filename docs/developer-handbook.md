@@ -133,6 +133,10 @@ It exposes hue shift, rotation, grayscale, saturation and brightness controls.
 Edits are processed in the main process via Sharp and the modal shows a spinner
 while the file is being updated.
 
+The **Pack Icon Editor** modal customises `pack.png` for a project. You can
+randomise the item and background, choose a border colour or upload a custom PNG.
+The image is processed with Sharp in the main process and saved at 128×128.
+
 ## Windows Paths
 
 When writing tests or other code that constructs file system paths, prefer

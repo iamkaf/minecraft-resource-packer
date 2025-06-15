@@ -17,6 +17,7 @@ import {
   registerTextureProtocol,
   registerProjectTextureProtocol,
 } from './assets';
+import { registerIconHandlers } from './icon';
 import { registerTextureLabHandlers } from './textureLab';
 import { registerLayoutHandlers } from './layout';
 
@@ -67,6 +68,7 @@ registerExportHandlers(ipcMain, projectsDir);
 registerNoExportHandlers(ipcMain);
 registerLayoutHandlers(ipcMain);
 registerTextureLabHandlers(ipcMain);
+registerIconHandlers(ipcMain);
 
 // Register file-related IPC handlers
 registerFileHandlers(ipcMain);
