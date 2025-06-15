@@ -8,6 +8,8 @@ import SettingsView from '../src/renderer/views/SettingsView';
 var openExternalMock: ReturnType<typeof vi.fn>;
 const getTextureEditor = vi.fn();
 const setTextureEditor = vi.fn();
+const getConfettiEnabled = vi.fn();
+const setConfettiEnabled = vi.fn();
 vi.mock('electron', () => ({
   shell: { openExternal: (openExternalMock = vi.fn()) },
 }));
@@ -20,11 +22,20 @@ describe('SettingsView', () => {
         electronAPI: {
           getTextureEditor: typeof getTextureEditor;
           setTextureEditor: typeof setTextureEditor;
+          getConfettiEnabled: typeof getConfettiEnabled;
+          setConfettiEnabled: typeof setConfettiEnabled;
         };
       }
-    ).electronAPI = { getTextureEditor, setTextureEditor } as never;
+    ).electronAPI = {
+      getTextureEditor,
+      setTextureEditor,
+      getConfettiEnabled,
+      setConfettiEnabled,
+    } as never;
     getTextureEditor.mockResolvedValue('/usr/bin/gimp');
     setTextureEditor.mockResolvedValue(undefined);
+    getConfettiEnabled.mockResolvedValue(true);
+    setConfettiEnabled.mockResolvedValue(undefined);
   });
 
   it('renders placeholder heading', () => {
@@ -51,5 +62,13 @@ describe('SettingsView', () => {
     fireEvent.change(input, { target: { value: '/opt/editor' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
     expect(setTextureEditor).toHaveBeenCalledWith('/opt/editor');
+  });
+
+  it('toggles confetti setting', async () => {
+    render(<SettingsView />);
+    const toggle = await screen.findByLabelText('Show confetti on export');
+    expect(toggle).toBeChecked();
+    fireEvent.click(toggle);
+    expect(setConfettiEnabled).toHaveBeenCalledWith(false);
   });
 });

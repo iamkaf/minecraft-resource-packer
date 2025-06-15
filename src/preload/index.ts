@@ -67,6 +67,8 @@ const api = {
   setEditorLayout: (layout: number[]) => invoke('set-editor-layout', layout),
   getTextureEditor: () => invoke('get-texture-editor'),
   setTextureEditor: (path: string) => invoke('set-texture-editor', path),
+  getConfettiEnabled: () => invoke('get-confetti-enabled'),
+  setConfettiEnabled: (flag: boolean) => invoke('set-confetti-enabled', flag),
   onFileAdded: (listener: (e: unknown, path: string) => void) =>
     on('file-added', listener),
   onFileRemoved: (listener: (e: unknown, path: string) => void) =>

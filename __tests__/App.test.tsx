@@ -67,6 +67,7 @@ describe('App', () => {
       getEditorLayout: () => Promise<number[]>;
       setEditorLayout: (l: number[]) => void;
       loadPackMeta: () => Promise<unknown>;
+      getConfettiEnabled: () => Promise<boolean>;
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       onOpenProject: (cb) => {
@@ -76,6 +77,7 @@ describe('App', () => {
       getEditorLayout: vi.fn(async () => [20, 40, 40]),
       setEditorLayout: vi.fn(),
       loadPackMeta: vi.fn(async () => ({ description: '' })),
+      getConfettiEnabled: vi.fn(async () => true),
     };
   });
 

@@ -46,6 +46,8 @@ declare global {
       setEditorLayout: IpcInvoke<'set-editor-layout'>;
       getTextureEditor: IpcInvoke<'get-texture-editor'>;
       setTextureEditor: IpcInvoke<'set-texture-editor'>;
+      getConfettiEnabled: IpcInvoke<'get-confetti-enabled'>;
+      setConfettiEnabled: IpcInvoke<'set-confetti-enabled'>;
       openExternalEditor: IpcInvoke<'open-external-editor'>;
       onOpenProject: IpcListener<'project-opened'>;
       onFileAdded: IpcListener<'file-added'>;

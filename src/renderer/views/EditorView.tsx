@@ -24,12 +24,17 @@ interface EditorViewProps {
   onSettings: () => void;
 }
 
-export default function EditorView({ projectPath, onBack, onSettings }: EditorViewProps) {
+export default function EditorView({
+  projectPath,
+  onBack,
+  onSettings,
+}: EditorViewProps) {
   const [selected, setSelected] = useState<string[]>([]);
   const [selectorAsset, setSelectorAsset] = useState<string | null>(null);
   const [layout, setLayout] = useState<number[]>([20, 80]);
   const [summary, setSummary] = useState<ExportSummary | null>(null);
   const [selectorOpen, setSelectorOpen] = useState(false);
+  const [confettiEnabled, setConfettiEnabled] = useState(true);
   const confetti = useRef<((opts: unknown) => void) | null>(null);
   const groupRef = useRef<ImperativePanelGroupHandle>(null);
 
@@ -40,6 +45,7 @@ export default function EditorView({ projectPath, onBack, onSettings }: EditorVi
         else if (l.length === 3) setLayout([l[0], l[1] + l[2]]);
       }
     });
+    window.electronAPI?.getConfettiEnabled().then((v) => setConfettiEnabled(v));
   }, []);
 
   const handleExport = () => {
@@ -47,7 +53,10 @@ export default function EditorView({ projectPath, onBack, onSettings }: EditorVi
       ?.exportProject(projectPath)
       .then((s) => {
         if (s) setSummary(s);
-        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (
+          confettiEnabled &&
+          !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ) {
           confetti.current?.({
             particleCount: 150,
             spread: 70,
