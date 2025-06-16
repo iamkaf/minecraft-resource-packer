@@ -228,7 +228,7 @@ export function registerAssetProtocol(protocol: Protocol) {
     const rel = decodeURI(request.url.replace('asset://', ''));
     let file = activeProjectDir ? path.join(activeProjectDir, rel) : '';
     if (/(\\|\/)$/.test(file)) {
-      file = file.substring(0, file.length-1);
+      file = file.substring(0, file.length - 1);
     }
     callback(file);
   });

@@ -27,6 +27,11 @@ export async function createProject(
     assets: [],
     noExport: [],
     lastOpened: Date.now(),
+    description: '',
+    author: '',
+    urls: [],
+    created: Date.now(),
+    license: '',
   };
   await fs.promises.writeFile(
     path.join(dir, 'project.json'),
@@ -135,16 +140,23 @@ export async function loadPackMeta(
   baseDir: string,
   name: string
 ): Promise<PackMeta> {
-  const metaPath = path.join(baseDir, name, 'pack.json');
+  const metaPath = path.join(baseDir, name, 'project.json');
   if (fs.existsSync(metaPath)) {
     try {
       const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-      return PackMetaSchema.parse(data);
+      const meta = ProjectMetadataSchema.parse(data);
+      return PackMetaSchema.parse(meta);
     } catch {
       // ignore malformed data
     }
   }
-  return { description: '', author: '', urls: [], created: Date.now() };
+  return {
+    description: '',
+    author: '',
+    urls: [],
+    created: Date.now(),
+    license: '',
+  };
 }
 
 export async function savePackMeta(
@@ -152,8 +164,37 @@ export async function savePackMeta(
   name: string,
   meta: PackMeta
 ): Promise<void> {
-  const metaPath = path.join(baseDir, name, 'pack.json');
-  await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
+  const metaPath = path.join(baseDir, name, 'project.json');
+  let data: ProjectMetadata | null = null;
+  if (fs.existsSync(metaPath)) {
+    try {
+      const raw = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
+      data = ProjectMetadataSchema.parse(raw);
+    } catch {
+      /* ignore */
+    }
+  }
+  if (!data) {
+    data = {
+      name,
+      version: 'unknown',
+      assets: [],
+      noExport: [],
+      lastOpened: Date.now(),
+      description: '',
+      author: '',
+      urls: [],
+      created: Date.now(),
+      license: '',
+    };
+  }
+  data.description = meta.description;
+  data.author = meta.author;
+  data.urls = meta.urls;
+  data.license = meta.license;
+  if (!data.created) data.created = Date.now();
+  data.updated = Date.now();
+  await fs.promises.writeFile(metaPath, JSON.stringify(data, null, 2));
 }
 
 export function registerProjectHandlers(

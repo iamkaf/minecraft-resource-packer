@@ -84,10 +84,10 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ## 8. Import / Export
 
-- [ ] Import wizard: ingest `.zip`, parse `pack.mcmeta` + optional `pack.json`
+- [ ] Import wizard: ingest `.zip`, parse `pack.mcmeta` + optional `project.json`
 - [ ] Import wizard: option to merge into existing project
 - [ ] Export ZIP with `archiver` + progress bar
-- [ ] Embed `pack.json` for round‑trip metadata
+- [ ] Embed metadata for round‑trip using `project.json`
 - [ ] Honour No‑export flags
 
 ---

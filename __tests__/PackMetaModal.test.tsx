@@ -11,6 +11,7 @@ describe('PackMetaModal', () => {
       author: 'me',
       urls: ['https://a.com'],
       created: 0,
+      license: '',
     };
     const onSave = vi.fn();
     const onCancel = vi.fn();
@@ -37,6 +38,7 @@ describe('PackMetaModal', () => {
       author: '',
       urls: [],
       created: 0,
+      license: '',
     };
     const randomize = vi.fn();
     (
