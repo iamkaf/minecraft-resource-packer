@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useToast } from '../ToastProvider';
+import { useProject } from '../ProjectProvider';
 
-export function useProjectFiles(projectPath: string) {
+export function useProjectFiles() {
+  const { path: projectPath } = useProject();
   const [files, setFiles] = useState<string[]>([]);
   const [noExport, setNoExport] = useState<Set<string>>(new Set());
   const toast = useToast();

@@ -1,13 +1,14 @@
 import React from 'react';
 import TextureThumb from './TextureThumb';
 import { Button } from './daisy/actions';
+import { useProject } from './ProjectProvider';
 
 interface Props {
-  projectPath: string;
   asset: string | null;
 }
 
-export default function AssetSelectorInfoPanel({ projectPath, asset }: Props) {
+export default function AssetSelectorInfoPanel({ asset }: Props) {
+  const { path: projectPath } = useProject();
   if (!asset) return <div className="p-2">No asset selected</div>;
   return (
     <div className="p-2" data-testid="selector-info">

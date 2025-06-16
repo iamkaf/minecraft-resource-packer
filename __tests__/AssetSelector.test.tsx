@@ -1,8 +1,16 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
+import {
+  ProjectProvider,
+  useProject,
+} from '../src/renderer/components/ProjectProvider';
 
 import AssetSelector from '../src/renderer/components/AssetSelector';
+import {
+  ProjectProvider,
+  useProject,
+} from '../src/renderer/components/ProjectProvider';
 
 describe('AssetSelector', () => {
   const listTextures = vi.fn();
@@ -29,9 +37,31 @@ describe('AssetSelector', () => {
     vi.clearAllMocks();
   });
 
+  function SetPath({
+    path,
+    children,
+  }: {
+    path: string;
+    children: React.ReactNode;
+  }) {
+    const { setPath } = useProject();
+    const [ready, setReady] = React.useState(false);
+    React.useEffect(() => {
+      setPath(path);
+      setReady(true);
+    }, [path]);
+    return ready ? <>{children}</> : null;
+  }
+
   it('lists textures and handles selection', async () => {
     const onSelect = vi.fn();
-    render(<AssetSelector path="/proj" onAssetSelect={onSelect} />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetSelector onAssetSelect={onSelect} />
+        </SetPath>
+      </ProjectProvider>
+    );
     expect(listTextures).toHaveBeenCalledWith('/proj');
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });
@@ -50,7 +80,13 @@ describe('AssetSelector', () => {
   });
 
   it('shows items in the items category', async () => {
-    render(<AssetSelector path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetSelector />
+        </SetPath>
+      </ProjectProvider>
+    );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'axe' } });
     const section = await screen.findByText('items');
@@ -64,7 +100,13 @@ describe('AssetSelector', () => {
   });
 
   it('puts uncategorized textures into misc', async () => {
-    render(<AssetSelector path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetSelector />
+        </SetPath>
+      </ProjectProvider>
+    );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'custom' } });
     const section = await screen.findByText('misc');
@@ -78,7 +120,13 @@ describe('AssetSelector', () => {
   });
 
   it('adjusts zoom level with slider', async () => {
-    render(<AssetSelector path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetSelector />
+        </SetPath>
+      </ProjectProvider>
+    );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });
     const img = (await screen.findByAltText('Grass')) as HTMLImageElement;
@@ -93,7 +141,13 @@ describe('AssetSelector', () => {
     listTextures.mockResolvedValue(
       Array.from({ length: 50 }, (_, i) => `block/test${i}.png`)
     );
-    render(<AssetSelector path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetSelector />
+        </SetPath>
+      </ProjectProvider>
+    );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'test' } });
     await screen.findByText('blocks');
@@ -103,7 +157,13 @@ describe('AssetSelector', () => {
   });
 
   it('shows tree view', async () => {
-    render(<AssetSelector path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetSelector />
+        </SetPath>
+      </ProjectProvider>
+    );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });
     await screen.findByText('blocks');

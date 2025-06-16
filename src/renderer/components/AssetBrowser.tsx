@@ -4,11 +4,11 @@ import RenameModal from './RenameModal';
 import AssetBrowserItem from './AssetBrowserItem';
 import { useProjectFiles } from './file/useProjectFiles';
 import FileTree from './FileTree';
+import { useProject } from './ProjectProvider';
 import { FilterBadge, InputField, Range } from './daisy/input';
 import { Accordion } from './daisy/display';
 
 interface Props {
-  path: string;
   onSelectionChange?: (sel: string[]) => void;
 }
 
@@ -39,11 +39,9 @@ const getCategory = (name: string): Filter | 'misc' => {
   return 'misc';
 };
 
-const AssetBrowser: React.FC<Props> = ({
-  path: projectPath,
-  onSelectionChange,
-}) => {
-  const { files, noExport, toggleNoExport } = useProjectFiles(projectPath);
+const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
+  const { path: projectPath } = useProject();
+  const { files, noExport, toggleNoExport } = useProjectFiles();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [renameTarget, setRenameTarget] = useState<string | null>(null);
   const [query, setQuery] = useState('');
@@ -170,7 +168,6 @@ const AssetBrowser: React.FC<Props> = ({
         </div>
         <div>
           <FileTree
-            projectPath={projectPath}
             files={visible}
             selected={selected}
             setSelected={setSelected}

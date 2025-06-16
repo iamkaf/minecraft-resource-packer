@@ -4,9 +4,9 @@ import path from 'path';
 import { buildTree, TreeItem } from '../utils/tree';
 import TextureThumb from './TextureThumb';
 import AssetContextMenu from './file/AssetContextMenu';
+import { useProject } from './ProjectProvider';
 
 interface Props {
-  projectPath: string;
   files: string[];
   selected: Set<string>;
   setSelected: React.Dispatch<React.SetStateAction<Set<string>>>;
@@ -17,7 +17,6 @@ interface Props {
 }
 
 export default function FileTree({
-  projectPath,
   files,
   selected,
   setSelected,
@@ -26,6 +25,7 @@ export default function FileTree({
   deleteFiles,
   openRename,
 }: Props) {
+  const { path: projectPath } = useProject();
   const data = React.useMemo<TreeItem[]>(() => buildTree(files), [files]);
   const [menuInfo, setMenuInfo] = useState<{
     file: string;

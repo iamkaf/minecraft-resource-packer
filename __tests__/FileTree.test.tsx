@@ -3,14 +3,23 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import path from 'path';
 import FileTree from '../src/renderer/components/FileTree';
+import {
+  ProjectProvider,
+  useProject,
+} from '../src/renderer/components/ProjectProvider';
 
 const files = ['a.txt', 'b.png'];
 
 function Wrapper(props: Partial<Parameters<typeof FileTree>[0]>) {
   const [sel, setSel] = React.useState<Set<string>>(new Set());
-  return (
+  const { setPath } = useProject();
+  const [ready, setReady] = React.useState(false);
+  React.useEffect(() => {
+    setPath('/proj');
+    setReady(true);
+  }, []);
+  return ready ? (
     <FileTree
-      projectPath="/proj"
       files={files}
       selected={sel}
       setSelected={setSel}
@@ -20,12 +29,16 @@ function Wrapper(props: Partial<Parameters<typeof FileTree>[0]>) {
       openRename={vi.fn()}
       {...props}
     />
-  );
+  ) : null;
 }
 
 describe('FileTree', () => {
   it('supports multi selection', () => {
-    render(<Wrapper />);
+    render(
+      <ProjectProvider>
+        <Wrapper />
+      </ProjectProvider>
+    );
     fireEvent.click(
       screen.getAllByText('a.txt')[0].parentElement as HTMLElement
     );
@@ -42,7 +55,11 @@ describe('FileTree', () => {
 
   it('context menu triggers actions', () => {
     const del = vi.fn();
-    render(<Wrapper deleteFiles={del} />);
+    render(
+      <ProjectProvider>
+        <Wrapper deleteFiles={del} />
+      </ProjectProvider>
+    );
     const b = screen.getAllByText('b.png')[0].parentElement as HTMLElement;
     fireEvent.contextMenu(b);
     const delBtn = screen.getByRole('menuitem', { name: /Delete/ });

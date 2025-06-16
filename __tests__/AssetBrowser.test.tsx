@@ -1,6 +1,10 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
+import {
+  ProjectProvider,
+  useProject,
+} from '../src/renderer/components/ProjectProvider';
 import path from 'path';
 
 import AssetBrowser from '../src/renderer/components/AssetBrowser';
@@ -10,6 +14,22 @@ const unwatchProject = vi.fn();
 const onFileAdded = vi.fn();
 const onFileRemoved = vi.fn();
 const onFileRenamed = vi.fn();
+
+function SetPath({
+  path,
+  children,
+}: {
+  path: string;
+  children: React.ReactNode;
+}) {
+  const { setPath } = useProject();
+  const [ready, setReady] = React.useState(false);
+  React.useEffect(() => {
+    setPath(path);
+    setReady(true);
+  }, [path]);
+  return ready ? <>{children}</> : null;
+}
 
 describe('AssetBrowser', () => {
   beforeEach(() => {
@@ -39,7 +59,13 @@ describe('AssetBrowser', () => {
   });
 
   it('renders files from directory', async () => {
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
     expect(watchProject).toHaveBeenCalledWith('/proj');
     expect((await screen.findAllByText('a.txt'))[0]).toBeInTheDocument();
     const img = screen.getByAltText('B') as HTMLImageElement;
@@ -50,7 +76,13 @@ describe('AssetBrowser', () => {
   });
 
   it('is scrollable', async () => {
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
     await screen.findAllByText('a.txt');
     const wrapper = screen.getByTestId('asset-browser');
     expect(wrapper.className).toMatch(/overflow-auto/);
@@ -90,7 +122,13 @@ describe('AssetBrowser', () => {
       getNoExport: vi.fn(async () => []),
       setNoExport: vi.fn(),
     };
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
     const item = (await screen.findAllByText('a.txt'))[0];
     fireEvent.contextMenu(item);
     const revealBtn = (
@@ -141,7 +179,13 @@ describe('AssetBrowser', () => {
       renamed = cb;
     });
 
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
     await screen.findAllByText('a.txt');
 
     added?.({}, 'c.txt');
@@ -179,7 +223,13 @@ describe('AssetBrowser', () => {
       getNoExport: vi.fn(async () => []),
       setNoExport: vi.fn(),
     };
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
     const a = (await screen.findAllByText('a.txt'))[0];
     const b = screen.getAllByText('b.png')[0];
     fireEvent.click(a);
@@ -210,7 +260,13 @@ describe('AssetBrowser', () => {
       onFileRemoved,
       onFileRenamed,
     };
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
     const a = (await screen.findAllByText('a.txt'))[0];
     const b = screen.getAllByText('b.png')[0];
     fireEvent.click(a);
@@ -245,7 +301,13 @@ describe('AssetBrowser', () => {
       onFileRemoved,
       onFileRenamed,
     };
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
     const el = (await screen.findAllByText('a.txt'))[0];
     const container = el.closest('div[tabindex="0"]') as HTMLElement;
     expect(container.className).toMatch(/border-gray-400/);
@@ -254,7 +316,13 @@ describe('AssetBrowser', () => {
   });
 
   it('filters by search and adjusts zoom', async () => {
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
     await screen.findAllByText('a.txt');
     const search = screen.getByPlaceholderText('Search files');
     fireEvent.change(search, { target: { value: 'b.png' } });
@@ -272,7 +340,13 @@ describe('AssetBrowser', () => {
       'assets/minecraft/textures/block/stone.png',
       'assets/minecraft/textures/item/apple.png',
     ]);
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
     await screen.findAllByText('stone.png');
     const itemsChip = screen.getByText('Items');
     fireEvent.click(itemsChip);
@@ -282,7 +356,13 @@ describe('AssetBrowser', () => {
   });
 
   it('renders grid and tree together', async () => {
-    render(<AssetBrowser path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
     await screen.findAllByText('a.txt');
     expect(screen.getByTestId('file-tree')).toBeInTheDocument();
     expect(screen.getAllByText('a.txt')[0]).toBeInTheDocument();
