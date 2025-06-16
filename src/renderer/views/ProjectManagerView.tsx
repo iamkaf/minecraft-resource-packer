@@ -56,7 +56,7 @@ const ProjectManagerView: React.FC = () => {
   const handleCreate = (name: string, version: string) => {
     window.electronAPI?.createProject(name, version).then(() => {
       refresh();
-      toast('Project created', 'success');
+      toast({ message: 'Project created', type: 'success' });
     });
   };
 
@@ -78,10 +78,10 @@ const ProjectManagerView: React.FC = () => {
     window.electronAPI
       ?.exportProjects(Array.from(selected))
       .then(() => {
-        toast('Bulk export complete', 'success');
+        toast({ message: 'Bulk export complete', type: 'success' });
         setSelected(new Set());
       })
-      .catch(() => toast('Bulk export failed', 'error'))
+      .catch(() => toast({ message: 'Bulk export failed', type: 'error' }))
       .finally(() => setProgress(null));
   };
 

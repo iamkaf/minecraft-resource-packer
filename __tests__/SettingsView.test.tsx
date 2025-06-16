@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import SettingsView from '../src/renderer/views/SettingsView';
+import ToastProvider from '../src/renderer/components/ToastProvider';
 
 // eslint-disable-next-line no-var
 var openExternalMock: ReturnType<typeof vi.fn>;
@@ -55,13 +56,21 @@ describe('SettingsView', () => {
   });
 
   it('renders placeholder heading', () => {
-    render(<SettingsView />);
+    render(
+      <ToastProvider>
+        <SettingsView />
+      </ToastProvider>
+    );
     const section = screen.getByTestId('settings-view');
     expect(section).toHaveTextContent('Settings');
   });
 
   it('opens help link externally', () => {
-    render(<SettingsView />);
+    render(
+      <ToastProvider>
+        <SettingsView />
+      </ToastProvider>
+    );
     const link = screen.getByRole('link', { name: 'Help' });
     link.dispatchEvent(
       new MouseEvent('click', { bubbles: true, cancelable: true })
@@ -72,26 +81,42 @@ describe('SettingsView', () => {
   });
 
   it('loads and saves external editor path', async () => {
-    render(<SettingsView />);
+    render(
+      <ToastProvider>
+        <SettingsView />
+      </ToastProvider>
+    );
     const input = await screen.findByLabelText('External texture editor');
     expect(input).toHaveValue('/usr/bin/gimp');
     fireEvent.change(input, { target: { value: '/opt/editor' } });
     fireEvent.click(screen.getAllByRole('button', { name: 'Save' })[0]);
     expect(setTextureEditor).toHaveBeenCalledWith('/opt/editor');
+    expect(await screen.findAllByText('Editor path saved')).toHaveLength(2);
   });
 
   it('loads and saves default export folder', async () => {
-    render(<SettingsView />);
+    render(
+      <ToastProvider>
+        <SettingsView />
+      </ToastProvider>
+    );
     const input = await screen.findByLabelText('Default export folder');
     expect(input).toHaveValue('/home');
     fireEvent.change(input, { target: { value: '/out' } });
     const btn = screen.getAllByRole('button', { name: 'Save' })[1];
     fireEvent.click(btn);
     expect(setDefaultExportDir).toHaveBeenCalledWith('/out');
+    expect(await screen.findAllByText('Export directory saved')).toHaveLength(
+      2
+    );
   });
 
   it('changes theme via dropdown', async () => {
-    render(<SettingsView />);
+    render(
+      <ToastProvider>
+        <SettingsView />
+      </ToastProvider>
+    );
     const select = await screen.findByLabelText('Theme');
     fireEvent.change(select, { target: { value: 'dark' } });
     await Promise.resolve();
@@ -99,13 +124,19 @@ describe('SettingsView', () => {
     expect(document.documentElement.getAttribute('data-theme')).toBe(
       'minecraft'
     );
+    expect(await screen.findAllByText('Theme updated')).toHaveLength(2);
   });
 
   it('toggles confetti preference', async () => {
-    render(<SettingsView />);
+    render(
+      <ToastProvider>
+        <SettingsView />
+      </ToastProvider>
+    );
     const toggle = await screen.findByLabelText('Confetti effects');
     expect(toggle).toBeChecked();
     fireEvent.click(toggle);
     expect(setConfetti).toHaveBeenCalledWith(false);
+    expect(await screen.findAllByText('Preference saved')).toHaveLength(2);
   });
 });

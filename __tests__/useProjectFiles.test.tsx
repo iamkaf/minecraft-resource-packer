@@ -1,6 +1,7 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useProjectFiles } from '../src/renderer/components/file/useProjectFiles';
+import ToastProvider from '../src/renderer/components/ToastProvider';
 
 const watchProject = vi.fn(async () => ['a.txt', 'b.png']);
 const unwatchProject = vi.fn();
@@ -75,12 +76,15 @@ describe('useProjectFiles', () => {
   });
 
   it('toggles noExport state', async () => {
-    const { result } = renderHook(() => useProjectFiles('/proj'));
+    const { result } = renderHook(() => useProjectFiles('/proj'), {
+      wrapper: ToastProvider,
+    });
     await waitFor(() => expect(result.current.files.length).toBeGreaterThan(0));
     act(() => {
       result.current.toggleNoExport(['a.txt'], true);
     });
     expect(setNoExport).toHaveBeenCalledWith('/proj', ['a.txt'], true);
     expect(result.current.noExport.has('a.txt')).toBe(true);
+    expect(document.body.textContent).toContain('1 file(s) added to No Export');
   });
 });

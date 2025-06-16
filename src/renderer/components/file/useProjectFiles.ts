@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useToast } from '../ToastProvider';
 
 export function useProjectFiles(projectPath: string) {
   const [files, setFiles] = useState<string[]>([]);
   const [noExport, setNoExport] = useState<Set<string>>(new Set());
+  const toast = useToast();
 
   useEffect(() => {
     let alive = true;
@@ -47,6 +49,12 @@ export function useProjectFiles(projectPath: string) {
         else ns.delete(file);
       });
       return ns;
+    });
+    toast({
+      message: flag
+        ? `${list.length} file(s) added to No Export`
+        : `${list.length} file(s) removed from No Export`,
+      type: 'info',
     });
   };
 

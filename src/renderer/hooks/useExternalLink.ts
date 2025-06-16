@@ -12,7 +12,7 @@ export function useExternalLink(url: string) {
       e.preventDefault();
       shell
         .openExternal(url)
-        .catch(() => toast('Failed to open link', 'error'));
+        .catch(() => toast({ message: 'Failed to open link', type: 'error' }));
     },
     [url, toast]
   );
