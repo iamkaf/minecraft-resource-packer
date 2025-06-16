@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import path from 'path';
+import { app } from 'electron';
 import type { PackMeta } from '../../main/projects';
 import { Modal, Button } from './daisy/actions';
 import { InputField, Textarea } from './daisy/input';
@@ -58,7 +60,11 @@ export default function PackMetaModal({
           <Button
             type="button"
             className="btn-secondary"
-            onClick={() => window.electronAPI?.randomizeIcon(project)}
+            onClick={() =>
+              window.electronAPI?.randomizeIcon(
+                path.join(app.getPath('userData'), 'projects', project)
+              )
+            }
           >
             Randomize Icon
           </Button>

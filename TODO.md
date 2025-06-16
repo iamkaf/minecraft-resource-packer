@@ -43,7 +43,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 - [ ] Ability to edit project metadata from the ProjectInfoPanel
 - [ ] Integrate PackIconEditor for changing the pack icon
-- [ ] Fix the randomize icon button not working due to incorrect file path
+- [x] Fix the randomize icon button not working due to incorrect file path
 
 ---
 

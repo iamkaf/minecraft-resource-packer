@@ -1,6 +1,9 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
+import path from 'path';
+
+vi.mock('electron', () => ({ app: { getPath: () => '/tmp' } }));
 import PackMetaModal from '../src/renderer/components/PackMetaModal';
 import type { PackMeta } from '../src/main/projects';
 
@@ -55,6 +58,8 @@ describe('PackMetaModal', () => {
       />
     );
     fireEvent.click(screen.getByText('Randomize Icon'));
-    expect(randomize).toHaveBeenCalledWith('Pack');
+    expect(randomize).toHaveBeenCalledWith(
+      path.join('/tmp', 'projects', 'Pack')
+    );
   });
 });
