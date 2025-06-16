@@ -36,6 +36,7 @@ npm run format
 ```
 
 5. Window size, position and fullscreen state persist across launches thanks to `electron-store`.
+6. The Asset Browser remembers the last search text, category filters and zoom level using `electron-store`.
 
 ## Project Structure
 
@@ -125,7 +126,9 @@ Both protocols are registered in `src/main/index.ts` when Electron starts.
 The projects dashboard includes a sidebar next to the project table. Selecting a
 row loads metadata from `project.json` via IPC and displays the pack description,
 author, related URLs and creation timestamps. Use the **Edit** button to modify
-these fields and save back to `project.json`.
+these fields and save back to `project.json`. The sidebar also includes a
+**Rename** button that opens a modal to change the project's folder name and
+updates `project.json` accordingly.
 
 ## Row Selection
 
@@ -168,6 +171,13 @@ while the file is being updated.
 The **Pack Icon Editor** modal customises `pack.png` for a project. You can
 randomise the item and background, choose a border colour or upload a custom PNG.
 The image is processed with Sharp in the main process and saved at 128×128.
+
+## Asset Info
+
+The panel beside the asset browser displays details about the selected file. When
+viewing a PNG texture the panel offers a **Compare with Vanilla** button. It
+opens a modal that uses the daisyUI `Diff` component to show the project texture
+against the original game asset side by side.
 
 ## Windows Paths
 

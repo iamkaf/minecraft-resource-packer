@@ -118,6 +118,27 @@ export async function duplicateProject(
   }
 }
 
+export async function renameProject(
+  baseDir: string,
+  name: string,
+  newName: string
+): Promise<void> {
+  const src = path.join(baseDir, name);
+  const dest = path.join(baseDir, newName);
+  await fs.promises.rename(src, dest);
+  const metaPath = path.join(dest, 'project.json');
+  if (fs.existsSync(metaPath)) {
+    try {
+      const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
+      const meta = ProjectMetadataSchema.parse(data);
+      meta.name = newName;
+      await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
 export async function deleteProject(
   baseDir: string,
   name: string
@@ -214,6 +235,9 @@ export function registerProjectHandlers(
   });
   ipc.handle('duplicate-project', (_e, name: string, newName: string) => {
     return duplicateProject(baseDir, name, newName);
+  });
+  ipc.handle('rename-project', (_e, name: string, newName: string) => {
+    return renameProject(baseDir, name, newName);
   });
   ipc.handle('delete-project', (_e, name: string) => {
     return deleteProject(baseDir, name);

@@ -19,6 +19,7 @@ declare global {
       createProject: IpcInvoke<'create-project'>;
       importProject: IpcInvoke<'import-project'>;
       duplicateProject: IpcInvoke<'duplicate-project'>;
+      renameProject: IpcInvoke<'rename-project'>;
       deleteProject: IpcInvoke<'delete-project'>;
       openProject: IpcInvoke<'open-project'>;
       loadPackMeta: IpcInvoke<'load-pack-meta'>;
@@ -54,6 +55,12 @@ declare global {
       setDefaultExportDir: IpcInvoke<'set-default-export-dir'>;
       getProjectSort: IpcInvoke<'get-project-sort'>;
       setProjectSort: IpcInvoke<'set-project-sort'>;
+      getAssetSearch: IpcInvoke<'get-asset-search'>;
+      setAssetSearch: IpcInvoke<'set-asset-search'>;
+      getAssetFilters: IpcInvoke<'get-asset-filters'>;
+      setAssetFilters: IpcInvoke<'set-asset-filters'>;
+      getAssetZoom: IpcInvoke<'get-asset-zoom'>;
+      setAssetZoom: IpcInvoke<'set-asset-zoom'>;
       openExternalEditor: IpcInvoke<'open-external-editor'>;
       onOpenProject: IpcListener<'project-opened'>;
       onFileAdded: IpcListener<'file-added'>;

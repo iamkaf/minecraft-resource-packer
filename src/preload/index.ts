@@ -30,6 +30,8 @@ const api = {
   importProject: () => invoke('import-project'),
   duplicateProject: (name: string, newName: string) =>
     invoke('duplicate-project', name, newName),
+  renameProject: (name: string, newName: string) =>
+    invoke('rename-project', name, newName),
   deleteProject: (name: string) => invoke('delete-project', name),
   openProject: (name: string) => invoke('open-project', name),
   onOpenProject: (listener: (e: unknown, path: string) => void) =>
@@ -78,6 +80,12 @@ const api = {
     k: keyof import('../main/projects').ProjectInfo,
     asc: boolean
   ) => invoke('set-project-sort', k, asc),
+  getAssetSearch: () => invoke('get-asset-search'),
+  setAssetSearch: (q: string) => invoke('set-asset-search', q),
+  getAssetFilters: () => invoke('get-asset-filters'),
+  setAssetFilters: (f: string[]) => invoke('set-asset-filters', f),
+  getAssetZoom: () => invoke('get-asset-zoom'),
+  setAssetZoom: (z: number) => invoke('set-asset-zoom', z),
   onFileAdded: (listener: (e: unknown, path: string) => void) =>
     on('file-added', listener),
   onFileRemoved: (listener: (e: unknown, path: string) => void) =>

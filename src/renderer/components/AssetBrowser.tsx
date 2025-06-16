@@ -50,6 +50,30 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    window.electronAPI?.getAssetSearch?.().then((v) => {
+      if (v) setQuery(v);
+    });
+    window.electronAPI?.getAssetFilters?.().then((v) => {
+      if (v) setFilters(v as Filter[]);
+    });
+    window.electronAPI?.getAssetZoom?.().then((v) => {
+      if (v) setZoom(v);
+    });
+  }, []);
+
+  useEffect(() => {
+    window.electronAPI?.setAssetSearch?.(query);
+  }, [query]);
+
+  useEffect(() => {
+    window.electronAPI?.setAssetFilters?.(filters);
+  }, [filters]);
+
+  useEffect(() => {
+    window.electronAPI?.setAssetZoom?.(zoom);
+  }, [zoom]);
+
+  useEffect(() => {
     onSelectionChange?.(Array.from(selected));
   }, [selected, onSelectionChange]);
 

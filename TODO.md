@@ -18,7 +18,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 - [x] Better selection behavior in the project manager
 - [x] Better bulk action detection when using hotkeys
-- [ ] Ability to edit a project's name
+- [x] Ability to edit a project's name
 
 ---
 
@@ -28,13 +28,13 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 - [ ] Dirty badge for changed assets
 - [ ] Custom namespace support (non-`minecraft` assets)
-- [ ] Persist search query, category filters and zoom level between sessions
+- [x] Persist search query, category filters and zoom level between sessions
 - [ ] Arrow key navigation between thumbnails
 
 ### Asset Info & Texture Inspector
 
 - [ ] Revision history (max 20)
-- [ ] Preview against the vanilla texture using the `Diff` component
+- [x] Preview against the vanilla texture using the `Diff` component
 - [x] Generic icon thumbnail for text files
 - [ ] More robust JSON editor
 - [ ] Optional 3D preview for entity models and item textures
@@ -43,7 +43,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 - [ ] Ability to edit project metadata from the ProjectInfoPanel
 - [ ] Integrate PackIconEditor for changing the pack icon
-- [ ] Fix the randomize icon button not working due to incorrect file path
+- [x] Fix the randomize icon button not working due to incorrect file path
 
 ---
 

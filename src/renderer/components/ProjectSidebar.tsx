@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ExternalLink from './ExternalLink';
 import PackMetaModal from './PackMetaModal';
+import RenameModal from './RenameModal';
 import type { PackMeta } from '../../main/projects';
 import { ProjectSidebarSkeleton } from './skeleton';
 
@@ -11,6 +12,7 @@ export default function ProjectSidebar({
 }) {
   const [meta, setMeta] = useState<PackMeta | null>(null);
   const [edit, setEdit] = useState(false);
+  const [rename, setRename] = useState(false);
 
   useEffect(() => {
     if (project) {
@@ -51,6 +53,12 @@ export default function ProjectSidebar({
               >
                 Edit
               </button>
+              <button
+                className="btn btn-neutral btn-sm mt-2"
+                onClick={() => setRename(true)}
+              >
+                Rename
+              </button>
             </div>
           ) : (
             <ProjectSidebarSkeleton />
@@ -69,6 +77,19 @@ export default function ProjectSidebar({
             window.electronAPI?.savePackMeta(project, m).then(() => {
               setMeta(m);
               setEdit(false);
+            });
+          }}
+        />
+      )}
+      {rename && project && (
+        <RenameModal
+          current={project}
+          title="Rename Project"
+          confirmText="Rename"
+          onCancel={() => setRename(false)}
+          onRename={(n) => {
+            window.electronAPI?.renameProject(project, n).then(() => {
+              setRename(false);
             });
           }}
         />
