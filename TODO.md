@@ -30,6 +30,9 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Custom namespace support (non-`minecraft` assets)
 - [x] Persist search query, category filters and zoom level between sessions
 - [ ] Arrow key navigation between thumbnails
+- [ ] Audio & language asset management with previews (`.ogg`, `.wav`, `.json`)
+- [ ] Asset atlas viewer for stitching HD texture previews
+- [ ] Asset dependency graph showing overrides
 
 ### Asset Info & Texture Inspector
 
@@ -38,6 +41,9 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Generic icon thumbnail for text files
 - [ ] More robust JSON editor
 - [ ] Optional 3D preview for entity models and item textures
+- [ ] Custom models & blockstates editor with live validation
+- [ ] Normal & specular map creator using Sharp
+- [ ] Connected textures & biome variant wizard
 
 ### Project Info Panel
 
@@ -55,6 +61,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Validation checklist (missing textures, duplicates)
 - [ ] Version field for projects; it should also appear in exported file names
 - [ ] Remember the last export target folder using electron store on successful exports
+- [ ] Sub-pack support for multi-variant packs in `pack.mcmeta`
 
 ---
 
@@ -65,6 +72,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Import wizard: option to merge into existing project
 - [ ] Compression progress with ETA
 - [ ] Post‑actions: Open folder • Copy to resourcepacks • Test‑launch Minecraft
+- [ ] Live test client launch from a specified Minecraft path
 
 ---
 
@@ -73,6 +81,8 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] JSON store in `templates/`
 - [ ] “Start from Template” dialog (e.g., _Gold Tools & Armor_, _All Food Items_)
 - [ ] Add templates to existing projects
+- [ ] Pack theme bundles and presets
+- [ ] Community-driven mod template downloads
 
 ---
 
