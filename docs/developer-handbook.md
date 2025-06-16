@@ -36,6 +36,7 @@ npm run format
 ```
 
 5. Window size, position and fullscreen state persist across launches thanks to `electron-store`.
+6. The Asset Browser remembers the last search text, category filters and zoom level using `electron-store`.
 
 ## Project Structure
 

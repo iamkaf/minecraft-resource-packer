@@ -47,6 +47,12 @@ export interface IpcRequestMap {
   'set-default-export-dir': [string];
   'get-project-sort': [];
   'set-project-sort': [keyof ProjectInfo, boolean];
+  'get-asset-search': [];
+  'set-asset-search': [string];
+  'get-asset-filters': [];
+  'set-asset-filters': [string[]];
+  'get-asset-zoom': [];
+  'set-asset-zoom': [number];
 }
 
 export interface IpcResponseMap {
@@ -92,6 +98,12 @@ export interface IpcResponseMap {
   'set-default-export-dir': void;
   'get-project-sort': { key: keyof ProjectInfo; asc: boolean };
   'set-project-sort': void;
+  'get-asset-search': string;
+  'set-asset-search': void;
+  'get-asset-filters': string[];
+  'set-asset-filters': void;
+  'get-asset-zoom': number;
+  'set-asset-zoom': void;
 }
 
 export interface IpcEventMap {

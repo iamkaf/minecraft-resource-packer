@@ -28,7 +28,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 - [ ] Dirty badge for changed assets
 - [ ] Custom namespace support (non-`minecraft` assets)
-- [ ] Persist search query, category filters and zoom level between sessions
+- [x] Persist search query, category filters and zoom level between sessions
 - [ ] Arrow key navigation between thumbnails
 
 ### Asset Info & Texture Inspector

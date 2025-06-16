@@ -12,6 +12,9 @@ const store = new Store<{
   defaultExportDir: string;
   projectSortKey: keyof import('./projects').ProjectInfo;
   projectSortAsc: boolean;
+  assetSearch: string;
+  assetFilters: string[];
+  assetZoom: number;
 }>({
   defaults: {
     editorLayout: [20, 80],
@@ -21,6 +24,9 @@ const store = new Store<{
     defaultExportDir: app.getPath('downloads'),
     projectSortKey: 'name',
     projectSortAsc: true,
+    assetSearch: '',
+    assetFilters: [],
+    assetZoom: 64,
   },
 });
 
@@ -79,6 +85,30 @@ export function setProjectSort(
   store.set('projectSortAsc', asc);
 }
 
+export function getAssetSearch(): string {
+  return store.get('assetSearch');
+}
+
+export function setAssetSearch(text: string): void {
+  store.set('assetSearch', text);
+}
+
+export function getAssetFilters(): string[] {
+  return store.get('assetFilters');
+}
+
+export function setAssetFilters(list: string[]): void {
+  store.set('assetFilters', list);
+}
+
+export function getAssetZoom(): number {
+  return store.get('assetZoom');
+}
+
+export function setAssetZoom(z: number): void {
+  store.set('assetZoom', z);
+}
+
 export function registerLayoutHandlers(ipc: IpcMain): void {
   ipc.handle('get-editor-layout', () => getEditorLayout());
   ipc.handle('set-editor-layout', (_e, layout: number[]) =>
@@ -100,4 +130,10 @@ export function registerLayoutHandlers(ipc: IpcMain): void {
     (_e, k: keyof import('./projects').ProjectInfo, s: boolean) =>
       setProjectSort(k, s)
   );
+  ipc.handle('get-asset-search', () => getAssetSearch());
+  ipc.handle('set-asset-search', (_e, q: string) => setAssetSearch(q));
+  ipc.handle('get-asset-filters', () => getAssetFilters());
+  ipc.handle('set-asset-filters', (_e, f: string[]) => setAssetFilters(f));
+  ipc.handle('get-asset-zoom', () => getAssetZoom());
+  ipc.handle('set-asset-zoom', (_e, z: number) => setAssetZoom(z));
 }
