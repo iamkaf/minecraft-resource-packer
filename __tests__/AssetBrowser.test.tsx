@@ -281,11 +281,12 @@ describe('AssetBrowser', () => {
     expect(screen.getAllByText('apple.png')[0]).toBeInTheDocument();
   });
 
-  it('shows tree view', async () => {
+  it('renders grid and tree together', async () => {
     render(<AssetBrowser path="/proj" />);
     await screen.findAllByText('a.txt');
-    fireEvent.click(screen.getByText('Tree'));
     expect(screen.getByTestId('file-tree')).toBeInTheDocument();
     expect(screen.getAllByText('a.txt')[0]).toBeInTheDocument();
+    const tree = screen.getByTestId('file-tree');
+    expect(within(tree).getByAltText('b.png')).toBeInTheDocument();
   });
 });

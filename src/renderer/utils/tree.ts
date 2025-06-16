@@ -25,10 +25,13 @@ export function buildTree(paths: string[]): TreeItem[] {
     }
   }
   const convert = (m: Record<string, NodeMap>): TreeItem[] =>
-    Object.values(m).map((n) => ({
-      id: n.id,
-      name: n.name,
-      children: convert(n.children),
-    }));
+    Object.values(m).map((n) => {
+      const children = convert(n.children);
+      return {
+        id: n.id,
+        name: n.name,
+        ...(children.length > 0 ? { children } : {}),
+      };
+    });
   return convert(root);
 }
