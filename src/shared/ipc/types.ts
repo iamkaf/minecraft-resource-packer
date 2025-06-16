@@ -10,6 +10,7 @@ export interface IpcRequestMap {
   'create-project': [string, string];
   'import-project': [];
   'duplicate-project': [string, string];
+  'rename-project': [string, string];
   'delete-project': [string];
   'open-project': [string];
   'load-pack-meta': [string];
@@ -54,6 +55,7 @@ export interface IpcResponseMap {
   'create-project': void;
   'import-project': void;
   'duplicate-project': void;
+  'rename-project': void;
   'delete-project': void;
   'open-project': void;
   'load-pack-meta': PackMeta;

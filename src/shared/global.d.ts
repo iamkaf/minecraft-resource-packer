@@ -19,6 +19,7 @@ declare global {
       createProject: IpcInvoke<'create-project'>;
       importProject: IpcInvoke<'import-project'>;
       duplicateProject: IpcInvoke<'duplicate-project'>;
+      renameProject: IpcInvoke<'rename-project'>;
       deleteProject: IpcInvoke<'delete-project'>;
       openProject: IpcInvoke<'open-project'>;
       loadPackMeta: IpcInvoke<'load-pack-meta'>;
