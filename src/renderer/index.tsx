@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './components/App';
 import ToastProvider from './components/ToastProvider';
+import { HashRouter } from 'react-router-dom';
 import './styles/index.css';
 import { applyTheme } from './utils/theme';
 
@@ -16,8 +17,10 @@ const container = document.getElementById('root');
 if (container) {
   const root = createRoot(container);
   root.render(
-    <ToastProvider>
-      <App />
-    </ToastProvider>
+    <HashRouter>
+      <ToastProvider>
+        <App />
+      </ToastProvider>
+    </HashRouter>
   );
 }

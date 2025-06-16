@@ -1,4 +1,5 @@
-import React, { Suspense, useEffect, useState, lazy } from 'react';
+import React, { Suspense, useEffect, lazy } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import {
   EditorViewSkeleton,
@@ -14,69 +15,70 @@ const AboutView = lazy(() => import('../views/AboutView'));
 
 import { ProjectProvider, useProject } from './ProjectProvider';
 
-export type View = 'manager' | 'editor' | 'settings' | 'about';
-
 function AppContent() {
   const { path: projectPath, setPath: setProjectPath } = useProject();
-  const [view, setView] = useState<View>('manager');
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.electronAPI?.onOpenProject((_e, path: string) => {
       setProjectPath(path);
-      setView('editor');
+      navigate('/editor');
     });
-  }, []);
+  }, [navigate, setProjectPath]);
 
   const toManager = () => {
     setProjectPath(null);
-    setView('manager');
+    navigate('/');
   };
 
   const toSettings = () => {
-    setProjectPath(null);
-    setView('settings');
+    navigate('/settings');
   };
-
-  let content: React.ReactNode = null;
-  switch (view) {
-    case 'editor':
-      content = projectPath ? (
-        <Suspense fallback={<EditorViewSkeleton />}>
-          <EditorView onBack={toManager} onSettings={toSettings} />
-        </Suspense>
-      ) : null;
-      break;
-    case 'settings':
-      content = (
-        <Suspense fallback={<SettingsViewSkeleton />}>
-          <SettingsView />
-        </Suspense>
-      );
-      break;
-    case 'about':
-      content = (
-        <Suspense fallback={<AboutViewSkeleton />}>
-          <AboutView />
-        </Suspense>
-      );
-      break;
-    default:
-      content = (
-        <Suspense fallback={<ProjectManagerSkeleton />}>
-          <ProjectManagerView />
-        </Suspense>
-      );
-  }
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
-      <Navbar
-        onNavigate={(v) => {
-          setProjectPath(null);
-          setView(v);
-        }}
-      />
-      <div className="flex-1 flex flex-col">{content}</div>
+      <Navbar />
+      <div className="flex-1 flex flex-col">
+        <Routes>
+          <Route
+            path="/editor"
+            element={
+              projectPath ? (
+                <Suspense fallback={<EditorViewSkeleton />}>
+                  <EditorView onBack={toManager} onSettings={toSettings} />
+                </Suspense>
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <Suspense fallback={<SettingsViewSkeleton />}>
+                <SettingsView />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <Suspense fallback={<AboutViewSkeleton />}>
+                <AboutView />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<ProjectManagerSkeleton />}>
+                <ProjectManagerView />
+              </Suspense>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
     </div>
   );
 }
