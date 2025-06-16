@@ -15,7 +15,7 @@ export default function Modal({
 }: ModalProps) {
   if (!open) return null;
   return (
-    <dialog className="modal modal-open" data-testid={testId}>
+    <dialog open className="modal modal-open" data-testid={testId}>
       <div className={`modal-box ${className}`.trim()}>{children}</div>
     </dialog>
   );

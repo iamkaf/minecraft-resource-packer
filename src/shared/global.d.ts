@@ -52,6 +52,8 @@ declare global {
       setConfetti: IpcInvoke<'set-confetti'>;
       getDefaultExportDir: IpcInvoke<'get-default-export-dir'>;
       setDefaultExportDir: IpcInvoke<'set-default-export-dir'>;
+      getProjectSort: IpcInvoke<'get-project-sort'>;
+      setProjectSort: IpcInvoke<'set-project-sort'>;
       openExternalEditor: IpcInvoke<'open-external-editor'>;
       onOpenProject: IpcListener<'project-opened'>;
       onFileAdded: IpcListener<'file-added'>;

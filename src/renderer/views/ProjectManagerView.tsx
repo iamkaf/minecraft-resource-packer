@@ -32,6 +32,12 @@ const ProjectManagerView: React.FC = () => {
   useEffect(() => {
     refresh();
     window.electronAPI?.listVersions().then(setVersions);
+    window.electronAPI?.getProjectSort().then((s) => {
+      if (s) {
+        setSortKey(s.key);
+        setAsc(s.asc);
+      }
+    });
   }, []);
 
   const { modals, openDuplicate, openDelete } = useProjectModals(
@@ -56,10 +62,13 @@ const ProjectManagerView: React.FC = () => {
 
   const handleSort = (key: keyof ProjectInfo) => {
     if (sortKey === key) {
-      setAsc(!asc);
+      const next = !asc;
+      setAsc(next);
+      window.electronAPI?.setProjectSort(sortKey, next);
     } else {
       setSortKey(key);
       setAsc(true);
+      window.electronAPI?.setProjectSort(key, true);
     }
   };
 

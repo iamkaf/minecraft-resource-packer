@@ -12,6 +12,8 @@ describe('ProjectManagerView', () => {
   const importProject = vi.fn();
   const duplicateProject = vi.fn();
   const deleteProject = vi.fn();
+  const getProjectSort = vi.fn();
+  const setProjectSort = vi.fn();
 
   beforeEach(() => {
     interface ElectronAPI {
@@ -29,6 +31,8 @@ describe('ProjectManagerView', () => {
       importProject: () => Promise<void>;
       duplicateProject: (name: string, newName: string) => Promise<void>;
       deleteProject: (name: string) => Promise<void>;
+      getProjectSort: () => Promise<{ key: keyof ProjectInfo; asc: boolean }>;
+      setProjectSort: (key: keyof ProjectInfo, asc: boolean) => Promise<void>;
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       listProjects,
@@ -38,6 +42,8 @@ describe('ProjectManagerView', () => {
       importProject,
       duplicateProject,
       deleteProject,
+      getProjectSort,
+      setProjectSort,
     };
     listProjects.mockResolvedValue([
       { name: 'Pack', version: '1.20', assets: 2, lastOpened: 0 },
@@ -48,6 +54,8 @@ describe('ProjectManagerView', () => {
     duplicateProject.mockResolvedValue(undefined);
     deleteProject.mockResolvedValue(undefined);
     listVersions.mockResolvedValue(['1.20', '1.21']);
+    getProjectSort.mockResolvedValue({ key: 'name', asc: true });
+    setProjectSort.mockResolvedValue(undefined);
     vi.clearAllMocks();
   });
 
@@ -60,30 +68,38 @@ describe('ProjectManagerView', () => {
 
   it('loads available versions', async () => {
     render(<ProjectManagerView />);
-    const option = await screen.findByRole('option', { name: '1.21' });
+    fireEvent.click(screen.getByText('New Project'));
+    const modal = await screen.findByTestId('daisy-modal');
+    const option = within(modal).getByRole('option', { name: '1.21' });
     expect(option).toBeInTheDocument();
   });
 
   it('uses generated name when input left unchanged', async () => {
     render(<ProjectManagerView />);
     await screen.findAllByRole('button', { name: 'Open' });
-    const input = screen.getByPlaceholderText('Name') as HTMLInputElement;
-    const select = await screen.findByRole('combobox');
+    fireEvent.click(screen.getByText('New Project'));
+    const modal = await screen.findByTestId('daisy-modal');
+    const input = within(modal).getByPlaceholderText(
+      'Name'
+    ) as HTMLInputElement;
+    const select = within(modal).getByRole('combobox');
     const generated = input.value;
     fireEvent.change(select, { target: { value: '1.21' } });
-    fireEvent.click(screen.getByText('Create'));
+    fireEvent.click(within(modal).getByRole('button', { name: 'Create' }));
     expect(createProject).toHaveBeenCalledWith(generated, '1.21');
   });
 
   it('creates project via form', async () => {
     render(<ProjectManagerView />);
     await screen.findAllByRole('button', { name: 'Open' });
-    const select = await screen.findByRole('combobox');
-    fireEvent.change(screen.getByPlaceholderText('Name'), {
+    fireEvent.click(screen.getByText('New Project'));
+    const modal = await screen.findByTestId('daisy-modal');
+    const select = within(modal).getByRole('combobox');
+    fireEvent.change(within(modal).getByPlaceholderText('Name'), {
       target: { value: 'New' },
     });
     fireEvent.change(select, { target: { value: '1.21' } });
-    fireEvent.click(screen.getByText('Create'));
+    fireEvent.click(within(modal).getByRole('button', { name: 'Create' }));
     expect(createProject).toHaveBeenCalledWith('New', '1.21');
   });
 
@@ -129,7 +145,10 @@ describe('ProjectManagerView', () => {
   it('imports project when button clicked', async () => {
     render(<ProjectManagerView />);
     await screen.findAllByRole('button', { name: 'Open' });
-    fireEvent.click(screen.getByText('Import'));
+    fireEvent.click(screen.getByText('New Project'));
+    const modal = await screen.findByTestId('daisy-modal');
+    fireEvent.click(within(modal).getByRole('tab', { name: 'Import' }));
+    fireEvent.click(within(modal).getByRole('button', { name: 'Import' }));
     expect(importProject).toHaveBeenCalled();
   });
 

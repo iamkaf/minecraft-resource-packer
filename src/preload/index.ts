@@ -73,6 +73,11 @@ const api = {
   setConfetti: (c: boolean) => invoke('set-confetti', c),
   getDefaultExportDir: () => invoke('get-default-export-dir'),
   setDefaultExportDir: (d: string) => invoke('set-default-export-dir', d),
+  getProjectSort: () => invoke('get-project-sort'),
+  setProjectSort: (
+    k: keyof import('../main/projects').ProjectInfo,
+    asc: boolean
+  ) => invoke('set-project-sort', k, asc),
   onFileAdded: (listener: (e: unknown, path: string) => void) =>
     on('file-added', listener),
   onFileRemoved: (listener: (e: unknown, path: string) => void) =>

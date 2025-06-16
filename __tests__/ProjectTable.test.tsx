@@ -107,4 +107,22 @@ describe('ProjectTable', () => {
     fireEvent.click(screen.getByText('Assets'));
     expect(sort).toHaveBeenCalledWith('assets');
   });
+
+  it('shows a default icon for each project', () => {
+    render(
+      <ProjectTable
+        projects={projects}
+        onSort={() => {}}
+        selected={new Set()}
+        onSelect={() => {}}
+        onSelectAll={() => {}}
+        onOpen={() => {}}
+        onDuplicate={() => {}}
+        onDelete={() => {}}
+        onRowClick={() => {}}
+      />
+    );
+    const imgs = screen.getAllByAltText('Pack icon');
+    expect(imgs.length).toBe(2);
+  });
 });

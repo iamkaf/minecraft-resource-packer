@@ -10,6 +10,8 @@ const store = new Store<{
   theme: ThemePref;
   confetti: boolean;
   defaultExportDir: string;
+  projectSortKey: keyof import('./projects').ProjectInfo;
+  projectSortAsc: boolean;
 }>({
   defaults: {
     editorLayout: [20, 80],
@@ -17,6 +19,8 @@ const store = new Store<{
     theme: 'system',
     confetti: true,
     defaultExportDir: app.getPath('downloads'),
+    projectSortKey: 'name',
+    projectSortAsc: true,
   },
 });
 
@@ -60,6 +64,21 @@ export function setDefaultExportDir(dir: string): void {
   store.set('defaultExportDir', dir);
 }
 
+export function getProjectSort(): {
+  key: keyof import('./projects').ProjectInfo;
+  asc: boolean;
+} {
+  return { key: store.get('projectSortKey'), asc: store.get('projectSortAsc') };
+}
+
+export function setProjectSort(
+  key: keyof import('./projects').ProjectInfo,
+  asc: boolean
+): void {
+  store.set('projectSortKey', key);
+  store.set('projectSortAsc', asc);
+}
+
 export function registerLayoutHandlers(ipc: IpcMain): void {
   ipc.handle('get-editor-layout', () => getEditorLayout());
   ipc.handle('set-editor-layout', (_e, layout: number[]) =>
@@ -74,5 +93,11 @@ export function registerLayoutHandlers(ipc: IpcMain): void {
   ipc.handle('get-default-export-dir', () => getDefaultExportDir());
   ipc.handle('set-default-export-dir', (_e, d: string) =>
     setDefaultExportDir(d)
+  );
+  ipc.handle('get-project-sort', () => getProjectSort());
+  ipc.handle(
+    'set-project-sort',
+    (_e, k: keyof import('./projects').ProjectInfo, s: boolean) =>
+      setProjectSort(k, s)
   );
 }
