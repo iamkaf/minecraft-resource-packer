@@ -9,7 +9,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## Global UX
 
 - [ ] Undo/Redo queue (last 20 actions)
-- [ ] Persist window size and position across launches
+- [x] Persist window size and position across launches
 - [ ] Open the most recently used project on startup; add a setting to disable this
 
 ---

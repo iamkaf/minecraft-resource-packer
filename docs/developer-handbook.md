@@ -35,6 +35,8 @@ npm test
 npm run format
 ```
 
+5. Window size and position persist across launches thanks to `electron-store`.
+
 ## Project Structure
 
 - `src/main/` – Electron entry point and IPC controllers
