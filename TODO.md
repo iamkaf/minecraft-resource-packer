@@ -11,7 +11,8 @@ UI components **must** ship with Vitest + RTL tests; overall coverage 竕･窶ｯ90窶
 - [x] Drawer layout with hamburger toggle
 - [x] Navbar with title and 兼 theme switch (persists in `localStorage`)
 - [x] Toast/alert system via daisyUI `toast`
-- [x] Loading indicators for every async op (`react-loader-spinner`)
+- [x] Loading indicators for every async op (daisyUI components)
+- [ ] Replace react-loader-spinner with daisyUI skeleton/progress/radial-progress components (prefer skeleton)
 - [x] Confetti celebration on successful export (`react-canvas-confetti`)
 - [ ] Undo/Redo queue (last 20 actions)
 
@@ -127,6 +128,6 @@ UI components **must** ship with Vitest + RTL tests; overall coverage 竕･窶ｯ90窶
 - [`unique-names-generator`](https://www.npmjs.com/package/unique-names-generator)窶ビandom placeholder pack names
 - [`sharp`](https://www.npmjs.com/package/sharp)窶ナmage processing
 - [`react-canvas-confetti`](https://www.npmjs.com/package/react-canvas-confetti)窶テxport confetti
-- [`react-loader-spinner`](https://www.npmjs.com/package/react-loader-spinner)窶ネoading indicators
+- [daisyUI loading components](https://daisyui.com/components/loading/) loading indicators
 - [`chokidar`](https://www.npmjs.com/package/chokidar)窶デile watching
 - [`archiver`](https://www.npmjs.com/package/archiver)窶セIP export
