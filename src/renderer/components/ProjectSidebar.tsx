@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ExternalLink from './ExternalLink';
 import PackMetaModal from './PackMetaModal';
 import type { PackMeta } from '../../main/projects';
+import { ProjectSidebarSkeleton } from './skeleton';
 
 export default function ProjectSidebar({
   project,
@@ -52,7 +53,7 @@ export default function ProjectSidebar({
               </button>
             </div>
           ) : (
-            <div>Loading...</div>
+            <ProjectSidebarSkeleton />
           )}
         </>
       ) : (
