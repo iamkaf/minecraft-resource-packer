@@ -23,7 +23,7 @@ describe('AssetSelector filters', () => {
       'item/apple.png',
       'entity/zombie.png',
     ]);
-    getTextureUrl.mockImplementation((_p, n) => `texture://${n}`);
+    getTextureUrl.mockImplementation((_p, n) => `vanilla://${n}`);
     vi.clearAllMocks();
   });
 

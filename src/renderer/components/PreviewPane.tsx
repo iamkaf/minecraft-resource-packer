@@ -31,7 +31,7 @@ export default function PreviewPane({
       {texture ? (
         <>
           <img
-            src={`ptex://${texture}`}
+            src={`asset://${texture}`}
             alt={texture}
             style={{
               imageRendering: 'pixelated',

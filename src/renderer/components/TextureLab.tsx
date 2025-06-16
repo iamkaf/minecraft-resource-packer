@@ -50,7 +50,7 @@ export default function TextureLab({
         <h3 className="font-bold text-lg">Texture Lab</h3>
         <div style={{ height: '64px' }} className="flex justify-center">
           <img
-            src={`ptex://${rel}`}
+            src={`asset://${rel}`}
             alt="preview"
             style={{
               imageRendering: 'pixelated',
