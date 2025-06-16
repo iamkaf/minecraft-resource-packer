@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { generateProjectName } from '../../utils/names';
+import { InputField, Select } from '../daisy/input';
+import { Button } from '../daisy/actions';
 
 export default function ProjectForm({
   versions,
@@ -23,14 +25,14 @@ export default function ProjectForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
-      <input
-        className="input input-bordered input-sm"
+      <InputField
+        className="input-sm"
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Name"
       />
-      <select
-        className="select select-bordered select-sm"
+      <Select
+        className="select-bordered select-sm"
         value={version}
         onChange={(e) => setVersion(e.target.value)}
       >
@@ -42,17 +44,13 @@ export default function ProjectForm({
             {v}
           </option>
         ))}
-      </select>
-      <button className="btn btn-primary btn-sm" type="submit">
+      </Select>
+      <Button className="btn-primary btn-sm" type="submit">
         Create
-      </button>
-      <button
-        type="button"
-        onClick={onImport}
-        className="btn btn-secondary btn-sm"
-      >
+      </Button>
+      <Button type="button" onClick={onImport} className="btn-secondary btn-sm">
         Import
-      </button>
+      </Button>
     </form>
   );
 }

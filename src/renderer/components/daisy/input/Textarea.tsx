@@ -1,7 +1,8 @@
 import React from 'react';
 
-export default function Textarea(
-  props: React.TextareaHTMLAttributes<HTMLTextAreaElement>
-) {
-  return <textarea className="textarea" {...props} />;
+export default function Textarea({
+  className = '',
+  ...rest
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return <textarea className={`textarea ${className}`.trim()} {...rest} />;
 }

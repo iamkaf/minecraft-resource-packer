@@ -3,6 +3,8 @@ import path from 'path';
 import { Oval } from 'react-loader-spinner';
 import { useToast } from './ToastProvider';
 import Spinner from './Spinner';
+import { Textarea } from './daisy/input';
+import { Button } from './daisy/actions';
 
 const PreviewPane = lazy(() => import('./PreviewPane'));
 const TextureLab = lazy(() => import('./TextureLab'));
@@ -78,39 +80,36 @@ export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
         <h3 className="font-bold mb-1 break-all">{asset}</h3>
         {count === 1 && isText && (
           <>
-            <textarea
-              className="textarea textarea-bordered w-full mb-2"
+            <Textarea
+              className="textarea-bordered w-full mb-2"
               value={text}
               onChange={(e) => setText(e.target.value)}
             />
             {error && <div className="text-error mb-1">{error}</div>}
             <div className="flex gap-2">
-              <button className="btn btn-primary btn-sm" onClick={handleSave}>
+              <Button className="btn-primary btn-sm" onClick={handleSave}>
                 Save
-              </button>
-              <button
-                className="btn btn-secondary btn-sm"
-                onClick={handleReset}
-              >
+              </Button>
+              <Button className="btn-secondary btn-sm" onClick={handleReset}>
                 Reset
-              </button>
+              </Button>
             </div>
           </>
         )}
         {isPng && count === 1 && (
           <div className="flex flex-col gap-2 mt-2">
-            <button
-              className="btn btn-secondary btn-sm"
+            <Button
+              className="btn-secondary btn-sm"
               onClick={() => setLab(true)}
             >
               Open Texture Lab
-            </button>
-            <button
-              className="btn btn-secondary btn-sm"
+            </Button>
+            <Button
+              className="btn-secondary btn-sm"
               onClick={() => window.electronAPI?.openExternalEditor(full)}
             >
               Edit Externally
-            </button>
+            </Button>
           </div>
         )}
         {lab && (

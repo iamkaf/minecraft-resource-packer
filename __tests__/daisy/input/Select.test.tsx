@@ -4,12 +4,14 @@ import { describe, it, expect } from 'vitest';
 import { Select } from '../../../src/renderer/components/daisy/input';
 
 describe('Select', () => {
-  it('renders', () => {
+  it('renders and accepts className', () => {
     render(
-      <Select data-testid="sel">
+      <Select data-testid="sel" className="extra">
         <option>1</option>
       </Select>
     );
-    expect(screen.getByTestId('sel')).toBeInTheDocument();
+    const el = screen.getByTestId('sel');
+    expect(el).toBeInTheDocument();
+    expect(el).toHaveClass('extra');
   });
 });

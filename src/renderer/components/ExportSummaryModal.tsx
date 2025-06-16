@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExportSummary } from '../../main/exporter';
-import { Modal } from './daisy/actions';
+import { Modal, Button } from './daisy/actions';
 
 export default function ExportSummaryModal({
   summary,
@@ -28,9 +28,7 @@ export default function ExportSummaryModal({
         </ul>
       )}
       <div className="modal-action">
-        <button className="btn" onClick={onClose}>
-          Close
-        </button>
+        <Button onClick={onClose}>Close</Button>
       </div>
     </Modal>
   );

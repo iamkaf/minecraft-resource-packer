@@ -8,6 +8,7 @@ import AssetSelectorInfoPanel from '../components/AssetSelectorInfoPanel';
 import Spinner from '../components/Spinner';
 import ExportSummaryModal from '../components/ExportSummaryModal';
 import ExternalLink from '../components/ExternalLink';
+import { Modal, Button } from '../components/daisy/actions';
 import type { ExportSummary } from '../../main/exporter';
 /* eslint-disable import/no-unresolved */
 import {
@@ -75,12 +76,12 @@ export default function EditorView({
       data-testid="editor-view"
     >
       <div className="flex items-center justify-end mb-2 gap-2">
-        <button
-          className="btn btn-primary btn-sm"
+        <Button
+          className="btn-primary btn-sm"
           onClick={() => setSelectorOpen(true)}
         >
           Add From Vanilla
-        </button>
+        </Button>
         <ExternalLink
           href="https://minecraft.wiki/w/Resource_pack"
           aria-label="Help"
@@ -147,8 +148,8 @@ export default function EditorView({
         />
       )}
       {selectorOpen && (
-        <dialog className="modal modal-open" data-testid="asset-selector-modal">
-          <div className="modal-box w-11/12 max-w-5xl">
+        <Modal open testId="asset-selector-modal">
+          <div className="w-11/12 max-w-5xl">
             <h3 className="font-bold text-lg mb-2">Add Assets</h3>
             <div className="flex gap-4 max-h-[70vh]">
               <div className="flex-1 overflow-y-auto">
@@ -167,12 +168,10 @@ export default function EditorView({
               </div>
             </div>
             <div className="modal-action">
-              <button className="btn" onClick={() => setSelectorOpen(false)}>
-                Close
-              </button>
+              <Button onClick={() => setSelectorOpen(false)}>Close</Button>
             </div>
           </div>
-        </dialog>
+        </Modal>
       )}
       <ReactCanvasConfetti
         onInit={({ confetti: c }) => {

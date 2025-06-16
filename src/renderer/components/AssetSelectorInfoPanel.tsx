@@ -1,5 +1,6 @@
 import React from 'react';
 import TextureThumb from './TextureThumb';
+import { Button } from './daisy/actions';
 
 interface Props {
   projectPath: string;
@@ -12,12 +13,12 @@ export default function AssetSelectorInfoPanel({ projectPath, asset }: Props) {
     <div className="p-2" data-testid="selector-info">
       <TextureThumb texture={asset} protocol="texture" alt={asset} size={64} />
       <p className="break-all text-sm">{asset}</p>
-      <button
-        className="btn btn-primary btn-sm mt-2"
+      <Button
+        className="btn-primary btn-sm mt-2"
         onClick={() => window.electronAPI?.addTexture(projectPath, asset)}
       >
         Add
-      </button>
+      </Button>
     </div>
   );
 }

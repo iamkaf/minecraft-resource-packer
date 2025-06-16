@@ -1,5 +1,6 @@
 import React from 'react';
 import { FixedSizeGrid as Grid, GridChildComponentProps } from 'react-window';
+import { Button } from './daisy/actions';
 import { formatTextureName } from '../utils/textureNames';
 
 export interface TextureInfo {
@@ -37,7 +38,7 @@ const Cell: React.FC<GridChildComponentProps<CellData>> = ({
         className="text-center tooltip"
         data-tip={`${formatted} \n${tex.name}`}
       >
-        <button
+        <Button
           aria-label={tex.name}
           onClick={() => data.onSelect(tex.name)}
           className="p-1 hover:ring ring-accent rounded"
@@ -51,7 +52,7 @@ const Cell: React.FC<GridChildComponentProps<CellData>> = ({
               imageRendering: 'pixelated',
             }}
           />
-        </button>
+        </Button>
         <div className="text-xs leading-tight">
           <div>{formatted}</div>
           <div className="opacity-50">{tex.name}</div>

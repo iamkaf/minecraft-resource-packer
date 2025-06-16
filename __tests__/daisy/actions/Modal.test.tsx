@@ -4,12 +4,12 @@ import { render, screen } from '@testing-library/react';
 import Modal from '../../../src/renderer/components/daisy/actions/Modal';
 
 describe('daisy Modal', () => {
-  it('renders modal when open', () => {
+  it('renders modal when open and uses custom test id', () => {
     render(
-      <Modal open>
+      <Modal open testId="custom">
         <p>Content</p>
       </Modal>
     );
-    expect(screen.getByTestId('daisy-modal')).toBeInTheDocument();
+    expect(screen.getByTestId('custom')).toBeInTheDocument();
   });
 });

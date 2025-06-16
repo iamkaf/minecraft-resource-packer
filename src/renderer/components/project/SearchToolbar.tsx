@@ -1,5 +1,6 @@
 import React from 'react';
-import { FilterBadge } from '../daisy/input';
+import { FilterBadge, InputField } from '../daisy/input';
+import { Button } from '../daisy/actions';
 export default function SearchToolbar({
   search,
   onSearchChange,
@@ -19,8 +20,8 @@ export default function SearchToolbar({
 }) {
   return (
     <div className="flex items-center gap-2 mb-2">
-      <input
-        className="input input-bordered input-sm w-40"
+      <InputField
+        className="input-sm w-40"
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder="Search"
@@ -36,13 +37,13 @@ export default function SearchToolbar({
           />
         ))}
       </div>
-      <button
-        className="btn btn-accent btn-sm"
+      <Button
+        className="btn-accent btn-sm"
         onClick={onBulkExport}
         disabled={disableExport}
       >
         Bulk Export
-      </button>
+      </Button>
     </div>
   );
 }
