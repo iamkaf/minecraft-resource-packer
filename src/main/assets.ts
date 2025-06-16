@@ -226,7 +226,10 @@ export function registerVanillaProtocol(protocol: Protocol) {
 export function registerAssetProtocol(protocol: Protocol) {
   protocol.registerFileProtocol('asset', (request, callback) => {
     const rel = decodeURI(request.url.replace('asset://', ''));
-    const file = activeProjectDir ? path.join(activeProjectDir, rel) : '';
+    let file = activeProjectDir ? path.join(activeProjectDir, rel) : '';
+    if (/(\\|\/)$/.test(file)) {
+      file = file.substring(0, file.length-1);
+    }
     callback(file);
   });
 }
