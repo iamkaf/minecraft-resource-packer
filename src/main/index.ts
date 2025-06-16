@@ -21,7 +21,12 @@ import { registerIconHandlers } from './icon';
 import { registerTextureLabHandlers } from './textureLab';
 import { registerLayoutHandlers } from './layout';
 import { registerExternalEditorHandlers } from './externalEditor';
-import { getWindowBounds, setWindowBounds } from './windowBounds';
+import {
+  getWindowBounds,
+  setWindowBounds,
+  isFullscreen,
+  setFullscreen,
+} from './windowBounds';
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'vanilla', privileges: { standard: true, secure: true } },
@@ -46,6 +51,7 @@ const projectsDir = path.join(app.getPath('userData'), 'projects');
 // display its contents.
 const createMainWindow = () => {
   const savedBounds = getWindowBounds();
+  const fullscreen = isFullscreen();
   const options: Electron.BrowserWindowConstructorOptions = {
     width: savedBounds?.width ?? 1200,
     height: savedBounds?.height ?? 900,
@@ -61,10 +67,14 @@ const createMainWindow = () => {
     options.y = savedBounds.y;
   }
   mainWindow = new BrowserWindow(options);
+  if (fullscreen) {
+    mainWindow.setFullScreen(true);
+  }
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
   registerFileWatcherHandlers(ipcMain, mainWindow);
   mainWindow.on('close', () => {
     setWindowBounds(mainWindow!.getBounds());
+    setFullscreen(mainWindow!.isFullScreen());
   });
   mainWindow.on('closed', () => {
     mainWindow = null;

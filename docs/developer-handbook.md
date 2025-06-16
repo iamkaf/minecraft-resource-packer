@@ -35,7 +35,7 @@ npm test
 npm run format
 ```
 
-5. Window size and position persist across launches thanks to `electron-store`.
+5. Window size, position and fullscreen state persist across launches thanks to `electron-store`.
 
 ## Project Structure
 
