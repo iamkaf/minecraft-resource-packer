@@ -3,7 +3,7 @@ import Fuse from 'fuse.js';
 import { useToast } from '../components/ToastProvider';
 import ExternalLink from '../components/ExternalLink';
 import ProjectSidebar from '../components/ProjectSidebar';
-import ProjectForm from '../components/project/ProjectForm';
+import ProjectForm, { FormatOption } from '../components/project/ProjectForm';
 import ProjectTable, { ProjectInfo } from '../components/project/ProjectTable';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { useProjectModals } from '../components/project/ProjectModals';
@@ -16,7 +16,7 @@ const ProjectManagerView: React.FC = () => {
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [sortKey, setSortKey] = useState<keyof ProjectInfo>('name');
   const [asc, setAsc] = useState(true);
-  const [versions, setVersions] = useState<string[]>([]);
+  const [formats, setFormats] = useState<FormatOption[]>([]);
   const [search, setSearch] = useState('');
   const [filterVersion, setFilterVersion] = useState<string | null>(null);
   const [activeProject, setActiveProject] = useState<string | null>(null);
@@ -31,7 +31,7 @@ const ProjectManagerView: React.FC = () => {
 
   useEffect(() => {
     refresh();
-    window.electronAPI?.listVersions().then(setVersions);
+    window.electronAPI?.listPackFormats().then(setFormats);
     window.electronAPI?.getProjectSort().then((s) => {
       if (s) {
         setSortKey(s.key);
@@ -136,7 +136,7 @@ const ProjectManagerView: React.FC = () => {
           </ExternalLink>
         </div>
         <ProjectForm
-          versions={versions}
+          formats={formats}
           onCreate={handleCreate}
           onImport={handleImport}
         />

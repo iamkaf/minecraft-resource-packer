@@ -2,10 +2,11 @@ import type { ProjectInfo } from '../../main/projects';
 import type { PackMeta } from '../project';
 import type { ExportSummary } from '../../main/exporter';
 import type { TextureEditOptions } from '../texture';
+import type { PackFormatInfo } from '../packFormat';
 
 export interface IpcRequestMap {
   'list-projects': [];
-  'list-versions': [];
+  'list-formats': [];
   'create-project': [string, string];
   'import-project': [];
   'duplicate-project': [string, string];
@@ -49,7 +50,7 @@ export interface IpcRequestMap {
 
 export interface IpcResponseMap {
   'list-projects': ProjectInfo[];
-  'list-versions': string[];
+  'list-formats': PackFormatInfo[];
   'create-project': void;
   'import-project': void;
   'duplicate-project': void;

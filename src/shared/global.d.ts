@@ -15,7 +15,7 @@ declare global {
   interface Window {
     electronAPI?: {
       listProjects: IpcInvoke<'list-projects'>;
-      listVersions: IpcInvoke<'list-versions'>;
+      listPackFormats: IpcInvoke<'list-formats'>;
       createProject: IpcInvoke<'create-project'>;
       importProject: IpcInvoke<'import-project'>;
       duplicateProject: IpcInvoke<'duplicate-project'>;

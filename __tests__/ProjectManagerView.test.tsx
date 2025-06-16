@@ -8,7 +8,7 @@ describe('ProjectManagerView', () => {
   const listProjects = vi.fn();
   const openProject = vi.fn();
   const createProject = vi.fn();
-  const listVersions = vi.fn();
+  const listPackFormats = vi.fn();
   const importProject = vi.fn();
   const duplicateProject = vi.fn();
   const deleteProject = vi.fn();
@@ -25,7 +25,12 @@ describe('ProjectManagerView', () => {
           lastOpened: number;
         }>
       >;
-      listVersions: () => Promise<string[]>;
+      listPackFormats: () => Promise<
+        {
+          format: number;
+          label: string;
+        }[]
+      >;
       openProject: (name: string) => void;
       createProject: (name: string, version: string) => Promise<void>;
       importProject: () => Promise<void>;
@@ -36,7 +41,7 @@ describe('ProjectManagerView', () => {
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       listProjects,
-      listVersions,
+      listPackFormats,
       openProject,
       createProject,
       importProject,
@@ -53,7 +58,10 @@ describe('ProjectManagerView', () => {
     importProject.mockResolvedValue(undefined);
     duplicateProject.mockResolvedValue(undefined);
     deleteProject.mockResolvedValue(undefined);
-    listVersions.mockResolvedValue(['1.20', '1.21']);
+    listPackFormats.mockResolvedValue([
+      { format: 15, label: '1.20-1.20.1' },
+      { format: 34, label: '1.21.1' },
+    ]);
     getProjectSort.mockResolvedValue({ key: 'name', asc: true });
     setProjectSort.mockResolvedValue(undefined);
     vi.clearAllMocks();
@@ -70,7 +78,7 @@ describe('ProjectManagerView', () => {
     render(<ProjectManagerView />);
     fireEvent.click(screen.getByText('New Project'));
     const modal = await screen.findByTestId('daisy-modal');
-    const option = within(modal).getByRole('option', { name: '1.21' });
+    const option = within(modal).getByRole('option', { name: '1.21.1' });
     expect(option).toBeInTheDocument();
   });
 
@@ -84,9 +92,9 @@ describe('ProjectManagerView', () => {
     ) as HTMLInputElement;
     const select = within(modal).getByRole('combobox');
     const generated = input.value;
-    fireEvent.change(select, { target: { value: '1.21' } });
+    fireEvent.change(select, { target: { value: '34' } });
     fireEvent.click(within(modal).getByRole('button', { name: 'Create' }));
-    expect(createProject).toHaveBeenCalledWith(generated, '1.21');
+    expect(createProject).toHaveBeenCalledWith(generated, '1.21.1');
   });
 
   it('creates project via form', async () => {
@@ -98,9 +106,9 @@ describe('ProjectManagerView', () => {
     fireEvent.change(within(modal).getByPlaceholderText('Name'), {
       target: { value: 'New' },
     });
-    fireEvent.change(select, { target: { value: '1.21' } });
+    fireEvent.change(select, { target: { value: '34' } });
     fireEvent.click(within(modal).getByRole('button', { name: 'Create' }));
-    expect(createProject).toHaveBeenCalledWith('New', '1.21');
+    expect(createProject).toHaveBeenCalledWith('New', '1.21.1');
   });
 
   it('has daisyUI zebra table', async () => {

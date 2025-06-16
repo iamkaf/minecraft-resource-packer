@@ -8,7 +8,7 @@ import {
   PackMeta,
   PackMetaSchema,
 } from '../shared/project';
-import { listVersions, setActiveProject } from './assets';
+import { listPackFormats, setActiveProject } from './assets';
 
 // Re-export PackMeta so renderer and preload can import the type from this file
 export type { PackMeta } from '../shared/project';
@@ -203,7 +203,7 @@ export function registerProjectHandlers(
   onOpen: (path: string) => void
 ): void {
   ipc.handle('list-projects', () => listProjects(baseDir));
-  ipc.handle('list-versions', () => listVersions());
+  ipc.handle('list-formats', () => listPackFormats());
   ipc.handle('create-project', (_e, name: string, version: string) => {
     return createProject(baseDir, name, version);
   });

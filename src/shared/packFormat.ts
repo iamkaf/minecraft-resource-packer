@@ -154,3 +154,23 @@ export function packFormatForVersion(ver: string): number | null {
   }
   return null;
 }
+
+export function versionRangeForFormat(format: number): VersionRange | null {
+  return PACK_FORMATS.find((r) => r.format === format) ?? null;
+}
+
+export function versionForFormat(format: number): string | null {
+  const range = versionRangeForFormat(format);
+  return range ? range.max : null;
+}
+
+export function displayForFormat(format: number): string | null {
+  const range = versionRangeForFormat(format);
+  if (!range) return null;
+  return range.min === range.max ? range.min : `${range.min} - ${range.max}`;
+}
+
+export interface PackFormatInfo {
+  format: number;
+  label: string;
+}

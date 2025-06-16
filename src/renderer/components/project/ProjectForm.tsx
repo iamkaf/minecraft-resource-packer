@@ -4,27 +4,35 @@ import { InputField, Select } from '../daisy/input';
 import { Modal, Button } from '../daisy/actions';
 import Tab from '../daisy/navigation/Tab';
 import { PlusIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { versionForFormat } from '../../../shared/packFormat';
+
+export interface FormatOption {
+  format: number;
+  label: string;
+}
 
 export default function ProjectForm({
-  versions,
+  formats,
   onCreate,
   onImport,
 }: {
-  versions: string[];
+  formats: FormatOption[];
   onCreate: (name: string, version: string) => void;
   onImport: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<'create' | 'import'>('create');
   const [name, setName] = useState(() => generateProjectName());
-  const [version, setVersion] = useState('');
+  const [format, setFormat] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !version) return;
-    onCreate(name, version);
+    if (!name || !format) return;
+    const ver = versionForFormat(parseInt(format, 10));
+    if (!ver) return;
+    onCreate(name, ver);
     setName(generateProjectName());
-    setVersion('');
+    setFormat('');
     setOpen(false);
   };
 
@@ -75,15 +83,15 @@ export default function ProjectForm({
               />
               <Select
                 className="select-bordered select-sm"
-                value={version}
-                onChange={(e) => setVersion(e.target.value)}
+                value={format}
+                onChange={(e) => setFormat(e.target.value)}
               >
                 <option value="" disabled>
                   Select version
                 </option>
-                {versions.map((v) => (
-                  <option key={v} value={v}>
-                    {v}
+                {formats.map((f) => (
+                  <option key={f.format} value={f.format}>
+                    {f.label}
                   </option>
                 ))}
               </Select>

@@ -13,7 +13,7 @@ describe('ProjectManagerView help link', () => {
   beforeEach(() => {
     interface ElectronAPI {
       listProjects: () => Promise<[]>;
-      listVersions: () => Promise<string[]>;
+      listPackFormats: () => Promise<{ format: number; label: string }[]>;
       openProject: (name: string) => void;
       createProject: (n: string, v: string) => Promise<void>;
       importProject: () => Promise<void>;
@@ -24,7 +24,7 @@ describe('ProjectManagerView help link', () => {
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       listProjects: vi.fn().mockResolvedValue([]),
-      listVersions: vi.fn().mockResolvedValue([]),
+      listPackFormats: vi.fn().mockResolvedValue([]),
       openProject: vi.fn(),
       createProject: vi.fn(),
       importProject: vi.fn(),
