@@ -12,6 +12,7 @@ export default function AboutView() {
     >
       <img
         src={iconPath as unknown as string}
+        style={{imageRendering: "pixelated"}}
         alt="App logo"
         className="w-32 h-32"
       />
