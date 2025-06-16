@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import path from 'path';
-import Spinner from './Spinner';
+import { Loading } from './daisy/feedback';
 import type { TextureEditOptions } from '../../shared/texture';
 import { Modal, Button } from './daisy/actions';
 import { Range, Select, Checkbox } from './daisy/input';
@@ -121,7 +121,11 @@ export default function TextureLab({
             Apply
           </Button>
         </div>
-        {busy && <Spinner />}
+        {busy && (
+          <div data-testid="spinner" className="flex justify-center p-2">
+            <Loading />
+          </div>
+        )}
       </form>
     </Modal>
   );

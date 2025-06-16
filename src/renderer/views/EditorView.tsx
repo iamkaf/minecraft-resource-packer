@@ -5,7 +5,7 @@ import AssetSelector from '../components/AssetSelector';
 import AssetInfo from '../components/AssetInfo';
 import ProjectInfoPanel from '../components/ProjectInfoPanel';
 import AssetSelectorInfoPanel from '../components/AssetSelectorInfoPanel';
-import Spinner from '../components/Spinner';
+import { Loading } from '../components/daisy/feedback';
 import ExportSummaryModal from '../components/ExportSummaryModal';
 import ExternalLink from '../components/ExternalLink';
 import { Modal, Button } from '../components/daisy/actions';
@@ -121,7 +121,7 @@ export default function EditorView({
         >
           <PanelGroup direction="vertical" className="h-full">
             <Panel defaultSize={70} className="overflow-y-auto">
-              <Suspense fallback={<Spinner />}>
+              <Suspense fallback={<Loading />}>
                 <AssetBrowser
                   path={projectPath}
                   onSelectionChange={(sel) => setSelected(sel)}
@@ -153,7 +153,7 @@ export default function EditorView({
             <h3 className="font-bold text-lg mb-2">Add Assets</h3>
             <div className="flex gap-4 max-h-[70vh]">
               <div className="flex-1 overflow-y-auto">
-                <Suspense fallback={<Spinner />}>
+                <Suspense fallback={<Loading />}>
                   <AssetSelector
                     path={projectPath}
                     onAssetSelect={(n) => setSelectorAsset(n)}
