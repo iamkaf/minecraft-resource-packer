@@ -6,7 +6,9 @@ import AssetInfo from '../components/AssetInfo';
 import ProjectInfoPanel from '../components/ProjectInfoPanel';
 import AssetSelectorInfoPanel from '../components/AssetSelectorInfoPanel';
 import { Loading } from '../components/daisy/feedback';
-import ExportSummaryModal from '../components/ExportSummaryModal';
+import ExportWizardModal, {
+  BulkProgress,
+} from '../components/ExportWizardModal';
 import ExternalLink from '../components/ExternalLink';
 import { Modal, Button } from '../components/daisy/actions';
 import type { ExportSummary } from '../../main/exporter';
@@ -34,6 +36,7 @@ export default function EditorView({
   const [selectorAsset, setSelectorAsset] = useState<string | null>(null);
   const [layout, setLayout] = useState<number[]>([20, 80]);
   const [summary, setSummary] = useState<ExportSummary | null>(null);
+  const [progress, setProgress] = useState<BulkProgress | null>(null);
   const [selectorOpen, setSelectorOpen] = useState(false);
   const [allowConfetti, setAllowConfetti] = useState(true);
   const confetti = useRef<((opts: unknown) => void) | null>(null);
@@ -50,6 +53,7 @@ export default function EditorView({
   }, []);
 
   const handleExport = () => {
+    setProgress({ current: 0, total: 0 });
     window.electronAPI
       ?.exportProject(projectPath)
       .then((s) => {
@@ -67,7 +71,8 @@ export default function EditorView({
       })
       .catch(() => {
         /* ignore */
-      });
+      })
+      .finally(() => setProgress(null));
   };
 
   return (
@@ -141,9 +146,10 @@ export default function EditorView({
           </PanelGroup>
         </Panel>
       </PanelGroup>
-      {summary && (
-        <ExportSummaryModal
-          summary={summary}
+      {(progress || summary) && (
+        <ExportWizardModal
+          progress={progress ?? undefined}
+          summary={summary ?? undefined}
           onClose={() => setSummary(null)}
         />
       )}

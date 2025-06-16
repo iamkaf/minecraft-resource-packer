@@ -8,7 +8,9 @@ import ProjectTable, { ProjectInfo } from '../components/project/ProjectTable';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { useProjectModals } from '../components/project/ProjectModals';
 import SearchToolbar from '../components/project/SearchToolbar';
-import BulkExportModal, { BulkProgress } from '../components/BulkExportModal';
+import ExportWizardModal, {
+  BulkProgress,
+} from '../components/ExportWizardModal';
 
 // Lists all available projects and lets the user open them.
 
@@ -162,7 +164,9 @@ const ProjectManagerView: React.FC = () => {
           onDelete={openDelete}
           onRowClick={setActiveProject}
         />
-        {progress && <BulkExportModal progress={progress} />}
+        {progress && (
+          <ExportWizardModal progress={progress} onClose={() => {}} />
+        )}
         {modals}
       </div>
       <ProjectSidebar project={activeProject} />
