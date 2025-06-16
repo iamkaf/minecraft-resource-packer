@@ -30,6 +30,8 @@ const api = {
   importProject: () => invoke('import-project'),
   duplicateProject: (name: string, newName: string) =>
     invoke('duplicate-project', name, newName),
+  renameProject: (name: string, newName: string) =>
+    invoke('rename-project', name, newName),
   deleteProject: (name: string) => invoke('delete-project', name),
   openProject: (name: string) => invoke('open-project', name),
   onOpenProject: (listener: (e: unknown, path: string) => void) =>
