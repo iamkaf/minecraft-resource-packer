@@ -14,8 +14,8 @@ import { registerProjectHandlers } from './projects';
 import { registerNoExportHandlers } from './noExport';
 import {
   registerAssetHandlers,
-  registerTextureProtocol,
-  registerProjectTextureProtocol,
+  registerVanillaProtocol,
+  registerAssetProtocol,
 } from './assets';
 import { registerIconHandlers } from './icon';
 import { registerTextureLabHandlers } from './textureLab';
@@ -23,8 +23,8 @@ import { registerLayoutHandlers } from './layout';
 import { registerExternalEditorHandlers } from './externalEditor';
 
 protocol.registerSchemesAsPrivileged([
-  { scheme: 'texture', privileges: { standard: true, secure: true } },
-  { scheme: 'ptex', privileges: { standard: true, secure: true } },
+  { scheme: 'vanilla', privileges: { standard: true, secure: true } },
+  { scheme: 'asset', privileges: { standard: true, secure: true } },
 ]);
 
 // Webpack's DefinePlugin in Electron Forge exposes entry point URLs as
@@ -77,8 +77,8 @@ registerFileHandlers(ipcMain);
 
 // Once Electron is ready register protocols and show the main window.
 app.whenReady().then(() => {
-  registerTextureProtocol(protocol);
-  registerProjectTextureProtocol(protocol);
+  registerVanillaProtocol(protocol);
+  registerAssetProtocol(protocol);
   createMainWindow();
 });
 

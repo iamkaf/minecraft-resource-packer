@@ -95,9 +95,9 @@ The current theme is stored in Electron's settings store and applied by setting
 
 Two custom protocols simplify image previews:
 
-- `texture://` serves textures from the Minecraft client cache or the active
-  project. URLs use the form `texture://<relative-path>`.
-- `ptex://` serves files directly from the project directory and is used by the
+- `vanilla://` serves textures from the Minecraft client cache. URLs use the
+  form `vanilla://<relative-path>`.
+- `asset://` serves files directly from the project directory and is used by the
   asset browser to preview modified assets.
 
 Both protocols are registered in `src/main/index.ts` when Electron starts.

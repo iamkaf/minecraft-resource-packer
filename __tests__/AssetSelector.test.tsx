@@ -25,7 +25,7 @@ describe('AssetSelector', () => {
       'item/axe.png',
       'other/custom.png',
     ]);
-    getTextureUrl.mockImplementation((_p, n) => `texture://${n}`);
+    getTextureUrl.mockImplementation((_p, n) => `vanilla://${n}`);
     vi.clearAllMocks();
   });
 
@@ -43,7 +43,7 @@ describe('AssetSelector', () => {
     });
     const img = within(sectionParent).getByAltText('Grass') as HTMLImageElement;
     expect(getTextureUrl).toHaveBeenCalledWith('/proj', 'block/grass.png');
-    expect(img.src).toContain('texture://block/grass.png');
+    expect(img.src).toContain('vanilla://block/grass.png');
     fireEvent.click(button);
     expect(addTexture).not.toHaveBeenCalled();
     expect(onSelect).toHaveBeenCalledWith('block/grass.png');

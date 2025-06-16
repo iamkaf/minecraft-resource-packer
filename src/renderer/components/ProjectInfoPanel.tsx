@@ -32,7 +32,7 @@ export default function ProjectInfoPanel({
         <Button className="link link-primary self-start" onClick={onSettings}>
           Settings
         </Button>
-        <img src="ptex://pack.png" alt="Pack icon" className="w-16 h-16" />
+        <img src="asset://pack.png" alt="Pack icon" className="w-16 h-16" />
         <h2 className="card-title text-lg font-display">{name}</h2>
         <p className="text-xs break-all">{projectPath}</p>
         <p className="text-sm text-center break-all flex-1">

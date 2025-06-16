@@ -6,8 +6,8 @@ import TextureGrid, {
 } from '../src/renderer/components/TextureGrid';
 
 const textures: TextureInfo[] = [
-  { name: 'block/stone.png', url: 'texture://stone' },
-  { name: 'block/dirt.png', url: 'texture://dirt' },
+  { name: 'block/stone.png', url: 'vanilla://stone' },
+  { name: 'block/dirt.png', url: 'vanilla://dirt' },
 ];
 
 describe('TextureGrid', () => {

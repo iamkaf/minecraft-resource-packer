@@ -28,9 +28,9 @@ const config: ForgeConfig = {
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({
       mainConfig,
-      // Allow images from our custom texture:// protocol in development.
+      // Allow images from our custom vanilla:// and asset:// protocols in development.
       devContentSecurityPolicy:
-        "default-src 'self' data: texture: ptex: https://fonts.googleapis.com https://fonts.gstatic.com; " +
+        "default-src 'self' data: vanilla: asset: https://fonts.googleapis.com https://fonts.gstatic.com; " +
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
         "font-src 'self' https://fonts.gstatic.com; " +
         "script-src 'self' 'unsafe-eval' 'unsafe-inline' data:",

@@ -11,6 +11,6 @@ describe('TextureLab', () => {
     expect(screen.getByTestId('daisy-modal')).toBeInTheDocument();
     expect(screen.getByText('Texture Lab')).toBeInTheDocument();
     const img = screen.getByAltText('preview');
-    expect(img).toHaveAttribute('src', 'ptex://foo.png');
+    expect(img).toHaveAttribute('src', 'asset://foo.png');
   });
 });

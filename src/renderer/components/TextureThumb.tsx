@@ -9,7 +9,7 @@ interface Props {
   /** Size in pixels */
   size?: number;
   /** Protocol prefix for the texture URL */
-  protocol?: 'ptex' | 'texture';
+  protocol?: 'asset' | 'vanilla';
   /** Use simplified markup without border wrapper */
   simplified?: boolean;
 }
@@ -18,7 +18,7 @@ export default function TextureThumb({
   texture,
   alt,
   size = 64,
-  protocol = 'ptex',
+  protocol = 'asset',
   simplified = false,
 }: Props) {
   const url =

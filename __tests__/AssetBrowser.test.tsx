@@ -43,7 +43,7 @@ describe('AssetBrowser', () => {
     expect(watchProject).toHaveBeenCalledWith('/proj');
     expect((await screen.findAllByText('a.txt'))[0]).toBeInTheDocument();
     const img = screen.getByAltText('B') as HTMLImageElement;
-    expect(img.src).toContain('ptex://b.png');
+    expect(img.src).toContain('asset://b.png');
     expect(screen.getByText('B')).toBeInTheDocument();
     expect(screen.getAllByText('b.png')[0]).toBeInTheDocument();
     expect(img.style.imageRendering).toBe('pixelated');

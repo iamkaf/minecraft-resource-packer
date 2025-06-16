@@ -7,7 +7,7 @@ describe('PreviewPane', () => {
   it('renders with texture', () => {
     render(<PreviewPane texture="foo.png" />);
     const img = screen.getByRole('img');
-    expect(img).toHaveAttribute('src', 'ptex://foo.png');
+    expect(img).toHaveAttribute('src', 'asset://foo.png');
   });
 
   it('applies neutral lighting by default', () => {
