@@ -269,6 +269,7 @@ describe('AssetBrowser', () => {
     await screen.findAllByText('stone.png');
     const itemsChip = screen.getByText('Items');
     fireEvent.click(itemsChip);
+    expect(itemsChip).toHaveClass('badge-primary');
     expect(screen.queryByText('stone.png')).toBeNull();
     expect(screen.getAllByText('apple.png')[0]).toBeInTheDocument();
   });

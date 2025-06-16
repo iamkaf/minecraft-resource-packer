@@ -37,6 +37,7 @@ describe('AssetSelector filters', () => {
     ).toBeInTheDocument();
     const itemChip = screen.getByRole('button', { name: 'Items' });
     fireEvent.click(itemChip);
+    expect(itemChip).toHaveClass('badge-primary');
     expect(
       screen.queryByRole('button', { name: 'block/stone.png' })
     ).toBeNull();
@@ -47,5 +48,6 @@ describe('AssetSelector filters', () => {
     expect(
       screen.getByRole('button', { name: 'block/stone.png' })
     ).toBeInTheDocument();
+    expect(itemChip).not.toHaveClass('badge-primary');
   });
 });

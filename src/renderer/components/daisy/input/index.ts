@@ -12,3 +12,4 @@ export { default as InputField } from './InputField';
 export { default as Textarea } from './Textarea';
 export { default as Toggle } from './Toggle';
 export { default as Validator } from './Validator';
+export { default as FilterBadge } from './FilterBadge';
