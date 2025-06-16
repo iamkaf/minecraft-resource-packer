@@ -103,6 +103,7 @@ const AssetBrowser: React.FC<Props> = ({
     <div
       data-testid="asset-browser"
       ref={wrapperRef}
+      className="overflow-auto"
       onKeyDown={(e) => {
         if (e.key === 'Delete' && selected.size > 0) {
           e.preventDefault();
