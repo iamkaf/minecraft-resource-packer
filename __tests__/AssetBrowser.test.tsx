@@ -49,6 +49,13 @@ describe('AssetBrowser', () => {
     expect(img.style.imageRendering).toBe('pixelated');
   });
 
+  it('is scrollable', async () => {
+    render(<AssetBrowser path="/proj" />);
+    await screen.findAllByText('a.txt');
+    const wrapper = screen.getByTestId('asset-browser');
+    expect(wrapper.className).toMatch(/overflow-auto/);
+  });
+
   it('context menu triggers IPC calls', async () => {
     const openInFolder = vi.fn();
     const openFile = vi.fn();

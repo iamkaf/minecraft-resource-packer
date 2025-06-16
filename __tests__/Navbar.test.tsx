@@ -21,18 +21,29 @@ beforeEach(() => {
 
 describe('Navbar', () => {
   it('displays app title', () => {
-    render(<Navbar />);
+    render(<Navbar onNavigate={vi.fn()} />);
     expect(screen.getByTestId('app-title')).toHaveTextContent(
       'Minecraft Resource Packer'
     );
   });
 
   it('toggles theme and calls setTheme', async () => {
-    render(<Navbar />);
+    render(<Navbar onNavigate={vi.fn()} />);
     const button = screen.getByLabelText('Toggle theme');
     await fireEvent.click(button);
     await Promise.resolve();
     expect(setTheme).toHaveBeenCalledWith('light');
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+  });
+
+  it('calls onNavigate when nav buttons clicked', () => {
+    const nav = vi.fn();
+    render(<Navbar onNavigate={nav} />);
+    fireEvent.click(screen.getByText('Projects'));
+    expect(nav).toHaveBeenCalledWith('manager');
+    fireEvent.click(screen.getByText('Settings'));
+    expect(nav).toHaveBeenCalledWith('settings');
+    fireEvent.click(screen.getByText('About'));
+    expect(nav).toHaveBeenCalledWith('about');
   });
 });

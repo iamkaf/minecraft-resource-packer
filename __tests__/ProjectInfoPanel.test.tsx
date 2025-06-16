@@ -30,6 +30,7 @@ describe('ProjectInfoPanel', () => {
         projectPath="/p/Pack"
         onExport={onExport}
         onBack={onBack}
+        onSettings={vi.fn()}
       />
     );
     expect(load).toHaveBeenCalledWith('Pack');
@@ -41,5 +42,19 @@ describe('ProjectInfoPanel', () => {
     fireEvent.click(screen.getByText('Back to Projects'));
     expect(onBack).toHaveBeenCalled();
     expect(screen.getByText('/p/Pack')).toBeInTheDocument();
+  });
+
+  it('falls back to default icon when pack.png missing', async () => {
+    render(
+      <ProjectInfoPanel
+        projectPath="/p/Pack"
+        onExport={onExport}
+        onBack={onBack}
+        onSettings={vi.fn()}
+      />
+    );
+    const img = screen.getByAltText('Pack icon') as HTMLImageElement;
+    fireEvent.error(img);
+    expect(img.src).toContain('default_pack');
   });
 });

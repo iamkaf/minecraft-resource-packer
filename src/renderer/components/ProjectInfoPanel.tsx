@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import path from 'path';
 import type { PackMeta } from '../../main/projects';
 import { Button } from './daisy/actions';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - webpack replaces import with URL string
+import defaultIcon from '../../../resources/default_pack.png';
 
 interface Props {
   projectPath: string;
@@ -32,7 +35,15 @@ export default function ProjectInfoPanel({
         <Button className="link link-primary self-start" onClick={onSettings}>
           Settings
         </Button>
-        <img src="asset://pack.png" alt="Pack icon" className="w-16 h-16" />
+        <img
+          src="asset://pack.png"
+          alt="Pack icon"
+          className="w-24 h-24"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src =
+              defaultIcon as unknown as string;
+          }}
+        />
         <h2 className="card-title text-lg font-display">{name}</h2>
         <p className="text-xs break-all">{projectPath}</p>
         <p className="text-sm text-center break-all flex-1">
