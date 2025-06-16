@@ -1,6 +1,7 @@
 import React from 'react';
 import { FilterBadge, InputField } from '../daisy/input';
 import { Button } from '../daisy/actions';
+import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 export default function SearchToolbar({
   search,
   onSearchChange,
@@ -38,10 +39,11 @@ export default function SearchToolbar({
         ))}
       </div>
       <Button
-        className="btn-accent btn-sm"
+        className="btn-accent btn-sm flex items-center gap-1"
         onClick={onBulkExport}
         disabled={disableExport}
       >
+        <ArrowUpTrayIcon className="w-4 h-4" />
         Bulk Export
       </Button>
     </div>

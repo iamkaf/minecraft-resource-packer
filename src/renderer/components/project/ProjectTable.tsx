@@ -1,6 +1,11 @@
 import React from 'react';
 import { Checkbox } from '../daisy/input';
 import { Button } from '../daisy/actions';
+import {
+  ArrowRightCircleIcon,
+  DocumentDuplicateIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 
 export interface ProjectInfo {
   name: string;
@@ -93,30 +98,33 @@ export default function ProjectTable({
               <td>{new Date(p.lastOpened).toLocaleDateString()}</td>
               <td className="flex gap-1">
                 <Button
-                  className="btn-accent btn-sm"
+                  className="btn-accent btn-sm flex items-center gap-1"
                   onClick={(e) => {
                     e.stopPropagation();
                     onOpen(p.name);
                   }}
                 >
+                  <ArrowRightCircleIcon className="w-4 h-4" />
                   Open
                 </Button>
                 <Button
-                  className="btn-info btn-sm"
+                  className="btn-info btn-sm flex items-center gap-1"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDuplicate(p.name);
                   }}
                 >
+                  <DocumentDuplicateIcon className="w-4 h-4" />
                   Duplicate
                 </Button>
                 <Button
-                  className="btn-error btn-sm"
+                  className="btn-error btn-sm flex items-center gap-1"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDelete(p.name);
                   }}
                 >
+                  <TrashIcon className="w-4 h-4" />
                   Delete
                 </Button>
               </td>

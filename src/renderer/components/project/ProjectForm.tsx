@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { generateProjectName } from '../../utils/names';
 import { InputField, Select } from '../daisy/input';
 import { Button } from '../daisy/actions';
+import { PlusIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
 export default function ProjectForm({
   versions,
@@ -45,10 +46,19 @@ export default function ProjectForm({
           </option>
         ))}
       </Select>
-      <Button className="btn-primary btn-sm" type="submit">
+      <Button
+        className="btn-primary btn-sm flex items-center gap-1"
+        type="submit"
+      >
+        <PlusIcon className="w-4 h-4" />
         Create
       </Button>
-      <Button type="button" onClick={onImport} className="btn-secondary btn-sm">
+      <Button
+        type="button"
+        onClick={onImport}
+        className="btn-secondary btn-sm flex items-center gap-1"
+      >
+        <ArrowDownTrayIcon className="w-4 h-4" />
         Import
       </Button>
     </form>

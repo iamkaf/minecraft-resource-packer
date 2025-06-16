@@ -1,10 +1,16 @@
 import React from 'react';
 
-export default function InputField({
-  className = '',
-  ...rest
-}: React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <input className={`input input-bordered ${className}`.trim()} {...rest} />
-  );
-}
+const InputField = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement>
+>(({ className = '', ...rest }, ref) => (
+  <input
+    ref={ref}
+    className={`input input-bordered ${className}`.trim()}
+    {...rest}
+  />
+));
+
+InputField.displayName = 'InputField';
+
+export default InputField;
