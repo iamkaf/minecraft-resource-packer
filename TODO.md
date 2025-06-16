@@ -1,81 +1,67 @@
 # TODO.md
 
-Comprehensive backlog for **minecraft-resource-packer**.  
-Every checkbox below is a discrete, test‑covered task.  
+Comprehensive backlog for **minecraft-resource-packer**.
+Every checkbox below is a discrete, test‑covered task.
 UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90 %.
 
 ---
 
-## 1. Global Shell & UX
+## 1. Global UX
 
-- [x] Drawer layout with hamburger toggle
-- [x] Navbar with title and 🌓 theme switch (persists in `localStorage`)
-- [x] Toast/alert system via daisyUI `toast`
-- [x] Loading indicators for every async op (daisyUI components)
-- [x] Replace react-loader-spinner with daisyUI skeleton/progress/radial-progress components (prefer skeleton)
-- [x] Confetti celebration on successful export (`react-canvas-confetti`)
 - [ ] Undo/Redo queue (last 20 actions)
 
-### Wiki Quick‑Links
+---
 
-- [x] ❓ icon on each view header opens relevant <https://minecraft.wiki/> page in default browser
+## 2. Project Manager
+
+- [ ] Better selection in the project manager
+- [ ] Better bulk action detection when using a hotkey in the project manager
+- [ ] Ability to edit a project's name
 
 ---
 
-## 2. Projects Dashboard
+## 3. Editor
 
-- [x] Zebra table: Name ▸ MC Version ▸ Assets ▸ Last opened
-- [x] Placeholder names generated with `unique-names-generator`
-- [x] Create • Import • Duplicate • Delete (confirm) • Open actions
-- [x] Fuzzy search + version filter chips
-- [x] Bulk export selected rows
-- [x] Rich metadata sidebar (Description, Author, URLs, etc.)
+### Asset Browser
 
----
-
-## 3. Editor > Asset Selector
-
-- [x] Categorized sections
-- [x] Properly formatted texture names, with original filename fallback
-- [x] Responsive grid thumbnails (zoom 24–128 px, hover ring)
-- [x] Drag‑or‑click to add asset to project
-- [x] Quick filters: Blocks / Items / Entity / UI / Audio
-- [x] Neutral‑lighting preview pane
-
----
-
-## 4. Editor > Asset Browser
-
-- [ ] Real‑time watcher with `chokidar`
-- [x] Context menu: Reveal, Open, Rename, Delete
-- [x] React context menu with daisyUI dropdown + delete modal
 - [ ] Dirty badge for changed assets
-- [x] 🔒 No‑export toggle per file
-- [ ] Custom namespace support (non‑`minecraft` assets)
+- [ ] Custom namespace support (non-`minecraft` assets)
 
----
+### Asset Info & Texture Inspector
 
-## 5. Editor > Texture Inspector
-
-- [x] 1 : 1 pixel preview + zoom slider
-- [x] External edit button (auto‑reload on save)
-- [x] Sharp mini‑lab: Hue‑shift • Rotate 90° • Gray‑scale • ±Saturation • ±Brightness
 - [ ] Revision history (max 20)
+- [ ] Preview against the vanilla picture using the `Diff` component
+- [ ] Generic icon thumbnail for text files
+- [ ] More robust JSON editor
+
+### Project Info Panel
+
+- [ ] Ability to edit project metadata from the ProjectInfoPanel
+- [ ] Fix the randomize icon button not working due to incorrect file path
 
 ---
 
-## 6. Pack Settings
+## 4. Pack Settings
 
 - [ ] Editable `pack.mcmeta` (description, `pack_format`, language)
-- [x] Randomly generated pack icon (pastel bg + border + random Minecraft item texture Sharp)
-- [x] Pack Icon Editor modal (randomise, colour, border, upload custom)
-- [ ] Target resolution radio (16×/32×/64×)
 - [ ] License & authors
+- [ ] Target resolution radio (16×/32×/64×)
 - [ ] Validation checklist (missing textures, duplicates)
+- [ ] Version field for projects should appear in exported file names
+- [ ] Remember the last export target folder using electron store
 
 ---
 
-## 7. Templates
+## 5. Import / Export
+
+- [ ] Import wizard supporting folders or `.zip` archives
+- [ ] Import wizard: option to merge into existing project
+- [ ] Compression progress with ETA
+- [ ] Post‑actions: Open folder • Copy to resourcepacks • Test‑launch Minecraft
+
+---
+
+## 6. Templates
 
 - [ ] JSON store in `templates/`
 - [ ] “Start from Template” dialog (e.g., _Gold Tools & Armor_, _All Food Items_)
@@ -83,37 +69,15 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ---
 
-## 8. Import / Export
+## 7. Preferences
 
-- [ ] Import wizard: ingest `.zip`, parse `pack.mcmeta` + optional `project.json`
-- [ ] Import wizard: option to merge into existing project
-- [ ] Export ZIP with `archiver` + progress bar
-- [ ] Embed metadata for round‑trip using `project.json`
-- [ ] Honour No‑export flags
-
----
-
-## 9. Export Wizard
-
-- [ ] Destination picker (defaults to Downloads)
-- [ ] Compression progress + ETA
-- [ ] Post‑actions: Open folder • Copy to resourcepacks • Test‑launch Minecraft
-- [ ] Summary modal (file count, size, time, warnings)
-
----
-
-## 10. Preferences / About
-
-- [ ] Paths (override `.minecraft`, external editor)
-- [x] Theme (Minecraft inspired Light / Minecraft inspired Dark / System)
+- [ ] Path override for `.minecraft` folder
 - [ ] Editable keyboard shortcuts
 - [ ] Update channel + analytics opt‑in
-- [x] About pane (logo, version, links, license)
-- [x] GitHub/Documentation links open externally
 
 ---
 
-## 11. Quality & Accessibility
+## 8. Quality & Accessibility
 
 - [ ] Keyboard navigation across all components
 - [ ] High‑contrast mode via daisyUI preset
