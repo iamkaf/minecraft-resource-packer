@@ -1,3 +1,4 @@
+import React from 'react';
 import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
@@ -13,3 +14,18 @@ if (!window.matchMedia) {
     removeEventListener: vi.fn(),
   })) as unknown as typeof window.matchMedia;
 }
+
+vi.mock('@monaco-editor/react', () => ({
+  default: ({
+    value,
+    onChange,
+  }: {
+    value: string;
+    onChange: (v: string) => void;
+  }) =>
+    React.createElement('textarea', {
+      value,
+      onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        onChange(e.target.value),
+    }),
+}));

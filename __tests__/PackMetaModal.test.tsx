@@ -26,8 +26,10 @@ describe('PackMetaModal', () => {
         onCancel={onCancel}
       />
     );
-    fireEvent.change(screen.getByPlaceholderText('Description'), {
-      target: { value: 'new' },
+    const box = screen.getByRole('textbox');
+    const updated = { ...meta, description: 'new' };
+    fireEvent.change(box, {
+      target: { value: JSON.stringify(updated, null, 2) },
     });
     fireEvent.click(screen.getByText('Save'));
     expect(onSave).toHaveBeenCalledWith(

@@ -125,8 +125,9 @@ Both protocols are registered in `src/main/index.ts` when Electron starts.
 
 The projects dashboard includes a sidebar next to the project table. Selecting a
 row loads metadata from `project.json` via IPC and displays the pack description,
-author, related URLs and creation timestamps. Use the **Edit** button to modify
-these fields and save back to `project.json`. The sidebar also includes a
+author, related URLs and creation timestamps. Use the **Edit** button to open a
+JSON editor powered by Monaco. Edits are validated against `PackMetaSchema` when
+saving and any errors appear as a toast. The sidebar also includes a
 **Rename** button that opens a modal to change the project's folder name and
 updates `project.json` accordingly.
 
