@@ -93,7 +93,7 @@ as they are.
 
 ## Styling
 
-Tailwind CSS is configured with the `daisyUI` plugin. The `tailwind.config.ts`
+Tailwind CSS is configured with the `daisyUI` plugin. The `index.css`
 file defines a custom **minecraft** theme. The application supports three
 themes:
 
