@@ -3,9 +3,9 @@ import Store from 'electron-store';
 
 const store = new Store<{
   windowBounds: Rectangle | undefined;
-  fullscreen: boolean;
+  maximized: boolean;
 }>({
-  defaults: { windowBounds: undefined, fullscreen: false },
+  defaults: { windowBounds: undefined, maximized: false },
 });
 
 export function getWindowBounds(): Rectangle | undefined {
@@ -16,10 +16,10 @@ export function setWindowBounds(bounds: Rectangle): void {
   store.set('windowBounds', bounds);
 }
 
-export function isFullscreen(): boolean {
-  return store.get('fullscreen');
+export function isMaximized(): boolean {
+  return store.get('maximized');
 }
 
-export function setFullscreen(flag: boolean): void {
-  store.set('fullscreen', flag);
+export function setMaximized(flag: boolean): void {
+  store.set('maximized', flag);
 }

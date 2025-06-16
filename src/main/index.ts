@@ -24,8 +24,8 @@ import { registerExternalEditorHandlers } from './externalEditor';
 import {
   getWindowBounds,
   setWindowBounds,
-  isFullscreen,
-  setFullscreen,
+  isMaximized,
+  setMaximized,
 } from './windowBounds';
 
 protocol.registerSchemesAsPrivileged([
@@ -51,7 +51,7 @@ const projectsDir = path.join(app.getPath('userData'), 'projects');
 // display its contents.
 const createMainWindow = () => {
   const savedBounds = getWindowBounds();
-  const fullscreen = isFullscreen();
+  const maximized = isMaximized();
   const options: Electron.BrowserWindowConstructorOptions = {
     width: savedBounds?.width ?? 1200,
     height: savedBounds?.height ?? 900,
@@ -67,14 +67,14 @@ const createMainWindow = () => {
     options.y = savedBounds.y;
   }
   mainWindow = new BrowserWindow(options);
-  if (fullscreen) {
-    mainWindow.setFullScreen(true);
+  if (maximized) {
+    mainWindow.maximize();
   }
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
   registerFileWatcherHandlers(ipcMain, mainWindow);
   mainWindow.on('close', () => {
     setWindowBounds(mainWindow!.getBounds());
-    setFullscreen(mainWindow!.isFullScreen());
+    setMaximized(mainWindow!.isMaximized());
   });
   mainWindow.on('closed', () => {
     mainWindow = null;
