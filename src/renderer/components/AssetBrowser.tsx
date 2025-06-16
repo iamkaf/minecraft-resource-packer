@@ -4,6 +4,7 @@ import RenameModal from './RenameModal';
 import AssetBrowserItem from './AssetBrowserItem';
 import { useProjectFiles } from './file/useProjectFiles';
 import FileTree from './FileTree';
+import { FilterBadge } from './daisy/input';
 
 interface Props {
   path: string;
@@ -143,18 +144,13 @@ const AssetBrowser: React.FC<Props> = ({
       </div>
       <div className="flex gap-1 mb-2">
         {FILTERS.map((f) => (
-          <span
+          <FilterBadge
             key={f}
-            role="button"
-            tabIndex={0}
+            label={f.charAt(0).toUpperCase() + f.slice(1)}
+            selected={filters.includes(f)}
             onClick={() => toggleFilter(f)}
             onKeyDown={(e) => e.key === 'Enter' && toggleFilter(f)}
-            className={`badge badge-outline cursor-pointer select-none ${
-              filters.includes(f) ? 'badge-primary' : ''
-            }`}
-          >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
-          </span>
+          />
         ))}
       </div>
       {view === 'grid' ? (

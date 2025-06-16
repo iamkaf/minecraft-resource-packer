@@ -38,6 +38,7 @@ describe('SearchToolbar', () => {
       />
     );
     const chip = screen.getByRole('button', { name: '1.20' });
+    expect(chip).toHaveClass('badge-primary');
     fireEvent.click(chip);
     expect(toggle).toHaveBeenCalledWith('1.20');
     const btn = screen.getByRole('button', { name: 'Bulk Export' });
@@ -55,6 +56,9 @@ describe('SearchToolbar', () => {
         onBulkExport={bulk}
         disableExport={false}
       />
+    );
+    expect(screen.getByRole('button', { name: '1.20' })).not.toHaveClass(
+      'badge-primary'
     );
     fireEvent.click(screen.getByRole('button', { name: 'Bulk Export' }));
     expect(bulk).toHaveBeenCalled();

@@ -1,4 +1,5 @@
 import React from 'react';
+import { FilterBadge } from '../daisy/input';
 export default function SearchToolbar({
   search,
   onSearchChange,
@@ -26,18 +27,13 @@ export default function SearchToolbar({
       />
       <div className="flex gap-1">
         {versions.map((v) => (
-          <span
+          <FilterBadge
             key={v}
-            role="button"
-            tabIndex={0}
+            label={v}
+            selected={activeVersion === v}
             onClick={() => onToggleVersion(v)}
             onKeyDown={(e) => e.key === 'Enter' && onToggleVersion(v)}
-            className={`badge badge-outline cursor-pointer select-none ${
-              activeVersion === v ? 'badge-primary' : ''
-            }`}
-          >
-            {v}
-          </span>
+          />
         ))}
       </div>
       <button
