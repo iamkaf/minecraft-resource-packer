@@ -56,6 +56,9 @@ The renderer separates the interface into four top‑level views found under
   [minecraft.wiki](https://minecraft.wiki/). The button uses `ExternalLink` and shows
   a toast if the link fails to open.
 
+Navigation is handled by `react-router-dom` using a `HashRouter`, so each view
+corresponds to a URL fragment: `#/`, `#/editor`, `#/settings` and `#/about`.
+
 ## Adding Functionality
 
 When adding features that need access to Node APIs:

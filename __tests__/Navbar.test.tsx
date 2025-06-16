@@ -1,8 +1,25 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter, useLocation } from 'react-router-dom';
 
 import Navbar from '../src/renderer/components/Navbar';
+
+function HashSync() {
+  const location = useLocation();
+  React.useEffect(() => {
+    window.location.hash = `#${location.pathname}`;
+  }, [location]);
+  return null;
+}
+
+const renderNav = () =>
+  render(
+    <MemoryRouter>
+      <HashSync />
+      <Navbar />
+    </MemoryRouter>
+  );
 
 // Ensure consistent DOM for each test
 let getTheme: ReturnType<typeof vi.fn>;
@@ -21,14 +38,14 @@ beforeEach(() => {
 
 describe('Navbar', () => {
   it('displays app title', () => {
-    render(<Navbar onNavigate={vi.fn()} />);
+    renderNav();
     expect(screen.getByTestId('app-title')).toHaveTextContent(
       'Minecraft Resource Packer'
     );
   });
 
   it('toggles theme and calls setTheme', async () => {
-    render(<Navbar onNavigate={vi.fn()} />);
+    renderNav();
     const button = screen.getByLabelText('Toggle theme');
     await fireEvent.click(button);
     await Promise.resolve();
@@ -36,14 +53,13 @@ describe('Navbar', () => {
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
   });
 
-  it('calls onNavigate when nav buttons clicked', () => {
-    const nav = vi.fn();
-    render(<Navbar onNavigate={nav} />);
+  it('updates hash when nav buttons clicked', () => {
+    renderNav();
     fireEvent.click(screen.getByText('Projects'));
-    expect(nav).toHaveBeenCalledWith('manager');
+    expect(window.location.hash).toBe('#/');
     fireEvent.click(screen.getByText('Settings'));
-    expect(nav).toHaveBeenCalledWith('settings');
+    expect(window.location.hash).toBe('#/settings');
     fireEvent.click(screen.getByText('About'));
-    expect(nav).toHaveBeenCalledWith('about');
+    expect(window.location.hash).toBe('#/about');
   });
 });

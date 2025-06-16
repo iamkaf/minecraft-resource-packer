@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, act, fireEvent } from '@testing-library/react';
+import { MemoryRouter, useLocation } from 'react-router-dom';
 
 import App from '../src/renderer/components/App';
 import { useProject } from '../src/renderer/components/ProjectProvider';
@@ -27,7 +28,13 @@ vi.mock('../src/renderer/views/ProjectManagerView', () => ({
   default: () => <div>manager</div>,
 }));
 vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
-  default: ({ onExport, onBack }: { onExport: () => void; onBack: () => void }) => {
+  default: ({
+    onExport,
+    onBack,
+  }: {
+    onExport: () => void;
+    onBack: () => void;
+  }) => {
     const { path } = useProject();
     return (
       <div>
@@ -42,12 +49,31 @@ vi.mock('../src/renderer/components/AssetSelectorInfoPanel', () => ({
   default: () => <div>info</div>,
 }));
 
+function HashSync() {
+  const location = useLocation();
+  React.useEffect(() => {
+    window.location.hash = `#${location.pathname}`;
+  }, [location]);
+  return null;
+}
+
+const renderApp = () =>
+  render(
+    <MemoryRouter>
+      <HashSync />
+      <Suspense fallback="loading">
+        <App />
+      </Suspense>
+    </MemoryRouter>
+  );
+
 describe('App', () => {
   let openHandler: ((e: unknown, path: string) => void) | undefined;
   const exportProject = vi.fn();
   const getConfetti = vi.fn();
 
   beforeEach(() => {
+    window.location.hash = '#/';
     window.matchMedia = vi.fn().mockReturnValue({
       matches: false,
       addEventListener: vi.fn(),
@@ -80,24 +106,17 @@ describe('App', () => {
   });
 
   it('shows manager then project name', async () => {
-    render(
-      <Suspense fallback="loading">
-        <App />
-      </Suspense>
-    );
+    renderApp();
     await screen.findByText('manager');
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
     await screen.findByText('/tmp/proj');
+    expect(window.location.hash).toBe('#/editor');
   });
 
   it('invokes exportProject when button clicked', async () => {
-    render(
-      <Suspense fallback="loading">
-        <App />
-      </Suspense>
-    );
+    renderApp();
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
@@ -114,7 +133,7 @@ describe('App', () => {
   });
 
   it('fires confetti after successful export', async () => {
-    render(<App />);
+    renderApp();
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
@@ -139,7 +158,7 @@ describe('App', () => {
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
     });
-    render(<App />);
+    renderApp();
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
@@ -160,7 +179,7 @@ describe('App', () => {
 
   it('skips confetti when preference disabled', async () => {
     getConfetti.mockResolvedValueOnce(false);
-    render(<App />);
+    renderApp();
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
@@ -181,7 +200,7 @@ describe('App', () => {
   });
 
   it('shows summary modal after export', async () => {
-    render(<App />);
+    renderApp();
     act(() => {
       openHandler?.({}, '/tmp/proj');
     });
