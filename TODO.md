@@ -6,62 +6,69 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ---
 
-## 1. Global UX
+## Global UX
 
 - [ ] Undo/Redo queue (last 20 actions)
+- [ ] Persist window size and position across launches
+- [ ] Open the most recently used project on startup; add a setting to disable this
 
 ---
 
-## 2. Project Manager
+## Project Manager
 
-- [ ] Better selection in the project manager
-- [ ] Better bulk action detection when using a hotkey in the project manager
+- [ ] Better selection behavior in the project manager
+- [ ] Better bulk action detection when using hotkeys
 - [ ] Ability to edit a project's name
 
 ---
 
-## 3. Editor
+## Editor
 
 ### Asset Browser
 
 - [ ] Dirty badge for changed assets
 - [ ] Custom namespace support (non-`minecraft` assets)
+- [ ] Persist search query, category filters and zoom level between sessions
+- [ ] Arrow key navigation between thumbnails
 
 ### Asset Info & Texture Inspector
 
 - [ ] Revision history (max 20)
-- [ ] Preview against the vanilla picture using the `Diff` component
+- [ ] Preview against the vanilla texture using the `Diff` component
 - [ ] Generic icon thumbnail for text files
 - [ ] More robust JSON editor
+- [ ] Optional 3D preview for entity models and item textures
 
 ### Project Info Panel
 
 - [ ] Ability to edit project metadata from the ProjectInfoPanel
+- [ ] Integrate PackIconEditor for changing the pack icon
 - [ ] Fix the randomize icon button not working due to incorrect file path
 
 ---
 
-## 4. Pack Settings
+## Pack Settings
 
 - [ ] Editable `pack.mcmeta` (description, `pack_format`, language)
-- [ ] License & authors
+- [ ] Editable license field in Pack Metadata modal
 - [ ] Target resolution radio (16×/32×/64×)
 - [ ] Validation checklist (missing textures, duplicates)
-- [ ] Version field for projects should appear in exported file names
-- [ ] Remember the last export target folder using electron store
+- [ ] Version field for projects; it should also appear in exported file names
+- [ ] Remember the last export target folder using electron store on successful exports
 
 ---
 
-## 5. Import / Export
+## Import & Export
 
 - [ ] Import wizard supporting folders or `.zip` archives
+- [ ] Detect pack version from `pack.mcmeta` when importing `.zip`
 - [ ] Import wizard: option to merge into existing project
 - [ ] Compression progress with ETA
 - [ ] Post‑actions: Open folder • Copy to resourcepacks • Test‑launch Minecraft
 
 ---
 
-## 6. Templates
+## Templates
 
 - [ ] JSON store in `templates/`
 - [ ] “Start from Template” dialog (e.g., _Gold Tools & Armor_, _All Food Items_)
@@ -69,7 +76,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ---
 
-## 7. Preferences
+## Preferences
 
 - [ ] Path override for `.minecraft` folder
 - [ ] Editable keyboard shortcuts
@@ -77,7 +84,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ---
 
-## 8. Quality & Accessibility
+## Quality & Accessibility
 
 - [ ] Keyboard navigation across all components
 - [ ] High‑contrast mode via daisyUI preset
