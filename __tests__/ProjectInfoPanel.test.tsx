@@ -1,6 +1,10 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import {
+  ProjectProvider,
+  useProject,
+} from '../src/renderer/components/ProjectProvider';
 import ProjectInfoPanel from '../src/renderer/components/ProjectInfoPanel';
 
 const meta = {
@@ -30,14 +34,33 @@ describe('ProjectInfoPanel', () => {
     vi.clearAllMocks();
   });
 
+  function SetPath({
+    path,
+    children,
+  }: {
+    path: string;
+    children: React.ReactNode;
+  }) {
+    const { setPath } = useProject();
+    const [ready, setReady] = React.useState(false);
+    React.useEffect(() => {
+      setPath(path);
+      setReady(true);
+    }, [path]);
+    return ready ? <>{children}</> : null;
+  }
+
   it('loads metadata and triggers export', async () => {
     render(
-      <ProjectInfoPanel
-        projectPath="/p/Pack"
-        onExport={onExport}
-        onBack={onBack}
-        onSettings={vi.fn()}
-      />
+      <ProjectProvider>
+        <SetPath path="/p/Pack">
+          <ProjectInfoPanel
+            onExport={onExport}
+            onBack={onBack}
+            onSettings={vi.fn()}
+          />
+        </SetPath>
+      </ProjectProvider>
     );
     expect(load).toHaveBeenCalledWith('Pack');
     await screen.findByText('desc');
@@ -52,12 +75,15 @@ describe('ProjectInfoPanel', () => {
 
   it('falls back to default icon when pack.png missing', async () => {
     render(
-      <ProjectInfoPanel
-        projectPath="/p/Pack"
-        onExport={onExport}
-        onBack={onBack}
-        onSettings={vi.fn()}
-      />
+      <ProjectProvider>
+        <SetPath path="/p/Pack">
+          <ProjectInfoPanel
+            onExport={onExport}
+            onBack={onBack}
+            onSettings={vi.fn()}
+          />
+        </SetPath>
+      </ProjectProvider>
     );
     const img = screen.getByAltText('Pack icon') as HTMLImageElement;
     fireEvent.error(img);

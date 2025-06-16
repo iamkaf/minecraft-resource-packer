@@ -1,16 +1,47 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import {
+  ProjectProvider,
+  useProject,
+} from '../src/renderer/components/ProjectProvider';
 import AssetSelectorInfoPanel from '../src/renderer/components/AssetSelectorInfoPanel';
 
 describe('AssetSelectorInfoPanel', () => {
+  function SetPath({
+    path,
+    children,
+  }: {
+    path: string;
+    children: React.ReactNode;
+  }) {
+    const { setPath } = useProject();
+    const [ready, setReady] = React.useState(false);
+    React.useEffect(() => {
+      setPath(path);
+      setReady(true);
+    }, [path]);
+    return ready ? <>{children}</> : null;
+  }
   it('shows placeholder when no asset', () => {
-    render(<AssetSelectorInfoPanel projectPath="/p" asset={null} />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/p">
+          <AssetSelectorInfoPanel asset={null} />
+        </SetPath>
+      </ProjectProvider>
+    );
     expect(screen.getByText('No asset selected')).toBeInTheDocument();
   });
 
   it('displays asset name', () => {
-    render(<AssetSelectorInfoPanel projectPath="/p" asset="block/a.png" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/p">
+          <AssetSelectorInfoPanel asset="block/a.png" />
+        </SetPath>
+      </ProjectProvider>
+    );
     expect(screen.getByText('block/a.png')).toBeInTheDocument();
   });
 
@@ -20,7 +51,13 @@ describe('AssetSelectorInfoPanel', () => {
       addTexture: typeof addTexture;
     }
     (window as unknown as { electronAPI: API }).electronAPI = { addTexture };
-    render(<AssetSelectorInfoPanel projectPath="/p" asset="block/a.png" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/p">
+          <AssetSelectorInfoPanel asset="block/a.png" />
+        </SetPath>
+      </ProjectProvider>
+    );
     screen.getByText('Add').click();
     expect(addTexture).toHaveBeenCalledWith('/p', 'block/a.png');
   });

@@ -1,6 +1,10 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import {
+  ProjectProvider,
+  useProject,
+} from '../src/renderer/components/ProjectProvider';
 import AssetSelector from '../src/renderer/components/AssetSelector';
 
 describe('AssetSelector filters', () => {
@@ -27,8 +31,30 @@ describe('AssetSelector filters', () => {
     vi.clearAllMocks();
   });
 
+  function SetPath({
+    path,
+    children,
+  }: {
+    path: string;
+    children: React.ReactNode;
+  }) {
+    const { setPath } = useProject();
+    const [ready, setReady] = React.useState(false);
+    React.useEffect(() => {
+      setPath(path);
+      setReady(true);
+    }, [path]);
+    return ready ? <>{children}</> : null;
+  }
+
   it('filters textures by category chip and supports keyboard toggle', async () => {
-    render(<AssetSelector path="/proj" />);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetSelector />
+        </SetPath>
+      </ProjectProvider>
+    );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'png' } });
     await screen.findByText('blocks');

@@ -12,10 +12,12 @@ const EditorView = lazy(() => import('../views/EditorView'));
 const SettingsView = lazy(() => import('../views/SettingsView'));
 const AboutView = lazy(() => import('../views/AboutView'));
 
+import { ProjectProvider, useProject } from './ProjectProvider';
+
 export type View = 'manager' | 'editor' | 'settings' | 'about';
 
-export default function App() {
-  const [projectPath, setProjectPath] = useState<string | null>(null);
+function AppContent() {
+  const { path: projectPath, setPath: setProjectPath } = useProject();
   const [view, setView] = useState<View>('manager');
 
   useEffect(() => {
@@ -40,11 +42,7 @@ export default function App() {
     case 'editor':
       content = projectPath ? (
         <Suspense fallback={<EditorViewSkeleton />}>
-          <EditorView
-            projectPath={projectPath}
-            onBack={toManager}
-            onSettings={toSettings}
-          />
+          <EditorView onBack={toManager} onSettings={toSettings} />
         </Suspense>
       ) : null;
       break;
@@ -80,5 +78,13 @@ export default function App() {
       />
       <div className="flex-1 flex flex-col">{content}</div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ProjectProvider>
+      <AppContent />
+    </ProjectProvider>
   );
 }

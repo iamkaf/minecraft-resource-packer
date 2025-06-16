@@ -4,9 +4,9 @@ import TextureTree from './TextureTree';
 import { FilterBadge, InputField, Range } from './daisy/input';
 import { Button } from './daisy/actions';
 import { Accordion } from './daisy/display';
+import { useProject } from './ProjectProvider';
 
 interface Props {
-  path: string;
   onAssetSelect?: (name: string) => void;
 }
 
@@ -27,10 +27,8 @@ const getCategory = (name: string): Filter | 'misc' => {
   return 'misc';
 };
 
-const AssetSelector: React.FC<Props> = ({
-  path: projectPath,
-  onAssetSelect,
-}) => {
+const AssetSelector: React.FC<Props> = ({ onAssetSelect }) => {
+  const { path: projectPath } = useProject();
   const [all, setAll] = useState<TextureInfo[]>([]);
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);

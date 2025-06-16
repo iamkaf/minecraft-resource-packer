@@ -22,16 +22,14 @@ import {
 /* eslint-enable import/no-unresolved */
 
 interface EditorViewProps {
-  projectPath: string;
   onBack: () => void;
   onSettings: () => void;
 }
 
-export default function EditorView({
-  projectPath,
-  onBack,
-  onSettings,
-}: EditorViewProps) {
+import { useProject } from '../components/ProjectProvider';
+
+export default function EditorView({ onBack, onSettings }: EditorViewProps) {
+  const { path: projectPath } = useProject();
   const [selected, setSelected] = useState<string[]>([]);
   const [selectorAsset, setSelectorAsset] = useState<string | null>(null);
   const [layout, setLayout] = useState<number[]>([20, 80]);
@@ -110,7 +108,6 @@ export default function EditorView({
           className="bg-base-100 border border-base-300 rounded flex flex-col"
         >
           <ProjectInfoPanel
-            projectPath={projectPath}
             onExport={handleExport}
             onBack={onBack}
             onSettings={onSettings}
@@ -127,21 +124,14 @@ export default function EditorView({
           <PanelGroup direction="vertical" className="h-full">
             <Panel defaultSize={70} className="overflow-y-auto">
               <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-                <AssetBrowser
-                  path={projectPath}
-                  onSelectionChange={(sel) => setSelected(sel)}
-                />
+                <AssetBrowser onSelectionChange={(sel) => setSelected(sel)} />
               </Suspense>
             </Panel>
             <PanelResizeHandle className="flex items-center" tagName="div">
               <div className="w-full h-px bg-base-content"></div>
             </PanelResizeHandle>
             <Panel defaultSize={30} className="overflow-y-auto">
-              <AssetInfo
-                projectPath={projectPath}
-                asset={selected[0] ?? null}
-                count={selected.length}
-              />
+              <AssetInfo asset={selected[0] ?? null} count={selected.length} />
             </Panel>
           </PanelGroup>
         </Panel>
@@ -160,17 +150,11 @@ export default function EditorView({
             <div className="flex gap-4 max-h-[70vh]">
               <div className="flex-1 overflow-y-auto">
                 <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-                  <AssetSelector
-                    path={projectPath}
-                    onAssetSelect={(n) => setSelectorAsset(n)}
-                  />
+                  <AssetSelector onAssetSelect={(n) => setSelectorAsset(n)} />
                 </Suspense>
               </div>
               <div className="w-48 overflow-y-auto">
-                <AssetSelectorInfoPanel
-                  projectPath={projectPath}
-                  asset={selectorAsset}
-                />
+                <AssetSelectorInfoPanel asset={selectorAsset} />
               </div>
             </div>
             <div className="modal-action">

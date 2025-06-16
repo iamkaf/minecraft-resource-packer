@@ -4,16 +4,16 @@ import { Loading } from './daisy/feedback';
 import type { TextureEditOptions } from '../../shared/texture';
 import { Modal, Button } from './daisy/actions';
 import { Range, Select, Checkbox } from './daisy/input';
+import { useProject } from './ProjectProvider';
 
 export default function TextureLab({
   file,
-  projectPath,
   onClose,
 }: {
   file: string;
-  projectPath: string;
   onClose: () => void;
 }) {
+  const { path: projectPath } = useProject();
   const [hue, setHue] = useState(0);
   const [rotate, setRotate] = useState(0);
   const [gray, setGray] = useState(false);

@@ -1,7 +1,12 @@
+import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useProjectFiles } from '../src/renderer/components/file/useProjectFiles';
 import ToastProvider from '../src/renderer/components/ToastProvider';
+import {
+  ProjectProvider,
+  useProject,
+} from '../src/renderer/components/ProjectProvider';
 
 const watchProject = vi.fn(async () => ['a.txt', 'b.png']);
 const unwatchProject = vi.fn();
@@ -40,6 +45,22 @@ describe('useProjectFiles', () => {
       };
   });
 
+  function SetPath({
+    path,
+    children,
+  }: {
+    path: string;
+    children: React.ReactNode;
+  }) {
+    const { setPath } = useProject();
+    const [ready, setReady] = React.useState(false);
+    React.useEffect(() => {
+      setPath(path);
+      setReady(true);
+    }, [path]);
+    return ready ? <>{children}</> : null;
+  }
+
   it('watches project and handles events', async () => {
     let added: ((e: unknown, p: string) => void) | undefined;
     let removed: ((e: unknown, p: string) => void) | undefined;
@@ -55,7 +76,13 @@ describe('useProjectFiles', () => {
     onFileRenamed.mockImplementation((cb) => {
       renamed = cb;
     });
-    const { result, unmount } = renderHook(() => useProjectFiles('/proj'));
+    const { result, unmount } = renderHook(() => useProjectFiles(), {
+      wrapper: ({ children }) => (
+        <ProjectProvider>
+          <SetPath path="/proj">{children}</SetPath>
+        </ProjectProvider>
+      ),
+    });
     await waitFor(() =>
       expect(result.current.files).toEqual(['a.txt', 'b.png'])
     );
@@ -76,8 +103,14 @@ describe('useProjectFiles', () => {
   });
 
   it('toggles noExport state', async () => {
-    const { result } = renderHook(() => useProjectFiles('/proj'), {
-      wrapper: ToastProvider,
+    const { result } = renderHook(() => useProjectFiles(), {
+      wrapper: ({ children }) => (
+        <ProjectProvider>
+          <SetPath path="/proj">
+            <ToastProvider>{children}</ToastProvider>
+          </SetPath>
+        </ProjectProvider>
+      ),
     });
     await waitFor(() => expect(result.current.files.length).toBeGreaterThan(0));
     act(() => {

@@ -4,17 +4,18 @@ import { useToast } from './ToastProvider';
 import { Skeleton } from './daisy/feedback';
 import { Textarea } from './daisy/input';
 import { Button } from './daisy/actions';
+import { useProject } from './ProjectProvider';
 
 const PreviewPane = lazy(() => import('./PreviewPane'));
 const TextureLab = lazy(() => import('./TextureLab'));
 
 interface Props {
-  projectPath: string;
   asset: string | null;
   count?: number;
 }
 
-export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
+export default function AssetInfo({ asset, count = 1 }: Props) {
+  const { path: projectPath } = useProject();
   const toast = useToast();
   const [text, setText] = useState('');
   const [orig, setOrig] = useState('');
@@ -123,11 +124,7 @@ export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
         )}
         {lab && (
           <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-            <TextureLab
-              file={full}
-              projectPath={projectPath}
-              onClose={() => setLab(false)}
-            />
+            <TextureLab file={full} onClose={() => setLab(false)} />
           </Suspense>
         )}
       </div>

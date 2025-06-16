@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, act, fireEvent } from '@testing-library/react';
 
 import App from '../src/renderer/components/App';
+import { useProject } from '../src/renderer/components/ProjectProvider';
 
 const fire = vi.fn();
 
@@ -26,21 +27,16 @@ vi.mock('../src/renderer/views/ProjectManagerView', () => ({
   default: () => <div>manager</div>,
 }));
 vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
-  default: ({
-    onExport,
-    onBack,
-    projectPath,
-  }: {
-    onExport: () => void;
-    onBack: () => void;
-    projectPath: string;
-  }) => (
-    <div>
-      <button onClick={onExport}>Export Pack</button>
-      <button onClick={onBack}>Back to Projects</button>
-      <span>{projectPath}</span>
-    </div>
-  ),
+  default: ({ onExport, onBack }: { onExport: () => void; onBack: () => void }) => {
+    const { path } = useProject();
+    return (
+      <div>
+        <button onClick={onExport}>Export Pack</button>
+        <button onClick={onBack}>Back to Projects</button>
+        <span>{path}</span>
+      </div>
+    );
+  },
 }));
 vi.mock('../src/renderer/components/AssetSelectorInfoPanel', () => ({
   default: () => <div>info</div>,

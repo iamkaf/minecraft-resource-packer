@@ -6,19 +6,20 @@ import { Button } from './daisy/actions';
 // @ts-ignore - webpack replaces import with URL string
 import defaultIcon from '../../../resources/default_pack.png';
 
+import { useProject } from './ProjectProvider';
+
 interface Props {
-  projectPath: string;
   onExport: () => void;
   onBack: () => void;
   onSettings: () => void;
 }
 
 export default function ProjectInfoPanel({
-  projectPath,
   onExport,
   onBack,
   onSettings,
 }: Props) {
+  const { path: projectPath } = useProject();
   const [meta, setMeta] = useState<PackMeta | null>(null);
   const name = path.basename(projectPath);
 
