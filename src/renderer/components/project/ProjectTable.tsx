@@ -38,6 +38,7 @@ export default function ProjectTable({
   onDelete: (name: string) => void;
   onRowClick: (name: string) => void;
 }) {
+  const lastIndex = React.useRef<number | null>(null);
   const allSelected =
     selected.size > 0 && projects.every((p) => selected.has(p.name));
 
@@ -52,7 +53,7 @@ export default function ProjectTable({
                 checked={allSelected}
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) => onSelectAll(e.target.checked)}
-                className="checkbox-sm"
+                className="checkbox checkbox-primary checkbox-sm"
               />
             </th>
             <th onClick={() => onSort('name')} className="cursor-pointer">
@@ -81,7 +82,9 @@ export default function ProjectTable({
                 if (e.key === 'Delete') onDelete(p.name);
               }}
               tabIndex={0}
-              className="cursor-pointer"
+              className={`cursor-pointer ${
+                selected.has(p.name) ? 'bg-base-300' : ''
+              }`}
             >
               <td>
                 <Checkbox
@@ -90,9 +93,23 @@ export default function ProjectTable({
                   onClick={(e) => e.stopPropagation()}
                   onChange={(e) => {
                     e.stopPropagation();
-                    onSelect(p.name, e.target.checked);
+                    const idx = projects.findIndex((x) => x.name === p.name);
+                    const checked = e.target.checked;
+                    if (
+                      (e.nativeEvent as MouseEvent).shiftKey &&
+                      lastIndex.current !== null
+                    ) {
+                      const start = Math.min(lastIndex.current, idx);
+                      const end = Math.max(lastIndex.current, idx);
+                      for (let i = start; i <= end; i++) {
+                        onSelect(projects[i].name, checked);
+                      }
+                    } else {
+                      onSelect(p.name, checked);
+                    }
+                    lastIndex.current = idx;
                   }}
-                  className="checkbox-sm"
+                  className="checkbox checkbox-primary checkbox-sm"
                 />
               </td>
               <td className="flex items-center gap-2">
