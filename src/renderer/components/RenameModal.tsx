@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Modal } from './daisy/actions';
+import { Modal, Button } from './daisy/actions';
+import { InputField } from './daisy/input';
 
 export default function RenameModal({
   current,
@@ -30,19 +31,19 @@ export default function RenameModal({
         }}
       >
         <h3 className="font-bold text-lg">{title}</h3>
-        <input
+        <InputField
           ref={inputRef}
-          className="input input-bordered"
+          className="input-bordered"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <div className="modal-action">
-          <button type="button" className="btn" onClick={onCancel}>
+          <Button type="button" onClick={onCancel}>
             Cancel
-          </button>
-          <button type="submit" className="btn btn-primary">
+          </Button>
+          <Button type="submit" className="btn-primary">
             {confirmText}
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

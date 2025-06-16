@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import TextureGrid, { TextureInfo } from './TextureGrid';
 import TextureTree from './TextureTree';
-import { FilterBadge } from './daisy/input';
+import { FilterBadge, InputField, Range } from './daisy/input';
+import { Button } from './daisy/actions';
+import { Accordion } from './daisy/display';
 
 interface Props {
   path: string;
@@ -94,14 +96,13 @@ const AssetSelector: React.FC<Props> = ({
   return (
     <div className="mb-4">
       <div className="flex items-center gap-2 mb-2">
-        <input
-          className="border px-1 flex-1"
+        <InputField
+          className="flex-1"
           placeholder="Search texture"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <input
-          type="range"
+        <Range
           min={24}
           max={128}
           step={1}
@@ -109,21 +110,21 @@ const AssetSelector: React.FC<Props> = ({
           aria-label="Zoom"
           data-testid="zoom-range"
           onChange={(e) => setZoom(Number(e.target.value))}
-          className="range range-xs w-32"
+          className="range-xs w-32"
         />
         <div className="btn-group">
-          <button
-            className={`btn btn-xs ${view === 'grid' ? 'btn-primary' : ''}`}
+          <Button
+            className={`btn-xs ${view === 'grid' ? 'btn-primary' : ''}`}
             onClick={() => setView('grid')}
           >
             Grid
-          </button>
-          <button
-            className={`btn btn-xs ${view === 'tree' ? 'btn-primary' : ''}`}
+          </Button>
+          <Button
+            className={`btn-xs ${view === 'tree' ? 'btn-primary' : ''}`}
             onClick={() => setView('tree')}
           >
             Tree
-          </button>
+          </Button>
         </div>
       </div>
       <div className="flex gap-1 mb-2">
@@ -143,20 +144,14 @@ const AssetSelector: React.FC<Props> = ({
             const list = categories[key];
             if (list.length === 0) return null;
             return (
-              <div className="collapse collapse-arrow mb-2" key={key}>
-                <input type="checkbox" defaultChecked />
-                <div className="collapse-title font-medium capitalize">
-                  {key}
-                </div>
-                <div className="collapse-content">
-                  <TextureGrid
-                    testId="texture-grid"
-                    textures={list}
-                    zoom={zoom}
-                    onSelect={handleSelect}
-                  />
-                </div>
-              </div>
+              <Accordion key={key} title={key} className="mb-2" defaultOpen>
+                <TextureGrid
+                  testId="texture-grid"
+                  textures={list}
+                  zoom={zoom}
+                  onSelect={handleSelect}
+                />
+              </Accordion>
             );
           }
         )

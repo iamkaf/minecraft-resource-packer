@@ -1,4 +1,6 @@
 import React from 'react';
+import { Button } from '../daisy/actions';
+import { Checkbox } from '../daisy/input';
 
 interface Props {
   filePath: string;
@@ -32,43 +34,43 @@ export default function AssetContextMenu({
       role="menu"
     >
       <li>
-        <button
+        <Button
           ref={firstItemRef}
           role="menuitem"
           onClick={() => onReveal(filePath)}
         >
           Reveal
-        </button>
+        </Button>
       </li>
       <li>
-        <button role="menuitem" onClick={() => onOpen(filePath)}>
+        <Button role="menuitem" onClick={() => onOpen(filePath)}>
           Open
-        </button>
+        </Button>
       </li>
       <li>
-        <button
+        <Button
           role="menuitem"
           onClick={() => onRename(filePath)}
           disabled={selectionCount > 1}
         >
           Rename
-        </button>
+        </Button>
       </li>
       <li>
         <label className="flex gap-2 items-center cursor-pointer px-2">
           <span>No Export</span>
-          <input
+          <Checkbox
             type="checkbox"
-            className="toggle toggle-sm"
+            className="toggle-sm"
             checked={noExportChecked}
             onChange={(e) => onToggleNoExport(e.target.checked)}
           />
         </label>
       </li>
       <li>
-        <button role="menuitem" onClick={() => onDelete(filePath)}>
+        <Button role="menuitem" onClick={() => onDelete(filePath)}>
           {selectionCount > 1 ? 'Delete Selected' : 'Delete'}
-        </button>
+        </Button>
       </li>
     </ul>
   );

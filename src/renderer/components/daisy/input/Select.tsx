@@ -2,10 +2,11 @@ import React from 'react';
 
 export default function Select({
   children,
-  ...props
+  className = '',
+  ...rest
 }: React.SelectHTMLAttributes<HTMLSelectElement>) {
   return (
-    <select className="select" {...props}>
+    <select className={`select ${className}`.trim()} {...rest}>
       {children}
     </select>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { toggleTheme } from '../utils/theme';
+import { Button } from './daisy/actions';
 
 export default function Navbar() {
   return (
@@ -7,13 +8,13 @@ export default function Navbar() {
       <div className="flex-1 px-2 font-display text-lg" data-testid="app-title">
         Minecraft Resource Packer
       </div>
-      <button
-        className="btn btn-square btn-ghost"
+      <Button
+        className="btn-square btn-ghost"
         onClick={toggleTheme}
         aria-label="Toggle theme"
       >
         🌓
-      </button>
+      </Button>
     </header>
   );
 }

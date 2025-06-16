@@ -1,4 +1,6 @@
 import React from 'react';
+import { Checkbox } from '../daisy/input';
+import { Button } from '../daisy/actions';
 
 export interface ProjectInfo {
   name: string;
@@ -37,13 +39,12 @@ export default function ProjectTable({
         <thead>
           <tr>
             <th>
-              <input
-                type="checkbox"
+              <Checkbox
                 aria-label="Select all"
                 checked={allSelected}
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) => onSelectAll(e.target.checked)}
-                className="checkbox checkbox-sm"
+                className="checkbox-sm"
               />
             </th>
             <th onClick={() => onSort('name')} className="cursor-pointer">
@@ -75,8 +76,7 @@ export default function ProjectTable({
               className="cursor-pointer"
             >
               <td>
-                <input
-                  type="checkbox"
+                <Checkbox
                   aria-label={`Select ${p.name}`}
                   checked={selected.has(p.name)}
                   onClick={(e) => e.stopPropagation()}
@@ -84,7 +84,7 @@ export default function ProjectTable({
                     e.stopPropagation();
                     onSelect(p.name, e.target.checked);
                   }}
-                  className="checkbox checkbox-sm"
+                  className="checkbox-sm"
                 />
               </td>
               <td>{p.name}</td>
@@ -92,33 +92,33 @@ export default function ProjectTable({
               <td>{p.assets}</td>
               <td>{new Date(p.lastOpened).toLocaleDateString()}</td>
               <td className="flex gap-1">
-                <button
-                  className="btn btn-accent btn-sm"
+                <Button
+                  className="btn-accent btn-sm"
                   onClick={(e) => {
                     e.stopPropagation();
                     onOpen(p.name);
                   }}
                 >
                   Open
-                </button>
-                <button
-                  className="btn btn-info btn-sm"
+                </Button>
+                <Button
+                  className="btn-info btn-sm"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDuplicate(p.name);
                   }}
                 >
                   Duplicate
-                </button>
-                <button
-                  className="btn btn-error btn-sm"
+                </Button>
+                <Button
+                  className="btn-error btn-sm"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDelete(p.name);
                   }}
                 >
                   Delete
-                </button>
+                </Button>
               </td>
             </tr>
           ))}

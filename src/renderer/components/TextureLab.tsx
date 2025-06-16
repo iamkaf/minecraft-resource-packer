@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import path from 'path';
 import Spinner from './Spinner';
 import type { TextureEditOptions } from '../../shared/texture';
-import { Modal } from './daisy/actions';
+import { Modal, Button } from './daisy/actions';
+import { Range, Select, Checkbox } from './daisy/input';
 
 export default function TextureLab({
   file,
@@ -62,19 +63,18 @@ export default function TextureLab({
         </div>
         <label className="flex items-center gap-2">
           Hue
-          <input
-            type="range"
+          <Range
             min={-180}
             max={180}
             value={hue}
             onChange={(e) => setHue(Number(e.target.value))}
-            className="range range-xs flex-1"
+            className="range-xs flex-1"
           />
         </label>
         <label className="flex items-center gap-2">
           Rotation
-          <select
-            className="select select-sm"
+          <Select
+            className="select-sm"
             value={rotate}
             onChange={(e) => setRotate(Number(e.target.value))}
           >
@@ -82,12 +82,10 @@ export default function TextureLab({
             <option value={90}>90°</option>
             <option value={180}>180°</option>
             <option value={270}>270°</option>
-          </select>
+          </Select>
         </label>
         <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            className="checkbox"
+          <Checkbox
             checked={gray}
             onChange={(e) => setGray(e.target.checked)}
           />
@@ -95,35 +93,33 @@ export default function TextureLab({
         </label>
         <label className="flex items-center gap-2">
           Saturation
-          <input
-            type="range"
+          <Range
             min={0}
             max={2}
             step={0.1}
             value={sat}
             onChange={(e) => setSat(Number(e.target.value))}
-            className="range range-xs flex-1"
+            className="range-xs flex-1"
           />
         </label>
         <label className="flex items-center gap-2">
           Brightness
-          <input
-            type="range"
+          <Range
             min={0}
             max={2}
             step={0.1}
             value={bright}
             onChange={(e) => setBright(Number(e.target.value))}
-            className="range range-xs flex-1"
+            className="range-xs flex-1"
           />
         </label>
         <div className="modal-action">
-          <button type="button" className="btn" onClick={onClose}>
+          <Button type="button" onClick={onClose}>
             Close
-          </button>
-          <button type="submit" className="btn btn-primary" disabled={busy}>
+          </Button>
+          <Button type="submit" className="btn-primary" disabled={busy}>
             Apply
-          </button>
+          </Button>
         </div>
         {busy && <Spinner />}
       </form>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import path from 'path';
-import { Modal } from './daisy/actions';
+import { Modal, Button } from './daisy/actions';
+import { InputField, FileInput } from './daisy/input';
 
 export default function PackIconEditor({
   project,
@@ -26,33 +27,31 @@ export default function PackIconEditor({
         <h3 className="font-bold text-lg">Pack Icon</h3>
         <label className="flex items-center gap-2">
           Border
-          <input
+          <InputField
             type="color"
             value={border}
             data-testid="border-input"
             onChange={(e) => setBorder(e.target.value)}
           />
         </label>
-        <input
-          type="file"
+        <FileInput
           accept="image/png"
           data-testid="file-input"
           onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
         />
         <div className="modal-action">
-          <button
+          <Button
             type="button"
-            className="btn"
             onClick={() => window.electronAPI?.randomizeIcon(project)}
           >
             Randomise
-          </button>
-          <button type="button" className="btn" onClick={onClose}>
+          </Button>
+          <Button type="button" onClick={onClose}>
             Cancel
-          </button>
-          <button type="submit" className="btn btn-primary">
+          </Button>
+          <Button type="submit" className="btn-primary">
             Save
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

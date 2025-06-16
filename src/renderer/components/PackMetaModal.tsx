@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { PackMeta } from '../../main/projects';
-import { Modal } from './daisy/actions';
+import { Modal, Button } from './daisy/actions';
+import { InputField, Textarea } from './daisy/input';
 
 export default function PackMetaModal({
   project,
@@ -35,38 +36,38 @@ export default function PackMetaModal({
         }}
       >
         <h3 className="font-bold text-lg">Edit Metadata</h3>
-        <textarea
-          className="textarea textarea-bordered"
+        <Textarea
+          className="textarea-bordered"
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
           placeholder="Description"
         />
-        <input
-          className="input input-bordered"
+        <InputField
+          className="input-bordered"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
           placeholder="Author"
         />
-        <textarea
-          className="textarea textarea-bordered"
+        <Textarea
+          className="textarea-bordered"
           value={urls}
           onChange={(e) => setUrls(e.target.value)}
           placeholder="URLs (one per line)"
         />
         <div className="modal-action">
-          <button
+          <Button
             type="button"
-            className="btn btn-secondary"
+            className="btn-secondary"
             onClick={() => window.electronAPI?.randomizeIcon(project)}
           >
             Randomize Icon
-          </button>
-          <button type="button" className="btn" onClick={onCancel}>
+          </Button>
+          <Button type="button" onClick={onCancel}>
             Cancel
-          </button>
-          <button type="submit" className="btn btn-primary">
+          </Button>
+          <Button type="submit" className="btn-primary">
             Save
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

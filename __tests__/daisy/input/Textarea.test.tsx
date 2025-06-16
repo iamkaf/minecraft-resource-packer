@@ -4,8 +4,10 @@ import { describe, it, expect } from 'vitest';
 import { Textarea } from '../../../src/renderer/components/daisy/input';
 
 describe('Textarea', () => {
-  it('renders', () => {
-    render(<Textarea data-testid="ta" />);
-    expect(screen.getByTestId('ta')).toBeInTheDocument();
+  it('renders and accepts className', () => {
+    render(<Textarea data-testid="ta" className="extra" />);
+    const el = screen.getByTestId('ta');
+    expect(el).toBeInTheDocument();
+    expect(el).toHaveClass('extra');
   });
 });

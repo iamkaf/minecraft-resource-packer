@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import path from 'path';
 import type { PackMeta } from '../../main/projects';
+import { Button } from './daisy/actions';
 
 interface Props {
   projectPath: string;
@@ -13,7 +14,7 @@ export default function ProjectInfoPanel({
   projectPath,
   onExport,
   onBack,
-  onSettings
+  onSettings,
 }: Props) {
   const [meta, setMeta] = useState<PackMeta | null>(null);
   const name = path.basename(projectPath);
@@ -25,12 +26,12 @@ export default function ProjectInfoPanel({
   return (
     <div className="card bg-base-100 shadow" data-testid="project-info">
       <div className="card-body items-center gap-2 p-2">
-        <button className="link link-primary self-start" onClick={onBack}>
+        <Button className="link link-primary self-start" onClick={onBack}>
           Back to Projects
-        </button>
-        <button className="link link-primary self-start" onClick={onSettings}>
+        </Button>
+        <Button className="link link-primary self-start" onClick={onSettings}>
           Settings
-        </button>
+        </Button>
         <img src="ptex://pack.png" alt="Pack icon" className="w-16 h-16" />
         <h2 className="card-title text-lg font-display">{name}</h2>
         <p className="text-xs break-all">{projectPath}</p>
@@ -38,15 +39,15 @@ export default function ProjectInfoPanel({
           {meta?.description}
         </p>
         <div className="card-actions justify-end w-full mt-auto">
-          <button
-            className="btn btn-neutral btn-sm"
+          <Button
+            className="btn-neutral btn-sm"
             onClick={() => window.electronAPI?.openInFolder(projectPath)}
           >
             Open Folder
-          </button>
-          <button className="btn btn-accent btn-sm" onClick={onExport}>
+          </Button>
+          <Button className="btn-accent btn-sm" onClick={onExport}>
             Export Pack
-          </button>
+          </Button>
         </div>
       </div>
     </div>
