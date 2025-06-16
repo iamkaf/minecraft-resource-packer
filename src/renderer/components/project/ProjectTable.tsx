@@ -78,8 +78,8 @@ export default function ProjectTable({
               onClick={() => onRowClick(p.name)}
               onDoubleClick={() => onOpen(p.name)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') onOpen(p.name);
-                if (e.key === 'Delete') onDelete(p.name);
+                if (e.key === 'Enter' && selected.size <= 1) onOpen(p.name);
+                if (e.key === 'Delete' && selected.size <= 1) onDelete(p.name);
               }}
               tabIndex={0}
               className={`cursor-pointer ${

@@ -17,7 +17,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## Project Manager
 
 - [x] Better selection behavior in the project manager
-- [ ] Better bulk action detection when using hotkeys
+- [x] Better bulk action detection when using hotkeys
 - [ ] Ability to edit a project's name
 
 ---
