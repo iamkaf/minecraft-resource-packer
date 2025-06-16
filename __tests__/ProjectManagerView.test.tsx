@@ -137,7 +137,7 @@ describe('ProjectManagerView', () => {
     render(<ProjectManagerView />);
     await screen.findAllByRole('button', { name: 'Open' });
     fireEvent.click(screen.getAllByRole('button', { name: 'Duplicate' })[0]);
-    const modal = await screen.findByTestId('rename-modal');
+    const modal = await screen.findByTestId('daisy-modal');
     const input = modal.querySelector('input') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 'Alpha Copy' } });
     const form = input.closest('form');
@@ -150,7 +150,7 @@ describe('ProjectManagerView', () => {
     render(<ProjectManagerView />);
     await screen.findAllByRole('button', { name: 'Open' });
     fireEvent.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
-    const modal = await screen.findByTestId('confirm-modal');
+    const modal = await screen.findByTestId('daisy-modal');
     fireEvent.click(within(modal).getByText('Delete'));
     expect(deleteProject).toHaveBeenCalledWith('Alpha');
   });

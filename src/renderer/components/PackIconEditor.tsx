@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import path from 'path';
+import { Modal } from './daisy/actions';
 
 export default function PackIconEditor({
   project,
@@ -20,8 +21,8 @@ export default function PackIconEditor({
   };
 
   return (
-    <dialog className="modal modal-open" data-testid="icon-editor">
-      <form className="modal-box flex flex-col gap-2" onSubmit={save}>
+    <Modal open>
+      <form className="flex flex-col gap-2" onSubmit={save}>
         <h3 className="font-bold text-lg">Pack Icon</h3>
         <label className="flex items-center gap-2">
           Border
@@ -54,6 +55,6 @@ export default function PackIconEditor({
           </button>
         </div>
       </form>
-    </dialog>
+    </Modal>
   );
 }

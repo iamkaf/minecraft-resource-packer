@@ -200,9 +200,9 @@ describe('App', () => {
       fireEvent.click(btn);
       await Promise.resolve();
     });
-    expect(screen.getByTestId('export-summary')).toBeInTheDocument();
+    expect(screen.getByTestId('daisy-modal')).toBeInTheDocument();
     expect(screen.getByText(/2 files/)).toBeInTheDocument();
     fireEvent.click(screen.getByText('Close'));
-    expect(screen.queryByTestId('export-summary')).toBeNull();
+    expect(screen.queryByTestId('daisy-modal')).toBeNull();
   });
 });

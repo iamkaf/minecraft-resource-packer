@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import path from 'path';
 import Spinner from './Spinner';
 import type { TextureEditOptions } from '../../shared/texture';
+import { Modal } from './daisy/actions';
 
 export default function TextureLab({
   file,
@@ -37,16 +38,16 @@ export default function TextureLab({
   };
 
   return (
-    <dialog className="modal modal-open" data-testid="texture-lab">
+    <Modal open>
       <form
-        className="modal-box flex flex-col gap-2"
+        className="flex flex-col gap-2"
         onSubmit={(e) => {
           e.preventDefault();
           apply();
         }}
       >
         <h3 className="font-bold text-lg">Texture Lab</h3>
-        <div style={{height: '64px'}} className="flex justify-center">
+        <div style={{ height: '64px' }} className="flex justify-center">
           <img
             src={`ptex://${rel}`}
             alt="preview"
@@ -55,7 +56,7 @@ export default function TextureLab({
               transform: `rotate(${rotate}deg)`,
               filter,
               height: '64px',
-              width: '64px'
+              width: '64px',
             }}
           />
         </div>
@@ -126,6 +127,6 @@ export default function TextureLab({
         </div>
         {busy && <Spinner />}
       </form>
-    </dialog>
+    </Modal>
   );
 }

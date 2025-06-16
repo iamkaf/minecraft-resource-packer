@@ -26,7 +26,14 @@ function Wrapper({
 describe('ProjectModals', () => {
   it('duplicates project via modal', async () => {
     const duplicateProject = vi.fn().mockResolvedValue(undefined);
-    (window as unknown as { electronAPI: { duplicateProject: typeof duplicateProject; deleteProject: () => void } }).electronAPI = {
+    (
+      window as unknown as {
+        electronAPI: {
+          duplicateProject: typeof duplicateProject;
+          deleteProject: () => void;
+        };
+      }
+    ).electronAPI = {
       duplicateProject,
       deleteProject: vi.fn(),
     };
@@ -34,18 +41,25 @@ describe('ProjectModals', () => {
     const toast = vi.fn();
     render(<Wrapper refresh={refresh} toast={toast} />);
     fireEvent.click(screen.getByText('dup'));
-    const modal = await screen.findByTestId('rename-modal');
+    const modal = await screen.findByTestId('daisy-modal');
     const form = modal.querySelector('form') as HTMLFormElement;
     fireEvent.submit(form);
     fireEvent.click(screen.getByText('dup')); // reopen
-    const again = await screen.findByTestId('rename-modal');
+    const again = await screen.findByTestId('daisy-modal');
     fireEvent.click(within(again).getByText('Cancel'));
     expect(duplicateProject).toHaveBeenCalledWith('Alpha', 'Alpha Copy');
   });
 
   it('deletes project via modal', async () => {
     const deleteProject = vi.fn().mockResolvedValue(undefined);
-    (window as unknown as { electronAPI: { duplicateProject: () => void; deleteProject: typeof deleteProject } }).electronAPI = {
+    (
+      window as unknown as {
+        electronAPI: {
+          duplicateProject: () => void;
+          deleteProject: typeof deleteProject;
+        };
+      }
+    ).electronAPI = {
       duplicateProject: vi.fn(),
       deleteProject,
     };
@@ -53,10 +67,10 @@ describe('ProjectModals', () => {
     const toast = vi.fn();
     render(<Wrapper refresh={refresh} toast={toast} />);
     fireEvent.click(screen.getByText('del'));
-    await screen.findByTestId('confirm-modal');
+    await screen.findByTestId('daisy-modal');
     fireEvent.click(screen.getByText('Delete'));
     fireEvent.click(screen.getByText('del'));
-    const delModal = await screen.findByTestId('confirm-modal');
+    const delModal = await screen.findByTestId('daisy-modal');
     fireEvent.click(within(delModal).getByText('Cancel'));
     expect(deleteProject).toHaveBeenCalledWith('Alpha');
   });
