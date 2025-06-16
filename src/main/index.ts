@@ -47,6 +47,7 @@ const createMainWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 900,
+    icon: path.resolve(__dirname, '../..', 'resources', 'icon.png'),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
