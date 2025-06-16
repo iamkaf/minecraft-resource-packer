@@ -12,7 +12,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Navbar with title and 🌓 theme switch (persists in `localStorage`)
 - [x] Toast/alert system via daisyUI `toast`
 - [x] Loading indicators for every async op (daisyUI components)
-- [ ] Replace react-loader-spinner with daisyUI skeleton/progress/radial-progress components (prefer skeleton)
+- [x] Replace react-loader-spinner with daisyUI skeleton/progress/radial-progress components (prefer skeleton)
 - [x] Confetti celebration on successful export (`react-canvas-confetti`)
 - [ ] Undo/Redo queue (last 20 actions)
 
