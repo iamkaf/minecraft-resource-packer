@@ -5,7 +5,6 @@ import AssetBrowserItem from './AssetBrowserItem';
 import { useProjectFiles } from './file/useProjectFiles';
 import FileTree from './FileTree';
 import { FilterBadge, InputField, Range } from './daisy/input';
-import { Button } from './daisy/actions';
 import { Accordion } from './daisy/display';
 
 interface Props {
@@ -50,7 +49,6 @@ const AssetBrowser: React.FC<Props> = ({
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);
   const [filters, setFilters] = useState<Filter[]>([]);
-  const [view, setView] = useState<'grid' | 'tree'>('grid');
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -129,20 +127,6 @@ const AssetBrowser: React.FC<Props> = ({
           onChange={(e) => setZoom(Number(e.target.value))}
           className="range-xs w-32"
         />
-        <div className="btn-group">
-          <Button
-            className={`btn-xs ${view === 'grid' ? 'btn-primary' : ''}`}
-            onClick={() => setView('grid')}
-          >
-            Grid
-          </Button>
-          <Button
-            className={`btn-xs ${view === 'tree' ? 'btn-primary' : ''}`}
-            onClick={() => setView('tree')}
-          >
-            Tree
-          </Button>
-        </div>
       </div>
       <div className="flex gap-1 mb-2">
         {FILTERS.map((f) => (
@@ -155,40 +139,48 @@ const AssetBrowser: React.FC<Props> = ({
           />
         ))}
       </div>
-      {view === 'grid' ? (
-        (['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
-          (key) => {
-            const list = categories[key];
-            if (list.length === 0) return null;
-            return (
-              <Accordion key={key} title={key} className="mb-2" defaultOpen>
-                <div className="grid grid-cols-6 gap-2">
-                  {list.map((f) => (
-                    <AssetBrowserItem
-                      key={f}
-                      projectPath={projectPath}
-                      file={f}
-                      selected={selected}
-                      setSelected={setSelected}
-                      noExport={noExport}
-                      toggleNoExport={toggleNoExport}
-                      deleteFiles={deleteFiles}
-                      openRename={(file) => setRenameTarget(file)}
-                      zoom={zoom}
-                    />
-                  ))}
-                </div>
-              </Accordion>
-            );
-          }
-        )
-      ) : (
-        <FileTree
-          files={visible}
-          selected={selected}
-          setSelected={setSelected}
-        />
-      )}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="col-span-2">
+          {(['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
+            (key) => {
+              const list = categories[key];
+              if (list.length === 0) return null;
+              return (
+                <Accordion key={key} title={key} className="mb-2" defaultOpen>
+                  <div className="grid grid-cols-6 gap-2">
+                    {list.map((f) => (
+                      <AssetBrowserItem
+                        key={f}
+                        projectPath={projectPath}
+                        file={f}
+                        selected={selected}
+                        setSelected={setSelected}
+                        noExport={noExport}
+                        toggleNoExport={toggleNoExport}
+                        deleteFiles={deleteFiles}
+                        openRename={(file) => setRenameTarget(file)}
+                        zoom={zoom}
+                      />
+                    ))}
+                  </div>
+                </Accordion>
+              );
+            }
+          )}
+        </div>
+        <div>
+          <FileTree
+            projectPath={projectPath}
+            files={visible}
+            selected={selected}
+            setSelected={setSelected}
+            noExport={noExport}
+            toggleNoExport={toggleNoExport}
+            deleteFiles={deleteFiles}
+            openRename={(file) => setRenameTarget(file)}
+          />
+        </div>
+      </div>
       {renameTarget && (
         <RenameModal
           current={path.basename(renameTarget)}
