@@ -133,7 +133,7 @@ Beside the asset information panel, a **Preview Pane** shows the currently
 selected texture under neutral lighting. The pane renders textures at a 1:1
 pixel scale and includes a zoom slider (1–8×). Scrolling the mouse wheel over
 the pane adjusts the zoom. The pane is lazy loaded and displays a
-`react-loader-spinner` indicator while loading.
+daisyUI skeleton indicator while loading.
 
 The **Texture Lab** modal lets you adjust PNG textures without leaving the app.
 It exposes hue shift, rotation, grayscale, saturation and brightness controls.

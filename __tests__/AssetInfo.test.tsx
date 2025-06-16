@@ -36,6 +36,7 @@ describe('AssetInfo', () => {
   it('renders asset name', async () => {
     render(<AssetInfo projectPath="/p" asset="foo.png" />);
     expect(screen.getByText('foo.png')).toBeInTheDocument();
+    expect(screen.getByTestId('preview-skeleton')).toBeInTheDocument();
     expect(await screen.findByTestId('preview-pane')).toBeInTheDocument();
   });
 

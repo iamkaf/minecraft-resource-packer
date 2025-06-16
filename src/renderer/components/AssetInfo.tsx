@@ -1,6 +1,5 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import path from 'path';
-import { Oval } from 'react-loader-spinner';
 import { useToast } from './ToastProvider';
 import Spinner from './Spinner';
 import { Textarea } from './daisy/input';
@@ -70,7 +69,10 @@ export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
       <Suspense
         fallback={
           <div className="flex items-center justify-center w-32 h-32">
-            <Oval height={32} width={32} color="#3b82f6" />
+            <div
+              className="skeleton w-32 h-32"
+              data-testid="preview-skeleton"
+            />
           </div>
         }
       >

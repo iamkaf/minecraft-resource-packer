@@ -7,6 +7,7 @@ describe('BulkExportModal', () => {
   it('shows spinner and progress', () => {
     render(<BulkExportModal progress={{ current: 1, total: 3 }} />);
     expect(screen.getByTestId('daisy-modal')).toBeInTheDocument();
+    expect(screen.getByTestId('spinner')).toBeInTheDocument();
     expect(screen.getByText('1/3')).toBeInTheDocument();
   });
 });

@@ -58,61 +58,73 @@ Use https://minecraft.wiki/ as the source of truth for up-to-date Minecraft info
 Minecraft version information can be found at: https://launchermeta.mojang.com/mc/game/version_manifest.json
 
 ## Task Context
-1. The repository root contains `TODO.md`, a list of unchecked feature bullets.  
-2. Each bullet is terse; the expanded requirements live in the glossary below.  
+
+1. The repository root contains `TODO.md`, a list of unchecked feature bullets.
+2. Each bullet is terse; the expanded requirements live in the glossary below.
 3. Every UI component and helper must ship with **Vitest + React-Testing-Library tests** and keep total coverage ≥ 90 %.
 
 ## Glossary of Definitions
 
 ### Global Shell & UX
-* **Drawer layout** – daisyUI `drawer`; collapses to icons < 768 px; toggled with hamburger.  
-* **Navbar** – title text, 🌓 theme switch persisted in `localStorage`.  
-* **Toast system** – daisyUI `toast`, ARIA live region.
-* **Loading indicators** – wrap async ops in `<Suspense>` with `react-loader-spinner`.
-* **Confetti** – `react-canvas-confetti`, auto-disabled by `prefers-reduced-motion`.
-* **Undo/Redo** – global queue (20 actions).
 
-### Projects Dashboard  
-* **Placeholder names** – generated via `unique-names-generator`; must be pronounceable.
-* Zebra table columns: Name · MC Version · Assets · Last opened; sortable.  
-* CRUD actions: New / Import / Duplicate / Delete / Open.  
-* Search + version filter chips.
-* Bulk export selected rows.  
-* Metadata sidebar: description, author, URLs, timestamps.
+- **Drawer layout** – daisyUI `drawer`; collapses to icons < 768 px; toggled with hamburger.
+- **Navbar** – title text, 🌓 theme switch persisted in `localStorage`.
+- **Toast system** – daisyUI `toast`, ARIA live region.
+- **Loading indicators** – wrap async ops in `<Suspense>` with `daisyUI skeletons or progress`.
+- **Confetti** – `react-canvas-confetti`, auto-disabled by `prefers-reduced-motion`.
+- **Undo/Redo** – global queue (20 actions).
 
-### Vanilla Asset Browser  
-* Categorized sections; grid with zoom 24–128 px; hover ring.  
-* Drag-or-click to add; quick filters (Blocks, Items, Entity, UI, Audio).  
-* Neutral-lighting preview pane.
+### Projects Dashboard
 
-### Project File Explorer  
-* **Chokidar watcher** for `assets/**`, < 200 ms refresh.  
-* Context menu: Reveal, Open, Rename, Delete.  
-* Dirty badge; 🔒 No-export toggle; custom namespaces (non-`minecraft`).  
+- **Placeholder names** – generated via `unique-names-generator`; must be pronounceable.
+- Zebra table columns: Name · MC Version · Assets · Last opened; sortable.
+- CRUD actions: New / Import / Duplicate / Delete / Open.
+- Search + version filter chips.
+- Bulk export selected rows.
+- Metadata sidebar: description, author, URLs, timestamps.
 
-### Texture Inspector  
-* 1 : 1 canvas preview + zoom.  
-* External edit; auto-reload; revision history (20).  
-* **Sharp mini-lab**: hue-shift, rotate 90°, gray-scale, ±saturation, ±brightness.
+### Vanilla Asset Browser
 
-### Pack Settings  
-* Editable `pack.mcmeta` (desc, `pack_format`, language).  
-* **Random icon seed** – Sharp composited 128×128 PNG (pastel BG, 4 px border, centered random Minecraft item texture).  
-* **Pack-Icon Editor** – modal to randomise item/background/border, or upload custom PNG; always outputs 128 × 128.  
-* Target resolution radio 16×/32×/64×; license; validation.
+- Categorized sections; grid with zoom 24–128 px; hover ring.
+- Drag-or-click to add; quick filters (Blocks, Items, Entity, UI, Audio).
+- Neutral-lighting preview pane.
 
-### Templates  
-* JSON files under `templates/` → `{name, mcVersion, assets[]}` (e.g., “Gold Tools & Armor”, “All Food Items”).
+### Project File Explorer
 
-### Import / Export  
-* Import wizard – use `adm-zip` to ingest `.zip`, read `pack.mcmeta` + optional `pack.json`.
-* Export – `archiver` with progress bar; embed `pack.json`; respect No-export flags; confetti on success.  
+- **Chokidar watcher** for `assets/**`, < 200 ms refresh.
+- Context menu: Reveal, Open, Rename, Delete.
+- Dirty badge; 🔒 No-export toggle; custom namespaces (non-`minecraft`).
 
-### Export Wizard  
-* Destination picker (Downloads default); compression ETA; archive name defaults to project name, a custom name can be saved and will be remembered; post-actions (Open folder, Copy to resourcepacks, Test-launch MC).  
+### Texture Inspector
 
-### Preferences / About  
-* Paths, theme, shortcuts, update channel, analytics opt-in, about pane.  
+- 1 : 1 canvas preview + zoom.
+- External edit; auto-reload; revision history (20).
+- **Sharp mini-lab**: hue-shift, rotate 90°, gray-scale, ±saturation, ±brightness.
 
-### Quality & Accessibility  
-* Full keyboard nav; daisyUI high-contrast theme; responsive grid; 8-pt spacing.
+### Pack Settings
+
+- Editable `pack.mcmeta` (desc, `pack_format`, language).
+- **Random icon seed** – Sharp composited 128×128 PNG (pastel BG, 4 px border, centered random Minecraft item texture).
+- **Pack-Icon Editor** – modal to randomise item/background/border, or upload custom PNG; always outputs 128 × 128.
+- Target resolution radio 16×/32×/64×; license; validation.
+
+### Templates
+
+- JSON files under `templates/` → `{name, mcVersion, assets[]}` (e.g., “Gold Tools & Armor”, “All Food Items”).
+
+### Import / Export
+
+- Import wizard – use `adm-zip` to ingest `.zip`, read `pack.mcmeta` + optional `pack.json`.
+- Export – `archiver` with progress bar; embed `pack.json`; respect No-export flags; confetti on success.
+
+### Export Wizard
+
+- Destination picker (Downloads default); compression ETA; archive name defaults to project name, a custom name can be saved and will be remembered; post-actions (Open folder, Copy to resourcepacks, Test-launch MC).
+
+### Preferences / About
+
+- Paths, theme, shortcuts, update channel, analytics opt-in, about pane.
+
+### Quality & Accessibility
+
+- Full keyboard nav; daisyUI high-contrast theme; responsive grid; 8-pt spacing.
