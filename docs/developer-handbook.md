@@ -125,6 +125,12 @@ row loads metadata from `project.json` via IPC and displays the pack description
 author, related URLs and creation timestamps. Use the **Edit** button to modify
 these fields and save back to `project.json`.
 
+## Row Selection
+
+Checkboxes in the project table select rows. Hold **Shift** while clicking to
+select a contiguous range beginning from the last clicked row. Selected rows are
+highlighted and selections persist when sorting or filtering the table.
+
 ## Bulk Export
 
 Select multiple rows using the checkboxes in the projects table and click
