@@ -19,6 +19,8 @@ describe('ProjectManagerView help link', () => {
       importProject: () => Promise<void>;
       duplicateProject: (n: string, nn: string) => Promise<void>;
       deleteProject: (n: string) => Promise<void>;
+      getProjectSort: () => Promise<{ key: string; asc: boolean }>;
+      setProjectSort: (key: string, asc: boolean) => Promise<void>;
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       listProjects: vi.fn().mockResolvedValue([]),
@@ -28,6 +30,8 @@ describe('ProjectManagerView help link', () => {
       importProject: vi.fn(),
       duplicateProject: vi.fn(),
       deleteProject: vi.fn(),
+      getProjectSort: vi.fn().mockResolvedValue({ key: 'name', asc: true }),
+      setProjectSort: vi.fn(),
     } as ElectronAPI;
     openExternalMock.mockResolvedValue(undefined);
   });

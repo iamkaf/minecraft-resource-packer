@@ -43,6 +43,8 @@ export interface IpcRequestMap {
   'set-confetti': [boolean];
   'get-default-export-dir': [];
   'set-default-export-dir': [string];
+  'get-project-sort': [];
+  'set-project-sort': [keyof ProjectInfo, boolean];
 }
 
 export interface IpcResponseMap {
@@ -85,6 +87,8 @@ export interface IpcResponseMap {
   'set-confetti': void;
   'get-default-export-dir': string;
   'set-default-export-dir': void;
+  'get-project-sort': { key: keyof ProjectInfo; asc: boolean };
+  'set-project-sort': void;
 }
 
 export interface IpcEventMap {

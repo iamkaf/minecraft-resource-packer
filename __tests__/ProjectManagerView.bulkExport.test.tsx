@@ -7,6 +7,8 @@ describe('ProjectManagerView bulk export', () => {
   const listProjects = vi.fn();
   const listVersions = vi.fn();
   const exportProjects = vi.fn();
+  const getProjectSort = vi.fn();
+  const setProjectSort = vi.fn();
 
   beforeEach(() => {
     interface API {
@@ -25,6 +27,8 @@ describe('ProjectManagerView bulk export', () => {
       importProject: () => Promise<void>;
       duplicateProject: (name: string, newName: string) => Promise<void>;
       deleteProject: (name: string) => Promise<void>;
+      getProjectSort: () => Promise<{ key: keyof ProjectInfo; asc: boolean }>;
+      setProjectSort: (key: keyof ProjectInfo, asc: boolean) => Promise<void>;
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       listProjects,
@@ -35,6 +39,8 @@ describe('ProjectManagerView bulk export', () => {
       importProject: vi.fn(),
       duplicateProject: vi.fn(),
       deleteProject: vi.fn(),
+      getProjectSort,
+      setProjectSort,
     };
     listProjects.mockResolvedValue([
       { name: 'Alpha', version: '1.21', assets: 2, lastOpened: 0 },
@@ -42,6 +48,8 @@ describe('ProjectManagerView bulk export', () => {
     ]);
     listVersions.mockResolvedValue([]);
     exportProjects.mockResolvedValue(undefined);
+    getProjectSort.mockResolvedValue({ key: 'name', asc: true });
+    setProjectSort.mockResolvedValue(undefined);
     vi.clearAllMocks();
   });
 
