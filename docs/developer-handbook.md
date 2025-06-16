@@ -130,6 +130,8 @@ these fields and save back to `project.json`. The sidebar also includes a
 **Rename** button that opens a modal to change the project's folder name and
 updates `project.json` accordingly.
 
+Pack metadata can also be edited from the Editor's **Project Info Panel** by clicking the description.
+
 ## Row Selection
 
 Checkboxes in the project table select rows. Hold **Shift** while clicking to
