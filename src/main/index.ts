@@ -10,16 +10,22 @@ import { registerFileHandlers } from './ipcFiles';
 import { registerFileWatcherHandlers } from './ipc/fileWatcher';
 import path from 'path';
 import { registerExportHandlers } from './exporter';
-import { registerProjectHandlers } from './projects';
+import { registerProjectHandlers, openProject } from './projects';
 import { registerNoExportHandlers } from './noExport';
 import {
   registerAssetHandlers,
   registerVanillaProtocol,
   registerAssetProtocol,
+  setActiveProject,
 } from './assets';
 import { registerIconHandlers } from './icon';
 import { registerTextureLabHandlers } from './textureLab';
-import { registerLayoutHandlers } from './layout';
+import {
+  registerLayoutHandlers,
+  getOpenLastProject,
+  getLastProject,
+  setLastProject,
+} from './layout';
 import { registerExternalEditorHandlers } from './externalEditor';
 import {
   getWindowBounds,
@@ -101,6 +107,16 @@ app.whenReady().then(() => {
   registerVanillaProtocol(protocol);
   registerAssetProtocol(protocol);
   createMainWindow();
+  const shouldOpen = getOpenLastProject();
+  const last = getLastProject();
+  if (shouldOpen && last) {
+    mainWindow?.webContents.once('did-finish-load', async () => {
+      const projectPath = await openProject(projectsDir, last);
+      setLastProject(last);
+      await setActiveProject(projectPath);
+      mainWindow?.webContents.send('project-opened', projectPath);
+    });
+  }
 });
 
 // Standard OS X behaviour: quit the app when all windows are closed on Windows

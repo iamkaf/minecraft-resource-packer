@@ -15,6 +15,8 @@ const store = new Store<{
   assetSearch: string;
   assetFilters: string[];
   assetZoom: number;
+  openLastProject: boolean;
+  lastProject: string;
 }>({
   defaults: {
     editorLayout: [20, 80],
@@ -27,6 +29,8 @@ const store = new Store<{
     assetSearch: '',
     assetFilters: [],
     assetZoom: 64,
+    openLastProject: true,
+    lastProject: '',
   },
 });
 
@@ -109,6 +113,22 @@ export function setAssetZoom(z: number): void {
   store.set('assetZoom', z);
 }
 
+export function getOpenLastProject(): boolean {
+  return store.get('openLastProject');
+}
+
+export function setOpenLastProject(flag: boolean): void {
+  store.set('openLastProject', flag);
+}
+
+export function getLastProject(): string {
+  return store.get('lastProject');
+}
+
+export function setLastProject(name: string): void {
+  store.set('lastProject', name);
+}
+
 export function registerLayoutHandlers(ipc: IpcMain): void {
   ipc.handle('get-editor-layout', () => getEditorLayout());
   ipc.handle('set-editor-layout', (_e, layout: number[]) =>
@@ -136,4 +156,10 @@ export function registerLayoutHandlers(ipc: IpcMain): void {
   ipc.handle('set-asset-filters', (_e, f: string[]) => setAssetFilters(f));
   ipc.handle('get-asset-zoom', () => getAssetZoom());
   ipc.handle('set-asset-zoom', (_e, z: number) => setAssetZoom(z));
+  ipc.handle('get-open-last-project', () => getOpenLastProject());
+  ipc.handle('set-open-last-project', (_e, flag: boolean) =>
+    setOpenLastProject(flag)
+  );
+  ipc.handle('get-last-project', () => getLastProject());
+  ipc.handle('set-last-project', (_e, name: string) => setLastProject(name));
 }

@@ -7,6 +7,7 @@ export default function SettingsView() {
   const [editor, setEditor] = useState('');
   const [theme, setTheme] = useState<Theme>('system');
   const [confetti, setConfetti] = useState(true);
+  const [openLast, setOpenLast] = useState(true);
   const [exportDir, setExportDir] = useState('');
   const toast = useToast();
 
@@ -17,6 +18,7 @@ export default function SettingsView() {
     });
     window.electronAPI?.getConfetti().then((c) => setConfetti(c));
     window.electronAPI?.getDefaultExportDir().then((d) => setExportDir(d));
+    window.electronAPI?.getOpenLastProject().then((f) => setOpenLast(f));
   }, []);
 
   const saveEditor = () => {
@@ -48,6 +50,13 @@ export default function SettingsView() {
     const next = !confetti;
     setConfetti(next);
     await window.electronAPI?.setConfetti(next);
+    toast({ message: 'Preference saved', type: 'success' });
+  };
+
+  const toggleOpenLast = async () => {
+    const next = !openLast;
+    setOpenLast(next);
+    await window.electronAPI?.setOpenLastProject(next);
     toast({ message: 'Preference saved', type: 'success' });
   };
   return (
@@ -116,6 +125,20 @@ export default function SettingsView() {
             className="toggle"
             checked={confetti}
             onChange={toggleConfetti}
+          />
+        </label>
+      </div>
+      <div className="form-control max-w-md mt-4">
+        <label className="cursor-pointer label" htmlFor="open-last-toggle">
+          <span className="label-text">
+            Open the most recently used project on startup
+          </span>
+          <input
+            id="open-last-toggle"
+            type="checkbox"
+            className="toggle"
+            checked={openLast}
+            onChange={toggleOpenLast}
           />
         </label>
       </div>

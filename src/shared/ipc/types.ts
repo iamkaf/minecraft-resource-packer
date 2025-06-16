@@ -53,6 +53,10 @@ export interface IpcRequestMap {
   'set-asset-filters': [string[]];
   'get-asset-zoom': [];
   'set-asset-zoom': [number];
+  'get-open-last-project': [];
+  'set-open-last-project': [boolean];
+  'get-last-project': [];
+  'set-last-project': [string];
 }
 
 export interface IpcResponseMap {
@@ -104,6 +108,10 @@ export interface IpcResponseMap {
   'set-asset-filters': void;
   'get-asset-zoom': number;
   'set-asset-zoom': void;
+  'get-open-last-project': boolean;
+  'set-open-last-project': void;
+  'get-last-project': string;
+  'set-last-project': void;
 }
 
 export interface IpcEventMap {
