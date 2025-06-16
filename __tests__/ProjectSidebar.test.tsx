@@ -10,6 +10,7 @@ describe('ProjectSidebar', () => {
       author: 'Me',
       urls: ['https://a.com'],
       created: 0,
+      license: '',
     });
     interface API {
       loadPackMeta: typeof load;
@@ -43,12 +44,14 @@ describe('ProjectSidebar', () => {
         author: '',
         urls: [],
         created: 0,
+        license: '',
       })
       .mockResolvedValueOnce({
         description: 'Second',
         author: '',
         urls: [],
         created: 0,
+        license: '',
       });
     interface API {
       loadPackMeta: typeof load;
