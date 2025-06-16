@@ -7,7 +7,7 @@ import archiver from 'archiver';
 import { packFormatForVersion } from '../shared/packFormat';
 import type { IpcMain } from 'electron';
 import { dialog } from 'electron';
-import { getDefaultExportDir } from './layout';
+import { getDefaultExportDir, setDefaultExportDir } from './layout';
 import { ProjectMetadataSchema } from '../shared/project';
 
 export interface ExportSummary {
@@ -122,6 +122,7 @@ export async function exportProjects(
       throw new Error(`Failed to export ${name}`);
     });
   }
+  setDefaultExportDir(dir);
 }
 
 export function registerExportHandlers(ipc: IpcMain, baseDir: string) {
@@ -137,7 +138,9 @@ export function registerExportHandlers(ipc: IpcMain, baseDir: string) {
         filters: [{ name: 'Zip Files', extensions: ['zip'] }],
       });
       if (canceled || !filePath) return;
-      return exportPack(projectPath, filePath);
+      const summary = await exportPack(projectPath, filePath);
+      setDefaultExportDir(path.dirname(filePath));
+      return summary;
     }
   );
   ipc.handle('export-projects', (_e, names: string[]) =>
