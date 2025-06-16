@@ -8,6 +8,7 @@ import { useProject } from './ProjectProvider';
 
 const PreviewPane = lazy(() => import('./PreviewPane'));
 const TextureLab = lazy(() => import('./TextureLab'));
+const TextureDiff = lazy(() => import('./TextureDiff'));
 
 interface Props {
   asset: string | null;
@@ -21,6 +22,7 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
   const [orig, setOrig] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [lab, setLab] = useState(false);
+  const [diff, setDiff] = useState(false);
 
   const full = asset ? path.join(projectPath, asset) : '';
 
@@ -120,11 +122,22 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
             >
               Edit Externally
             </Button>
+            <Button
+              className="btn-secondary btn-sm"
+              onClick={() => setDiff(true)}
+            >
+              Compare with Vanilla
+            </Button>
           </div>
         )}
         {lab && (
           <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
             <TextureLab file={full} onClose={() => setLab(false)} />
+          </Suspense>
+        )}
+        {diff && (
+          <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
+            <TextureDiff asset={asset} onClose={() => setDiff(false)} />
           </Suspense>
         )}
       </div>
