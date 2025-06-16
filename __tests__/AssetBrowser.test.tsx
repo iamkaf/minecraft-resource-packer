@@ -100,7 +100,7 @@ describe('AssetBrowser', () => {
     fireEvent.click(
       (await screen.findAllByRole('menuitem', { name: 'Rename' }))[0]
     );
-    const rmodal = await screen.findByTestId('rename-modal');
+    const rmodal = await screen.findByTestId('daisy-modal');
     const input = within(rmodal).getByDisplayValue('a.txt');
     fireEvent.change(input, { target: { value: 'renamed.txt' } });
     const form = input.closest('form');
@@ -110,15 +110,12 @@ describe('AssetBrowser', () => {
       path.join('/proj', 'a.txt'),
       path.join('/proj', 'renamed.txt')
     );
-    expect(screen.queryByTestId('rename-modal')).toBeNull();
+    expect(screen.queryByTestId('daisy-modal')).toBeNull();
     fireEvent.contextMenu(item);
     fireEvent.click(
       (await screen.findAllByRole('menuitem', { name: 'Delete' }))[0]
     );
-    const modal = await screen.findByTestId('delete-modal');
-    fireEvent.click(within(modal).getByText('Delete'));
     expect(deleteFile).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
-    expect(modal).not.toBeInTheDocument();
   });
 
   it('updates when file watcher events fire', async () => {
@@ -182,8 +179,6 @@ describe('AssetBrowser', () => {
     fireEvent.click(b, { ctrlKey: true });
     const wrapper = screen.getByTestId('asset-browser');
     fireEvent.keyDown(wrapper, { key: 'Delete' });
-    const modal = await screen.findByTestId('delete-modal');
-    fireEvent.click(within(modal).getByText('Delete'));
     expect(deleteFile).toHaveBeenCalledTimes(2);
   });
 

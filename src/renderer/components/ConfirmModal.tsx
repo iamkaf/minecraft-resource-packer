@@ -1,4 +1,5 @@
 import React from 'react';
+import { Modal } from './daisy/actions';
 
 export default function ConfirmModal({
   title,
@@ -14,19 +15,17 @@ export default function ConfirmModal({
   onConfirm: () => void;
 }) {
   return (
-    <dialog className="modal modal-open" data-testid="confirm-modal">
-      <div className="modal-box">
-        <h3 className="font-bold text-lg mb-2">{title}</h3>
-        <div>{message}</div>
-        <div className="modal-action">
-          <button className="btn" onClick={onCancel}>
-            Cancel
-          </button>
-          <button className="btn btn-primary" onClick={onConfirm}>
-            {confirmText}
-          </button>
-        </div>
+    <Modal open>
+      <h3 className="font-bold text-lg mb-2">{title}</h3>
+      <div>{message}</div>
+      <div className="modal-action">
+        <button className="btn" onClick={onCancel}>
+          Cancel
+        </button>
+        <button className="btn btn-primary" onClick={onConfirm}>
+          {confirmText}
+        </button>
       </div>
-    </dialog>
+    </Modal>
   );
 }

@@ -82,7 +82,7 @@ describe('EditorView', () => {
       await Promise.resolve();
     });
     expect(exportProject).toHaveBeenCalledWith('/tmp/proj');
-    expect(screen.getByTestId('export-summary')).toBeInTheDocument();
+    expect(screen.getByTestId('daisy-modal')).toBeInTheDocument();
   });
 
   it('calls onBack when Back clicked', () => {

@@ -11,7 +11,7 @@ interface Props {
   setSelected: React.Dispatch<React.SetStateAction<Set<string>>>;
   noExport: Set<string>;
   toggleNoExport: (files: string[], flag: boolean) => void;
-  confirmDelete: (files: string[]) => void;
+  deleteFiles: (files: string[]) => void;
   openRename: (file: string) => void;
   zoom: number;
 }
@@ -23,7 +23,7 @@ const AssetBrowserItem: React.FC<Props> = ({
   setSelected,
   noExport,
   toggleNoExport,
-  confirmDelete,
+  deleteFiles,
   openRename,
   zoom,
 }) => {
@@ -126,7 +126,7 @@ const AssetBrowserItem: React.FC<Props> = ({
         onOpen={() => window.electronAPI?.openFile(full)}
         onRename={() => openRename(file)}
         onDelete={() =>
-          confirmDelete(
+          deleteFiles(
             selected.size > 1
               ? Array.from(selected).map((s) => path.join(projectPath, s))
               : [full]

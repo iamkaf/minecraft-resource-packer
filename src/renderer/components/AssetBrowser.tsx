@@ -43,7 +43,6 @@ const AssetBrowser: React.FC<Props> = ({
 }) => {
   const { files, noExport, toggleNoExport } = useProjectFiles(projectPath);
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [confirmDelete, setConfirmDelete] = useState<string[] | null>(null);
   const [renameTarget, setRenameTarget] = useState<string | null>(null);
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);
@@ -88,10 +87,13 @@ const AssetBrowser: React.FC<Props> = ({
     );
   };
 
+  const deleteFiles = (files: string[]) => {
+    files.forEach((f) => window.electronAPI?.deleteFile(f));
+    setSelected(new Set());
+  };
+
   const handleDeleteSelected = () => {
-    setConfirmDelete(
-      Array.from(selected).map((s) => path.join(projectPath, s))
-    );
+    deleteFiles(Array.from(selected).map((s) => path.join(projectPath, s)));
   };
 
   return (
@@ -177,7 +179,7 @@ const AssetBrowser: React.FC<Props> = ({
                         setSelected={setSelected}
                         noExport={noExport}
                         toggleNoExport={toggleNoExport}
-                        confirmDelete={(files) => setConfirmDelete(files)}
+                        deleteFiles={deleteFiles}
                         openRename={(file) => setRenameTarget(file)}
                         zoom={zoom}
                       />
@@ -194,36 +196,6 @@ const AssetBrowser: React.FC<Props> = ({
           selected={selected}
           setSelected={setSelected}
         />
-      )}
-      {confirmDelete && (
-        <dialog className="modal modal-open" data-testid="delete-modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg mb-2">Confirm Delete</h3>
-            <p>
-              {confirmDelete.length === 1
-                ? path.basename(confirmDelete[0])
-                : `${confirmDelete.length} files`}
-            </p>
-            <div className="modal-action">
-              <button className="btn" onClick={() => setConfirmDelete(null)}>
-                Cancel
-              </button>
-              <button
-                className="btn btn-error"
-                onClick={() => {
-                  if (!confirmDelete) return;
-                  confirmDelete.forEach((full) =>
-                    window.electronAPI?.deleteFile(full)
-                  );
-                  setConfirmDelete(null);
-                  setSelected(new Set());
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </dialog>
       )}
       {renameTarget && (
         <RenameModal

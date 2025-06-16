@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Modal } from './daisy/actions';
 
 export default function RenameModal({
   current,
@@ -20,9 +21,9 @@ export default function RenameModal({
     inputRef.current?.select();
   }, []);
   return (
-    <dialog className="modal modal-open" data-testid="rename-modal">
+    <Modal open>
       <form
-        className="modal-box flex flex-col gap-2"
+        className="flex flex-col gap-2"
         onSubmit={(e) => {
           e.preventDefault();
           onRename(name);
@@ -44,6 +45,6 @@ export default function RenameModal({
           </button>
         </div>
       </form>
-    </dialog>
+    </Modal>
   );
 }

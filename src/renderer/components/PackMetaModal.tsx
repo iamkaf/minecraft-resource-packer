@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { PackMeta } from '../../main/projects';
+import { Modal } from './daisy/actions';
 
 export default function PackMetaModal({
   project,
@@ -16,9 +17,9 @@ export default function PackMetaModal({
   const [author, setAuthor] = useState(meta.author);
   const [urls, setUrls] = useState(meta.urls.join('\n'));
   return (
-    <dialog className="modal modal-open" data-testid="meta-modal">
+    <Modal open>
       <form
-        className="modal-box flex flex-col gap-2"
+        className="flex flex-col gap-2"
         onSubmit={(e) => {
           e.preventDefault();
           onSave({
@@ -68,6 +69,6 @@ export default function PackMetaModal({
           </button>
         </div>
       </form>
-    </dialog>
+    </Modal>
   );
 }

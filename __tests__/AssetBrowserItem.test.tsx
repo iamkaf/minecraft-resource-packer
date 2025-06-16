@@ -24,7 +24,7 @@ beforeEach(() => {
 
 describe('AssetBrowserItem', () => {
   it('calls IPC actions from context menu', async () => {
-    const confirmDelete = vi.fn();
+    const deleteFiles = vi.fn();
     const openRename = vi.fn();
     render(
       <AssetBrowserItem
@@ -34,7 +34,7 @@ describe('AssetBrowserItem', () => {
         setSelected={() => undefined}
         noExport={new Set()}
         toggleNoExport={() => undefined}
-        confirmDelete={confirmDelete}
+        deleteFiles={deleteFiles}
         openRename={openRename}
         zoom={64}
       />
@@ -51,7 +51,7 @@ describe('AssetBrowserItem', () => {
     expect(openRename).toHaveBeenCalledWith('a.txt');
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Delete' }));
-    expect(confirmDelete).toHaveBeenCalledWith([path.join('/proj', 'a.txt')]);
+    expect(deleteFiles).toHaveBeenCalledWith([path.join('/proj', 'a.txt')]);
   });
 
   it('toggles noExport for selected files', () => {
@@ -65,7 +65,7 @@ describe('AssetBrowserItem', () => {
         setSelected={() => undefined}
         noExport={new Set()}
         toggleNoExport={toggleNoExport}
-        confirmDelete={() => undefined}
+        deleteFiles={() => undefined}
         openRename={() => undefined}
         zoom={64}
       />
@@ -86,7 +86,7 @@ describe('AssetBrowserItem', () => {
         setSelected={() => undefined}
         noExport={new Set()}
         toggleNoExport={() => undefined}
-        confirmDelete={() => undefined}
+        deleteFiles={() => undefined}
         openRename={() => undefined}
         zoom={64}
       />
@@ -109,7 +109,7 @@ describe('AssetBrowserItem', () => {
         setSelected={() => undefined}
         noExport={new Set(['a.txt'])}
         toggleNoExport={() => undefined}
-        confirmDelete={() => undefined}
+        deleteFiles={() => undefined}
         openRename={() => undefined}
         zoom={64}
       />

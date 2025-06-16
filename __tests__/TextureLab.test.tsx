@@ -8,7 +8,7 @@ describe('TextureLab', () => {
     render(
       <TextureLab file="/proj/foo.png" projectPath="/proj" onClose={() => {}} />
     );
-    expect(screen.getByTestId('texture-lab')).toBeInTheDocument();
+    expect(screen.getByTestId('daisy-modal')).toBeInTheDocument();
     expect(screen.getByText('Texture Lab')).toBeInTheDocument();
     const img = screen.getByAltText('preview');
     expect(img).toHaveAttribute('src', 'ptex://foo.png');
