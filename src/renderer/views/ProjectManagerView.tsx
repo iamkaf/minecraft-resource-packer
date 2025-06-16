@@ -11,6 +11,7 @@ import SearchToolbar from '../components/project/SearchToolbar';
 import ExportWizardModal, {
   BulkProgress,
 } from '../components/ExportWizardModal';
+import useProjectHotkeys from '../hooks/useProjectHotkeys';
 
 // Lists all available projects and lets the user open them.
 
@@ -87,6 +88,12 @@ const ProjectManagerView: React.FC = () => {
       .finally(() => setProgress(null));
   };
 
+  const handleDeleteSelected = (names: string[]) => {
+    names.forEach((n) => window.electronAPI?.deleteProject(n));
+    setSelected(new Set());
+    refresh();
+  };
+
   const chipVersions = useMemo(
     () => Array.from(new Set(projects.map((p) => p.version))),
     [projects]
@@ -123,6 +130,8 @@ const ProjectManagerView: React.FC = () => {
     else ns.delete(name);
     setSelected(ns);
   };
+
+  useProjectHotkeys(selected, handleOpen, handleDeleteSelected);
 
   return (
     <section className="flex gap-4 max-w-5xl mx-auto">

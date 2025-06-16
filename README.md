@@ -61,3 +61,10 @@ original filename is still shown alongside the formatted name and in tooltips.
 Specify the path to your preferred image editor under **Settings**. PNG textures
 can then be opened directly from the asset info panel using the **Edit
 Externally** button.
+
+### Keyboard Shortcuts
+
+The Project Manager supports a few hotkeys:
+
+- **Enter** – open all selected projects.
+- **Delete** – remove all selected projects.
