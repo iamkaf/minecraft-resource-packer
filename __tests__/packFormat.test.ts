@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { packFormatForVersion } from '../src/shared/packFormat';
+import {
+  packFormatForVersion,
+  versionForFormat,
+} from '../src/shared/packFormat';
 
 describe('packFormatForVersion', () => {
   it('maps 1.20.1 correctly', () => {
@@ -8,5 +11,9 @@ describe('packFormatForVersion', () => {
 
   it('returns null for unknown versions', () => {
     expect(packFormatForVersion('0.0.1')).toBeNull();
+  });
+
+  it('maps format to latest version', () => {
+    expect(versionForFormat(15)).toBe('1.20.1');
   });
 });

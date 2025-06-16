@@ -1,28 +1,31 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import ProjectForm from '../src/renderer/components/project/ProjectForm';
+import ProjectForm, {
+  FormatOption,
+} from '../src/renderer/components/project/ProjectForm';
 
 describe('ProjectForm', () => {
   it('submits name and version', async () => {
     const create = vi.fn();
+    const formats: FormatOption[] = [{ format: 15, label: '1.20-1.20.1' }];
     render(
-      <ProjectForm versions={['1.20']} onCreate={create} onImport={() => {}} />
+      <ProjectForm formats={formats} onCreate={create} onImport={() => {}} />
     );
     fireEvent.click(screen.getByText('New Project'));
     const modal = await screen.findByTestId('daisy-modal');
     const input = within(modal).getByPlaceholderText('Name');
     fireEvent.change(input, { target: { value: 'Pack' } });
     fireEvent.change(within(modal).getByRole('combobox'), {
-      target: { value: '1.20' },
+      target: { value: '15' },
     });
     fireEvent.click(within(modal).getByRole('button', { name: 'Create' }));
-    expect(create).toHaveBeenCalledWith('Pack', '1.20');
+    expect(create).toHaveBeenCalledWith('Pack', '1.20.1');
   });
 
   it('imports when button clicked', async () => {
     const imp = vi.fn();
-    render(<ProjectForm versions={[]} onCreate={() => {}} onImport={imp} />);
+    render(<ProjectForm formats={[]} onCreate={() => {}} onImport={imp} />);
     fireEvent.click(screen.getByText('New Project'));
     const modal = await screen.findByTestId('daisy-modal');
     fireEvent.click(within(modal).getByRole('tab', { name: 'Import' }));
@@ -32,8 +35,9 @@ describe('ProjectForm', () => {
 
   it('does not submit without version', async () => {
     const create = vi.fn();
+    const formats: FormatOption[] = [{ format: 15, label: '1.20-1.20.1' }];
     render(
-      <ProjectForm versions={['1.20']} onCreate={create} onImport={() => {}} />
+      <ProjectForm formats={formats} onCreate={create} onImport={() => {}} />
     );
     fireEvent.click(screen.getByText('New Project'));
     const modal = await screen.findByTestId('daisy-modal');

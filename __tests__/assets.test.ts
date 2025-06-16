@@ -12,7 +12,7 @@ import {
   downloadFile,
   ensureAssets,
   listTextures,
-  listVersions,
+  listPackFormats,
 } from '../src/main/assets';
 import { createProject } from '../src/main/projects';
 import * as icon from '../src/main/icon';
@@ -154,14 +154,10 @@ describe('listTextures', () => {
   });
 });
 
-describe('listVersions', () => {
-  it('returns ids from manifest', async () => {
-    const fetchMock = vi.fn(
-      async () => new Response(JSON.stringify(manifestStub))
-    );
-    vi.stubGlobal('fetch', fetchMock);
-    const list = await listVersions();
-    expect(list).toContain(manifestStub.versions[0].id);
-    vi.unstubAllGlobals();
+describe('listPackFormats', () => {
+  it('returns pack formats', async () => {
+    const list = await listPackFormats();
+    expect(list[0]).toHaveProperty('format');
+    expect(list[0]).toHaveProperty('label');
   });
 });

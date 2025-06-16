@@ -6,6 +6,11 @@ import os from 'os';
 import unzipper from 'unzipper';
 import { ProjectMetadataSchema } from '../shared/project';
 import { generatePackIcon } from './icon';
+import {
+  PACK_FORMATS,
+  displayForFormat,
+  PackFormatInfo,
+} from '../shared/packFormat';
 
 /** URL pointing to Mojang's version manifest which lists all official releases. */
 const VERSION_MANIFEST =
@@ -121,11 +126,11 @@ export { fetchJson, downloadFile, ensureAssets };
  * Fetch the official Minecraft version manifest and return the list of
  * available version IDs.
  */
-export async function listVersions(): Promise<string[]> {
-  const manifest = await fetchJson<{ versions: Array<{ id: string }> }>(
-    VERSION_MANIFEST
-  );
-  return manifest.versions.map((v) => v.id);
+export async function listPackFormats(): Promise<PackFormatInfo[]> {
+  return PACK_FORMATS.map((r) => ({
+    format: r.format,
+    label: displayForFormat(r.format) as string,
+  }));
 }
 
 /**

@@ -24,7 +24,7 @@ function on<C extends keyof IpcEventMap>(
 
 const api = {
   listProjects: () => invoke('list-projects'),
-  listVersions: () => invoke('list-versions'),
+  listPackFormats: () => invoke('list-formats'),
   createProject: (name: string, version: string) =>
     invoke('create-project', name, version),
   importProject: () => invoke('import-project'),

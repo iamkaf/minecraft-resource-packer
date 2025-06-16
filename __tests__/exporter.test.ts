@@ -39,6 +39,27 @@ describe('exportPack', () => {
     expect(data.pack.pack_format).toBe(15);
   });
 
+  it('uses metadata version when none provided', async () => {
+    const meta = {
+      name: 'proj',
+      version: '1.20.3',
+      assets: [],
+      noExport: [],
+    };
+    fs.writeFileSync(
+      path.join(projectDir, 'project.json'),
+      JSON.stringify(meta)
+    );
+    await exportPack(projectDir, outZip);
+    const dir = await unzipper.Open.file(outZip);
+    const entry = dir.files.find((f) => f.path === 'pack.mcmeta');
+    if (!entry) throw new Error('pack.mcmeta not found');
+    const buf = await entry.buffer();
+    const data = JSON.parse(buf.toString('utf-8'));
+    expect(data.pack.pack_format).toBe(22);
+    fs.rmSync(path.join(projectDir, 'project.json'), { force: true });
+  });
+
   it('skips files listed in noExport', async () => {
     const meta = {
       name: 'proj',
