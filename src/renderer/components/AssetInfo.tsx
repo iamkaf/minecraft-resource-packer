@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import path from 'path';
 import { useToast } from './ToastProvider';
-import { Loading } from './daisy/feedback';
+import { Skeleton } from './daisy/feedback';
 import { Textarea } from './daisy/input';
 import { Button } from './daisy/actions';
 
@@ -122,7 +122,7 @@ export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
           </div>
         )}
         {lab && (
-          <Suspense fallback={<Loading />}>
+          <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
             <TextureLab
               file={full}
               projectPath={projectPath}

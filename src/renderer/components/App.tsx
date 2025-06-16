@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState, lazy } from 'react';
 import Navbar from './Navbar';
-import { Loading } from './daisy/feedback';
+import { Skeleton } from './daisy/feedback';
 
 const ProjectManagerView = lazy(() => import('../views/ProjectManagerView'));
 const EditorView = lazy(() => import('../views/EditorView'));
@@ -34,7 +34,7 @@ export default function App() {
   switch (view) {
     case 'editor':
       content = projectPath ? (
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<Skeleton width="100%" height="20rem" />}>
           <EditorView
             projectPath={projectPath}
             onBack={toManager}
@@ -45,21 +45,21 @@ export default function App() {
       break;
     case 'settings':
       content = (
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<Skeleton width="100%" height="20rem" />}>
           <SettingsView />
         </Suspense>
       );
       break;
     case 'about':
       content = (
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<Skeleton width="100%" height="20rem" />}>
           <AboutView />
         </Suspense>
       );
       break;
     default:
       content = (
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<Skeleton width="100%" height="20rem" />}>
           <ProjectManagerView />
         </Suspense>
       );

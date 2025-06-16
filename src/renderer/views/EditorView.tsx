@@ -5,7 +5,7 @@ import AssetSelector from '../components/AssetSelector';
 import AssetInfo from '../components/AssetInfo';
 import ProjectInfoPanel from '../components/ProjectInfoPanel';
 import AssetSelectorInfoPanel from '../components/AssetSelectorInfoPanel';
-import { Loading } from '../components/daisy/feedback';
+import { Skeleton } from '../components/daisy/feedback';
 import ExportWizardModal, {
   BulkProgress,
 } from '../components/ExportWizardModal';
@@ -126,7 +126,7 @@ export default function EditorView({
         >
           <PanelGroup direction="vertical" className="h-full">
             <Panel defaultSize={70} className="overflow-y-auto">
-              <Suspense fallback={<Loading />}>
+              <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
                 <AssetBrowser
                   path={projectPath}
                   onSelectionChange={(sel) => setSelected(sel)}
@@ -159,7 +159,7 @@ export default function EditorView({
             <h3 className="font-bold text-lg mb-2">Add Assets</h3>
             <div className="flex gap-4 max-h-[70vh]">
               <div className="flex-1 overflow-y-auto">
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
                   <AssetSelector
                     path={projectPath}
                     onAssetSelect={(n) => setSelectorAsset(n)}
