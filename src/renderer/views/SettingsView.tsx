@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import ExternalLink from '../components/ExternalLink';
 import { applyTheme, Theme } from '../utils/theme';
+import { useToast } from '../components/ToastProvider';
 
 export default function SettingsView() {
   const [editor, setEditor] = useState('');
   const [theme, setTheme] = useState<Theme>('system');
   const [confetti, setConfetti] = useState(true);
   const [exportDir, setExportDir] = useState('');
+  const toast = useToast();
 
   useEffect(() => {
     window.electronAPI?.getTextureEditor().then((p) => setEditor(p));
@@ -18,23 +20,35 @@ export default function SettingsView() {
   }, []);
 
   const saveEditor = () => {
-    window.electronAPI?.setTextureEditor(editor);
+    window.electronAPI
+      ?.setTextureEditor(editor)
+      .then(() => toast({ message: 'Editor path saved', type: 'success' }))
+      .catch(() =>
+        toast({ message: 'Failed to save editor path', type: 'error' })
+      );
   };
 
   const updateTheme = async (t: Theme) => {
     setTheme(t);
     await window.electronAPI?.setTheme(t);
     applyTheme(t);
+    toast({ message: 'Theme updated', type: 'success' });
   };
 
   const saveExportDir = () => {
-    window.electronAPI?.setDefaultExportDir(exportDir);
+    window.electronAPI
+      ?.setDefaultExportDir(exportDir)
+      .then(() => toast({ message: 'Export directory saved', type: 'success' }))
+      .catch(() =>
+        toast({ message: 'Failed to save export directory', type: 'error' })
+      );
   };
 
   const toggleConfetti = async () => {
     const next = !confetti;
     setConfetti(next);
     await window.electronAPI?.setConfetti(next);
+    toast({ message: 'Preference saved', type: 'success' });
   };
   return (
     <section className="p-4" data-testid="settings-view">

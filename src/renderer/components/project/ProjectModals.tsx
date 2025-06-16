@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import RenameModal from '../RenameModal';
 import ConfirmModal from '../ConfirmModal';
+import type { ToastType } from '../ToastProvider';
 
 export function useProjectModals(
   refresh: () => void,
-  toast: (msg: string, type: 'success' | 'info' | 'error') => void
+  toast: (opts: { message: string; type?: ToastType }) => void
 ) {
   const [duplicateTarget, setDuplicateTarget] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
@@ -22,7 +23,7 @@ export function useProjectModals(
             setDuplicateTarget(null);
             window.electronAPI?.duplicateProject(src, newName).then(() => {
               refresh();
-              toast('Project duplicated', 'success');
+              toast({ message: 'Project duplicated', type: 'success' });
             });
           }}
         />
@@ -38,7 +39,7 @@ export function useProjectModals(
             setDeleteTarget(null);
             window.electronAPI?.deleteProject(target).then(() => {
               refresh();
-              toast('Project deleted', 'info');
+              toast({ message: 'Project deleted', type: 'info' });
             });
           }}
         />

@@ -2,6 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import AssetInfo from '../src/renderer/components/AssetInfo';
+import ToastProvider from '../src/renderer/components/ToastProvider';
 import path from 'path';
 
 describe('AssetInfo', () => {
@@ -26,6 +27,7 @@ describe('AssetInfo', () => {
     } as never;
     readFile.mockResolvedValue('');
     writeFile.mockResolvedValue(undefined);
+    openExternalEditor.mockResolvedValue(undefined);
   });
 
   it('shows placeholder when no asset', () => {
@@ -41,15 +43,37 @@ describe('AssetInfo', () => {
   });
 
   it('opens external editor for png', async () => {
-    render(<AssetInfo projectPath="/p" asset="img.png" />);
+    render(
+      <ToastProvider>
+        <AssetInfo projectPath="/p" asset="img.png" />
+      </ToastProvider>
+    );
     const btn = await screen.findByRole('button', { name: 'Edit Externally' });
     fireEvent.click(btn);
     expect(openExternalEditor).toHaveBeenCalledWith(path.join('/p', 'img.png'));
   });
 
+  it('shows toast when external editor fails', async () => {
+    openExternalEditor.mockRejectedValueOnce(new Error('fail'));
+    render(
+      <ToastProvider>
+        <AssetInfo projectPath="/p" asset="img.png" />
+      </ToastProvider>
+    );
+    const btn = await screen.findByRole('button', { name: 'Edit Externally' });
+    fireEvent.click(btn);
+    expect(
+      await screen.findAllByText('Failed to open external editor')
+    ).toHaveLength(2);
+  });
+
   it('edits a text file', async () => {
     readFile.mockResolvedValue('hello');
-    render(<AssetInfo projectPath="/p" asset="a.txt" />);
+    render(
+      <ToastProvider>
+        <AssetInfo projectPath="/p" asset="a.txt" />
+      </ToastProvider>
+    );
     const box = await screen.findByRole('textbox');
     expect(box).toHaveValue('hello');
     fireEvent.change(box, { target: { value: 'new' } });

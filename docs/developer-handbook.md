@@ -68,6 +68,19 @@ Remember that the renderer runs in a browser-like sandbox, so heavy filesystem w
 
 Use spaces for indentation in `.ts` and `.tsx` files and keep React components functional.
 
+### Toasts
+
+Use the `useToast` hook to display brief notifications. Call it with an options
+object:
+
+```ts
+toast({ message: 'Saved!', type: 'success', duration: 5000, closable: true });
+```
+
+Types correspond to daisyUI alert variants (`info`, `success`, `warning`, `error`,
+`neutral`, `loading`). The toast automatically disappears after the specified
+duration unless closable.
+
 ## IPC Pattern
 
 Electron uses a main ↔ preload ↔ renderer pipeline. Functions are implemented in

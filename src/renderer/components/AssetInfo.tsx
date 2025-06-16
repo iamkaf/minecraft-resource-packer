@@ -50,14 +50,14 @@ export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
         JSON.parse(text);
       } catch {
         setError('Invalid JSON');
-        toast('Invalid JSON', 'error');
+        toast({ message: 'Invalid JSON', type: 'error' });
         return;
       }
     }
     setError(null);
     window.electronAPI?.writeFile(full, text).then(() => {
       setOrig(text);
-      toast('File saved', 'success');
+      toast({ message: 'File saved', type: 'success' });
     });
   };
 
@@ -108,7 +108,14 @@ export default function AssetInfo({ projectPath, asset, count = 1 }: Props) {
             </Button>
             <Button
               className="btn-secondary btn-sm"
-              onClick={() => window.electronAPI?.openExternalEditor(full)}
+              onClick={() =>
+                window.electronAPI?.openExternalEditor(full).catch(() =>
+                  toast({
+                    message: 'Failed to open external editor',
+                    type: 'error',
+                  })
+                )
+              }
             >
               Edit Externally
             </Button>

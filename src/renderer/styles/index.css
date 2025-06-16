@@ -17,3 +17,12 @@
   --color-warning: #facc15;
   --color-error: #ff4d4f;
 }
+
+@keyframes toast-progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
