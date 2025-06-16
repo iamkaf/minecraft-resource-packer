@@ -82,7 +82,7 @@ export default function FileTree({
             }
             onContextMenu={(e) => handleContext(e, f)}
           >
-            {f.endsWith('.png') && (
+            {f && (
               <TextureThumb
                 texture={f}
                 alt={path.basename(f)}
@@ -174,7 +174,7 @@ export default function FileTree({
           >
             {node.isLeaf && (
               <TextureThumb
-                texture={node.id.endsWith('.png') ? node.id : null}
+                texture={node.id}
                 alt={path.basename(node.data.name)}
                 size={24}
                 simplified

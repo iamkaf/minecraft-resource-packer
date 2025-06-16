@@ -1,5 +1,6 @@
 import React from 'react';
 import path from 'path';
+import TextIcon from './TextIcon';
 
 interface Props {
   /** Relative texture path or null when no image */
@@ -21,27 +22,36 @@ export default function TextureThumb({
   protocol = 'asset',
   simplified = false,
 }: Props) {
+  const ext = texture ? path.extname(texture).toLowerCase() : '';
   const url =
-    texture && texture.endsWith('.png')
+    texture && ext === '.png'
       ? `${protocol}://${texture.split(path.sep).join('/')}`
       : null;
+  const isText = ext === '.txt' || ext === '.json';
 
-  const content = url ? (
-    <img
-      src={url}
-      alt={alt ?? texture ?? ''}
-      style={{ width: size, height: size, imageRendering: 'pixelated' }}
-      data-testid={simplified ? 'texture-thumb' : undefined}
-    />
-  ) : (
-    <div
-      data-testid={simplified ? 'texture-thumb' : undefined}
-      style={{ width: size, height: size }}
-      className="bg-base-300 flex items-center justify-center text-xs"
-    >
-      {alt ?? 'No preview'}
-    </div>
-  );
+  let content: React.ReactNode;
+  if (url) {
+    content = (
+      <img
+        src={url}
+        alt={alt ?? texture ?? ''}
+        style={{ width: size, height: size, imageRendering: 'pixelated' }}
+        data-testid={simplified ? 'texture-thumb' : undefined}
+      />
+    );
+  } else if (isText) {
+    content = <TextIcon size={size} />;
+  } else {
+    content = (
+      <div
+        data-testid={simplified ? 'texture-thumb' : undefined}
+        style={{ width: size, height: size }}
+        className="bg-base-300 flex items-center justify-center text-xs"
+      >
+        {alt ?? 'No preview'}
+      </div>
+    );
+  }
 
   if (simplified) return content;
 

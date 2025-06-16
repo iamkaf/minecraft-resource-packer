@@ -152,6 +152,7 @@ version. Results are grouped into collapsible **Blocks**, **Items**, **Entity**,
 that match the search query appear in each section. Thumbnails respect the zoom
 slider (24–128 px) and textures can be clicked or dragged into the asset browser
 to add them to the project.
+Text files such as `.txt` and `.json` display a document icon instead of a thumbnail.
 
 Beside the asset information panel, a **Preview Pane** shows the currently
 selected texture under neutral lighting. The pane renders textures at a 1:1
