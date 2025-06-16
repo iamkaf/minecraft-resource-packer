@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState, lazy } from 'react';
 import Navbar from './Navbar';
-import Spinner from './Spinner';
+import { Loading } from './daisy/feedback';
 
 const ProjectManagerView = lazy(() => import('../views/ProjectManagerView'));
 const EditorView = lazy(() => import('../views/EditorView'));
@@ -34,7 +34,7 @@ export default function App() {
   switch (view) {
     case 'editor':
       content = projectPath ? (
-        <Suspense fallback={<Spinner />}>
+        <Suspense fallback={<Loading />}>
           <EditorView
             projectPath={projectPath}
             onBack={toManager}
@@ -45,21 +45,21 @@ export default function App() {
       break;
     case 'settings':
       content = (
-        <Suspense fallback={<Spinner />}>
+        <Suspense fallback={<Loading />}>
           <SettingsView />
         </Suspense>
       );
       break;
     case 'about':
       content = (
-        <Suspense fallback={<Spinner />}>
+        <Suspense fallback={<Loading />}>
           <AboutView />
         </Suspense>
       );
       break;
     default:
       content = (
-        <Suspense fallback={<Spinner />}>
+        <Suspense fallback={<Loading />}>
           <ProjectManagerView />
         </Suspense>
       );
