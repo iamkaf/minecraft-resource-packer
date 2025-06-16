@@ -6,18 +6,19 @@ export interface ButtonProps
   className?: string;
 }
 
-export default function Button({
-  children,
-  className = '',
-  ...rest
-}: ButtonProps) {
-  return (
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ children, className = '', ...rest }, ref) => (
     <button
+      ref={ref}
       className={`btn ${className}`.trim()}
       {...rest}
       data-testid="daisy-button"
     >
       {children}
     </button>
-  );
-}
+  )
+);
+
+Button.displayName = 'Button';
+
+export default Button;

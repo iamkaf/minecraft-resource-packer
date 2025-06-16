@@ -149,7 +149,7 @@ export default function EditorView({
       )}
       {selectorOpen && (
         <Modal open testId="asset-selector-modal">
-          <div className="w-11/12 max-w-5xl">
+          <div className="w-[800px] h-[600px]">
             <h3 className="font-bold text-lg mb-2">Add Assets</h3>
             <div className="flex gap-4 max-h-[70vh]">
               <div className="flex-1 overflow-y-auto">

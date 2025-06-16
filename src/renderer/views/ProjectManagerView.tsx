@@ -5,6 +5,7 @@ import ExternalLink from '../components/ExternalLink';
 import ProjectSidebar from '../components/ProjectSidebar';
 import ProjectForm from '../components/project/ProjectForm';
 import ProjectTable, { ProjectInfo } from '../components/project/ProjectTable';
+import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { useProjectModals } from '../components/project/ProjectModals';
 import SearchToolbar from '../components/project/SearchToolbar';
 import BulkExportModal, { BulkProgress } from '../components/BulkExportModal';
@@ -113,7 +114,7 @@ const ProjectManagerView: React.FC = () => {
   };
 
   return (
-    <section className="flex gap-4">
+    <section className="flex gap-4 max-w-5xl mx-auto">
       <div className="flex-1">
         <div className="flex items-center mb-2 gap-2">
           <h2 className="font-display text-xl flex-1">Projects</h2>
@@ -122,7 +123,7 @@ const ProjectManagerView: React.FC = () => {
             aria-label="Help"
             className="btn btn-circle btn-ghost btn-sm"
           >
-            ?
+            <QuestionMarkCircleIcon className="w-5 h-5" />
           </ExternalLink>
         </div>
         <ProjectForm
