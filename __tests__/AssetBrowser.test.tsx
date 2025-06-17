@@ -213,7 +213,7 @@ describe('AssetBrowser', () => {
 
     const img = screen.getByAltText('D') as HTMLImageElement;
     const before = img.src;
-    act(() => {
+    await act(async () => {
       changed?.({}, { path: 'd.png', stamp: 42 });
     });
     expect(img.src).not.toBe(before);

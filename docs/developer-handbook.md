@@ -183,6 +183,11 @@ viewing a PNG texture the panel offers a **Compare with Vanilla** button. It
 opens a modal that uses the daisyUI `Diff` component to show the project texture
 against the original game asset side by side.
 
+The **Revisions** button opens a modal listing previous versions of the file.
+Revisions are stored in a hidden `.history` folder within each project and up to
+20 entries are kept per asset. Selecting a revision will restore that version
+and store the current file as a new revision.
+
 ## Windows Paths
 
 When writing tests or other code that constructs file system paths, prefer

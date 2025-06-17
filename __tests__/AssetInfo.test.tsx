@@ -11,7 +11,7 @@ import path from 'path';
 
 describe('AssetInfo', () => {
   const readFile = vi.fn();
-  const writeFile = vi.fn();
+  const saveRevision = vi.fn();
   const openExternalEditor = vi.fn();
   const onFileChanged = vi.fn();
 
@@ -21,19 +21,19 @@ describe('AssetInfo', () => {
       window as unknown as {
         electronAPI: {
           readFile: typeof readFile;
-          writeFile: typeof writeFile;
+          saveRevision: typeof saveRevision;
           openExternalEditor: typeof openExternalEditor;
           onFileChanged: typeof onFileChanged;
         };
       }
     ).electronAPI = {
       readFile,
-      writeFile,
+      saveRevision,
       openExternalEditor,
       onFileChanged,
     } as never;
     readFile.mockResolvedValue('');
-    writeFile.mockResolvedValue(undefined);
+    saveRevision.mockResolvedValue(undefined);
     openExternalEditor.mockResolvedValue(undefined);
   });
 
@@ -125,7 +125,7 @@ describe('AssetInfo', () => {
     expect(box).toHaveValue('hello');
     fireEvent.change(box, { target: { value: 'new' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-    expect(writeFile).toHaveBeenCalledWith(path.join('/p', 'a.txt'), 'new');
+    expect(saveRevision).toHaveBeenCalledWith('/p', 'a.txt', 'new');
   });
 
   it('blocks invalid json', async () => {
@@ -140,7 +140,7 @@ describe('AssetInfo', () => {
     const box = await screen.findByRole('textbox');
     fireEvent.change(box, { target: { value: '{' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-    expect(writeFile).not.toHaveBeenCalled();
+    expect(saveRevision).not.toHaveBeenCalled();
     expect(screen.getByText('Invalid JSON')).toBeInTheDocument();
   });
 

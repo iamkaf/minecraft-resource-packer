@@ -5,6 +5,7 @@ import { Skeleton } from './daisy/feedback';
 import { Textarea } from './daisy/input';
 import { Button } from './daisy/actions';
 import { useProject } from './ProjectProvider';
+import RevisionsModal from './RevisionsModal';
 
 const PreviewPane = lazy(() => import('./PreviewPane'));
 const TextureLab = lazy(() => import('./TextureLab'));
@@ -24,6 +25,7 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
   const [lab, setLab] = useState(false);
   const [diff, setDiff] = useState(false);
   const [stamp, setStamp] = useState<number>();
+  const [revs, setRevs] = useState(false);
 
   const full = asset ? path.join(projectPath, asset) : '';
 
@@ -68,10 +70,13 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
       }
     }
     setError(null);
-    window.electronAPI?.writeFile(full, text).then(() => {
-      setOrig(text);
-      toast({ message: 'File saved', type: 'success' });
-    });
+    window.electronAPI
+      ?.saveRevision(projectPath, asset, text)
+      .then(() => {
+        setOrig(text);
+        toast({ message: 'File saved', type: 'success' });
+      })
+      .catch(() => toast({ message: 'Save failed', type: 'error' }));
   };
 
   const handleReset = () => setText(orig);
@@ -108,6 +113,12 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
               <Button className="btn-secondary btn-sm" onClick={handleReset}>
                 Reset
               </Button>
+              <Button
+                className="btn-secondary btn-sm"
+                onClick={() => setRevs(true)}
+              >
+                Revisions
+              </Button>
             </div>
           </>
         )}
@@ -138,6 +149,12 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
             >
               Compare with Vanilla
             </Button>
+            <Button
+              className="btn-secondary btn-sm"
+              onClick={() => setRevs(true)}
+            >
+              Revisions
+            </Button>
           </div>
         )}
         {lab && (
@@ -153,6 +170,9 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
           <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
             <TextureDiff asset={asset} onClose={() => setDiff(false)} />
           </Suspense>
+        )}
+        {revs && (
+          <RevisionsModal asset={asset} onClose={() => setRevs(false)} />
         )}
       </div>
     </div>
