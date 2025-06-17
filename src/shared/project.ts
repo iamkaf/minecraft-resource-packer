@@ -17,6 +17,7 @@ export const ProjectMetadataSchema = z.object({
 export type ProjectMetadata = z.infer<typeof ProjectMetadataSchema>;
 
 export const PackMetaSchema = z.object({
+  version: z.string().default('unknown'),
   description: z.string().default(''),
   author: z.string().default(''),
   urls: z.array(z.string()).default([]),

@@ -20,6 +20,7 @@ export default function PackMetaModal({
 }) {
   const toast = useToast();
   const [text, setText] = useState(JSON.stringify(meta, null, 2));
+  const [version, setVersion] = useState(meta.version);
   return (
     <Modal open>
       <form
@@ -29,13 +30,22 @@ export default function PackMetaModal({
           try {
             const data = JSON.parse(text);
             const parsed = PackMetaSchema.parse(data);
-            onSave({ ...parsed, updated: Date.now() });
+            onSave({ ...parsed, version, updated: Date.now() });
           } catch {
             toast({ message: 'Invalid metadata', type: 'error' });
           }
         }}
       >
         <h3 className="font-bold text-lg">Edit Metadata</h3>
+        <label className="flex items-center gap-2">
+          Version
+          <input
+            className="input input-bordered flex-1"
+            type="text"
+            value={version}
+            onChange={(e) => setVersion(e.target.value)}
+          />
+        </label>
         <MonacoEditor
           height="20rem"
           defaultLanguage="json"

@@ -48,10 +48,10 @@ describe('exportProjects', () => {
       filePaths: [outDir],
     });
     await exportProjects(baseDir, ['A', 'B']);
-    const dirA = await unzipper.Open.file(path.join(outDir, 'A.zip'));
+    const dirA = await unzipper.Open.file(path.join(outDir, 'A-vunknown.zip'));
     const namesA = dirA.files.map((f) => f.path);
     expect(namesA).toContain('a.txt');
-    const dirB = await unzipper.Open.file(path.join(outDir, 'B.zip'));
+    const dirB = await unzipper.Open.file(path.join(outDir, 'B-vunknown.zip'));
     const namesB = dirB.files.map((f) => f.path);
     expect(namesB).toContain('b.txt');
   });

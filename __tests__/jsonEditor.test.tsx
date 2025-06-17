@@ -27,6 +27,7 @@ import ToastProvider from '../src/renderer/components/ToastProvider';
 describe('JsonEditor integration', () => {
   it('rejects invalid JSON', () => {
     const meta: PackMeta = {
+      version: '1.21.1',
       description: '',
       author: '',
       urls: [],
