@@ -37,6 +37,7 @@ npm run format
 
 5. Window size, position and fullscreen state persist across launches thanks to `electron-store`.
 6. The Asset Browser remembers the last search text, category filters and zoom level using `electron-store`.
+7. Export dialogs default to the most recently used folder, which is stored via `electron-store` after each successful export.
 
 ## Project Structure
 

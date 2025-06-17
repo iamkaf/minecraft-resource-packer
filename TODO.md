@@ -54,7 +54,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Target resolution radio (16×/32×/64×)
 - [ ] Validation checklist (missing textures, duplicates)
 - [ ] Version field for projects; it should also appear in exported file names
-- [ ] Remember the last export target folder using electron store on successful exports
+- [x] Remember the last export target folder using electron store on successful exports
 
 ---
 
