@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import path from 'path';
 import { app } from 'electron';
-import Editor from '@monaco-editor/react';
+import MonacoEditor from '@monaco-editor/react';
 import { PackMetaSchema } from '../../shared/project';
 import type { PackMeta } from '../../main/projects';
 import { Modal, Button } from './daisy/actions';
@@ -36,13 +36,13 @@ export default function PackMetaModal({
         }}
       >
         <h3 className="font-bold text-lg">Edit Metadata</h3>
-        <Editor
+        <MonacoEditor
           height="20rem"
           defaultLanguage="json"
           value={text}
           onChange={(v) => setText(v ?? '')}
-          options={{ minimap: { enabled: false }}}
-          theme='vs-dark'
+          options={{ minimap: { enabled: false } }}
+          theme="vs-dark"
         />
         <div className="modal-action">
           <Button

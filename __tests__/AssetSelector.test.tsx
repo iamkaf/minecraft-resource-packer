@@ -7,10 +7,6 @@ import {
 } from '../src/renderer/components/ProjectProvider';
 
 import AssetSelector from '../src/renderer/components/AssetSelector';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
 
 describe('AssetSelector', () => {
   const listTextures = vi.fn();

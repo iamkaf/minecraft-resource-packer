@@ -10,7 +10,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx src __tests__ *.ts",
+    "lint": "eslint --no-warn-ignored --ext .ts,.tsx src __tests__ *.ts",
     "test": "vitest run --coverage",
     "dev": "electron-forge start",
     "dev:headless": "xvfb-run -a electron-forge start -- --no-sandbox",
