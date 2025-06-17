@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 import path from 'path';
 import { useToast } from './ToastProvider';
 import { Skeleton } from './daisy/feedback';
-import { Textarea } from './daisy/input';
+import MonacoEditor from '@monaco-editor/react';
 import { Button } from './daisy/actions';
 import { useProject } from './ProjectProvider';
 import RevisionsModal from './RevisionsModal';
@@ -100,10 +100,13 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
         <h3 className="font-bold mb-1 break-all">{asset}</h3>
         {count === 1 && isText && (
           <>
-            <Textarea
-              className="textarea-bordered w-full mb-2"
+            <MonacoEditor
+              height="12rem"
+              defaultLanguage={isJson ? 'json' : 'plaintext'}
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(v) => setText(v ?? '')}
+              options={{ minimap: { enabled: false } }}
+              theme="vs-dark"
             />
             {error && <div className="text-error mb-1">{error}</div>}
             <div className="flex gap-2">

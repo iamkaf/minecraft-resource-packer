@@ -1,6 +1,22 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+vi.mock('@monaco-editor/react', () => ({
+  __esModule: true,
+  default: ({
+    value,
+    onChange,
+  }: {
+    value: string;
+    onChange: (v: string) => void;
+  }) => (
+    <textarea
+      data-testid="editor"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
 import AssetInfo from '../src/renderer/components/AssetInfo';
 import RevisionsModal from '../src/renderer/components/RevisionsModal';
 import ToastProvider from '../src/renderer/components/ToastProvider';
@@ -13,6 +29,7 @@ const saveRevision = vi.fn();
 const listRevisions = vi.fn();
 const restoreRevision = vi.fn();
 const readFile = vi.fn();
+const onFileChanged = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -23,6 +40,7 @@ beforeEach(() => {
         listRevisions: typeof listRevisions;
         restoreRevision: typeof restoreRevision;
         readFile: typeof readFile;
+        onFileChanged: typeof onFileChanged;
       };
     }
   ).electronAPI = {
@@ -30,6 +48,7 @@ beforeEach(() => {
     listRevisions,
     restoreRevision,
     readFile,
+    onFileChanged,
   } as never;
   listRevisions.mockResolvedValue(['1.png']);
   readFile.mockResolvedValue('');
