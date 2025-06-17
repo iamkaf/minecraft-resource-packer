@@ -17,6 +17,7 @@ import {
   registerVanillaProtocol,
   registerAssetProtocol,
 } from './assets';
+import { registerMonacoProtocol } from './monaco';
 import { registerIconHandlers } from './icon';
 import { registerTextureLabHandlers } from './textureLab';
 import { registerLayoutHandlers } from './layout';
@@ -31,6 +32,7 @@ import {
 protocol.registerSchemesAsPrivileged([
   { scheme: 'vanilla', privileges: { standard: true, secure: true } },
   { scheme: 'asset', privileges: { standard: true, secure: true } },
+  { scheme: 'monaco', privileges: { standard: true, secure: true } },
 ]);
 
 // Webpack's DefinePlugin in Electron Forge exposes entry point URLs as
@@ -100,6 +102,7 @@ registerFileHandlers(ipcMain);
 app.whenReady().then(() => {
   registerVanillaProtocol(protocol);
   registerAssetProtocol(protocol);
+  registerMonacoProtocol(protocol);
   createMainWindow();
 });
 

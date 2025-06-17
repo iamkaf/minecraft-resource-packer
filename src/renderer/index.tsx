@@ -1,10 +1,13 @@
 import React from 'react';
+import { loader } from '@monaco-editor/react';
 import { createRoot } from 'react-dom/client';
 import App from './components/App';
 import ToastProvider from './components/ToastProvider';
 import { HashRouter } from 'react-router-dom';
 import './styles/index.css';
 import { applyTheme } from './utils/theme';
+
+loader.config({ paths: { vs: 'monaco://vs' } });
 
 window.electronAPI?.getTheme().then((t) => {
   applyTheme(t);
