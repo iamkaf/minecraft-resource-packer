@@ -32,6 +32,7 @@ function addDirectory(
     if (ignore.has(rel)) continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
+      if (entry.name === '.history') continue;
       addDirectory(archive, full, ignore, rel);
     } else {
       archive.file(full, { name: rel });

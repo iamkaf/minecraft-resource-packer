@@ -102,4 +102,14 @@ describe('exportPack', () => {
     const names = dir.files.map((f) => f.path);
     expect(names).not.toContain('folder/');
   });
+
+  it('never includes .history content', async () => {
+    const hist = path.join(projectDir, '.history');
+    fs.mkdirSync(hist, { recursive: true });
+    fs.writeFileSync(path.join(hist, 'old.txt'), 'x');
+    await exportPack(projectDir, outZip);
+    const dir = await unzipper.Open.file(outZip);
+    const names = dir.files.map((f) => f.path);
+    expect(names.some((n) => n.includes('.history'))).toBe(false);
+  });
 });
