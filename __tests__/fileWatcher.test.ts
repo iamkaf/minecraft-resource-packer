@@ -74,6 +74,11 @@ describe('fileWatcher IPC', () => {
     watcher.emit('unlink', path.join(tmpDir, 'b.txt'));
     expect(sendMock).toHaveBeenCalledWith('file-removed', 'b.txt');
 
+    watcher.emit('change', path.join(tmpDir, 'c.txt'));
+    const call = sendMock.mock.calls.find((c) => c[0] === 'file-changed');
+    expect(call?.[1]).toMatchObject({ path: 'c.txt' });
+    expect(typeof call?.[1].stamp).toBe('number');
+
     emitRenamed(path.join(tmpDir, 'a.txt'), path.join(tmpDir, 'd.txt'));
     expect(sendMock).toHaveBeenCalledWith('file-renamed', {
       oldPath: 'a.txt',

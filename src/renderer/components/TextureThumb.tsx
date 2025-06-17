@@ -13,6 +13,8 @@ interface Props {
   protocol?: 'asset' | 'vanilla';
   /** Use simplified markup without border wrapper */
   simplified?: boolean;
+  /** Optional cache-busting stamp */
+  stamp?: number;
 }
 
 export default function TextureThumb({
@@ -21,11 +23,12 @@ export default function TextureThumb({
   size = 64,
   protocol = 'asset',
   simplified = false,
+  stamp,
 }: Props) {
   const ext = texture ? path.extname(texture).toLowerCase() : '';
   const url =
     texture && ext === '.png'
-      ? `${protocol}://${texture.split(path.sep).join('/')}`
+      ? `${protocol}://${texture.split(path.sep).join('/')}${stamp ? `?t=${stamp}` : ''}`
       : null;
   const isText = ext === '.txt' || ext === '.json';
 

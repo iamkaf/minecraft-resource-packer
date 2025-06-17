@@ -27,6 +27,7 @@ function Wrapper(props: Partial<Parameters<typeof FileTree>[0]>) {
       toggleNoExport={vi.fn()}
       deleteFiles={vi.fn()}
       openRename={vi.fn()}
+      versions={{}}
       {...props}
     />
   ) : null;

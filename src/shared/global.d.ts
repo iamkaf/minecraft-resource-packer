@@ -70,6 +70,7 @@ declare global {
       onFileAdded: IpcListener<'file-added'>;
       onFileRemoved: IpcListener<'file-removed'>;
       onFileRenamed: IpcListener<'file-renamed'>;
+      onFileChanged: IpcListener<'file-changed'>;
     };
   }
 }

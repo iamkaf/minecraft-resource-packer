@@ -14,6 +14,7 @@ interface Props {
   deleteFiles: (files: string[]) => void;
   openRename: (file: string) => void;
   zoom: number;
+  stamp?: number;
 }
 
 const AssetBrowserItem: React.FC<Props> = ({
@@ -26,6 +27,7 @@ const AssetBrowserItem: React.FC<Props> = ({
   deleteFiles,
   openRename,
   zoom,
+  stamp,
 }) => {
   const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
   const firstItem = useRef<HTMLButtonElement>(null);
@@ -97,7 +99,13 @@ const AssetBrowserItem: React.FC<Props> = ({
       }}
     >
       <figure className={noExport.has(file) ? 'opacity-50' : ''}>
-        <TextureThumb texture={texPath} alt={altText} size={zoom} simplified />
+        <TextureThumb
+          texture={texPath}
+          alt={altText}
+          size={zoom}
+          simplified
+          stamp={stamp}
+        />
       </figure>
       <div className="card-body p-1">
         <div className="text-xs leading-tight">

@@ -13,6 +13,7 @@ const unwatchProject = vi.fn();
 const onFileAdded = vi.fn();
 const onFileRemoved = vi.fn();
 const onFileRenamed = vi.fn();
+const onFileChanged = vi.fn();
 const getNoExport = vi.fn(async () => []);
 const setNoExport = vi.fn();
 
@@ -24,6 +25,7 @@ declare global {
       onFileAdded: typeof onFileAdded;
       onFileRemoved: typeof onFileRemoved;
       onFileRenamed: typeof onFileRenamed;
+      onFileChanged: typeof onFileChanged;
       getNoExport: typeof getNoExport;
       setNoExport: typeof setNoExport;
     };
@@ -40,6 +42,7 @@ describe('useProjectFiles', () => {
         onFileAdded,
         onFileRemoved,
         onFileRenamed,
+        onFileChanged,
         getNoExport,
         setNoExport,
       };
@@ -67,6 +70,9 @@ describe('useProjectFiles', () => {
     let renamed:
       | ((e: unknown, args: { oldPath: string; newPath: string }) => void)
       | undefined;
+    let changed:
+      | ((e: unknown, args: { path: string; stamp: number }) => void)
+      | undefined;
     onFileAdded.mockImplementation((cb) => {
       added = cb;
     });
@@ -75,6 +81,9 @@ describe('useProjectFiles', () => {
     });
     onFileRenamed.mockImplementation((cb) => {
       renamed = cb;
+    });
+    onFileChanged.mockImplementation((cb) => {
+      changed = cb;
     });
     const { result, unmount } = renderHook(() => useProjectFiles(), {
       wrapper: ({ children }) => (
@@ -98,6 +107,10 @@ describe('useProjectFiles', () => {
       renamed?.({}, { oldPath: 'b.png', newPath: 'd.png' });
     });
     expect(result.current.files).toContain('d.png');
+    act(() => {
+      changed?.({}, { path: 'd.png', stamp: 1 });
+    });
+    expect(result.current.versions['d.png']).toBe(1);
     unmount();
     expect(unwatchProject).toHaveBeenCalledWith('/proj');
   });

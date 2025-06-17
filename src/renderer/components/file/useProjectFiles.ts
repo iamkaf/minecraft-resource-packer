@@ -6,6 +6,7 @@ export function useProjectFiles() {
   const { path: projectPath } = useProject();
   const [files, setFiles] = useState<string[]>([]);
   const [noExport, setNoExport] = useState<Set<string>>(new Set());
+  const [versions, setVersions] = useState<Record<string, number>>({});
   const toast = useToast();
 
   useEffect(() => {
@@ -23,9 +24,12 @@ export function useProjectFiles() {
       setFiles((f) => f.filter((x) => x !== p));
     const rename = (_e: unknown, args: { oldPath: string; newPath: string }) =>
       setFiles((f) => f.map((x) => (x === args.oldPath ? args.newPath : x)));
+    const change = (_e: unknown, args: { path: string; stamp: number }) =>
+      setVersions((v) => ({ ...v, [args.path]: args.stamp }));
     window.electronAPI?.onFileAdded(add);
     window.electronAPI?.onFileRemoved(remove);
     window.electronAPI?.onFileRenamed(rename);
+    window.electronAPI?.onFileChanged(change);
     return () => {
       alive = false;
       window.electronAPI?.unwatchProject(projectPath);
@@ -60,5 +64,5 @@ export function useProjectFiles() {
     });
   };
 
-  return { files, noExport, toggleNoExport };
+  return { files, noExport, toggleNoExport, versions };
 }
