@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 import path from 'path';
 import { useToast } from './ToastProvider';
 import { Skeleton } from './daisy/feedback';
-import { Textarea } from './daisy/input';
+import MonacoEditor from '@monaco-editor/react';
 import { Button } from './daisy/actions';
 import { useProject } from './ProjectProvider';
 import RevisionsModal from './RevisionsModal';
@@ -96,15 +96,10 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
       >
         <PreviewPane texture={asset} stamp={stamp} />
       </Suspense>
-      <div className="flex-1 max-w-md">
+      <div className="flex-1 w-100">
         <h3 className="font-bold mb-1 break-all">{asset}</h3>
         {count === 1 && isText && (
           <>
-            <Textarea
-              className="textarea-bordered w-full mb-2"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
             {error && <div className="text-error mb-1">{error}</div>}
             <div className="flex gap-2">
               <Button className="btn-primary btn-sm" onClick={handleSave}>
@@ -119,6 +114,15 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
               >
                 Revisions
               </Button>
+            </div>
+            <div className="h-[14rem]">
+              <MonacoEditor
+                defaultLanguage={isJson ? 'json' : 'plaintext'}
+                value={text}
+                onChange={(v) => setText(v ?? '')}
+                options={{ minimap: { enabled: false } }}
+                theme="vs-dark"
+              />
             </div>
           </>
         )}

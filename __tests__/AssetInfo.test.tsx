@@ -5,6 +5,22 @@ import {
   ProjectProvider,
   useProject,
 } from '../src/renderer/components/ProjectProvider';
+vi.mock('@monaco-editor/react', () => ({
+  __esModule: true,
+  default: ({
+    value,
+    onChange,
+  }: {
+    value: string;
+    onChange: (v: string) => void;
+  }) => (
+    <textarea
+      data-testid="editor"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
 import AssetInfo from '../src/renderer/components/AssetInfo';
 import ToastProvider from '../src/renderer/components/ToastProvider';
 import path from 'path';
