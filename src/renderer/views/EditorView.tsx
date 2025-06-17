@@ -11,6 +11,7 @@ import ExportWizardModal, {
 } from '../components/ExportWizardModal';
 import ExternalLink from '../components/ExternalLink';
 import { Modal, Button } from '../components/daisy/actions';
+import { useUndoRedo } from '../components/UndoRedoProvider';
 import type { ExportSummary } from '../../main/exporter';
 /* eslint-disable import/no-unresolved */
 import {
@@ -30,6 +31,7 @@ import { useProject } from '../components/ProjectProvider';
 
 export default function EditorView({ onBack, onSettings }: EditorViewProps) {
   const { path: projectPath } = useProject();
+  const { undo, redo } = useUndoRedo();
   const [selected, setSelected] = useState<string[]>([]);
   const [selectorAsset, setSelectorAsset] = useState<string | null>(null);
   const [layout, setLayout] = useState<number[]>([20, 80]);
@@ -79,6 +81,12 @@ export default function EditorView({ onBack, onSettings }: EditorViewProps) {
       data-testid="editor-view"
     >
       <div className="flex items-center justify-end mb-2 gap-2">
+        <Button className="btn-sm" onClick={undo} aria-label="Undo">
+          Undo
+        </Button>
+        <Button className="btn-sm" onClick={redo} aria-label="Redo">
+          Redo
+        </Button>
         <Button
           className="btn-primary btn-sm"
           onClick={() => setSelectorOpen(true)}

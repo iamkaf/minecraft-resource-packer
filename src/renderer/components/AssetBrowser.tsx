@@ -5,6 +5,7 @@ import AssetBrowserItem from './AssetBrowserItem';
 import { useProjectFiles } from './file/useProjectFiles';
 import FileTree from './FileTree';
 import { useProject } from './ProjectProvider';
+import { useUndoRedo } from './UndoRedoProvider';
 import { FilterBadge, InputField, Range } from './daisy/input';
 import { Accordion } from './daisy/display';
 
@@ -110,8 +111,10 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
     );
   };
 
+  const { deleteFile, renameFile } = useUndoRedo();
+
   const deleteFiles = (files: string[]) => {
-    files.forEach((f) => window.electronAPI?.deleteFile(f));
+    files.forEach((f) => deleteFile(f));
     setSelected(new Set());
   };
 
@@ -211,7 +214,7 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
           onRename={(n) => {
             const full = path.join(projectPath, renameTarget);
             const target = path.join(path.dirname(full), n);
-            window.electronAPI?.renameFile(full, target);
+            renameFile(full, target);
             setRenameTarget(null);
           }}
         />

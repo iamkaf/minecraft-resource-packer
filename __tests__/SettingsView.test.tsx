@@ -109,7 +109,7 @@ describe('SettingsView', () => {
       </ToastProvider>
     );
     const input = await screen.findByLabelText('Default export folder');
-    expect(input).toHaveValue('/home');
+    await screen.findByDisplayValue('/home');
     fireEvent.change(input, { target: { value: '/out' } });
     const btn = screen.getAllByRole('button', { name: 'Save' })[1];
     fireEvent.click(btn);

@@ -6,6 +6,7 @@ import {
   useProject,
 } from '../src/renderer/components/ProjectProvider';
 import path from 'path';
+import UndoRedoProvider from '../src/renderer/components/UndoRedoProvider';
 
 import AssetBrowser from '../src/renderer/components/AssetBrowser';
 
@@ -64,9 +65,11 @@ describe('AssetBrowser', () => {
   it('renders files from directory', async () => {
     render(
       <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/proj">
+            <AssetBrowser />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     expect(watchProject).toHaveBeenCalledWith('/proj');
@@ -81,9 +84,11 @@ describe('AssetBrowser', () => {
   it('is scrollable', async () => {
     render(
       <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/proj">
+            <AssetBrowser />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     await screen.findAllByText('a.txt');
@@ -129,9 +134,11 @@ describe('AssetBrowser', () => {
     };
     render(
       <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/proj">
+            <AssetBrowser />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     const item = (await screen.findAllByText('a.txt'))[0];
@@ -192,9 +199,11 @@ describe('AssetBrowser', () => {
 
     render(
       <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/proj">
+            <AssetBrowser />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     await screen.findAllByText('a.txt');
@@ -248,9 +257,11 @@ describe('AssetBrowser', () => {
     };
     render(
       <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/proj">
+            <AssetBrowser />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     const a = (await screen.findAllByText('a.txt'))[0];
@@ -287,9 +298,11 @@ describe('AssetBrowser', () => {
     };
     render(
       <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/proj">
+            <AssetBrowser />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     const a = (await screen.findAllByText('a.txt'))[0];
@@ -330,10 +343,12 @@ describe('AssetBrowser', () => {
     };
     render(
       <ProjectProvider>
-        <SetPath path="/proj">
+        <UndoRedoProvider>
+          <SetPath path="/proj">
           <AssetBrowser />
         </SetPath>
-      </ProjectProvider>
+      </UndoRedoProvider>
+</ProjectProvider>
     );
     const el = (await screen.findAllByText('a.txt'))[0];
     const container = el.closest('div[tabindex="0"]') as HTMLElement;
@@ -345,10 +360,12 @@ describe('AssetBrowser', () => {
   it('filters by search and adjusts zoom', async () => {
     render(
       <ProjectProvider>
-        <SetPath path="/proj">
+        <UndoRedoProvider>
+          <SetPath path="/proj">
           <AssetBrowser />
         </SetPath>
-      </ProjectProvider>
+      </UndoRedoProvider>
+</ProjectProvider>
     );
     await screen.findAllByText('a.txt');
     const search = screen.getByPlaceholderText('Search files');
@@ -369,10 +386,12 @@ describe('AssetBrowser', () => {
     ]);
     render(
       <ProjectProvider>
-        <SetPath path="/proj">
+        <UndoRedoProvider>
+          <SetPath path="/proj">
           <AssetBrowser />
         </SetPath>
-      </ProjectProvider>
+      </UndoRedoProvider>
+</ProjectProvider>
     );
     await screen.findAllByText('stone.png');
     const itemsChip = screen.getByText('Items');
@@ -385,10 +404,12 @@ describe('AssetBrowser', () => {
   it('renders grid and tree together', async () => {
     render(
       <ProjectProvider>
-        <SetPath path="/proj">
+        <UndoRedoProvider>
+          <SetPath path="/proj">
           <AssetBrowser />
         </SetPath>
-      </ProjectProvider>
+      </UndoRedoProvider>
+</ProjectProvider>
     );
     await screen.findAllByText('a.txt');
     expect(screen.getByTestId('file-tree')).toBeInTheDocument();

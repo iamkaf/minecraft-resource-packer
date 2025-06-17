@@ -5,6 +5,7 @@ import {
   ProjectProvider,
   useProject,
 } from '../src/renderer/components/ProjectProvider';
+import UndoRedoProvider from '../src/renderer/components/UndoRedoProvider';
 import AssetSelectorInfoPanel from '../src/renderer/components/AssetSelectorInfoPanel';
 
 describe('AssetSelectorInfoPanel', () => {
@@ -26,9 +27,11 @@ describe('AssetSelectorInfoPanel', () => {
   it('shows placeholder when no asset', () => {
     render(
       <ProjectProvider>
-        <SetPath path="/p">
-          <AssetSelectorInfoPanel asset={null} />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/p">
+            <AssetSelectorInfoPanel asset={null} />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     expect(screen.getByText('No asset selected')).toBeInTheDocument();
@@ -37,9 +40,11 @@ describe('AssetSelectorInfoPanel', () => {
   it('displays asset name', () => {
     render(
       <ProjectProvider>
-        <SetPath path="/p">
-          <AssetSelectorInfoPanel asset="block/a.png" />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/p">
+            <AssetSelectorInfoPanel asset="block/a.png" />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     expect(screen.getByText('block/a.png')).toBeInTheDocument();
@@ -53,9 +58,11 @@ describe('AssetSelectorInfoPanel', () => {
     (window as unknown as { electronAPI: API }).electronAPI = { addTexture };
     render(
       <ProjectProvider>
-        <SetPath path="/p">
-          <AssetSelectorInfoPanel asset="block/a.png" />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/p">
+            <AssetSelectorInfoPanel asset="block/a.png" />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     screen.getByText('Add').click();

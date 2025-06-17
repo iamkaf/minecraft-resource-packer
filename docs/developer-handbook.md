@@ -188,6 +188,14 @@ Revisions are stored in a hidden `.history` folder within each project and up to
 20 entries are kept per asset. Selecting a revision will restore that version
 and store the current file as a new revision.
 
+## Undo & Redo
+
+Editor actions such as adding, renaming and deleting files are tracked by the
+`UndoRedoProvider`. The provider keeps the last 20 actions in memory. Users can
+undo with **Ctrl/Cmd+Z** and redo with **Ctrl/Cmd+Shift+Z**. The Editor view
+also exposes small daisyUI buttons for these actions. When no further undo or
+redo is available a toast message is shown.
+
 ## Windows Paths
 
 When writing tests or other code that constructs file system paths, prefer

@@ -13,6 +13,7 @@ vi.mock('electron', () => ({
 }));
 
 import EditorView from '../src/renderer/views/EditorView';
+import UndoRedoProvider from '../src/renderer/components/UndoRedoProvider';
 
 vi.mock('react-canvas-confetti', () => ({
   __esModule: true,
@@ -25,7 +26,13 @@ vi.mock('../src/renderer/components/AssetBrowser', () => ({
   default: () => <div>browser</div>,
 }));
 vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
-  default: ({ onExport, onBack }: { onExport: () => void; onBack: () => void }) => {
+  default: ({
+    onExport,
+    onBack,
+  }: {
+    onExport: () => void;
+    onBack: () => void;
+  }) => {
     const { path } = useProject();
     return (
       <div>
@@ -91,9 +98,11 @@ describe('EditorView', () => {
   it('shows project path and exports pack', async () => {
     render(
       <ProjectProvider>
-        <SetPath path="/tmp/proj">
-          <EditorView onBack={() => undefined} />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/tmp/proj">
+            <EditorView onBack={() => undefined} />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     expect(screen.getByText('/tmp/proj')).toBeInTheDocument();
@@ -110,9 +119,11 @@ describe('EditorView', () => {
     const back = vi.fn();
     render(
       <ProjectProvider>
-        <SetPath path="/tmp">
-          <EditorView onBack={back} />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/tmp">
+            <EditorView onBack={back} />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     fireEvent.click(screen.getByText('Back to Projects'));
@@ -122,9 +133,11 @@ describe('EditorView', () => {
   it('opens help link externally', () => {
     render(
       <ProjectProvider>
-        <SetPath path="/tmp">
-          <EditorView onBack={() => undefined} />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/tmp">
+            <EditorView onBack={() => undefined} />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     const link = screen.getByRole('link', { name: 'Help' });
@@ -139,9 +152,11 @@ describe('EditorView', () => {
   it('opens asset selector modal', () => {
     render(
       <ProjectProvider>
-        <SetPath path="/tmp">
-          <EditorView onBack={() => undefined} />
-        </SetPath>
+        <UndoRedoProvider>
+          <SetPath path="/tmp">
+            <EditorView onBack={() => undefined} />
+          </SetPath>
+        </UndoRedoProvider>
       </ProjectProvider>
     );
     fireEvent.click(screen.getByRole('button', { name: 'Add From Vanilla' }));

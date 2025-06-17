@@ -2,6 +2,7 @@ import React from 'react';
 import TextureThumb from './TextureThumb';
 import { Button } from './daisy/actions';
 import { useProject } from './ProjectProvider';
+import { useUndoRedo } from './UndoRedoProvider';
 
 interface Props {
   asset: string | null;
@@ -9,6 +10,7 @@ interface Props {
 
 export default function AssetSelectorInfoPanel({ asset }: Props) {
   const { path: projectPath } = useProject();
+  const { addTexture } = useUndoRedo();
   if (!asset) return <div className="p-2">No asset selected</div>;
   return (
     <div className="p-2" data-testid="selector-info">
@@ -16,7 +18,7 @@ export default function AssetSelectorInfoPanel({ asset }: Props) {
       <p className="break-all text-sm">{asset}</p>
       <Button
         className="btn-primary btn-sm mt-2"
-        onClick={() => window.electronAPI?.addTexture(projectPath, asset)}
+        onClick={() => addTexture(projectPath, asset)}
       >
         Add
       </Button>

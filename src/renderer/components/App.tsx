@@ -14,6 +14,7 @@ const SettingsView = lazy(() => import('../views/SettingsView'));
 const AboutView = lazy(() => import('../views/AboutView'));
 
 import { ProjectProvider, useProject } from './ProjectProvider';
+import UndoRedoProvider from './UndoRedoProvider';
 
 function AppContent() {
   const { path: projectPath, setPath: setProjectPath } = useProject();
@@ -86,7 +87,9 @@ function AppContent() {
 export default function App() {
   return (
     <ProjectProvider>
-      <AppContent />
+      <UndoRedoProvider>
+        <AppContent />
+      </UndoRedoProvider>
     </ProjectProvider>
   );
 }
