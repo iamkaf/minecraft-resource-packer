@@ -4,6 +4,22 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import path from 'path';
 
 vi.mock('electron', () => ({ app: { getPath: () => '/tmp' } }));
+vi.mock('@monaco-editor/react', () => ({
+  __esModule: true,
+  default: ({
+    value,
+    onChange,
+  }: {
+    value: string;
+    onChange: (v: string) => void;
+  }) => (
+    <textarea
+      data-testid="editor"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
 import PackMetaModal from '../src/renderer/components/PackMetaModal';
 import type { PackMeta } from '../src/main/projects';
 
@@ -26,8 +42,10 @@ describe('PackMetaModal', () => {
         onCancel={onCancel}
       />
     );
-    fireEvent.change(screen.getByPlaceholderText('Description'), {
-      target: { value: 'new' },
+    fireEvent.change(screen.getByTestId('editor'), {
+      target: {
+        value: JSON.stringify({ ...meta, description: 'new' }, null, 2),
+      },
     });
     fireEvent.click(screen.getByText('Save'));
     expect(onSave).toHaveBeenCalledWith(

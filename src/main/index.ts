@@ -31,6 +31,7 @@ import {
 protocol.registerSchemesAsPrivileged([
   { scheme: 'vanilla', privileges: { standard: true, secure: true } },
   { scheme: 'asset', privileges: { standard: true, secure: true } },
+  { scheme: 'monaco', privileges: { standard: true, secure: true } },
 ]);
 
 // Webpack's DefinePlugin in Electron Forge exposes entry point URLs as
