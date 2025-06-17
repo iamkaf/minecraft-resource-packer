@@ -21,9 +21,9 @@ describe('ProjectInfoPanel', () => {
   const onBack = vi.fn();
 
   beforeEach(() => {
-    electronAPI.loadPackMeta.mockResolvedValue(meta);
-    electronAPI.openInFolder.mockImplementation(open);
     vi.clearAllMocks();
+    load.mockResolvedValue(meta);
+    open.mockResolvedValue(undefined);
   });
 
   it('loads metadata and triggers export', async () => {
