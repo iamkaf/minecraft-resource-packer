@@ -44,6 +44,12 @@ export function registerFileWatcherHandlers(
           path.relative(projectPath, file).split(path.sep).join('/')
         );
       });
+      watcher.on('change', (file) => {
+        win?.webContents.send('file-changed', {
+          path: path.relative(projectPath, file).split(path.sep).join('/'),
+          stamp: Date.now(),
+        });
+      });
       watchers.set(projectPath, watcher);
     }
     return listFiles(projectPath);

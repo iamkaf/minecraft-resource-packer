@@ -97,6 +97,9 @@ const api = {
   onFileRenamed: (
     listener: (e: unknown, args: { oldPath: string; newPath: string }) => void
   ) => on('file-renamed', listener),
+  onFileChanged: (
+    listener: (e: unknown, args: { path: string; stamp: number }) => void
+  ) => on('file-changed', listener),
   loadPackMeta: (name: string) => invoke('load-pack-meta', name),
   savePackMeta: (name: string, meta: import('../main/projects').PackMeta) =>
     invoke('save-pack-meta', name, meta),

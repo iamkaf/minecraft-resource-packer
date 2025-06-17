@@ -14,6 +14,7 @@ interface Props {
   toggleNoExport: (files: string[], flag: boolean) => void;
   deleteFiles: (files: string[]) => void;
   openRename: (file: string) => void;
+  versions: Record<string, number>;
 }
 
 export default function FileTree({
@@ -24,6 +25,7 @@ export default function FileTree({
   toggleNoExport,
   deleteFiles,
   openRename,
+  versions,
 }: Props) {
   const { path: projectPath } = useProject();
   const data = React.useMemo<TreeItem[]>(() => buildTree(files), [files]);
@@ -88,6 +90,7 @@ export default function FileTree({
                 alt={path.basename(f)}
                 size={24}
                 simplified
+                stamp={versions[f]}
               />
             )}
             <span className="text-sm break-all">{path.basename(f)}</span>
@@ -178,6 +181,7 @@ export default function FileTree({
                 alt={path.basename(node.data.name)}
                 size={24}
                 simplified
+                stamp={versions[node.id]}
               />
             )}
             <span className="text-sm break-all">

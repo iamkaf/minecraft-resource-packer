@@ -14,6 +14,7 @@ const unwatchProject = vi.fn();
 const onFileAdded = vi.fn();
 const onFileRemoved = vi.fn();
 const onFileRenamed = vi.fn();
+const onFileChanged = vi.fn();
 
 function SetPath({
   path,
@@ -43,6 +44,7 @@ describe('AssetBrowser', () => {
           onFileAdded: typeof onFileAdded;
           onFileRemoved: typeof onFileRemoved;
           onFileRenamed: typeof onFileRenamed;
+          onFileChanged: typeof onFileChanged;
           getNoExport: () => Promise<string[]>;
           setNoExport: () => void;
         };
@@ -53,6 +55,7 @@ describe('AssetBrowser', () => {
       onFileAdded,
       onFileRemoved,
       onFileRenamed,
+      onFileChanged,
       getNoExport: vi.fn(async () => []),
       setNoExport: vi.fn(),
     };
@@ -105,6 +108,7 @@ describe('AssetBrowser', () => {
           onFileAdded: typeof onFileAdded;
           onFileRemoved: typeof onFileRemoved;
           onFileRenamed: typeof onFileRenamed;
+          onFileChanged: typeof onFileChanged;
           getNoExport: () => Promise<string[]>;
           setNoExport: () => void;
         };
@@ -119,6 +123,7 @@ describe('AssetBrowser', () => {
       onFileAdded,
       onFileRemoved,
       onFileRenamed,
+      onFileChanged,
       getNoExport: vi.fn(async () => []),
       setNoExport: vi.fn(),
     };
@@ -169,6 +174,9 @@ describe('AssetBrowser', () => {
     let renamed:
       | ((e: unknown, args: { oldPath: string; newPath: string }) => void)
       | undefined;
+    let changed:
+      | ((e: unknown, args: { path: string; stamp: number }) => void)
+      | undefined;
     onFileAdded.mockImplementation((cb) => {
       added = cb;
     });
@@ -177,6 +185,9 @@ describe('AssetBrowser', () => {
     });
     onFileRenamed.mockImplementation((cb) => {
       renamed = cb;
+    });
+    onFileChanged.mockImplementation((cb) => {
+      changed = cb;
     });
 
     render(
@@ -199,6 +210,12 @@ describe('AssetBrowser', () => {
     await screen.findAllByText('d.png');
     expect(screen.queryByText('b.png')).toBeNull();
     expect(screen.getAllByText('d.png')[0]).toBeInTheDocument();
+
+    const img = screen.getByAltText('D') as HTMLImageElement;
+    const before = img.src;
+    changed?.({}, { path: 'd.png', stamp: 42 });
+    expect(img.src).not.toBe(before);
+    expect(img.src).toContain('t=42');
   });
 
   it('supports multi selection and delete key', async () => {
@@ -210,6 +227,7 @@ describe('AssetBrowser', () => {
       onFileAdded: typeof onFileAdded;
       onFileRemoved: typeof onFileRemoved;
       onFileRenamed: typeof onFileRenamed;
+      onFileChanged: typeof onFileChanged;
       getNoExport: () => Promise<string[]>;
       setNoExport: () => void;
     }
@@ -220,6 +238,7 @@ describe('AssetBrowser', () => {
       onFileAdded,
       onFileRemoved,
       onFileRenamed,
+      onFileChanged,
       getNoExport: vi.fn(async () => []),
       setNoExport: vi.fn(),
     };
@@ -250,6 +269,7 @@ describe('AssetBrowser', () => {
       onFileAdded: typeof onFileAdded;
       onFileRemoved: typeof onFileRemoved;
       onFileRenamed: typeof onFileRenamed;
+      onFileChanged: typeof onFileChanged;
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       setNoExport,
@@ -259,6 +279,7 @@ describe('AssetBrowser', () => {
       onFileAdded,
       onFileRemoved,
       onFileRenamed,
+      onFileChanged,
     };
     render(
       <ProjectProvider>
@@ -291,6 +312,7 @@ describe('AssetBrowser', () => {
       onFileAdded: typeof onFileAdded;
       onFileRemoved: typeof onFileRemoved;
       onFileRenamed: typeof onFileRenamed;
+      onFileChanged: typeof onFileChanged;
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       getNoExport,
@@ -300,6 +322,7 @@ describe('AssetBrowser', () => {
       onFileAdded,
       onFileRemoved,
       onFileRenamed,
+      onFileChanged,
     };
     render(
       <ProjectProvider>

@@ -119,4 +119,5 @@ export interface IpcEventMap {
   'file-added': string;
   'file-removed': string;
   'file-renamed': { oldPath: string; newPath: string };
+  'file-changed': { path: string; stamp: number };
 }

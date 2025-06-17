@@ -41,7 +41,7 @@ const getCategory = (name: string): Filter | 'misc' => {
 
 const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
   const { path: projectPath } = useProject();
-  const { files, noExport, toggleNoExport } = useProjectFiles();
+  const { files, noExport, toggleNoExport, versions } = useProjectFiles();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [renameTarget, setRenameTarget] = useState<string | null>(null);
   const [query, setQuery] = useState('');
@@ -182,6 +182,7 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
                         deleteFiles={deleteFiles}
                         openRename={(file) => setRenameTarget(file)}
                         zoom={zoom}
+                        stamp={versions[f]}
                       />
                     ))}
                   </div>
@@ -199,6 +200,7 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
             toggleNoExport={toggleNoExport}
             deleteFiles={deleteFiles}
             openRename={(file) => setRenameTarget(file)}
+            versions={versions}
           />
         </div>
       </div>

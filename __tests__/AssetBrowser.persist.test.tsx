@@ -12,6 +12,7 @@ const unwatchProject = vi.fn();
 const onFileAdded = vi.fn();
 const onFileRemoved = vi.fn();
 const onFileRenamed = vi.fn();
+const onFileChanged = vi.fn();
 
 const getAssetSearch = vi.fn();
 const setAssetSearch = vi.fn();
@@ -44,6 +45,7 @@ beforeEach(() => {
     onFileAdded,
     onFileRemoved,
     onFileRenamed,
+    onFileChanged,
     getNoExport: vi.fn(async () => []),
     setNoExport: vi.fn(),
     getAssetSearch,
