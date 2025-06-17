@@ -1,6 +1,6 @@
-# minecraft-resource-packer
+# User Guide
 
-An Electron-based tool for creating Minecraft resource packs. The interface is designed to be fun and beginner friendly so anyone can pick a version, edit textures and export a ready to use pack.
+This guide explains how to use **minecraft-resource-packer** to create and manage resource packs.
 
 ## Views
 
@@ -19,22 +19,17 @@ An Electron-based tool for creating Minecraft resource packs. The interface is d
 - **Export** – generate a zipped resource pack containing the selected files along with a valid `pack.mcmeta`. The output is ready to drop into Minecraft.
 - **External Editing** – configure your favourite image editor in **Settings** and launch it from the asset info panel.
 
-### Texture Naming
+## Texture Naming
 
 Texture filenames are displayed in a friendlier form by removing the path and extension, replacing underscores with spaces and capitalising each word. The original filename is still shown alongside the formatted name and in tooltips.
 
-### External Editor
+## External Editor
 
 Specify the path to your preferred image editor under **Settings**. PNG textures can then be opened directly from the asset info panel using the **Edit Externally** button.
 
-### Keyboard Shortcuts
+## Keyboard Shortcuts
 
 The Project Manager supports a few hotkeys:
 
 - **Enter** – open all selected projects.
 - **Delete** – remove all selected projects.
-
-## Documentation
-
-- [User Guide](docs/user-guide.md)
-- [Developer Handbook](docs/developer-handbook.md)
