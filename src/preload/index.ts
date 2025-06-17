@@ -86,6 +86,10 @@ const api = {
   setAssetFilters: (f: string[]) => invoke('set-asset-filters', f),
   getAssetZoom: () => invoke('get-asset-zoom'),
   setAssetZoom: (z: number) => invoke('set-asset-zoom', z),
+  getOpenLastProject: () => invoke('get-open-last-project'),
+  setOpenLastProject: (b: boolean) => invoke('set-open-last-project', b),
+  getLastProject: () => invoke('get-last-project'),
+  setLastProject: (n: string) => invoke('set-last-project', n),
   onFileAdded: (listener: (e: unknown, path: string) => void) =>
     on('file-added', listener),
   onFileRemoved: (listener: (e: unknown, path: string) => void) =>

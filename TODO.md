@@ -10,7 +10,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 - [ ] Undo/Redo queue (last 20 actions)
 - [x] Persist window size and position across launches
-- [ ] Open the most recently used project on startup; add a setting to disable this
+- [x] Open the most recently used project on startup; add a setting to disable this
 
 ---
 
@@ -39,7 +39,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Revision history (max 20)
 - [x] Preview against the vanilla texture using the `Diff` component
 - [x] Generic icon thumbnail for text files
-- [ ] More robust JSON editor
+- [x] More robust JSON editor
 - [ ] Optional 3D preview for entity models and item textures
 - [ ] Custom models & blockstates editor with live validation
 - [ ] Normal & specular map creator using Sharp
@@ -47,7 +47,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ### Project Info Panel
 
-- [ ] Ability to edit project metadata from the ProjectInfoPanel
+- [x] Ability to edit project metadata from the ProjectInfoPanel
 - [ ] Integrate PackIconEditor for changing the pack icon
 - [x] Fix the randomize icon button not working due to incorrect file path
 
@@ -60,7 +60,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Target resolution radio (16×/32×/64×)
 - [ ] Validation checklist (missing textures, duplicates)
 - [ ] Version field for projects; it should also appear in exported file names
-- [ ] Remember the last export target folder using electron store on successful exports
+- [x] Remember the last export target folder using electron store on successful exports
 - [ ] Sub-pack support for multi-variant packs in `pack.mcmeta`
 
 ---

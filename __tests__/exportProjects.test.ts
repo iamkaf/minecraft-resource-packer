@@ -23,6 +23,7 @@ vi.mock('electron', () => {
 
 vi.mock('../src/main/layout', () => ({
   getDefaultExportDir: () => outDir,
+  setDefaultExportDir: vi.fn(),
 }));
 
 import { exportProjects } from '../src/main/exporter';
