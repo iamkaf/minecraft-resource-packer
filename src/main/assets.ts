@@ -235,6 +235,9 @@ export function registerAssetProtocol(protocol: Protocol) {
     if (/(\\|\/)$/.test(file)) {
       file = file.substring(0, file.length - 1);
     }
+    if (file.includes("?t=")) {
+      file = file.substring(0, file.indexOf("?t="));
+    }
     callback(file);
   });
 }
