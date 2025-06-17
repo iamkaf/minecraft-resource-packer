@@ -31,7 +31,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Persist search query, category filters and zoom level between sessions
 - [ ] Arrow key navigation between thumbnails
 - [ ] Audio & language asset management with previews (`.ogg`, `.wav`, `.json`)
-- [ ] Asset atlas viewer for stitching HD texture previews
+- [x] Asset atlas viewer for stitching HD texture previews
 - [ ] Asset dependency graph showing overrides
 
 ### Asset Info & Texture Inspector

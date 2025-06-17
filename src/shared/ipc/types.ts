@@ -19,6 +19,7 @@ export interface IpcRequestMap {
   'list-textures': [string];
   'get-texture-path': [string, string];
   'get-texture-url': [string, string];
+  'create-atlas': [string, string[]];
   'randomize-icon': [string];
   'save-pack-icon': [string, string, string];
   'export-project': [string];
@@ -77,6 +78,7 @@ export interface IpcResponseMap {
   'list-textures': string[];
   'get-texture-path': string;
   'get-texture-url': string;
+  'create-atlas': string;
   'randomize-icon': void;
   'save-pack-icon': void;
   'export-project': ExportSummary | void;
