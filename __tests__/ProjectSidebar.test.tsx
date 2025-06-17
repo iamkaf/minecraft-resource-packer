@@ -6,6 +6,7 @@ import ProjectSidebar from '../src/renderer/components/ProjectSidebar';
 describe('ProjectSidebar', () => {
   it('loads metadata when given a project', async () => {
     const load = vi.fn().mockResolvedValue({
+      version: '1.21.1',
       description: 'A pack',
       author: 'Me',
       urls: ['https://a.com'],
@@ -40,6 +41,7 @@ describe('ProjectSidebar', () => {
     const load = vi
       .fn()
       .mockResolvedValueOnce({
+        version: '1.21.1',
         description: 'First',
         author: '',
         urls: [],
@@ -47,6 +49,7 @@ describe('ProjectSidebar', () => {
         license: '',
       })
       .mockResolvedValueOnce({
+        version: '1.21.1',
         description: 'Second',
         author: '',
         urls: [],

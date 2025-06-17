@@ -59,7 +59,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Editable license field in Pack Metadata modal
 - [ ] Target resolution radio (16×/32×/64×)
 - [ ] Validation checklist (missing textures, duplicates)
-- [ ] Version field for projects; it should also appear in exported file names
+- [x] Version field for projects; it should also appear in exported file names
 - [x] Remember the last export target folder using electron store on successful exports
 - [ ] Sub-pack support for multi-variant packs in `pack.mcmeta`
 

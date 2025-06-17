@@ -26,6 +26,7 @@ import type { PackMeta } from '../src/main/projects';
 describe('PackMetaModal', () => {
   it('submits edited metadata', () => {
     const meta: PackMeta = {
+      version: '1.21.1',
       description: 'desc',
       author: 'me',
       urls: ['https://a.com'],
@@ -55,6 +56,7 @@ describe('PackMetaModal', () => {
 
   it('randomizes icon', () => {
     const meta: PackMeta = {
+      version: '1.21.1',
       description: '',
       author: '',
       urls: [],

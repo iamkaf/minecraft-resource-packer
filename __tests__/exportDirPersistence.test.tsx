@@ -60,7 +60,7 @@ describe('export directory persistence', () => {
     registerExportHandlers(ipcMock, baseDir);
     showSaveDialogMock.mockResolvedValue({
       canceled: false,
-      filePath: path.join(outDir, 'A.zip'),
+      filePath: path.join(outDir, 'A-vunknown.zip'),
     });
     expect(handler).toBeTypeOf('function');
     await handler?.({}, proj);

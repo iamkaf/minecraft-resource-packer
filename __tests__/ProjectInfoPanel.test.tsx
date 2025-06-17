@@ -8,6 +8,7 @@ import {
 import ProjectInfoPanel from '../src/renderer/components/ProjectInfoPanel';
 
 const meta = {
+  version: '1.21.1',
   description: 'desc',
   author: '',
   urls: [],

@@ -117,8 +117,18 @@ export async function exportProjects(
   const dir = filePaths[0];
   for (const name of names) {
     const src = path.join(baseDir, name);
-    const out = path.join(dir, `${name}.zip`);
-    await exportPack(src, out).catch(() => {
+    let version = 'unknown';
+    const metaPath = path.join(src, 'project.json');
+    if (fs.existsSync(metaPath)) {
+      try {
+        const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+        version = ProjectMetadataSchema.parse(data).version;
+      } catch {
+        /* ignore */
+      }
+    }
+    const out = path.join(dir, `${name}-v${version}.zip`);
+    await exportPack(src, out, version).catch(() => {
       throw new Error(`Failed to export ${name}`);
     });
   }
@@ -129,16 +139,26 @@ export function registerExportHandlers(ipc: IpcMain, baseDir: string) {
   ipc.handle(
     'export-project',
     async (_e, projectPath: string): Promise<ExportSummary | void> => {
+      let version = 'unknown';
+      const metaPath = path.join(projectPath, 'project.json');
+      if (fs.existsSync(metaPath)) {
+        try {
+          const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+          version = ProjectMetadataSchema.parse(data).version;
+        } catch {
+          /* ignore */
+        }
+      }
       const { canceled, filePath } = await dialog.showSaveDialog({
         title: 'Export Pack',
         defaultPath: path.join(
           getDefaultExportDir(),
-          `${path.basename(projectPath)}.zip`
+          `${path.basename(projectPath)}-v${version}.zip`
         ),
         filters: [{ name: 'Zip Files', extensions: ['zip'] }],
       });
       if (canceled || !filePath) return;
-      const summary = await exportPack(projectPath, filePath);
+      const summary = await exportPack(projectPath, filePath, version);
       setDefaultExportDir(path.dirname(filePath));
       return summary;
     }

@@ -214,8 +214,9 @@ describe('AssetBrowser', () => {
     const img = screen.getByAltText('D') as HTMLImageElement;
     const before = img.src;
     changed?.({}, { path: 'd.png', stamp: 42 });
-    expect(img.src).not.toBe(before);
-    expect(img.src).toContain('t=42');
+    const updated = await screen.findByAltText('D');
+    expect(updated.src).not.toBe(before);
+    expect(updated.src).toContain('t=42');
   });
 
   it('supports multi selection and delete key', async () => {

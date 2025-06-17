@@ -173,6 +173,7 @@ export async function loadPackMeta(
     }
   }
   return {
+    version: 'unknown',
     description: '',
     author: '',
     urls: [],
@@ -199,7 +200,7 @@ export async function savePackMeta(
   if (!data) {
     data = {
       name,
-      version: 'unknown',
+      version: meta.version ?? 'unknown',
       assets: [],
       noExport: [],
       lastOpened: Date.now(),
@@ -210,6 +211,7 @@ export async function savePackMeta(
       license: '',
     };
   }
+  if (meta.version) data.version = meta.version;
   data.description = meta.description;
   data.author = meta.author;
   data.urls = meta.urls;

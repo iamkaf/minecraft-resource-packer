@@ -16,6 +16,7 @@ This guide explains how to use **minecraft-resource-packer** to create and manag
 - **Asset Editing** – when an asset is added it is copied into the correct folder structure inside the project. Files can be opened in Explorer/Finder or with the default program for that type. Any changes on disk instantly appear in the UI.
 - **Live Asset Browser** – the Editor view lists all files in the project directory and automatically reloads when something changes.
 - **Random pack icon** – new packs start with a pastel background and random item image; you can regenerate from pack settings.
+- **Versioning** – set your pack version in **Pack Settings** and exported archives will include it in the filename (e.g. `MyPack-v1.2.zip`).
 - **Export** – generate a zipped resource pack containing the selected files along with a valid `pack.mcmeta`. The output is ready to drop into Minecraft.
 - **External Editing** – configure your favourite image editor in **Settings** and launch it from the asset info panel.
 
