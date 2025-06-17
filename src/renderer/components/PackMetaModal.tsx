@@ -3,7 +3,9 @@ import path from 'path';
 import { app } from 'electron';
 import type { PackMeta } from '../../main/projects';
 import { Modal, Button } from './daisy/actions';
-import { InputField, Textarea } from './daisy/input';
+import JsonEditor from './JsonEditor';
+import { useToast } from './ToastProvider';
+import { PackMetaSchema } from '../../shared/project';
 
 export default function PackMetaModal({
   project,
@@ -16,46 +18,25 @@ export default function PackMetaModal({
   onSave: (m: PackMeta) => void;
   onCancel: () => void;
 }) {
-  const [desc, setDesc] = useState(meta.description);
-  const [author, setAuthor] = useState(meta.author);
-  const [urls, setUrls] = useState(meta.urls.join('\n'));
+  const [text, setText] = useState(JSON.stringify(meta, null, 2));
+  const toast = useToast();
   return (
     <Modal open>
       <form
         className="flex flex-col gap-2"
         onSubmit={(e) => {
           e.preventDefault();
-          onSave({
-            ...meta,
-            description: desc,
-            author,
-            urls: urls
-              .split(/\n+/)
-              .map((u: string) => u.trim())
-              .filter((u: string) => u),
-            updated: Date.now(),
-          });
+          try {
+            const data = JSON.parse(text);
+            const parsed = PackMetaSchema.parse(data);
+            onSave({ ...parsed, updated: Date.now() });
+          } catch {
+            toast({ message: 'Invalid JSON', type: 'error' });
+          }
         }}
       >
         <h3 className="font-bold text-lg">Edit Metadata</h3>
-        <Textarea
-          className="textarea-bordered"
-          value={desc}
-          onChange={(e) => setDesc(e.target.value)}
-          placeholder="Description"
-        />
-        <InputField
-          className="input-bordered"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          placeholder="Author"
-        />
-        <Textarea
-          className="textarea-bordered"
-          value={urls}
-          onChange={(e) => setUrls(e.target.value)}
-          placeholder="URLs (one per line)"
-        />
+        <JsonEditor value={text} onChange={setText} />
         <div className="modal-action">
           <Button
             type="button"
