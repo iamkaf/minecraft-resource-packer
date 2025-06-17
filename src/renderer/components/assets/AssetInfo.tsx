@@ -10,6 +10,7 @@ import RevisionsModal from '../modals/RevisionsModal';
 const PreviewPane = lazy(() => import('./PreviewPane'));
 const TextureLab = lazy(() => import('./TextureLab'));
 const TextureDiff = lazy(() => import('./TextureDiff'));
+const AudioPreview = lazy(() => import('./AudioPreview'));
 
 interface Props {
   asset: string | null;
@@ -24,6 +25,7 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [lab, setLab] = useState(false);
   const [diff, setDiff] = useState(false);
+  const [audio, setAudio] = useState(false);
   const [stamp, setStamp] = useState<number>();
   const [revs, setRevs] = useState(false);
 
@@ -45,6 +47,9 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
     ? ['.json', '.mcmeta'].includes(path.extname(asset).toLowerCase())
     : false;
   const isPng = asset ? path.extname(asset).toLowerCase() === '.png' : false;
+  const isAudio = asset
+    ? ['.ogg', '.wav'].includes(path.extname(asset).toLowerCase())
+    : false;
 
   useEffect(() => {
     if (asset && count === 1 && isText) {
@@ -94,7 +99,7 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
           </div>
         }
       >
-        <PreviewPane texture={asset} stamp={stamp} />
+        <PreviewPane texture={isPng ? asset : null} stamp={stamp} />
       </Suspense>
       <div className="flex-1 w-100">
         <h3 className="font-bold mb-1 break-all">{asset}</h3>
@@ -161,6 +166,22 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
             </Button>
           </div>
         )}
+        {isAudio && count === 1 && (
+          <div className="flex flex-col gap-2 mt-2">
+            <Button
+              className="btn-secondary btn-sm"
+              onClick={() => setAudio(true)}
+            >
+              Play Audio
+            </Button>
+            <Button
+              className="btn-secondary btn-sm"
+              onClick={() => setRevs(true)}
+            >
+              Revisions
+            </Button>
+          </div>
+        )}
         {lab && (
           <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
             <TextureLab
@@ -173,6 +194,11 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
         {diff && (
           <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
             <TextureDiff asset={asset} onClose={() => setDiff(false)} />
+          </Suspense>
+        )}
+        {audio && (
+          <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
+            <AudioPreview asset={asset} onClose={() => setAudio(false)} />
           </Suspense>
         )}
         {revs && (

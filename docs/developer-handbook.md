@@ -155,11 +155,14 @@ should be excluded from exports. The asset browser context menu includes a
 
 The vanilla asset browser lets you search textures from the selected Minecraft
 version. Results are grouped into collapsible **Blocks**, **Items**, **Entity**,
-**UI**, **Audio** and **Misc** sections using daisyUI's collapse component. Only assets
+**UI**, **Audio**, **Lang** and **Misc** sections using daisyUI's collapse component. Only assets
 that match the search query appear in each section. Thumbnails respect the zoom
 slider (24–128 px) and textures can be clicked or dragged into the asset browser
 to add them to the project.
 Text files such as `.txt` and `.json` display a document icon instead of a thumbnail.
+Language files under `lang/` are listed in their own **Lang** section.
+Audio files (`.ogg` and `.wav`) include a **Play Audio** button that opens a daisyUI modal
+with an HTML5 `<audio>` element for playback.
 
 Beside the asset information panel, a **Preview Pane** shows the currently
 selected texture under neutral lighting. The pane renders textures at a 1:1
