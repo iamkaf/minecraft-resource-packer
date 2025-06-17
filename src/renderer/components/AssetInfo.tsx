@@ -23,8 +23,18 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [lab, setLab] = useState(false);
   const [diff, setDiff] = useState(false);
+  const [stamp, setStamp] = useState<number>();
 
   const full = asset ? path.join(projectPath, asset) : '';
+
+  useEffect(() => {
+    if (!asset) return;
+    const listener = (_e: unknown, args: { path: string; stamp: number }) => {
+      if (args.path === asset) setStamp(args.stamp);
+    };
+    window.electronAPI?.onFileChanged(listener);
+    setStamp(undefined);
+  }, [asset]);
 
   const isText = asset
     ? ['.txt', '.json', '.mcmeta'].includes(path.extname(asset).toLowerCase())
@@ -79,7 +89,7 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
           </div>
         }
       >
-        <PreviewPane texture={asset} />
+        <PreviewPane texture={asset} stamp={stamp} />
       </Suspense>
       <div className="flex-1 max-w-md">
         <h3 className="font-bold mb-1 break-all">{asset}</h3>
@@ -132,7 +142,11 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
         )}
         {lab && (
           <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-            <TextureLab file={full} onClose={() => setLab(false)} />
+            <TextureLab
+              file={full}
+              onClose={() => setLab(false)}
+              stamp={stamp}
+            />
           </Suspense>
         )}
         {diff && (

@@ -3,11 +3,14 @@ import React, { useState } from 'react';
 interface PreviewPaneProps {
   texture: string | null;
   lighting?: 'neutral' | 'none';
+  /** Optional cache-busting stamp */
+  stamp?: number;
 }
 
 export default function PreviewPane({
   texture,
   lighting = 'neutral',
+  stamp,
 }: PreviewPaneProps) {
   const [zoom, setZoom] = useState(1);
   const bgClass = lighting === 'neutral' ? 'bg-gray-200' : 'bg-transparent';
@@ -31,7 +34,7 @@ export default function PreviewPane({
       {texture ? (
         <>
           <img
-            src={`asset://${texture}`}
+            src={`asset://${texture}${stamp ? `?t=${stamp}` : ''}`}
             alt={texture}
             style={{
               imageRendering: 'pixelated',
