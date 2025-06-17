@@ -1,6 +1,23 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+
+vi.mock('@monaco-editor/react', () => ({
+  __esModule: true,
+  default: ({
+    value,
+    onChange,
+  }: {
+    value: string;
+    onChange: (v: string) => void;
+  }) => (
+    <textarea
+      data-testid="editor"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
 import {
   ProjectProvider,
   useProject,
@@ -70,8 +87,10 @@ describe('ProjectInfoPanel metadata editing', () => {
     await screen.findByText('desc');
     fireEvent.click(screen.getByText('desc'));
     await screen.findByTestId('daisy-modal');
-    fireEvent.change(screen.getByPlaceholderText('Description'), {
-      target: { value: 'new desc' },
+    fireEvent.change(screen.getByTestId('editor'), {
+      target: {
+        value: JSON.stringify({ ...meta, description: 'new desc' }, null, 2),
+      },
     });
     fireEvent.click(screen.getByText('Save'));
     expect(save).toHaveBeenCalledWith(
