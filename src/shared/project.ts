@@ -2,7 +2,8 @@ import { z } from 'zod';
 
 export const ProjectMetadataSchema = z.object({
   name: z.string(),
-  version: z.string(),
+  minecraft_version: z.string(),
+  version: z.string().default('1.0.0'),
   assets: z.array(z.string()).default([]),
   noExport: z.array(z.string()).default([]),
   lastOpened: z.number().optional(),

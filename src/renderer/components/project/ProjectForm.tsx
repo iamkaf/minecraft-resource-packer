@@ -17,7 +17,7 @@ export default function ProjectForm({
   onImport,
 }: {
   formats: FormatOption[];
-  onCreate: (name: string, version: string) => void;
+  onCreate: (name: string, minecraftVersion: string) => void;
   onImport: () => void;
 }) {
   const [open, setOpen] = useState(false);

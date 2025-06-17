@@ -21,7 +21,13 @@ describe('project version persistence', () => {
     fs.mkdirSync(proj, { recursive: true });
     fs.writeFileSync(
       path.join(proj, 'project.json'),
-      JSON.stringify({ name: 'Pack', version: '1.20.1', assets: [], noExport: [] })
+      JSON.stringify({
+        name: 'Pack',
+        minecraft_version: '1.20.1',
+        version: '0.0.0',
+        assets: [],
+        noExport: [],
+      })
     );
     await savePackMeta(tmpDir, 'Pack', {
       version: '1.21.1',

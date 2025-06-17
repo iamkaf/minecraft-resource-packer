@@ -13,6 +13,7 @@ const saveRevision = vi.fn();
 const listRevisions = vi.fn();
 const restoreRevision = vi.fn();
 const readFile = vi.fn();
+const onFileChanged = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -23,6 +24,7 @@ beforeEach(() => {
         listRevisions: typeof listRevisions;
         restoreRevision: typeof restoreRevision;
         readFile: typeof readFile;
+        onFileChanged: typeof onFileChanged;
       };
     }
   ).electronAPI = {
@@ -30,6 +32,7 @@ beforeEach(() => {
     listRevisions,
     restoreRevision,
     readFile,
+    onFileChanged,
   } as never;
   listRevisions.mockResolvedValue(['1.png']);
   readFile.mockResolvedValue('');

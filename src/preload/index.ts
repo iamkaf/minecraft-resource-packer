@@ -25,8 +25,8 @@ function on<C extends keyof IpcEventMap>(
 const api = {
   listProjects: () => invoke('list-projects'),
   listPackFormats: () => invoke('list-formats'),
-  createProject: (name: string, version: string) =>
-    invoke('create-project', name, version),
+  createProject: (name: string, minecraftVersion: string) =>
+    invoke('create-project', name, minecraftVersion),
   importProject: () => invoke('import-project'),
   duplicateProject: (name: string, newName: string) =>
     invoke('duplicate-project', name, newName),
