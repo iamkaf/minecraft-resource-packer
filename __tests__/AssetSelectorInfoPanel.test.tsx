@@ -1,28 +1,11 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 import AssetSelectorInfoPanel from '../src/renderer/components/AssetSelectorInfoPanel';
 
 describe('AssetSelectorInfoPanel', () => {
-  function SetPath({
-    path,
-    children,
-  }: {
-    path: string;
-    children: React.ReactNode;
-  }) {
-    const { setPath } = useProject();
-    const [ready, setReady] = React.useState(false);
-    React.useEffect(() => {
-      setPath(path);
-      setReady(true);
-    }, [path]);
-    return ready ? <>{children}</> : null;
-  }
   it('shows placeholder when no asset', () => {
     render(
       <ProjectProvider>
@@ -47,10 +30,7 @@ describe('AssetSelectorInfoPanel', () => {
 
   it('adds asset on button click', () => {
     const addTexture = vi.fn();
-    interface API {
-      addTexture: typeof addTexture;
-    }
-    (window as unknown as { electronAPI: API }).electronAPI = { addTexture };
+    electronAPI.addTexture.mockImplementation(addTexture);
     render(
       <ProjectProvider>
         <SetPath path="/p">

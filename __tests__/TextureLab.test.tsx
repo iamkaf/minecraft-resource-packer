@@ -1,39 +1,18 @@
 import React from 'react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import TextureLab from '../src/renderer/components/TextureLab';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 
 describe('TextureLab', () => {
-  function SetPath({
-    path,
-    children,
-  }: {
-    path: string;
-    children: React.ReactNode;
-  }) {
-    const { setPath } = useProject();
-    const [ready, setReady] = React.useState(false);
-    React.useEffect(() => {
-      setPath(path);
-      setReady(true);
-    }, [path]);
-    return ready ? <>{children}</> : null;
-  }
   it('renders modal with controls', () => {
     let changed:
       | ((e: unknown, args: { path: string; stamp: number }) => void)
       | undefined;
-    (
-      window as unknown as { electronAPI: { onFileChanged: typeof vi.fn } }
-    ).electronAPI = {
-      onFileChanged: vi.fn((cb) => {
-        changed = cb;
-      }),
-    } as never;
+    electronAPI.onFileChanged.mockImplementation((cb) => {
+      changed = cb;
+    });
 
     render(
       <ProjectProvider>

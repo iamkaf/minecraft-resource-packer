@@ -3,10 +3,8 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useProjectFiles } from '../src/renderer/components/file/useProjectFiles';
 import ToastProvider from '../src/renderer/components/ToastProvider';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 
 const watchProject = vi.fn(async () => ['a.txt', 'b.png']);
 const unwatchProject = vi.fn();
@@ -35,34 +33,15 @@ declare global {
 describe('useProjectFiles', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (window as unknown as { electronAPI: Window['electronAPI'] }).electronAPI =
-      {
-        watchProject,
-        unwatchProject,
-        onFileAdded,
-        onFileRemoved,
-        onFileRenamed,
-        onFileChanged,
-        getNoExport,
-        setNoExport,
-      };
+    electronAPI.watchProject.mockImplementation(watchProject);
+    electronAPI.unwatchProject.mockImplementation(unwatchProject);
+    electronAPI.onFileAdded.mockImplementation(onFileAdded);
+    electronAPI.onFileRemoved.mockImplementation(onFileRemoved);
+    electronAPI.onFileRenamed.mockImplementation(onFileRenamed);
+    electronAPI.onFileChanged.mockImplementation(onFileChanged);
+    electronAPI.getNoExport.mockImplementation(getNoExport);
+    electronAPI.setNoExport.mockImplementation(setNoExport);
   });
-
-  function SetPath({
-    path,
-    children,
-  }: {
-    path: string;
-    children: React.ReactNode;
-  }) {
-    const { setPath } = useProject();
-    const [ready, setReady] = React.useState(false);
-    React.useEffect(() => {
-      setPath(path);
-      setReady(true);
-    }, [path]);
-    return ready ? <>{children}</> : null;
-  }
 
   it('watches project and handles events', async () => {
     let added: ((e: unknown, p: string) => void) | undefined;

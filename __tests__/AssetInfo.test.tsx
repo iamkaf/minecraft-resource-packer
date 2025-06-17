@@ -1,10 +1,8 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, within, act } from '@testing-library/react';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 vi.mock('@monaco-editor/react', () => ({
   __esModule: true,
   default: ({
@@ -26,48 +24,18 @@ import ToastProvider from '../src/renderer/components/ToastProvider';
 import path from 'path';
 
 describe('AssetInfo', () => {
-  const readFile = vi.fn();
-  const saveRevision = vi.fn();
-  const openExternalEditor = vi.fn();
-  const onFileChanged = vi.fn();
+  const readFile = electronAPI.readFile as ReturnType<typeof vi.fn>;
+  const saveRevision = electronAPI.saveRevision as ReturnType<typeof vi.fn>;
+  const openExternalEditor = electronAPI.openExternalEditor as ReturnType<typeof vi.fn>;
+  const onFileChanged = electronAPI.onFileChanged as ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (
-      window as unknown as {
-        electronAPI: {
-          readFile: typeof readFile;
-          saveRevision: typeof saveRevision;
-          openExternalEditor: typeof openExternalEditor;
-          onFileChanged: typeof onFileChanged;
-        };
-      }
-    ).electronAPI = {
-      readFile,
-      saveRevision,
-      openExternalEditor,
-      onFileChanged,
-    } as never;
-    readFile.mockResolvedValue('');
-    saveRevision.mockResolvedValue(undefined);
-    openExternalEditor.mockResolvedValue(undefined);
+    electronAPI.readFile.mockResolvedValue('');
+    electronAPI.saveRevision.mockResolvedValue(undefined);
+    electronAPI.openExternalEditor.mockResolvedValue(undefined);
+    electronAPI.onFileChanged.mockImplementation(() => undefined);
   });
-
-  function SetPath({
-    path,
-    children,
-  }: {
-    path: string;
-    children: React.ReactNode;
-  }) {
-    const { setPath } = useProject();
-    const [ready, setReady] = React.useState(false);
-    React.useEffect(() => {
-      setPath(path);
-      setReady(true);
-    }, [path]);
-    return ready ? <>{children}</> : null;
-  }
 
   it('shows placeholder when no asset', () => {
     render(

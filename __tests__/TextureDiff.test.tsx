@@ -2,37 +2,12 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TextureDiff from '../src/renderer/components/TextureDiff';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
-
-function SetPath({
-  path,
-  children,
-}: {
-  path: string;
-  children: React.ReactNode;
-}) {
-  const { setPath } = useProject();
-  const [ready, setReady] = React.useState(false);
-  React.useEffect(() => {
-    setPath(path);
-    setReady(true);
-  }, [path]);
-  return ready ? <>{children}</> : null;
-}
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 
 describe('TextureDiff', () => {
   it('renders vanilla comparison', async () => {
-    const getTextureUrl = vi.fn().mockResolvedValue('vanilla://foo.png');
-    (
-      window as unknown as {
-        electronAPI: { getTextureUrl: typeof getTextureUrl };
-      }
-    ).electronAPI = {
-      getTextureUrl,
-    } as never;
+    electronAPI.getTextureUrl.mockResolvedValue('vanilla://foo.png');
 
     render(
       <ProjectProvider>
@@ -42,7 +17,10 @@ describe('TextureDiff', () => {
       </ProjectProvider>
     );
 
-    expect(getTextureUrl).toHaveBeenCalledWith('/proj', 'block/a.png');
+    expect(electronAPI.getTextureUrl).toHaveBeenCalledWith(
+      '/proj',
+      'block/a.png'
+    );
     expect(await screen.findByTestId('diff')).toBeInTheDocument();
     const imgs = screen.getAllByRole('img');
     expect(imgs[0]).toHaveAttribute('src', 'vanilla://foo.png');
@@ -50,15 +28,8 @@ describe('TextureDiff', () => {
   });
 
   it('calls onClose', async () => {
-    const getTextureUrl = vi.fn().mockResolvedValue('vanilla://foo.png');
     const onClose = vi.fn();
-    (
-      window as unknown as {
-        electronAPI: { getTextureUrl: typeof getTextureUrl };
-      }
-    ).electronAPI = {
-      getTextureUrl,
-    } as never;
+    electronAPI.getTextureUrl.mockResolvedValue('vanilla://foo.png');
 
     render(
       <ProjectProvider>

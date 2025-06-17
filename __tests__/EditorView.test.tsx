@@ -1,10 +1,8 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider, useProject } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 
 // eslint-disable-next-line no-var
 var openExternalMock: ReturnType<typeof vi.fn>;
@@ -25,7 +23,13 @@ vi.mock('../src/renderer/components/AssetBrowser', () => ({
   default: () => <div>browser</div>,
 }));
 vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
-  default: ({ onExport, onBack }: { onExport: () => void; onBack: () => void }) => {
+  default: ({
+    onExport,
+    onBack,
+  }: {
+    onExport: () => void;
+    onBack: () => void;
+  }) => {
     const { path } = useProject();
     return (
       <div>
@@ -47,22 +51,6 @@ const summary = {
   warnings: [],
 };
 
-function SetPath({
-  path,
-  children,
-}: {
-  path: string;
-  children: React.ReactNode;
-}) {
-  const { setPath } = useProject();
-  const [ready, setReady] = React.useState(false);
-  React.useEffect(() => {
-    setPath(path);
-    setReady(true);
-  }, [path]);
-  return ready ? <>{children}</> : null;
-}
-
 describe('EditorView', () => {
   const exportProject = vi.fn();
 
@@ -71,18 +59,10 @@ describe('EditorView', () => {
   const getConfetti = vi.fn(async () => true);
 
   beforeEach(() => {
-    interface API {
-      exportProject: (path: string) => Promise<typeof summary>;
-      getEditorLayout: () => Promise<number[]>;
-      setEditorLayout: (l: number[]) => void;
-      getConfetti: () => Promise<boolean>;
-    }
-    (window as unknown as { electronAPI: API }).electronAPI = {
-      exportProject,
-      getEditorLayout: getLayout,
-      setEditorLayout: setLayout,
-      getConfetti,
-    };
+    electronAPI.exportProject.mockImplementation(exportProject);
+    electronAPI.getEditorLayout.mockImplementation(getLayout);
+    electronAPI.setEditorLayout.mockImplementation(setLayout);
+    electronAPI.getConfetti.mockImplementation(getConfetti);
     exportProject.mockResolvedValue(summary);
     openExternalMock.mockResolvedValue(undefined);
     vi.clearAllMocks();

@@ -20,10 +20,8 @@ vi.mock('@monaco-editor/react', () => ({
 import AssetInfo from '../src/renderer/components/AssetInfo';
 import RevisionsModal from '../src/renderer/components/RevisionsModal';
 import ToastProvider from '../src/renderer/components/ToastProvider';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 
 const saveRevision = vi.fn();
 const listRevisions = vi.fn();
@@ -33,44 +31,16 @@ const onFileChanged = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
-  (
-    window as unknown as {
-      electronAPI: {
-        saveRevision: typeof saveRevision;
-        listRevisions: typeof listRevisions;
-        restoreRevision: typeof restoreRevision;
-        readFile: typeof readFile;
-        onFileChanged: typeof onFileChanged;
-      };
-    }
-  ).electronAPI = {
-    saveRevision,
-    listRevisions,
-    restoreRevision,
-    readFile,
-    onFileChanged,
-  } as never;
+  electronAPI.saveRevision.mockImplementation(saveRevision);
+  electronAPI.listRevisions.mockImplementation(listRevisions);
+  electronAPI.restoreRevision.mockImplementation(restoreRevision);
+  electronAPI.readFile.mockImplementation(readFile);
+  electronAPI.onFileChanged.mockImplementation(onFileChanged);
   listRevisions.mockResolvedValue(['1.png']);
   readFile.mockResolvedValue('');
   saveRevision.mockResolvedValue(undefined);
   restoreRevision.mockResolvedValue(undefined);
 });
-
-function SetPath({
-  path,
-  children,
-}: {
-  path: string;
-  children: React.ReactNode;
-}) {
-  const { setPath } = useProject();
-  const [ready, setReady] = React.useState(false);
-  React.useEffect(() => {
-    setPath(path);
-    setReady(true);
-  }, [path]);
-  return ready ? <>{children}</> : null;
-}
 
 describe('Revision history', () => {
   it('saves revision on save', async () => {

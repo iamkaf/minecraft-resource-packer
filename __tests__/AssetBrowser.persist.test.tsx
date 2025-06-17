@@ -1,10 +1,8 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 import AssetBrowser from '../src/renderer/components/AssetBrowser';
 
 const watchProject = vi.fn(async () => []);
@@ -21,40 +19,22 @@ const setAssetFilters = vi.fn();
 const getAssetZoom = vi.fn();
 const setAssetZoom = vi.fn();
 
-function SetPath({
-  path,
-  children,
-}: {
-  path: string;
-  children: React.ReactNode;
-}) {
-  const { setPath } = useProject();
-  const [ready, setReady] = React.useState(false);
-  React.useEffect(() => {
-    setPath(path);
-    setReady(true);
-  }, [path]);
-  return ready ? <>{children}</> : null;
-}
-
 beforeEach(() => {
   vi.clearAllMocks();
-  (window as unknown as { electronAPI: unknown }).electronAPI = {
-    watchProject,
-    unwatchProject,
-    onFileAdded,
-    onFileRemoved,
-    onFileRenamed,
-    onFileChanged,
-    getNoExport: vi.fn(async () => []),
-    setNoExport: vi.fn(),
-    getAssetSearch,
-    setAssetSearch,
-    getAssetFilters,
-    setAssetFilters,
-    getAssetZoom,
-    setAssetZoom,
-  } as never;
+  electronAPI.watchProject.mockImplementation(watchProject);
+  electronAPI.unwatchProject.mockImplementation(unwatchProject);
+  electronAPI.onFileAdded.mockImplementation(onFileAdded);
+  electronAPI.onFileRemoved.mockImplementation(onFileRemoved);
+  electronAPI.onFileRenamed.mockImplementation(onFileRenamed);
+  electronAPI.onFileChanged.mockImplementation(onFileChanged);
+  electronAPI.getNoExport.mockResolvedValue([]);
+  electronAPI.setNoExport.mockImplementation(() => undefined);
+  electronAPI.getAssetSearch.mockImplementation(getAssetSearch);
+  electronAPI.setAssetSearch.mockImplementation(setAssetSearch);
+  electronAPI.getAssetFilters.mockImplementation(getAssetFilters);
+  electronAPI.setAssetFilters.mockImplementation(setAssetFilters);
+  electronAPI.getAssetZoom.mockImplementation(getAssetZoom);
+  electronAPI.setAssetZoom.mockImplementation(setAssetZoom);
 });
 
 describe('AssetBrowser persistence', () => {

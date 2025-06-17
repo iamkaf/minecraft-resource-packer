@@ -1,10 +1,8 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 import ProjectInfoPanel from '../src/renderer/components/ProjectInfoPanel';
 
 const meta = {
@@ -17,39 +15,16 @@ const meta = {
 };
 
 describe('ProjectInfoPanel', () => {
-  const load = vi.fn();
-  const open = vi.fn();
+  const load = electronAPI.loadPackMeta as ReturnType<typeof vi.fn>;
+  const open = electronAPI.openInFolder as ReturnType<typeof vi.fn>;
   const onExport = vi.fn();
   const onBack = vi.fn();
 
   beforeEach(() => {
-    (
-      window as unknown as {
-        electronAPI: { loadPackMeta: typeof load; openInFolder: typeof open };
-      }
-    ).electronAPI = {
-      loadPackMeta: load,
-      openInFolder: open,
-    } as never;
-    load.mockResolvedValue(meta);
     vi.clearAllMocks();
+    load.mockResolvedValue(meta);
+    open.mockResolvedValue(undefined);
   });
-
-  function SetPath({
-    path,
-    children,
-  }: {
-    path: string;
-    children: React.ReactNode;
-  }) {
-    const { setPath } = useProject();
-    const [ready, setReady] = React.useState(false);
-    React.useEffect(() => {
-      setPath(path);
-      setReady(true);
-    }, [path]);
-    return ready ? <>{children}</> : null;
-  }
 
   it('loads metadata and triggers export', async () => {
     render(

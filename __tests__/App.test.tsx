@@ -184,6 +184,9 @@ describe('App', () => {
       openHandler?.({}, '/tmp/proj');
     });
     await screen.findByText('Export Pack');
+    await act(async () => {
+      await Promise.resolve();
+    });
     exportProject.mockResolvedValueOnce({
       fileCount: 1,
       totalSize: 1,
