@@ -17,6 +17,7 @@ An Electron-based tool for creating Minecraft resource packs. The interface is d
 - **Live Asset Browser** – the Editor view lists all files in the project directory and automatically reloads when something changes.
 - **Random pack icon** – new packs start with a pastel background and random item image; you can regenerate from pack settings.
 - **Export** – generate a zipped resource pack containing the selected files along with a valid `pack.mcmeta`. The output is ready to drop into Minecraft.
+- **Import wizard** – add an existing resource pack from a folder or `.zip` archive.
 - **External Editing** – configure your favourite image editor in **Settings** and launch it from the asset info panel.
 - **Revision History** – every save keeps the previous version inside a hidden `.history` folder. Up to 20 revisions can be restored from the Asset Info panel.
 

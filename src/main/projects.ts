@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { IpcMain } from 'electron';
 import { dialog } from 'electron';
+import unzipper from 'unzipper';
 import {
   ProjectMetadata,
   ProjectMetadataSchema,
@@ -151,12 +152,25 @@ export async function deleteProject(
 
 export async function importProject(baseDir: string): Promise<void> {
   const { canceled, filePaths } = await dialog.showOpenDialog({
-    properties: ['openDirectory'],
+    properties: ['openFile', 'openDirectory'],
+    filters: [{ name: 'Resource Pack', extensions: ['zip'] }],
   });
   if (canceled || filePaths.length === 0) return;
   const src = filePaths[0];
-  const dest = path.join(baseDir, path.basename(src));
-  await fs.promises.cp(src, dest, { recursive: true });
+  const stat = await fs.promises.stat(src);
+  const name = path.basename(src, stat.isDirectory() ? '' : path.extname(src));
+  const dest = path.join(baseDir, name);
+  if (stat.isDirectory()) {
+    await fs.promises.cp(src, dest, { recursive: true });
+  } else if (src.endsWith('.zip')) {
+    await fs.promises.mkdir(dest, { recursive: true });
+    await new Promise<void>((resolve, reject) => {
+      fs.createReadStream(src)
+        .pipe(unzipper.Extract({ path: dest }))
+        .on('close', resolve)
+        .on('error', reject);
+    });
+  }
 }
 
 export async function loadPackMeta(

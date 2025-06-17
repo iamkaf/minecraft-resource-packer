@@ -11,6 +11,7 @@ import SearchToolbar from '../components/project/SearchToolbar';
 import ExportWizardModal, {
   BulkProgress,
 } from '../components/ExportWizardModal';
+import ImportWizard from '../components/ImportWizard';
 import useProjectHotkeys from '../hooks/useProjectHotkeys';
 
 // Lists all available projects and lets the user open them.
@@ -25,6 +26,7 @@ const ProjectManagerView: React.FC = () => {
   const [activeProject, setActiveProject] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [progress, setProgress] = useState<BulkProgress | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
 
   const toast = useToast();
 
@@ -53,7 +55,7 @@ const ProjectManagerView: React.FC = () => {
   };
 
   const handleImport = () => {
-    window.electronAPI?.importProject().then(refresh);
+    setImportOpen(true);
   };
 
   const handleCreate = (name: string, minecraftVersion: string) => {
@@ -177,6 +179,13 @@ const ProjectManagerView: React.FC = () => {
           <ExportWizardModal progress={progress} onClose={() => {}} />
         )}
         {modals}
+        <ImportWizard
+          open={importOpen}
+          onClose={() => {
+            setImportOpen(false);
+            refresh();
+          }}
+        />
       </div>
       <ProjectSidebar project={activeProject} />
     </section>

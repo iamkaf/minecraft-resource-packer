@@ -1,6 +1,12 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  within,
+  waitFor,
+} from '@testing-library/react';
 
 import ProjectManagerView from '../src/renderer/views/ProjectManagerView';
 
@@ -157,7 +163,12 @@ describe('ProjectManagerView', () => {
     const modal = await screen.findByTestId('daisy-modal');
     fireEvent.click(within(modal).getByRole('tab', { name: 'Import' }));
     fireEvent.click(within(modal).getByRole('button', { name: 'Import' }));
-    expect(importProject).toHaveBeenCalled();
+    const wizardText = await screen.findByText(
+      'Select a project folder or .zip file to import.'
+    );
+    const wizardBox = wizardText.closest('div.modal-box') as HTMLElement;
+    fireEvent.click(within(wizardBox).getByRole('button', { name: 'Import' }));
+    await waitFor(() => expect(importProject).toHaveBeenCalled());
   });
 
   it('duplicates project via modal', async () => {
