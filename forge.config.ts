@@ -7,6 +7,7 @@ import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-nati
 import { WebpackPlugin } from '@electron-forge/plugin-webpack';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
+import ForgeExternalsPlugin from '@timfish/forge-externals-plugin';
 import path from 'node:path';
 
 import { mainConfig } from './webpack.main.config';
@@ -14,13 +15,18 @@ import { rendererConfig } from './webpack.renderer.config';
 
 const config: ForgeConfig = {
   packagerConfig: {
-    asar: true,
+    asar: {
+      unpack: '**/node_modules/{sharp,@img}/**/*',
+    },
     icon: path.resolve(__dirname, 'resources', 'icon'),
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
-    new MakerZIP({}, ['darwin']),
+    new MakerSquirrel({
+      authors: 'iamkaf',
+      description: 'Tool for building Minecraft resource packs.',
+    }),
+    new MakerZIP({}, ['win32']),
     new MakerRpm({}),
     new MakerDeb({}),
   ],
@@ -58,6 +64,10 @@ const config: ForgeConfig = {
       [FuseV1Options.EnableNodeCliInspectArguments]: false,
       [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
+    }),
+    new ForgeExternalsPlugin({
+      externals: ['sharp'],
+      includeDeps: true,
     }),
   ],
 };

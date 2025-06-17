@@ -5,9 +5,15 @@ const ForkTsCheckerWebpackPlugin: typeof IForkTsCheckerWebpackPlugin = require('
 
 const MonacoEditorWebpackPlugin = require('monaco-editor-webpack-plugin');
 
+import { IgnorePlugin } from 'webpack';
+
 export const plugins = [
   new ForkTsCheckerWebpackPlugin({
     logger: 'webpack-infrastructure',
   }),
   new MonacoEditorWebpackPlugin(),
+  // @aws-sdk/client-s3 is required by unzipper and will make the build fail without this plugin.
+  new IgnorePlugin({
+    resourceRegExp: /\@aws\-sdk\/client-s3/,
+  }),
 ];
