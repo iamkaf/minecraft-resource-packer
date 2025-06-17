@@ -41,7 +41,8 @@ export default function PackMetaModal({
           defaultLanguage="json"
           value={text}
           onChange={(v) => setText(v ?? '')}
-          options={{ minimap: { enabled: false } }}
+          options={{ minimap: { enabled: false }}}
+          theme='vs-dark'
         />
         <div className="modal-action">
           <Button
