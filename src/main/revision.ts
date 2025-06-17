@@ -51,3 +51,23 @@ export async function restoreRevision(
   await saveRevision(project, rel);
   await fs.promises.copyFile(src, dest);
 }
+
+/** Find the project root for the given file by locating project.json */
+export function findProjectRoot(file: string): string | null {
+  let dir = path.resolve(path.dirname(file));
+  while (true) {
+    if (fs.existsSync(path.join(dir, 'project.json'))) return dir;
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
+}
+
+/** Save a revision for the specified absolute file path */
+export async function saveRevisionForFile(file: string): Promise<void> {
+  const project = findProjectRoot(file);
+  if (!project) return;
+  const rel = path.relative(project, file).split(path.sep).join('/');
+  await saveRevision(project, rel);
+}
