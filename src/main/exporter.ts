@@ -8,7 +8,7 @@ import { packFormatForVersion } from '../shared/packFormat';
 import type { IpcMain } from 'electron';
 import { dialog } from 'electron';
 import { getDefaultExportDir, setDefaultExportDir } from './layout';
-import { ProjectMetadataSchema } from '../shared/project';
+import { readProjectMeta } from './projectMeta';
 
 export interface ExportSummary {
   fileCount: number;
@@ -52,18 +52,16 @@ function addDirectory(
  *    the requested Minecraft version.
  * 5. Resolve with summary statistics once archiving completes.
  */
-export function exportPack(
+export async function exportPack(
   projectPath: string,
   outPath: string,
   minecraftVersion?: string
 ): Promise<ExportSummary> {
-  const metaPath = path.join(projectPath, 'project.json');
   let ignore = new Set<string>();
   let metaVersion: string | undefined;
-  if (fs.existsSync(metaPath)) {
+  if (fs.existsSync(path.join(projectPath, 'project.json'))) {
     try {
-      const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-      const meta = ProjectMetadataSchema.parse(data);
+      const meta = await readProjectMeta(projectPath);
       ignore = new Set(meta.noExport ?? []);
       metaVersion = meta.minecraft_version;
     } catch {
@@ -119,11 +117,9 @@ export async function exportProjects(
     const src = path.join(baseDir, name);
     let version = '0.0.0';
     let minecraftVersion = 'unknown';
-    const metaPath = path.join(src, 'project.json');
-    if (fs.existsSync(metaPath)) {
+    if (fs.existsSync(path.join(src, 'project.json'))) {
       try {
-        const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-        const meta = ProjectMetadataSchema.parse(data);
+        const meta = await readProjectMeta(src);
         version = meta.version;
         minecraftVersion = meta.minecraft_version;
       } catch {
@@ -144,11 +140,9 @@ export function registerExportHandlers(ipc: IpcMain, baseDir: string) {
     async (_e, projectPath: string): Promise<ExportSummary | void> => {
       let version = '0.0.0';
       let minecraftVersion = 'unknown';
-      const metaPath = path.join(projectPath, 'project.json');
-      if (fs.existsSync(metaPath)) {
+      if (fs.existsSync(path.join(projectPath, 'project.json'))) {
         try {
-          const data = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-          const meta = ProjectMetadataSchema.parse(data);
+          const meta = await readProjectMeta(projectPath);
           version = meta.version;
           minecraftVersion = meta.minecraft_version;
         } catch {

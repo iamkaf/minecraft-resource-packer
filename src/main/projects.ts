@@ -2,12 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import type { IpcMain } from 'electron';
 import { dialog } from 'electron';
-import {
-  ProjectMetadata,
-  ProjectMetadataSchema,
-  PackMeta,
-  PackMetaSchema,
-} from '../shared/project';
+import { ProjectMetadata, PackMeta, PackMetaSchema } from '../shared/project';
+import { readProjectMeta, writeProjectMeta } from './projectMeta';
 import { listPackFormats, setActiveProject } from './assets';
 import { setLastProject } from './layout';
 
@@ -57,11 +53,10 @@ export async function listProjects(baseDir: string): Promise<ProjectInfo[]> {
   for (const name of entries) {
     const stat = await fs.promises.stat(path.join(baseDir, name));
     if (!stat.isDirectory()) continue;
-    const metaPath = path.join(baseDir, name, 'project.json');
-    if (fs.existsSync(metaPath)) {
+    const metaPath = path.join(baseDir, name);
+    if (fs.existsSync(path.join(metaPath, 'project.json'))) {
       try {
-        const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-        const meta = ProjectMetadataSchema.parse(data);
+        const meta = await readProjectMeta(metaPath);
         out.push({
           name: meta.name,
           version: meta.minecraft_version,
@@ -85,13 +80,11 @@ export async function openProject(
   const projectPath = path.join(baseDir, name);
   if (!fs.existsSync(projectPath))
     await fs.promises.mkdir(projectPath, { recursive: true });
-  const metaPath = path.join(projectPath, 'project.json');
-  if (fs.existsSync(metaPath)) {
+  if (fs.existsSync(path.join(projectPath, 'project.json'))) {
     try {
-      const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-      const meta = ProjectMetadataSchema.parse(data);
+      const meta = await readProjectMeta(projectPath);
       meta.lastOpened = Date.now();
-      await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
+      await writeProjectMeta(projectPath, meta);
     } catch {
       // ignore corrupted metadata
     }
@@ -107,13 +100,11 @@ export async function duplicateProject(
   const src = path.join(baseDir, name);
   const dest = path.join(baseDir, newName);
   await fs.promises.cp(src, dest, { recursive: true });
-  const metaPath = path.join(dest, 'project.json');
-  if (fs.existsSync(metaPath)) {
+  if (fs.existsSync(path.join(dest, 'project.json'))) {
     try {
-      const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-      const meta = ProjectMetadataSchema.parse(data);
+      const meta = await readProjectMeta(dest);
       meta.name = newName;
-      await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
+      await writeProjectMeta(dest, meta);
     } catch {
       // ignore malformed metadata
     }
@@ -128,13 +119,11 @@ export async function renameProject(
   const src = path.join(baseDir, name);
   const dest = path.join(baseDir, newName);
   await fs.promises.rename(src, dest);
-  const metaPath = path.join(dest, 'project.json');
-  if (fs.existsSync(metaPath)) {
+  if (fs.existsSync(path.join(dest, 'project.json'))) {
     try {
-      const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-      const meta = ProjectMetadataSchema.parse(data);
+      const meta = await readProjectMeta(dest);
       meta.name = newName;
-      await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
+      await writeProjectMeta(dest, meta);
     } catch {
       /* ignore */
     }
@@ -163,11 +152,10 @@ export async function loadPackMeta(
   baseDir: string,
   name: string
 ): Promise<PackMeta> {
-  const metaPath = path.join(baseDir, name, 'project.json');
-  if (fs.existsSync(metaPath)) {
+  const projectPath = path.join(baseDir, name);
+  if (fs.existsSync(path.join(projectPath, 'project.json'))) {
     try {
-      const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-      const meta = ProjectMetadataSchema.parse(data);
+      const meta = await readProjectMeta(projectPath);
       return PackMetaSchema.parse(meta);
     } catch {
       // ignore malformed data
@@ -188,12 +176,11 @@ export async function savePackMeta(
   name: string,
   meta: PackMeta
 ): Promise<void> {
-  const metaPath = path.join(baseDir, name, 'project.json');
+  const projectPath = path.join(baseDir, name);
   let data: ProjectMetadata | null = null;
-  if (fs.existsSync(metaPath)) {
+  if (fs.existsSync(path.join(projectPath, 'project.json'))) {
     try {
-      const raw = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-      data = ProjectMetadataSchema.parse(raw);
+      data = await readProjectMeta(projectPath);
     } catch {
       /* ignore */
     }
@@ -220,7 +207,7 @@ export async function savePackMeta(
   data.license = meta.license;
   if (!data.created) data.created = Date.now();
   data.updated = Date.now();
-  await fs.promises.writeFile(metaPath, JSON.stringify(data, null, 2));
+  await writeProjectMeta(projectPath, data);
 }
 
 export function registerProjectHandlers(
