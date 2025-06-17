@@ -7,6 +7,7 @@ import FileTree from './FileTree';
 import { useProject } from '../providers/ProjectProvider';
 import { FilterBadge, InputField, Range } from '../daisy/input';
 import { Accordion } from '../daisy/display';
+import useThumbnailNavigation from '../../hooks/useThumbnailNavigation';
 
 interface Props {
   onSelectionChange?: (sel: string[]) => void;
@@ -104,6 +105,8 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
     return out;
   }, [visible]);
 
+  const nav = useThumbnailNavigation(visible, selected, setSelected, 6);
+
   const toggleFilter = (f: Filter) => {
     setFilters((prev) =>
       prev.includes(f) ? prev.filter((p) => p !== f) : [...prev, f]
@@ -128,7 +131,9 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
         if (e.key === 'Delete' && selected.size > 0) {
           e.preventDefault();
           handleDeleteSelected();
+          return;
         }
+        nav.onKeyDown(e);
       }}
       tabIndex={0}
     >
@@ -183,6 +188,7 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
                         openRename={(file) => setRenameTarget(file)}
                         zoom={zoom}
                         stamp={versions[f]}
+                        ref={nav.register(f)}
                       />
                     ))}
                   </div>
