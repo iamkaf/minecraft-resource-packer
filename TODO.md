@@ -42,8 +42,8 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] More robust JSON editor
 - [ ] Optional 3D preview for entity models and item textures
 - [ ] Custom models & blockstates editor with live validation
-- [ ] Normal & specular map creator using Sharp
-- [ ] Connected textures & biome variant wizard
+- [ ] Normal & specular map creator using Sharp in the Texture Lab: Using Sharp to generate `_n` (normal) and `_s` (specular) maps from textures, optionally with user-tuneable detail intensity sliders. Useful for shader/HDR packs.
+- [ ] Wizard to configure CTM overrides and biome-shading variations: auto-generate `connect.json` or biome folder structures for advanced texture packs with live preview of the connected textures.
 
 ### Project Info Panel
 
@@ -81,8 +81,9 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] JSON store in `templates/`
 - [ ] “Start from Template” dialog (e.g., _Gold Tools & Armor_, _All Food Items_)
 - [ ] Add templates to existing projects
-- [ ] Pack theme bundles and presets
-- [ ] Community-driven mod template downloads
+- [ ] Pack theme bundles and presets: Offer curated theme bundles (e.g. minimalist, vibrant, medieval) that set palette, fonts, in‑tool UI colors, and template assets—helping users get started faster.
+- [ ] Use the Modrinth API to pre-populate assets for popular mods
+- [ ] Community-driven template downloads
 
 ---
 
