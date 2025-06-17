@@ -36,7 +36,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Revision history (max 20)
 - [x] Preview against the vanilla texture using the `Diff` component
 - [x] Generic icon thumbnail for text files
-- [ ] More robust JSON editor
+- [x] More robust JSON editor
 - [ ] Optional 3D preview for entity models and item textures
 
 ### Project Info Panel
@@ -54,7 +54,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Target resolution radio (16×/32×/64×)
 - [ ] Validation checklist (missing textures, duplicates)
 - [ ] Version field for projects; it should also appear in exported file names
-- [ ] Remember the last export target folder using electron store on successful exports
+- [x] Remember the last export target folder using electron store on successful exports
 
 ---
 
