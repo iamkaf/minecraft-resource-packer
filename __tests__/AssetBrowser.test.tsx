@@ -1,10 +1,8 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, within, act } from '@testing-library/react';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 import path from 'path';
 
 import AssetBrowser from '../src/renderer/components/AssetBrowser';
@@ -16,49 +14,24 @@ const onFileRemoved = vi.fn();
 const onFileRenamed = vi.fn();
 const onFileChanged = vi.fn();
 
-function SetPath({
-  path,
-  children,
-}: {
-  path: string;
-  children: React.ReactNode;
-}) {
-  const { setPath } = useProject();
-  const [ready, setReady] = React.useState(false);
-  React.useEffect(() => {
-    setPath(path);
-    setReady(true);
-  }, [path]);
-  return ready ? <>{children}</> : null;
-}
-
 describe('AssetBrowser', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     watchProject.mockResolvedValue(['a.txt', 'b.png']);
-    (
-      window as unknown as {
-        electronAPI: {
-          watchProject: typeof watchProject;
-          unwatchProject: typeof unwatchProject;
-          onFileAdded: typeof onFileAdded;
-          onFileRemoved: typeof onFileRemoved;
-          onFileRenamed: typeof onFileRenamed;
-          onFileChanged: typeof onFileChanged;
-          getNoExport: () => Promise<string[]>;
-          setNoExport: () => void;
-        };
-      }
-    ).electronAPI = {
-      watchProject,
-      unwatchProject,
-      onFileAdded,
-      onFileRemoved,
-      onFileRenamed,
-      onFileChanged,
-      getNoExport: vi.fn(async () => []),
-      setNoExport: vi.fn(),
-    };
+    electronAPI.watchProject.mockImplementation(watchProject);
+    electronAPI.unwatchProject.mockImplementation(unwatchProject);
+    electronAPI.onFileAdded.mockImplementation(onFileAdded);
+    electronAPI.onFileRemoved.mockImplementation(onFileRemoved);
+    electronAPI.onFileRenamed.mockImplementation(onFileRenamed);
+    electronAPI.onFileChanged.mockImplementation(onFileChanged);
+    electronAPI.getNoExport.mockResolvedValue([]);
+    electronAPI.setNoExport.mockImplementation(() => undefined);
+    electronAPI.getAssetSearch.mockResolvedValue('');
+    electronAPI.getAssetFilters.mockResolvedValue([]);
+    electronAPI.getAssetZoom.mockResolvedValue(64);
+    electronAPI.setAssetSearch.mockImplementation(() => undefined);
+    electronAPI.setAssetFilters.mockImplementation(() => undefined);
+    electronAPI.setAssetZoom.mockImplementation(() => undefined);
   });
 
   it('renders files from directory', async () => {
@@ -96,37 +69,18 @@ describe('AssetBrowser', () => {
     const openFile = vi.fn();
     const renameFile = vi.fn();
     const deleteFile = vi.fn();
-    (
-      window as unknown as {
-        electronAPI: {
-          openInFolder: typeof openInFolder;
-          openFile: typeof openFile;
-          renameFile: typeof renameFile;
-          deleteFile: typeof deleteFile;
-          watchProject: typeof watchProject;
-          unwatchProject: typeof unwatchProject;
-          onFileAdded: typeof onFileAdded;
-          onFileRemoved: typeof onFileRemoved;
-          onFileRenamed: typeof onFileRenamed;
-          onFileChanged: typeof onFileChanged;
-          getNoExport: () => Promise<string[]>;
-          setNoExport: () => void;
-        };
-      }
-    ).electronAPI = {
-      openInFolder,
-      openFile,
-      renameFile,
-      deleteFile,
-      watchProject,
-      unwatchProject,
-      onFileAdded,
-      onFileRemoved,
-      onFileRenamed,
-      onFileChanged,
-      getNoExport: vi.fn(async () => []),
-      setNoExport: vi.fn(),
-    };
+    electronAPI.openInFolder.mockImplementation(openInFolder);
+    electronAPI.openFile.mockImplementation(openFile);
+    electronAPI.renameFile.mockImplementation(renameFile);
+    electronAPI.deleteFile.mockImplementation(deleteFile);
+    electronAPI.watchProject.mockImplementation(watchProject);
+    electronAPI.unwatchProject.mockImplementation(unwatchProject);
+    electronAPI.onFileAdded.mockImplementation(onFileAdded);
+    electronAPI.onFileRemoved.mockImplementation(onFileRemoved);
+    electronAPI.onFileRenamed.mockImplementation(onFileRenamed);
+    electronAPI.onFileChanged.mockImplementation(onFileChanged);
+    electronAPI.getNoExport.mockResolvedValue([]);
+    electronAPI.setNoExport.mockImplementation(() => undefined);
     render(
       <ProjectProvider>
         <SetPath path="/proj">
@@ -224,28 +178,15 @@ describe('AssetBrowser', () => {
 
   it('supports multi selection and delete key', async () => {
     const deleteFile = vi.fn();
-    interface API {
-      deleteFile: (p: string) => void;
-      watchProject: typeof watchProject;
-      unwatchProject: typeof unwatchProject;
-      onFileAdded: typeof onFileAdded;
-      onFileRemoved: typeof onFileRemoved;
-      onFileRenamed: typeof onFileRenamed;
-      onFileChanged: typeof onFileChanged;
-      getNoExport: () => Promise<string[]>;
-      setNoExport: () => void;
-    }
-    (window as unknown as { electronAPI: API }).electronAPI = {
-      deleteFile,
-      watchProject,
-      unwatchProject,
-      onFileAdded,
-      onFileRemoved,
-      onFileRenamed,
-      onFileChanged,
-      getNoExport: vi.fn(async () => []),
-      setNoExport: vi.fn(),
-    };
+    electronAPI.deleteFile.mockImplementation(deleteFile);
+    electronAPI.watchProject.mockImplementation(watchProject);
+    electronAPI.unwatchProject.mockImplementation(unwatchProject);
+    electronAPI.onFileAdded.mockImplementation(onFileAdded);
+    electronAPI.onFileRemoved.mockImplementation(onFileRemoved);
+    electronAPI.onFileRenamed.mockImplementation(onFileRenamed);
+    electronAPI.onFileChanged.mockImplementation(onFileChanged);
+    electronAPI.getNoExport.mockResolvedValue([]);
+    electronAPI.setNoExport.mockImplementation(() => undefined);
     render(
       <ProjectProvider>
         <SetPath path="/proj">
@@ -265,26 +206,14 @@ describe('AssetBrowser', () => {
   it('toggles noExport for selected files', async () => {
     const setNoExport = vi.fn();
     const getNoExport = vi.fn(async () => []);
-    interface API {
-      setNoExport: typeof setNoExport;
-      getNoExport: typeof getNoExport;
-      watchProject: typeof watchProject;
-      unwatchProject: typeof unwatchProject;
-      onFileAdded: typeof onFileAdded;
-      onFileRemoved: typeof onFileRemoved;
-      onFileRenamed: typeof onFileRenamed;
-      onFileChanged: typeof onFileChanged;
-    }
-    (window as unknown as { electronAPI: API }).electronAPI = {
-      setNoExport,
-      getNoExport,
-      watchProject,
-      unwatchProject,
-      onFileAdded,
-      onFileRemoved,
-      onFileRenamed,
-      onFileChanged,
-    };
+    electronAPI.setNoExport.mockImplementation(setNoExport);
+    electronAPI.getNoExport.mockImplementation(getNoExport);
+    electronAPI.watchProject.mockImplementation(watchProject);
+    electronAPI.unwatchProject.mockImplementation(unwatchProject);
+    electronAPI.onFileAdded.mockImplementation(onFileAdded);
+    electronAPI.onFileRemoved.mockImplementation(onFileRemoved);
+    electronAPI.onFileRenamed.mockImplementation(onFileRenamed);
+    electronAPI.onFileChanged.mockImplementation(onFileChanged);
     render(
       <ProjectProvider>
         <SetPath path="/proj">
@@ -308,26 +237,14 @@ describe('AssetBrowser', () => {
 
   it('shows noExport files dimmed', async () => {
     const getNoExport = vi.fn(async () => ['a.txt']);
-    interface API {
-      getNoExport: typeof getNoExport;
-      setNoExport: () => void;
-      watchProject: typeof watchProject;
-      unwatchProject: typeof unwatchProject;
-      onFileAdded: typeof onFileAdded;
-      onFileRemoved: typeof onFileRemoved;
-      onFileRenamed: typeof onFileRenamed;
-      onFileChanged: typeof onFileChanged;
-    }
-    (window as unknown as { electronAPI: API }).electronAPI = {
-      getNoExport,
-      setNoExport: vi.fn(),
-      watchProject,
-      unwatchProject,
-      onFileAdded,
-      onFileRemoved,
-      onFileRenamed,
-      onFileChanged,
-    };
+    electronAPI.getNoExport.mockImplementation(getNoExport);
+    electronAPI.setNoExport.mockImplementation(() => undefined);
+    electronAPI.watchProject.mockImplementation(watchProject);
+    electronAPI.unwatchProject.mockImplementation(unwatchProject);
+    electronAPI.onFileAdded.mockImplementation(onFileAdded);
+    electronAPI.onFileRemoved.mockImplementation(onFileRemoved);
+    electronAPI.onFileRenamed.mockImplementation(onFileRenamed);
+    electronAPI.onFileChanged.mockImplementation(onFileChanged);
     render(
       <ProjectProvider>
         <SetPath path="/proj">

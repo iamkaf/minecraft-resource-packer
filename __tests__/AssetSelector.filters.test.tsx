@@ -1,27 +1,15 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 import AssetSelector from '../src/renderer/components/AssetSelector';
 
 describe('AssetSelector filters', () => {
-  const listTextures = vi.fn();
-  const getTextureUrl = vi.fn();
+  const listTextures = electronAPI.listTextures as ReturnType<typeof vi.fn>;
+  const getTextureUrl = electronAPI.getTextureUrl as ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    interface ElectronAPI {
-      listTextures: (path: string) => Promise<string[]>;
-      addTexture: (path: string, tex: string) => Promise<void>;
-      getTextureUrl: (project: string, tex: string) => Promise<string>;
-    }
-    (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
-      listTextures,
-      addTexture: vi.fn(),
-      getTextureUrl,
-    };
     listTextures.mockResolvedValue([
       'block/stone.png',
       'item/apple.png',
@@ -30,22 +18,6 @@ describe('AssetSelector filters', () => {
     getTextureUrl.mockImplementation((_p, n) => `vanilla://${n}`);
     vi.clearAllMocks();
   });
-
-  function SetPath({
-    path,
-    children,
-  }: {
-    path: string;
-    children: React.ReactNode;
-  }) {
-    const { setPath } = useProject();
-    const [ready, setReady] = React.useState(false);
-    React.useEffect(() => {
-      setPath(path);
-      setReady(true);
-    }, [path]);
-    return ready ? <>{children}</> : null;
-  }
 
   it('filters textures by category chip and supports keyboard toggle', async () => {
     render(

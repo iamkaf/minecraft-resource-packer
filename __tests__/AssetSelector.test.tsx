@@ -1,53 +1,25 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 
 import AssetSelector from '../src/renderer/components/AssetSelector';
 
 describe('AssetSelector', () => {
-  const listTextures = vi.fn();
-  const addTexture = vi.fn();
-  const getTextureUrl = vi.fn();
+  const listTextures = electronAPI.listTextures as ReturnType<typeof vi.fn>;
+  const addTexture = electronAPI.addTexture as ReturnType<typeof vi.fn>;
+  const getTextureUrl = electronAPI.getTextureUrl as ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    interface ElectronAPI {
-      listTextures: (path: string) => Promise<string[]>;
-      addTexture: (path: string, texture: string) => Promise<void>;
-      getTextureUrl: (project: string, tex: string) => Promise<string>;
-    }
-    (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
-      listTextures,
-      addTexture,
-      getTextureUrl,
-    };
-    listTextures.mockResolvedValue([
+    electronAPI.listTextures.mockResolvedValue([
       'block/grass.png',
       'item/axe.png',
       'other/custom.png',
     ]);
-    getTextureUrl.mockImplementation((_p, n) => `vanilla://${n}`);
+    electronAPI.getTextureUrl.mockImplementation((_p, n) => `vanilla://${n}`);
     vi.clearAllMocks();
   });
-
-  function SetPath({
-    path,
-    children,
-  }: {
-    path: string;
-    children: React.ReactNode;
-  }) {
-    const { setPath } = useProject();
-    const [ready, setReady] = React.useState(false);
-    React.useEffect(() => {
-      setPath(path);
-      setReady(true);
-    }, [path]);
-    return ready ? <>{children}</> : null;
-  }
 
   it('lists textures and handles selection', async () => {
     const onSelect = vi.fn();

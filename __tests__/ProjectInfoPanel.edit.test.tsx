@@ -18,10 +18,8 @@ vi.mock('@monaco-editor/react', () => ({
     />
   ),
 }));
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { SetPath, electronAPI } from './test-utils';
 import ProjectInfoPanel from '../src/renderer/components/ProjectInfoPanel';
 
 const meta = {
@@ -33,42 +31,13 @@ const meta = {
   license: '',
 };
 
-function SetPath({
-  path,
-  children,
-}: {
-  path: string;
-  children: React.ReactNode;
-}) {
-  const { setPath } = useProject();
-  const [ready, setReady] = React.useState(false);
-  React.useEffect(() => {
-    setPath(path);
-    setReady(true);
-  }, [path]);
-  return ready ? <>{children}</> : null;
-}
-
 describe('ProjectInfoPanel metadata editing', () => {
-  const load = vi.fn();
-  const save = vi.fn();
+  const save = electronAPI.savePackMeta as ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    (
-      window as unknown as {
-        electronAPI: {
-          loadPackMeta: typeof load;
-          savePackMeta: typeof save;
-          openInFolder: () => void;
-        };
-      }
-    ).electronAPI = {
-      loadPackMeta: load,
-      savePackMeta: save,
-      openInFolder: vi.fn(),
-    } as never;
-    load.mockResolvedValue(meta);
-    save.mockResolvedValue(undefined);
+    electronAPI.loadPackMeta.mockResolvedValue(meta);
+    electronAPI.savePackMeta.mockResolvedValue(undefined);
+    electronAPI.openInFolder.mockImplementation(() => undefined);
     vi.clearAllMocks();
   });
 
