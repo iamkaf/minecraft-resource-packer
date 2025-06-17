@@ -1,15 +1,15 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import ReactCanvasConfetti from 'react-canvas-confetti';
-import AssetBrowser from '../components/AssetBrowser';
-import AssetSelector from '../components/AssetSelector';
-import AssetInfo from '../components/AssetInfo';
-import ProjectInfoPanel from '../components/ProjectInfoPanel';
-import AssetSelectorInfoPanel from '../components/AssetSelectorInfoPanel';
+import AssetBrowser from '../components/assets/AssetBrowser';
+import AssetSelector from '../components/assets/AssetSelector';
+import AssetInfo from '../components/assets/AssetInfo';
+import ProjectInfoPanel from '../components/project/ProjectInfoPanel';
+import AssetSelectorInfoPanel from '../components/assets/AssetSelectorInfoPanel';
 import { Skeleton } from '../components/daisy/feedback';
 import ExportWizardModal, {
   BulkProgress,
-} from '../components/ExportWizardModal';
-import ExternalLink from '../components/ExternalLink';
+} from '../components/modals/ExportWizardModal';
+import ExternalLink from '../components/common/ExternalLink';
 import { Modal, Button } from '../components/daisy/actions';
 import type { ExportSummary } from '../../main/exporter';
 /* eslint-disable import/no-unresolved */
@@ -26,7 +26,7 @@ interface EditorViewProps {
   onSettings: () => void;
 }
 
-import { useProject } from '../components/ProjectProvider';
+import { useProject } from '../components/providers/ProjectProvider';
 
 export default function EditorView({ onBack, onSettings }: EditorViewProps) {
   const { path: projectPath } = useProject();

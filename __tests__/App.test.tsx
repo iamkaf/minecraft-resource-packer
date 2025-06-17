@@ -4,7 +4,7 @@ import { render, screen, act, fireEvent } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 
 import App from '../src/renderer/components/App';
-import { useProject } from '../src/renderer/components/ProjectProvider';
+import { useProject } from '../src/renderer/components/providers/ProjectProvider';
 
 const fire = vi.fn();
 
@@ -18,16 +18,16 @@ vi.mock('react-canvas-confetti', () => ({
   },
 }));
 
-vi.mock('../src/renderer/components/AssetSelector', () => ({
+vi.mock('../src/renderer/components/assets/AssetSelector', () => ({
   default: () => <div>selector</div>,
 }));
-vi.mock('../src/renderer/components/AssetBrowser', () => ({
+vi.mock('../src/renderer/components/assets/AssetBrowser', () => ({
   default: () => <div>browser</div>,
 }));
 vi.mock('../src/renderer/views/ProjectManagerView', () => ({
   default: () => <div>manager</div>,
 }));
-vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
+vi.mock('../src/renderer/components/project/ProjectInfoPanel', () => ({
   default: ({
     onExport,
     onBack,
@@ -45,7 +45,7 @@ vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
     );
   },
 }));
-vi.mock('../src/renderer/components/AssetSelectorInfoPanel', () => ({
+vi.mock('../src/renderer/components/assets/AssetSelectorInfoPanel', () => ({
   default: () => <div>info</div>,
 }));
 

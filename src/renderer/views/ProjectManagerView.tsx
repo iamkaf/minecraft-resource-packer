@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import Fuse from 'fuse.js';
-import { useToast } from '../components/ToastProvider';
-import ExternalLink from '../components/ExternalLink';
-import ProjectSidebar from '../components/ProjectSidebar';
+import { useToast } from '../components/providers/ToastProvider';
+import ExternalLink from '../components/common/ExternalLink';
+import ProjectSidebar from '../components/project/ProjectSidebar';
 import ProjectForm, { FormatOption } from '../components/project/ProjectForm';
 import ProjectTable, { ProjectInfo } from '../components/project/ProjectTable';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
@@ -10,7 +10,7 @@ import { useProjectModals } from '../components/project/ProjectModals';
 import SearchToolbar from '../components/project/SearchToolbar';
 import ExportWizardModal, {
   BulkProgress,
-} from '../components/ExportWizardModal';
+} from '../components/modals/ExportWizardModal';
 import useProjectHotkeys from '../hooks/useProjectHotkeys';
 
 // Lists all available projects and lets the user open them.

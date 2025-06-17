@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useToast } from '../ToastProvider';
-import { useProject } from '../ProjectProvider';
+import { useToast } from '../providers/ToastProvider';
+import { useProject } from '../providers/ProjectProvider';
 
 export function useProjectFiles() {
   const { path: projectPath } = useProject();

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button } from './daisy/actions';
+import { Modal, Button } from '../daisy/actions';
 
 export default function ConfirmModal({
   title,

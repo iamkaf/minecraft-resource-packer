@@ -1,5 +1,5 @@
 import React from 'react';
-import { useExternalLink } from '../hooks/useExternalLink';
+import { useExternalLink } from '../../hooks/useExternalLink';
 
 interface ExternalLinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {

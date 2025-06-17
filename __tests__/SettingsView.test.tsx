@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import SettingsView from '../src/renderer/views/SettingsView';
-import ToastProvider from '../src/renderer/components/ToastProvider';
+import ToastProvider from '../src/renderer/components/providers/ToastProvider';
 
 // eslint-disable-next-line no-var
 var openExternalMock: ReturnType<typeof vi.fn>;

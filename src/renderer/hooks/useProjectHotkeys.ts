@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useToast } from '../components/ToastProvider';
+import { useToast } from '../components/providers/ToastProvider';
 
 export default function useProjectHotkeys(
   selected: Set<string>,

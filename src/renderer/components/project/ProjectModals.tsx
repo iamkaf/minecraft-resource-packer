@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import RenameModal from '../RenameModal';
-import ConfirmModal from '../ConfirmModal';
-import type { ToastType } from '../ToastProvider';
+import RenameModal from '../modals/RenameModal';
+import ConfirmModal from '../modals/ConfirmModal';
+import type { ToastType } from '../providers/ToastProvider';
 
 export function useProjectModals(
   refresh: () => void,

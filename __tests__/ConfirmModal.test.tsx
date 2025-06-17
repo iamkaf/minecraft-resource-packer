@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import ConfirmModal from '../src/renderer/components/ConfirmModal';
+import ConfirmModal from '../src/renderer/components/modals/ConfirmModal';
 
 describe('ConfirmModal', () => {
   it('calls callbacks', () => {

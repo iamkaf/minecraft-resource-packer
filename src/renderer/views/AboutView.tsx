@@ -3,7 +3,7 @@ import pkg from '../../../package.json';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - webpack replaces import with URL string
 import iconPath from '../../../resources/icon.png';
-import ExternalLink from '../components/ExternalLink';
+import ExternalLink from '../components/common/ExternalLink';
 export default function AboutView() {
   return (
     <section
@@ -12,7 +12,7 @@ export default function AboutView() {
     >
       <img
         src={iconPath as unknown as string}
-        style={{imageRendering: "pixelated"}}
+        style={{ imageRendering: 'pixelated' }}
         alt="App logo"
         className="w-32 h-32"
       />

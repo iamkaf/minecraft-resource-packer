@@ -1,9 +1,9 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
-import AssetSelectorInfoPanel from '../src/renderer/components/AssetSelectorInfoPanel';
+import AssetSelectorInfoPanel from '../src/renderer/components/assets/AssetSelectorInfoPanel';
 
 describe('AssetSelectorInfoPanel', () => {
   it('shows placeholder when no asset', () => {

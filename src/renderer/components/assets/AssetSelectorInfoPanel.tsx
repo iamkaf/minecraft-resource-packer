@@ -1,7 +1,7 @@
 import React from 'react';
 import TextureThumb from './TextureThumb';
-import { Button } from './daisy/actions';
-import { useProject } from './ProjectProvider';
+import { Button } from '../daisy/actions';
+import { useProject } from '../providers/ProjectProvider';
 
 interface Props {
   asset: string | null;

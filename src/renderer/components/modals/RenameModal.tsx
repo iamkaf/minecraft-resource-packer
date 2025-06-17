@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Modal, Button } from './daisy/actions';
-import { InputField } from './daisy/input';
+import { Modal, Button } from '../daisy/actions';
+import { InputField } from '../daisy/input';
 
 export default function RenameModal({
   current,

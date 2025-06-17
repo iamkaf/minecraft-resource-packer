@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import SettingsView from '../src/renderer/views/SettingsView';
-import ToastProvider from '../src/renderer/components/ToastProvider';
+import ToastProvider from '../src/renderer/components/providers/ToastProvider';
 
 const getOpenLastProject = vi.fn();
 const setOpenLastProject = vi.fn();

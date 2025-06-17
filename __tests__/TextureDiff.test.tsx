@@ -1,8 +1,8 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import TextureDiff from '../src/renderer/components/TextureDiff';
-import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import TextureDiff from '../src/renderer/components/assets/TextureDiff';
+import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 
 describe('TextureDiff', () => {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import ExternalLink from './ExternalLink';
-import PackMetaModal from './PackMetaModal';
-import RenameModal from './RenameModal';
-import type { PackMeta } from '../../main/projects';
-import { ProjectSidebarSkeleton } from './skeleton';
+import ExternalLink from '../common/ExternalLink';
+import PackMetaModal from '../modals/PackMetaModal';
+import RenameModal from '../modals/RenameModal';
+import type { PackMeta } from '../../../main/projects';
+import { ProjectSidebarSkeleton } from '../skeleton';
 
 export default function ProjectSidebar({
   project,

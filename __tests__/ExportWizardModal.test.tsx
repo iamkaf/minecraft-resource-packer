@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ExportWizardModal, {
   BulkProgress,
-} from '../src/renderer/components/ExportWizardModal';
+} from '../src/renderer/components/modals/ExportWizardModal';
 
 const summary = {
   fileCount: 5,

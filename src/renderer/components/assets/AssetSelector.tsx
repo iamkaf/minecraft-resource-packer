@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import TextureGrid, { TextureInfo } from './TextureGrid';
 import TextureTree from './TextureTree';
-import { FilterBadge, InputField, Range } from './daisy/input';
-import { Button } from './daisy/actions';
-import { Accordion } from './daisy/display';
-import { useProject } from './ProjectProvider';
+import { FilterBadge, InputField, Range } from '../daisy/input';
+import { Button } from '../daisy/actions';
+import { Accordion } from '../daisy/display';
+import { useProject } from '../providers/ProjectProvider';
 
 interface Props {
   onAssetSelect?: (name: string) => void;

@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import {
   ProjectProvider,
   useProject,
-} from '../src/renderer/components/ProjectProvider';
+} from '../src/renderer/components/providers/ProjectProvider';
 
 function TestComp() {
   const { path, setPath } = useProject();

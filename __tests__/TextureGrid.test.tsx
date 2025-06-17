@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TextureGrid, {
   TextureInfo,
-} from '../src/renderer/components/TextureGrid';
+} from '../src/renderer/components/assets/TextureGrid';
 
 const textures: TextureInfo[] = [
   { name: 'block/stone.png', url: 'vanilla://stone' },

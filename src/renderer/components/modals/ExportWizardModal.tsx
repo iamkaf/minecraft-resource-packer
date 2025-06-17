@@ -1,7 +1,7 @@
 import React from 'react';
-import { Modal, Button } from './daisy/actions';
-import { RadialProgress } from './daisy/feedback';
-import type { ExportSummary } from '../../main/exporter';
+import { Modal, Button } from '../daisy/actions';
+import { RadialProgress } from '../daisy/feedback';
+import type { ExportSummary } from '../../../main/exporter';
 
 export interface BulkProgress {
   current: number;
@@ -50,7 +50,7 @@ export default function ExportWizardModal({
         <p>{seconds} seconds</p>
         {summary.warnings.length > 0 && (
           <ul className="mt-2">
-            {summary.warnings.map((w, i) => (
+            {summary.warnings.map((w: string, i: number) => (
               <li key={i} className="text-warning">
                 {w}
               </li>

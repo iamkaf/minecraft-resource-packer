@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import ProjectSidebar from '../src/renderer/components/ProjectSidebar';
+import ProjectSidebar from '../src/renderer/components/project/ProjectSidebar';
 
 describe('ProjectSidebar', () => {
   it('loads metadata when given a project', async () => {

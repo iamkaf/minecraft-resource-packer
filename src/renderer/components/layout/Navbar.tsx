@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { toggleTheme } from '../utils/theme';
-import { Button } from './daisy/actions';
+import { toggleTheme } from '../../utils/theme';
+import { Button } from '../daisy/actions';
 
 export default function Navbar() {
   return (

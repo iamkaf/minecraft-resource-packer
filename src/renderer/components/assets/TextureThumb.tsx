@@ -1,6 +1,6 @@
 import React from 'react';
 import path from 'path';
-import TextIcon from './TextIcon';
+import TextIcon from '../common/TextIcon';
 
 interface Props {
   /** Relative texture path or null when no image */

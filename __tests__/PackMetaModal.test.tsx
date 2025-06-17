@@ -20,7 +20,7 @@ vi.mock('@monaco-editor/react', () => ({
     />
   ),
 }));
-import PackMetaModal from '../src/renderer/components/PackMetaModal';
+import PackMetaModal from '../src/renderer/components/modals/PackMetaModal';
 import type { PackMeta } from '../src/main/projects';
 
 describe('PackMetaModal', () => {

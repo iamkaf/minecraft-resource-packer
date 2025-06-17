@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import path from 'path';
-import { Modal, Button } from './daisy/actions';
-import { InputField, FileInput } from './daisy/input';
+import { Modal, Button } from '../daisy/actions';
+import { InputField, FileInput } from '../daisy/input';
 
 export default function PackIconEditor({
   project,
