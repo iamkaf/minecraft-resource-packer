@@ -1,25 +1,9 @@
-import fs from 'fs';
-import path from 'path';
 import type { IpcMain } from 'electron';
-import { ProjectMetadataSchema, type ProjectMetadata } from '../shared/project';
-
-async function readMeta(projectPath: string): Promise<ProjectMetadata> {
-  const p = path.join(projectPath, 'project.json');
-  const data = JSON.parse(await fs.promises.readFile(p, 'utf-8'));
-  return ProjectMetadataSchema.parse(data);
-}
-
-async function writeMeta(
-  projectPath: string,
-  meta: ProjectMetadata
-): Promise<void> {
-  const p = path.join(projectPath, 'project.json');
-  await fs.promises.writeFile(p, JSON.stringify(meta, null, 2));
-}
+import { readProjectMeta, writeProjectMeta } from './projectMeta';
 
 export async function getNoExport(projectPath: string): Promise<string[]> {
   try {
-    const meta = await readMeta(projectPath);
+    const meta = await readProjectMeta(projectPath);
     return meta.noExport ?? [];
   } catch {
     return [];
@@ -31,14 +15,14 @@ export async function setNoExport(
   files: string[],
   flag: boolean
 ): Promise<void> {
-  const meta = await readMeta(projectPath);
+  const meta = await readProjectMeta(projectPath);
   const set = new Set(meta.noExport ?? []);
   for (const f of files) {
     if (flag) set.add(f);
     else set.delete(f);
   }
   meta.noExport = Array.from(set);
-  await writeMeta(projectPath, meta);
+  await writeProjectMeta(projectPath, meta);
 }
 
 export function registerNoExportHandlers(ipc: IpcMain) {

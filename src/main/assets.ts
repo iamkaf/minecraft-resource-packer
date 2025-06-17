@@ -4,7 +4,7 @@ import { app as electronApp } from 'electron';
 import type { Protocol, IpcMain } from 'electron';
 import os from 'os';
 import unzipper from 'unzipper';
-import { ProjectMetadataSchema } from '../shared/project';
+import { readProjectMeta, writeProjectMeta } from './projectMeta';
 import { generatePackIcon } from './icon';
 import {
   PACK_FORMATS,
@@ -137,9 +137,7 @@ export async function listPackFormats(): Promise<PackFormatInfo[]> {
  * Recursively list all texture paths available for the given project version.
  */
 export async function listTextures(projectPath: string): Promise<string[]> {
-  const metaPath = path.join(projectPath, 'project.json');
-  const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-  const meta = ProjectMetadataSchema.parse(data);
+  const meta = await readProjectMeta(projectPath);
   const root = await ensureAssets(meta.minecraft_version);
   const texRoot = path.join(root, 'assets', 'minecraft', 'textures');
   const out: string[] = [];
@@ -167,9 +165,7 @@ export async function addTexture(
   projectPath: string,
   texture: string
 ): Promise<void> {
-  const metaPath = path.join(projectPath, 'project.json');
-  const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-  const meta = ProjectMetadataSchema.parse(data);
+  const meta = await readProjectMeta(projectPath);
   const root = await ensureAssets(meta.minecraft_version);
   const src = path.join(root, 'assets', 'minecraft', 'textures', texture);
   const dest = path.join(
@@ -182,7 +178,7 @@ export async function addTexture(
   await fs.promises.mkdir(path.dirname(dest), { recursive: true });
   await fs.promises.copyFile(src, dest);
   meta.assets.push(`assets/minecraft/textures/${texture}`);
-  await fs.promises.writeFile(metaPath, JSON.stringify(meta, null, 2));
+  await writeProjectMeta(projectPath, meta);
 }
 
 /**
@@ -192,9 +188,7 @@ export async function getTexturePath(
   projectPath: string,
   texture: string
 ): Promise<string> {
-  const metaPath = path.join(projectPath, 'project.json');
-  const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-  const meta = ProjectMetadataSchema.parse(data);
+  const meta = await readProjectMeta(projectPath);
   const root = await ensureAssets(meta.minecraft_version);
   return path.join(root, 'assets', 'minecraft', 'textures', texture);
 }
@@ -208,9 +202,7 @@ export async function getTextureURL(
   texture: string
 ): Promise<string> {
   // Record paths used by the protocol so it can resolve this texture later
-  const metaPath = path.join(projectPath, 'project.json');
-  const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-  const meta = ProjectMetadataSchema.parse(data);
+  const meta = await readProjectMeta(projectPath);
   const cacheRoot = await ensureAssets(meta.minecraft_version);
   cacheTexturesDir = path.join(cacheRoot, 'assets', 'minecraft', 'textures');
   return `vanilla://${texture}`;
@@ -244,9 +236,7 @@ export function registerAssetProtocol(protocol: Protocol) {
 
 /** Update the directories used by the custom protocols for the active project. */
 export async function setActiveProject(projectPath: string): Promise<void> {
-  const metaPath = path.join(projectPath, 'project.json');
-  const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
-  const meta = ProjectMetadataSchema.parse(data);
+  const meta = await readProjectMeta(projectPath);
   const cacheRoot = await ensureAssets(meta.minecraft_version);
   cacheTexturesDir = path.join(cacheRoot, 'assets', 'minecraft', 'textures');
   activeProjectDir = projectPath;
