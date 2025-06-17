@@ -36,7 +36,10 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ### Asset Info & Texture Inspector
 
-- [x] Revision history (max 20)
+- [x] Initial revision history implementation (max 20)
+- [ ] Make revision history work for textures as soon as they're updated
+- [ ] Add confirmation dialog when restoring or deleting revisions
+- [ ] Add revision history preview
 - [x] Preview against the vanilla texture using the `Diff` component
 - [x] Generic icon thumbnail for text files
 - [x] More robust JSON editor
