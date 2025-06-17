@@ -15,6 +15,8 @@ const getConfetti = vi.fn();
 const setConfetti = vi.fn();
 const getDefaultExportDir = vi.fn();
 const setDefaultExportDir = vi.fn();
+const getOpenLastProject = vi.fn();
+const setOpenLastProject = vi.fn();
 vi.mock('electron', () => ({
   shell: { openExternal: (openExternalMock = vi.fn()) },
 }));
@@ -33,6 +35,8 @@ describe('SettingsView', () => {
           setConfetti: typeof setConfetti;
           getDefaultExportDir: typeof getDefaultExportDir;
           setDefaultExportDir: typeof setDefaultExportDir;
+          getOpenLastProject: typeof getOpenLastProject;
+          setOpenLastProject: typeof setOpenLastProject;
         };
       }
     ).electronAPI = {
@@ -44,6 +48,8 @@ describe('SettingsView', () => {
       setConfetti,
       getDefaultExportDir,
       setDefaultExportDir,
+      getOpenLastProject,
+      setOpenLastProject,
     } as never;
     getTextureEditor.mockResolvedValue('/usr/bin/gimp');
     setTextureEditor.mockResolvedValue(undefined);
@@ -53,6 +59,8 @@ describe('SettingsView', () => {
     setConfetti.mockResolvedValue(undefined);
     getDefaultExportDir.mockResolvedValue('/home');
     setDefaultExportDir.mockResolvedValue(undefined);
+    getOpenLastProject.mockResolvedValue(true);
+    setOpenLastProject.mockResolvedValue(undefined);
   });
 
   it('renders placeholder heading', () => {

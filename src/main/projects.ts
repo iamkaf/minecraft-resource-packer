@@ -9,6 +9,7 @@ import {
   PackMetaSchema,
 } from '../shared/project';
 import { listPackFormats, setActiveProject } from './assets';
+import { setLastProject } from './layout';
 
 // Re-export PackMeta so renderer and preload can import the type from this file
 export type { PackMeta } from '../shared/project';
@@ -230,6 +231,7 @@ export function registerProjectHandlers(
   });
   ipc.handle('open-project', async (_e, name: string) => {
     const projectPath = await openProject(baseDir, name);
+    setLastProject(name);
     await setActiveProject(projectPath);
     onOpen(projectPath);
   });

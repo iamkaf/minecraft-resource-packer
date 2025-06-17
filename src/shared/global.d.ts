@@ -61,6 +61,10 @@ declare global {
       setAssetFilters: IpcInvoke<'set-asset-filters'>;
       getAssetZoom: IpcInvoke<'get-asset-zoom'>;
       setAssetZoom: IpcInvoke<'set-asset-zoom'>;
+      getOpenLastProject: IpcInvoke<'get-open-last-project'>;
+      setOpenLastProject: IpcInvoke<'set-open-last-project'>;
+      getLastProject: IpcInvoke<'get-last-project'>;
+      setLastProject: IpcInvoke<'set-last-project'>;
       openExternalEditor: IpcInvoke<'open-external-editor'>;
       onOpenProject: IpcListener<'project-opened'>;
       onFileAdded: IpcListener<'file-added'>;
