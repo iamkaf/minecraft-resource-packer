@@ -36,6 +36,9 @@ declare global {
       openFile: IpcInvoke<'open-file'>;
       readFile: IpcInvoke<'read-file'>;
       writeFile: IpcInvoke<'write-file'>;
+      saveRevision: IpcInvoke<'save-revision'>;
+      listRevisions: IpcInvoke<'list-revisions'>;
+      restoreRevision: IpcInvoke<'restore-revision'>;
       renameFile: IpcInvoke<'rename-file'>;
       deleteFile: IpcInvoke<'delete-file'>;
       editTexture: IpcInvoke<'edit-texture'>;

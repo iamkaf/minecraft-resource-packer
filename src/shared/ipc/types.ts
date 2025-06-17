@@ -28,6 +28,9 @@ export interface IpcRequestMap {
   'open-external-editor': [string];
   'read-file': [string];
   'write-file': [string, string];
+  'save-revision': [string, string, string];
+  'list-revisions': [string, string];
+  'restore-revision': [string, string, string];
   'rename-file': [string, string];
   'delete-file': [string];
   'edit-texture': [string, TextureEditOptions];
@@ -83,6 +86,9 @@ export interface IpcResponseMap {
   'open-external-editor': void;
   'read-file': string;
   'write-file': void;
+  'save-revision': void;
+  'list-revisions': string[];
+  'restore-revision': void;
   'rename-file': void;
   'delete-file': void;
   'edit-texture': void;

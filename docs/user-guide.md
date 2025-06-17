@@ -18,6 +18,7 @@ This guide explains how to use **minecraft-resource-packer** to create and manag
 - **Random pack icon** – new packs start with a pastel background and random item image; you can regenerate from pack settings.
 - **Export** – generate a zipped resource pack containing the selected files along with a valid `pack.mcmeta`. The output is ready to drop into Minecraft.
 - **External Editing** – configure your favourite image editor in **Settings** and launch it from the asset info panel.
+- **Revision History** – previous versions are kept in a hidden `.history` folder. Open the Revisions modal from Asset Info to restore any of the last 20 saves.
 
 ## Texture Naming
 
