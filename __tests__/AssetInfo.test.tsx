@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import {
   ProjectProvider,
   useProject,
@@ -11,8 +11,9 @@ import path from 'path';
 
 describe('AssetInfo', () => {
   const readFile = vi.fn();
-  const writeFile = vi.fn();
+  const saveRevision = vi.fn();
   const openExternalEditor = vi.fn();
+  const onFileChanged = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -20,17 +21,19 @@ describe('AssetInfo', () => {
       window as unknown as {
         electronAPI: {
           readFile: typeof readFile;
-          writeFile: typeof writeFile;
+          saveRevision: typeof saveRevision;
           openExternalEditor: typeof openExternalEditor;
+          onFileChanged: typeof onFileChanged;
         };
       }
     ).electronAPI = {
       readFile,
-      writeFile,
+      saveRevision,
       openExternalEditor,
+      onFileChanged,
     } as never;
     readFile.mockResolvedValue('');
-    writeFile.mockResolvedValue(undefined);
+    saveRevision.mockResolvedValue(undefined);
     openExternalEditor.mockResolvedValue(undefined);
   });
 
@@ -122,7 +125,7 @@ describe('AssetInfo', () => {
     expect(box).toHaveValue('hello');
     fireEvent.change(box, { target: { value: 'new' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-    expect(writeFile).toHaveBeenCalledWith(path.join('/p', 'a.txt'), 'new');
+    expect(saveRevision).toHaveBeenCalledWith('/p', 'a.txt', 'new');
   });
 
   it('blocks invalid json', async () => {
@@ -137,7 +140,31 @@ describe('AssetInfo', () => {
     const box = await screen.findByRole('textbox');
     fireEvent.change(box, { target: { value: '{' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-    expect(writeFile).not.toHaveBeenCalled();
+    expect(saveRevision).not.toHaveBeenCalled();
     expect(screen.getByText('Invalid JSON')).toBeInTheDocument();
+  });
+
+  it('updates preview on file change', async () => {
+    let changed:
+      | ((e: unknown, args: { path: string; stamp: number }) => void)
+      | undefined;
+    onFileChanged.mockImplementation((cb) => {
+      changed = cb;
+    });
+    render(
+      <ProjectProvider>
+        <SetPath path="/p">
+          <AssetInfo asset="foo.png" />
+        </SetPath>
+      </ProjectProvider>
+    );
+    const pane = await screen.findByTestId('preview-pane');
+    const img = within(pane).getByRole('img') as HTMLImageElement;
+    const before = img.src;
+    act(() => {
+      changed?.({}, { path: 'foo.png', stamp: 2 });
+    });
+    expect(img.src).not.toBe(before);
+    expect(img.src).toContain('t=2');
   });
 });

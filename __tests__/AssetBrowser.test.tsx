@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import {
   ProjectProvider,
   useProject,
@@ -213,7 +213,10 @@ describe('AssetBrowser', () => {
 
     const img = screen.getByAltText('D') as HTMLImageElement;
     const before = img.src;
-    changed?.({}, { path: 'd.png', stamp: 42 });
+
+    await act(async () => {
+      changed?.({}, { path: 'd.png', stamp: 42 });
+    });
     const updated = await screen.findByAltText('D');
     expect(updated.src).not.toBe(before);
     expect(updated.src).toContain('t=42');

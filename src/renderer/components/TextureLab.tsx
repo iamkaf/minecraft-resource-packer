@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import path from 'path';
 import { Loading } from './daisy/feedback';
 import type { TextureEditOptions } from '../../shared/texture';
@@ -9,9 +9,11 @@ import { useProject } from './ProjectProvider';
 export default function TextureLab({
   file,
   onClose,
+  stamp,
 }: {
   file: string;
   onClose: () => void;
+  stamp?: number;
 }) {
   const { path: projectPath } = useProject();
   const [hue, setHue] = useState(0);
@@ -20,6 +22,19 @@ export default function TextureLab({
   const [sat, setSat] = useState(1);
   const [bright, setBright] = useState(1);
   const [busy, setBusy] = useState(false);
+  const [version, setVersion] = useState<number | undefined>(stamp);
+
+  useEffect(() => {
+    setVersion(stamp);
+  }, [stamp]);
+
+  useEffect(() => {
+    const relPath = path.relative(projectPath, file).split(path.sep).join('/');
+    const listener = (_e: unknown, args: { path: string; stamp: number }) => {
+      if (args.path === relPath) setVersion(args.stamp);
+    };
+    window.electronAPI?.onFileChanged(listener);
+  }, [file, projectPath]);
 
   const rel = path.relative(projectPath, file).split(path.sep).join('/');
   const filter = `hue-rotate(${hue}deg) saturate(${sat}) brightness(${bright})${
@@ -50,7 +65,7 @@ export default function TextureLab({
         <h3 className="font-bold text-lg">Texture Lab</h3>
         <div style={{ height: '64px' }} className="flex justify-center">
           <img
-            src={`asset://${rel}`}
+            src={`asset://${rel}${version ? `?t=${version}` : ''}`}
             alt="preview"
             style={{
               imageRendering: 'pixelated',

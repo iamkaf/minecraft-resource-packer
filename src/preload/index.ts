@@ -53,6 +53,12 @@ const api = {
   openExternalEditor: (file: string) => invoke('open-external-editor', file),
   readFile: (file: string) => invoke('read-file', file),
   writeFile: (file: string, data: string) => invoke('write-file', file, data),
+  saveRevision: (project: string, rel: string, data: string) =>
+    invoke('save-revision', project, rel, data),
+  listRevisions: (project: string, rel: string) =>
+    invoke('list-revisions', project, rel),
+  restoreRevision: (project: string, rel: string, rev: string) =>
+    invoke('restore-revision', project, rel, rev),
   renameFile: (oldPath: string, newPath: string) =>
     invoke('rename-file', oldPath, newPath),
   deleteFile: (file: string) => invoke('delete-file', file),
