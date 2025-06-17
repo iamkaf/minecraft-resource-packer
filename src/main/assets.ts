@@ -140,7 +140,7 @@ export async function listTextures(projectPath: string): Promise<string[]> {
   const metaPath = path.join(projectPath, 'project.json');
   const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
   const meta = ProjectMetadataSchema.parse(data);
-  const root = await ensureAssets(meta.version);
+  const root = await ensureAssets(meta.minecraft_version);
   const texRoot = path.join(root, 'assets', 'minecraft', 'textures');
   const out: string[] = [];
   const walk = async (dir: string) => {
@@ -170,7 +170,7 @@ export async function addTexture(
   const metaPath = path.join(projectPath, 'project.json');
   const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
   const meta = ProjectMetadataSchema.parse(data);
-  const root = await ensureAssets(meta.version);
+  const root = await ensureAssets(meta.minecraft_version);
   const src = path.join(root, 'assets', 'minecraft', 'textures', texture);
   const dest = path.join(
     projectPath,
@@ -195,7 +195,7 @@ export async function getTexturePath(
   const metaPath = path.join(projectPath, 'project.json');
   const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
   const meta = ProjectMetadataSchema.parse(data);
-  const root = await ensureAssets(meta.version);
+  const root = await ensureAssets(meta.minecraft_version);
   return path.join(root, 'assets', 'minecraft', 'textures', texture);
 }
 
@@ -211,7 +211,7 @@ export async function getTextureURL(
   const metaPath = path.join(projectPath, 'project.json');
   const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
   const meta = ProjectMetadataSchema.parse(data);
-  const cacheRoot = await ensureAssets(meta.version);
+  const cacheRoot = await ensureAssets(meta.minecraft_version);
   cacheTexturesDir = path.join(cacheRoot, 'assets', 'minecraft', 'textures');
   return `vanilla://${texture}`;
 }
@@ -235,8 +235,8 @@ export function registerAssetProtocol(protocol: Protocol) {
     if (/(\\|\/)$/.test(file)) {
       file = file.substring(0, file.length - 1);
     }
-    if (file.includes("?t=")) {
-      file = file.substring(0, file.indexOf("?t="));
+    if (file.includes('?t=')) {
+      file = file.substring(0, file.indexOf('?t='));
     }
     callback(file);
   });
@@ -247,7 +247,7 @@ export async function setActiveProject(projectPath: string): Promise<void> {
   const metaPath = path.join(projectPath, 'project.json');
   const data = JSON.parse(await fs.promises.readFile(metaPath, 'utf-8'));
   const meta = ProjectMetadataSchema.parse(data);
-  const cacheRoot = await ensureAssets(meta.version);
+  const cacheRoot = await ensureAssets(meta.minecraft_version);
   cacheTexturesDir = path.join(cacheRoot, 'assets', 'minecraft', 'textures');
   activeProjectDir = projectPath;
 }

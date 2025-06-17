@@ -56,8 +56,8 @@ const ProjectManagerView: React.FC = () => {
     window.electronAPI?.importProject().then(refresh);
   };
 
-  const handleCreate = (name: string, version: string) => {
-    window.electronAPI?.createProject(name, version).then(() => {
+  const handleCreate = (name: string, minecraftVersion: string) => {
+    window.electronAPI?.createProject(name, minecraftVersion).then(() => {
       refresh();
       toast({ message: 'Project created', type: 'success' });
     });

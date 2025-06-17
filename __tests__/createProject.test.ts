@@ -26,6 +26,6 @@ describe('createProject', () => {
     );
     const meta = ProjectMetadataSchema.parse(data);
     expect(meta.name).toBe('Test');
-    expect(meta.version).toBe('1.20');
+    expect(meta.minecraft_version).toBe('1.20');
   });
 });

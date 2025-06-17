@@ -42,7 +42,8 @@ describe('exportPack', () => {
   it('uses metadata version when none provided', async () => {
     const meta = {
       name: 'proj',
-      version: '1.20.3',
+      minecraft_version: '1.20.3',
+      version: '0.0.0',
       assets: [],
       noExport: [],
     };
@@ -63,7 +64,8 @@ describe('exportPack', () => {
   it('skips files listed in noExport', async () => {
     const meta = {
       name: 'proj',
-      version: '1.21.1',
+      minecraft_version: '1.21.1',
+      version: '0.0.0',
       assets: [],
       noExport: ['skip.txt'],
     };
@@ -83,7 +85,8 @@ describe('exportPack', () => {
   it('does not include empty dirs for skipped files', async () => {
     const meta = {
       name: 'proj',
-      version: '1.21.1',
+      minecraft_version: '1.21.1',
+      version: '0.0.0',
       assets: [],
       noExport: ['folder/skip.txt'],
     };

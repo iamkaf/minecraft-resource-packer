@@ -18,13 +18,14 @@ import { generatePackIcon } from './icon';
 export async function createProject(
   baseDir: string,
   name: string,
-  version: string
+  minecraftVersion: string
 ): Promise<void> {
   const dir = path.join(baseDir, name);
   if (!fs.existsSync(dir)) await fs.promises.mkdir(dir, { recursive: true });
   const meta: ProjectMetadata = {
     name,
-    version,
+    minecraft_version: minecraftVersion,
+    version: '1.0.0',
     assets: [],
     noExport: [],
     lastOpened: Date.now(),
@@ -63,7 +64,7 @@ export async function listProjects(baseDir: string): Promise<ProjectInfo[]> {
         const meta = ProjectMetadataSchema.parse(data);
         out.push({
           name: meta.name,
-          version: meta.version,
+          version: meta.minecraft_version,
           assets: meta.assets.length,
           lastOpened: meta.lastOpened ?? 0,
         });
@@ -200,6 +201,7 @@ export async function savePackMeta(
   if (!data) {
     data = {
       name,
+      minecraft_version: 'unknown',
       version: meta.version ?? 'unknown',
       assets: [],
       noExport: [],
@@ -228,8 +230,8 @@ export function registerProjectHandlers(
 ): void {
   ipc.handle('list-projects', () => listProjects(baseDir));
   ipc.handle('list-formats', () => listPackFormats());
-  ipc.handle('create-project', (_e, name: string, version: string) => {
-    return createProject(baseDir, name, version);
+  ipc.handle('create-project', (_e, name: string, minecraftVersion: string) => {
+    return createProject(baseDir, name, minecraftVersion);
   });
   ipc.handle('open-project', async (_e, name: string) => {
     const projectPath = await openProject(baseDir, name);
