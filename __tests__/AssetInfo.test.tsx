@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import {
   ProjectProvider,
   useProject,
@@ -13,6 +13,7 @@ describe('AssetInfo', () => {
   const readFile = vi.fn();
   const saveRevision = vi.fn();
   const openExternalEditor = vi.fn();
+  const onFileChanged = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -22,12 +23,14 @@ describe('AssetInfo', () => {
           readFile: typeof readFile;
           saveRevision: typeof saveRevision;
           openExternalEditor: typeof openExternalEditor;
+          onFileChanged: typeof onFileChanged;
         };
       }
     ).electronAPI = {
       readFile,
       saveRevision,
       openExternalEditor,
+      onFileChanged,
     } as never;
     readFile.mockResolvedValue('');
     saveRevision.mockResolvedValue(undefined);
@@ -139,5 +142,29 @@ describe('AssetInfo', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
     expect(saveRevision).not.toHaveBeenCalled();
     expect(screen.getByText('Invalid JSON')).toBeInTheDocument();
+  });
+
+  it('updates preview on file change', async () => {
+    let changed:
+      | ((e: unknown, args: { path: string; stamp: number }) => void)
+      | undefined;
+    onFileChanged.mockImplementation((cb) => {
+      changed = cb;
+    });
+    render(
+      <ProjectProvider>
+        <SetPath path="/p">
+          <AssetInfo asset="foo.png" />
+        </SetPath>
+      </ProjectProvider>
+    );
+    const pane = await screen.findByTestId('preview-pane');
+    const img = within(pane).getByRole('img') as HTMLImageElement;
+    const before = img.src;
+    act(() => {
+      changed?.({}, { path: 'foo.png', stamp: 2 });
+    });
+    expect(img.src).not.toBe(before);
+    expect(img.src).toContain('t=2');
   });
 });

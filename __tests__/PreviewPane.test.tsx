@@ -21,4 +21,10 @@ describe('PreviewPane', () => {
     const pane = screen.getByTestId('preview-pane');
     expect(pane.className).not.toContain('bg-gray-200');
   });
+
+  it('appends cache busting stamp', () => {
+    render(<PreviewPane texture="foo.png" stamp={42} />);
+    const img = screen.getByRole('img');
+    expect(img).toHaveAttribute('src', 'asset://foo.png?t=42');
+  });
 });
