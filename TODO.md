@@ -36,7 +36,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ### Asset Info & Texture Inspector
 
-- [ ] Revision history (max 20)
+- [x] Revision history (max 20)
 - [x] Preview against the vanilla texture using the `Diff` component
 - [x] Generic icon thumbnail for text files
 - [x] More robust JSON editor
