@@ -1,9 +1,9 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
-import AssetBrowser from '../src/renderer/components/AssetBrowser';
+import AssetBrowser from '../src/renderer/components/assets/AssetBrowser';
 
 const watchProject = vi.fn(async () => []);
 const unwatchProject = vi.fn();

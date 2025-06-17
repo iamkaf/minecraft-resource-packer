@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import ExternalLink from '../components/ExternalLink';
+import ExternalLink from '../components/common/ExternalLink';
 import { applyTheme, Theme } from '../utils/theme';
-import { useToast } from '../components/ToastProvider';
+import { useToast } from '../components/providers/ToastProvider';
 
 export default function SettingsView() {
   const [editor, setEditor] = useState('');

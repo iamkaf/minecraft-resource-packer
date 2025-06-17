@@ -1,6 +1,6 @@
 import React from 'react';
 import { vi } from 'vitest';
-import { useProject } from '../src/renderer/components/ProjectProvider';
+import { useProject } from '../src/renderer/components/providers/ProjectProvider';
 
 export function SetPath({
   path,
@@ -31,4 +31,5 @@ export const electronAPI: Window['electronAPI'] = new Proxy(handlers, {
 });
 
 // expose mocks on the global window object
-(window as unknown as { electronAPI: Window['electronAPI'] }).electronAPI = electronAPI;
+(window as unknown as { electronAPI: Window['electronAPI'] }).electronAPI =
+  electronAPI;

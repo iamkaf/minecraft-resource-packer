@@ -1,6 +1,6 @@
 import { useCallback, MouseEvent } from 'react';
 import { shell } from 'electron';
-import { useToast } from '../components/ToastProvider';
+import { useToast } from '../components/providers/ToastProvider';
 
 /**
  * Returns a click handler that opens the given URL using Electron's shell.

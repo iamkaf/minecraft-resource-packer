@@ -1,7 +1,7 @@
 import React from 'react';
 import { FixedSizeGrid as Grid, GridChildComponentProps } from 'react-window';
-import { Button } from './daisy/actions';
-import { formatTextureName } from '../utils/textureNames';
+import { Button } from '../daisy/actions';
+import { formatTextureName } from '../../utils/textureNames';
 
 export interface TextureInfo {
   name: string;

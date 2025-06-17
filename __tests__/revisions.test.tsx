@@ -17,10 +17,10 @@ vi.mock('@monaco-editor/react', () => ({
     />
   ),
 }));
-import AssetInfo from '../src/renderer/components/AssetInfo';
-import RevisionsModal from '../src/renderer/components/RevisionsModal';
-import ToastProvider from '../src/renderer/components/ToastProvider';
-import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import AssetInfo from '../src/renderer/components/assets/AssetInfo';
+import RevisionsModal from '../src/renderer/components/modals/RevisionsModal';
+import ToastProvider from '../src/renderer/components/providers/ToastProvider';
+import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 
 const saveRevision = vi.fn();

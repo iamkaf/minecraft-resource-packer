@@ -18,9 +18,9 @@ vi.mock('@monaco-editor/react', () => ({
     />
   ),
 }));
-import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
-import ProjectInfoPanel from '../src/renderer/components/ProjectInfoPanel';
+import ProjectInfoPanel from '../src/renderer/components/project/ProjectInfoPanel';
 
 const meta = {
   version: '1.21.1',

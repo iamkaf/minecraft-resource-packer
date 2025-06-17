@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, within, act } from '@testing-library/react';
-import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 vi.mock('@monaco-editor/react', () => ({
   __esModule: true,
@@ -19,14 +19,16 @@ vi.mock('@monaco-editor/react', () => ({
     />
   ),
 }));
-import AssetInfo from '../src/renderer/components/AssetInfo';
-import ToastProvider from '../src/renderer/components/ToastProvider';
+import AssetInfo from '../src/renderer/components/assets/AssetInfo';
+import ToastProvider from '../src/renderer/components/providers/ToastProvider';
 import path from 'path';
 
 describe('AssetInfo', () => {
   const readFile = electronAPI.readFile as ReturnType<typeof vi.fn>;
   const saveRevision = electronAPI.saveRevision as ReturnType<typeof vi.fn>;
-  const openExternalEditor = electronAPI.openExternalEditor as ReturnType<typeof vi.fn>;
+  const openExternalEditor = electronAPI.openExternalEditor as ReturnType<
+    typeof vi.fn
+  >;
   const onFileChanged = electronAPI.onFileChanged as ReturnType<typeof vi.fn>;
 
   beforeEach(() => {

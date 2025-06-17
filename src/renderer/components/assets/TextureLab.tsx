@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import path from 'path';
-import { Loading } from './daisy/feedback';
-import type { TextureEditOptions } from '../../shared/texture';
-import { Modal, Button } from './daisy/actions';
-import { Range, Select, Checkbox } from './daisy/input';
-import { useProject } from './ProjectProvider';
+import { Loading } from '../daisy/feedback';
+import type { TextureEditOptions } from '../../../shared/texture';
+import { Modal, Button } from '../daisy/actions';
+import { Range, Select, Checkbox } from '../daisy/input';
+import { useProject } from '../providers/ProjectProvider';
 
 export default function TextureLab({
   file,

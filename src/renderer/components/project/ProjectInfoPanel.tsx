@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import path from 'path';
-import type { PackMeta } from '../../main/projects';
-import { Button } from './daisy/actions';
-import PackMetaModal from './PackMetaModal';
+import type { PackMeta } from '../../../main/projects';
+import { Button } from '../daisy/actions';
+import PackMetaModal from '../modals/PackMetaModal';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - webpack replaces import with URL string
-import defaultIcon from '../../../resources/default_pack.png';
+import defaultIcon from '../../../../resources/default_pack.png';
 
-import { useProject } from './ProjectProvider';
+import { useProject } from '../providers/ProjectProvider';
 
 interface Props {
   onExport: () => void;

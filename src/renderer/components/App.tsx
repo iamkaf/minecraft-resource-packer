@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, lazy } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import Navbar from './Navbar';
+import Navbar from './layout/Navbar';
 import {
   EditorViewSkeleton,
   SettingsViewSkeleton,
@@ -13,7 +13,7 @@ const EditorView = lazy(() => import('../views/EditorView'));
 const SettingsView = lazy(() => import('../views/SettingsView'));
 const AboutView = lazy(() => import('../views/AboutView'));
 
-import { ProjectProvider, useProject } from './ProjectProvider';
+import { ProjectProvider, useProject } from './providers/ProjectProvider';
 
 function AppContent() {
   const { path: projectPath, setPath: setProjectPath } = useProject();

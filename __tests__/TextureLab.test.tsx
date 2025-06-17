@@ -1,8 +1,8 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
-import TextureLab from '../src/renderer/components/TextureLab';
-import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import TextureLab from '../src/renderer/components/assets/TextureLab';
+import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 
 describe('TextureLab', () => {

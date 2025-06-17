@@ -2,11 +2,11 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import path from 'path';
-import FileTree from '../src/renderer/components/FileTree';
+import FileTree from '../src/renderer/components/assets/FileTree';
 import {
   ProjectProvider,
   useProject,
-} from '../src/renderer/components/ProjectProvider';
+} from '../src/renderer/components/providers/ProjectProvider';
 
 const files = ['a.txt', 'b.png'];
 

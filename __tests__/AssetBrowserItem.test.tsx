@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import AssetBrowserItem from '../src/renderer/components/AssetBrowserItem';
+import AssetBrowserItem from '../src/renderer/components/assets/AssetBrowserItem';
 import path from 'path';
 
 const openInFolder = vi.fn();

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import path from 'path';
-import { formatTextureName } from '../utils/textureNames';
-import AssetContextMenu from './file/AssetContextMenu';
+import { formatTextureName } from '../../utils/textureNames';
+import AssetContextMenu from '../file/AssetContextMenu';
 import TextureThumb from './TextureThumb';
 
 interface Props {

@@ -20,9 +20,9 @@ vi.mock('@monaco-editor/react', () => ({
   ),
 }));
 
-import PackMetaModal from '../src/renderer/components/PackMetaModal';
+import PackMetaModal from '../src/renderer/components/modals/PackMetaModal';
 import type { PackMeta } from '../src/main/projects';
-import ToastProvider from '../src/renderer/components/ToastProvider';
+import ToastProvider from '../src/renderer/components/providers/ToastProvider';
 
 describe('JsonEditor integration', () => {
   it('rejects invalid JSON', () => {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import ExternalLink from '../src/renderer/components/ExternalLink';
-import ToastProvider from '../src/renderer/components/ToastProvider';
+import ExternalLink from '../src/renderer/components/common/ExternalLink';
+import ToastProvider from '../src/renderer/components/providers/ToastProvider';
 
 vi.useFakeTimers();
 // eslint-disable-next-line no-var

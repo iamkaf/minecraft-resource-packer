@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import path from 'path';
-import { Modal, Button } from './daisy/actions';
-import { useProject } from './ProjectProvider';
-import { useToast } from './ToastProvider';
+import { Modal, Button } from '../daisy/actions';
+import { useProject } from '../providers/ProjectProvider';
+import { useToast } from '../providers/ToastProvider';
 
 export default function RevisionsModal({
   asset,

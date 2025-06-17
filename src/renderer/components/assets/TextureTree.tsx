@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tree } from 'react-arborist';
-import { formatTextureName } from '../utils/textureNames';
-import { buildTree, TreeItem } from '../utils/tree';
+import { formatTextureName } from '../../utils/textureNames';
+import { buildTree, TreeItem } from '../../utils/tree';
 import type { TextureInfo } from './TextureGrid';
 
 interface Props {

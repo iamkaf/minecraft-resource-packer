@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Tree } from 'react-arborist';
 import path from 'path';
-import { buildTree, TreeItem } from '../utils/tree';
+import { buildTree, TreeItem } from '../../utils/tree';
 import TextureThumb from './TextureThumb';
-import AssetContextMenu from './file/AssetContextMenu';
-import { useProject } from './ProjectProvider';
+import AssetContextMenu from '../file/AssetContextMenu';
+import { useProject } from '../providers/ProjectProvider';
 
 interface Props {
   files: string[];

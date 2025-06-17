@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import path from 'path';
 import { app } from 'electron';
 import MonacoEditor from '@monaco-editor/react';
-import { PackMetaSchema } from '../../shared/project';
-import type { PackMeta } from '../../main/projects';
-import { Modal, Button } from './daisy/actions';
-import { useToast } from './ToastProvider';
+import { PackMetaSchema } from '../../../shared/project';
+import type { PackMeta } from '../../../main/projects';
+import { Modal, Button } from '../daisy/actions';
+import { useToast } from '../providers/ToastProvider';
 
 export default function PackMetaModal({
   project,

@@ -2,8 +2,8 @@ import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useProjectFiles } from '../src/renderer/components/file/useProjectFiles';
-import ToastProvider from '../src/renderer/components/ToastProvider';
-import { ProjectProvider } from '../src/renderer/components/ProjectProvider';
+import ToastProvider from '../src/renderer/components/providers/ToastProvider';
+import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 
 const watchProject = vi.fn(async () => ['a.txt', 'b.png']);

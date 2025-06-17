@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button } from './daisy/actions';
-import { Diff } from './daisy/display';
-import { useProject } from './ProjectProvider';
+import { Modal, Button } from '../daisy/actions';
+import { Diff } from '../daisy/display';
+import { useProject } from '../providers/ProjectProvider';
 
 export default function TextureDiff({
   asset,

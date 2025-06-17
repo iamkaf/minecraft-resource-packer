@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import path from 'path';
-import RenameModal from './RenameModal';
+import RenameModal from '../modals/RenameModal';
 import AssetBrowserItem from './AssetBrowserItem';
-import { useProjectFiles } from './file/useProjectFiles';
+import { useProjectFiles } from '../file/useProjectFiles';
 import FileTree from './FileTree';
-import { useProject } from './ProjectProvider';
-import { FilterBadge, InputField, Range } from './daisy/input';
-import { Accordion } from './daisy/display';
+import { useProject } from '../providers/ProjectProvider';
+import { FilterBadge, InputField, Range } from '../daisy/input';
+import { Accordion } from '../daisy/display';
 
 interface Props {
   onSelectionChange?: (sel: string[]) => void;

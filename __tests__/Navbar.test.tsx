@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 
-import Navbar from '../src/renderer/components/Navbar';
+import Navbar from '../src/renderer/components/layout/Navbar';
 
 function HashSync() {
   const location = useLocation();

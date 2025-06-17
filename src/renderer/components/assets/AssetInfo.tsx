@@ -1,11 +1,11 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import path from 'path';
-import { useToast } from './ToastProvider';
-import { Skeleton } from './daisy/feedback';
+import { useToast } from '../providers/ToastProvider';
+import { Skeleton } from '../daisy/feedback';
 import MonacoEditor from '@monaco-editor/react';
-import { Button } from './daisy/actions';
-import { useProject } from './ProjectProvider';
-import RevisionsModal from './RevisionsModal';
+import { Button } from '../daisy/actions';
+import { useProject } from '../providers/ProjectProvider';
+import RevisionsModal from '../modals/RevisionsModal';
 
 const PreviewPane = lazy(() => import('./PreviewPane'));
 const TextureLab = lazy(() => import('./TextureLab'));

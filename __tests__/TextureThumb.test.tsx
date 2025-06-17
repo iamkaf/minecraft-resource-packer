@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import TextureThumb from '../src/renderer/components/TextureThumb';
+import TextureThumb from '../src/renderer/components/assets/TextureThumb';
 
 describe('TextureThumb', () => {
   it('renders image with default protocol', () => {

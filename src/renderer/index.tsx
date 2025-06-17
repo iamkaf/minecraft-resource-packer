@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './components/App';
-import ToastProvider from './components/ToastProvider';
+import ToastProvider from './components/providers/ToastProvider';
 import { HashRouter } from 'react-router-dom';
 import './styles/index.css';
 import { applyTheme } from './utils/theme';

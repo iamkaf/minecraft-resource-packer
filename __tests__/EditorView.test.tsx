@@ -1,7 +1,10 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import { ProjectProvider, useProject } from '../src/renderer/components/ProjectProvider';
+import {
+  ProjectProvider,
+  useProject,
+} from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 
 // eslint-disable-next-line no-var
@@ -16,13 +19,13 @@ vi.mock('react-canvas-confetti', () => ({
   __esModule: true,
   default: () => <canvas />,
 }));
-vi.mock('../src/renderer/components/AssetSelector', () => ({
+vi.mock('../src/renderer/components/assets/AssetSelector', () => ({
   default: () => <div>selector</div>,
 }));
-vi.mock('../src/renderer/components/AssetBrowser', () => ({
+vi.mock('../src/renderer/components/assets/AssetBrowser', () => ({
   default: () => <div>browser</div>,
 }));
-vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
+vi.mock('../src/renderer/components/project/ProjectInfoPanel', () => ({
   default: ({
     onExport,
     onBack,
@@ -40,7 +43,7 @@ vi.mock('../src/renderer/components/ProjectInfoPanel', () => ({
     );
   },
 }));
-vi.mock('../src/renderer/components/AssetSelectorInfoPanel', () => ({
+vi.mock('../src/renderer/components/assets/AssetSelectorInfoPanel', () => ({
   default: () => <div>info</div>,
 }));
 

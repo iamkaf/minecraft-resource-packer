@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import PreviewPane from '../src/renderer/components/PreviewPane';
+import PreviewPane from '../src/renderer/components/assets/PreviewPane';
 
 describe('PreviewPane zoom behaviour', () => {
   it('zooms image with mouse wheel', () => {
