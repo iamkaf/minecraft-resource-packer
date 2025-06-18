@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import TextureGrid, { TextureInfo } from './TextureGrid';
 import TextureTree from './TextureTree';
 import { FilterBadge, InputField, Range } from '../daisy/input';
 import { Button } from '../daisy/actions';
 import { Accordion } from '../daisy/display';
 import { useProject } from '../providers/ProjectProvider';
+import AssetSelectorContextMenu from './AssetSelectorContextMenu';
 
 interface Props {
   onAssetSelect?: (name: string) => void;
@@ -34,6 +35,18 @@ const AssetSelector: React.FC<Props> = ({ onAssetSelect }) => {
   const [zoom, setZoom] = useState(64);
   const [filters, setFilters] = useState<Filter[]>([]);
   const [view, setView] = useState<'grid' | 'tree'>('grid');
+  const [menuInfo, setMenuInfo] = useState<{
+    asset: string;
+    x: number;
+    y: number;
+  } | null>(null);
+  const firstItem = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (menuInfo && firstItem.current) {
+      firstItem.current.focus();
+    }
+  }, [menuInfo]);
 
   useEffect(() => {
     const load = async () => {
@@ -85,14 +98,43 @@ const AssetSelector: React.FC<Props> = ({ onAssetSelect }) => {
     onAssetSelect?.(name);
   };
 
+  const showMenu = (asset: string, x: number, y: number) => {
+    setMenuInfo({ asset, x, y });
+  };
+
+  const handleContext = (
+    e: React.MouseEvent | React.KeyboardEvent,
+    name: string
+  ) => {
+    e.preventDefault();
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    showMenu(name, rect.right, rect.bottom);
+  };
+
+  const closeMenu = () => setMenuInfo(null);
+
   const toggleFilter = (f: Filter) => {
     setFilters((prev) =>
       prev.includes(f) ? prev.filter((p) => p !== f) : [...prev, f]
     );
   };
 
+  const handleReveal = (name: string) => {
+    void window.electronAPI
+      ?.getTexturePath(projectPath, name)
+      .then((f) => f && window.electronAPI?.openInFolder(f));
+  };
+
   return (
-    <div className="mb-4">
+    <div
+      className="mb-4"
+      tabIndex={0}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+          closeMenu();
+        }
+      }}
+    >
       <div className="flex items-center gap-2 mb-2">
         <InputField
           className="flex-1"
@@ -148,13 +190,35 @@ const AssetSelector: React.FC<Props> = ({ onAssetSelect }) => {
                   textures={list}
                   zoom={zoom}
                   onSelect={handleSelect}
+                  onContextMenu={(e, name) =>
+                    showMenu(name, e.clientX, e.clientY)
+                  }
+                  onKeyDown={(e, name) => handleContext(e, name)}
                 />
               </Accordion>
             );
           }
         )
       ) : (
-        <TextureTree textures={filtered} onSelect={handleSelect} />
+        <TextureTree
+          textures={filtered}
+          onSelect={handleSelect}
+          onContextMenu={(e, name) => showMenu(name, e.clientX, e.clientY)}
+          onKeyDown={(e, name) => handleContext(e, name)}
+        />
+      )}
+      {menuInfo && (
+        <AssetSelectorContextMenu
+          asset={menuInfo.asset}
+          style={{
+            left: menuInfo.x,
+            top: menuInfo.y,
+            display: 'block',
+          }}
+          firstItemRef={firstItem}
+          onAdd={(name) => window.electronAPI?.addTexture(projectPath, name)}
+          onReveal={handleReveal}
+        />
       )}
     </div>
   );

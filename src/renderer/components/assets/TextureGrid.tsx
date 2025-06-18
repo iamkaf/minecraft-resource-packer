@@ -13,6 +13,8 @@ interface Props {
   zoom: number;
   onSelect: (name: string) => void;
   testId?: string;
+  onContextMenu?: (e: React.MouseEvent, name: string) => void;
+  onKeyDown?: (e: React.KeyboardEvent, name: string) => void;
 }
 
 interface CellData {
@@ -20,6 +22,8 @@ interface CellData {
   columnCount: number;
   zoom: number;
   onSelect: (name: string) => void;
+  onContextMenu?: (e: React.MouseEvent, name: string) => void;
+  onKeyDown?: (e: React.KeyboardEvent, name: string) => void;
 }
 
 const Cell: React.FC<GridChildComponentProps<CellData>> = ({
@@ -41,6 +45,11 @@ const Cell: React.FC<GridChildComponentProps<CellData>> = ({
         <Button
           aria-label={tex.name}
           onClick={() => data.onSelect(tex.name)}
+          onContextMenu={(e) => data.onContextMenu?.(e, tex.name)}
+          onKeyDown={(e) =>
+            (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) &&
+            data.onKeyDown?.(e, tex.name)
+          }
           className="p-1 hover:ring ring-accent rounded"
         >
           <img
@@ -62,7 +71,14 @@ const Cell: React.FC<GridChildComponentProps<CellData>> = ({
   );
 };
 
-const TextureGrid: React.FC<Props> = ({ textures, zoom, onSelect, testId }) => {
+const TextureGrid: React.FC<Props> = ({
+  textures,
+  zoom,
+  onSelect,
+  testId,
+  onContextMenu,
+  onKeyDown,
+}) => {
   const width = typeof window !== 'undefined' ? window.innerWidth : 640;
   const columnWidth = zoom + 40;
   const rowHeight = zoom + 48;
@@ -81,7 +97,14 @@ const TextureGrid: React.FC<Props> = ({ textures, zoom, onSelect, testId }) => {
         rowCount={rowCount}
         rowHeight={rowHeight}
         width={columnCount * columnWidth}
-        itemData={{ textures, columnCount, zoom, onSelect }}
+        itemData={{
+          textures,
+          columnCount,
+          zoom,
+          onSelect,
+          onContextMenu,
+          onKeyDown,
+        }}
       >
         {Cell}
       </Grid>

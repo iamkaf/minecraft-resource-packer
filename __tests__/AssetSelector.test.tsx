@@ -139,4 +139,29 @@ describe('AssetSelector', () => {
     expect(screen.getByText('block')).toBeInTheDocument();
     expect(screen.getByText('grass.png')).toBeInTheDocument();
   });
+
+  it('opens context menu and fires callbacks', async () => {
+    const openInFolder = vi.fn();
+    const getTexturePath = vi.fn().mockResolvedValue('/proj/block/grass.png');
+    electronAPI.openInFolder.mockImplementation(openInFolder);
+    electronAPI.getTexturePath.mockImplementation(getTexturePath);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetSelector />
+        </SetPath>
+      </ProjectProvider>
+    );
+    const input = screen.getByPlaceholderText('Search texture');
+    fireEvent.change(input, { target: { value: 'grass' } });
+    const btn = await screen.findByRole('button', { name: 'block/grass.png' });
+    fireEvent.contextMenu(btn);
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Add to Project' }));
+    expect(addTexture).toHaveBeenCalledWith('/proj', 'block/grass.png');
+    fireEvent.contextMenu(btn);
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Reveal' }));
+    await Promise.resolve();
+    expect(getTexturePath).toHaveBeenCalledWith('/proj', 'block/grass.png');
+    expect(openInFolder).toHaveBeenCalledWith('/proj/block/grass.png');
+  });
 });
