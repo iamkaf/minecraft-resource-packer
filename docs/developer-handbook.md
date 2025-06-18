@@ -123,6 +123,14 @@ Two custom protocols simplify image previews:
 
 Both protocols are registered in `src/main/index.ts` when Electron starts.
 
+## Asset Cache
+
+Downloads from Mojang are stored under `<userData>/assets-cache`. Each
+version gets its own folder inside this directory. The client JAR is saved as
+`client.jar` and extracted to `client/` where `assets/minecraft/textures` lives.
+`ensureAssets` fetches and extracts the JAR the first time a version is
+requested; later calls simply reuse the existing folder.
+
 ## Project Metadata Sidebar
 
 The projects dashboard includes a sidebar next to the project table. Selecting a
