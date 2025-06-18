@@ -155,8 +155,8 @@ should be excluded from exports. The asset browser context menu includes a
 
 Click **Import** in the New Project dialog to bring up the Import Wizard.
 The wizard asks the main process to open an `electron.dialog` so the user can
-select a folder or `.zip` archive. A modal shows a spinner while the project is
-copied or extracted and then displays a brief summary of the import.
+select a `.zip` archive. A modal shows a spinner while the project is extracted
+and then displays a brief summary of the import.
 
 ## Asset Browser
 

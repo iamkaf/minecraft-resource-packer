@@ -16,7 +16,9 @@ describe('ProjectManagerView help link', () => {
       listPackFormats: () => Promise<{ format: number; label: string }[]>;
       openProject: (name: string) => void;
       createProject: (n: string, v: string) => Promise<void>;
-      importProject: () => Promise<void>;
+      importProject: () => Promise<
+        import('../src/main/projects').ImportSummary | null
+      >;
       duplicateProject: (n: string, nn: string) => Promise<void>;
       deleteProject: (n: string) => Promise<void>;
       getProjectSort: () => Promise<{ key: string; asc: boolean }>;

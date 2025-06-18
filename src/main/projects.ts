@@ -152,14 +152,20 @@ async function extractZip(src: string, dest: string): Promise<number> {
   await new Promise<void>((resolve, reject) => {
     fs.createReadStream(src)
       .pipe(unzipper.Parse())
-      .on('entry', (entry: any) => {
-        const outPath = path.join(dest, entry.path);
-        if (entry.type === 'Directory') {
+      .on('entry', (entry: unknown) => {
+        const e = entry as {
+          type: string;
+          path: string;
+          autodrain(): void;
+          pipe(dest: fs.WriteStream): void;
+        };
+        const outPath = path.join(dest, e.path);
+        if (e.type === 'Directory') {
           fs.mkdirSync(outPath, { recursive: true });
-          entry.autodrain();
+          e.autodrain();
         } else {
           fs.mkdirSync(path.dirname(outPath), { recursive: true });
-          entry.pipe(fs.createWriteStream(outPath));
+          e.pipe(fs.createWriteStream(outPath));
           count++;
         }
       })
@@ -200,54 +206,34 @@ async function detectVersion(dir: string): Promise<string | null> {
   return null;
 }
 
-async function countFiles(dir: string): Promise<number> {
-  const entries = await fs.promises.readdir(dir, { withFileTypes: true });
-  let total = 0;
-  for (const entry of entries) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      total += await countFiles(full);
-    } else {
-      total++;
-    }
-  }
-  return total;
-}
-
 export async function importProject(
   baseDir: string
 ): Promise<ImportSummary | null> {
   const { canceled, filePaths } = await dialog.showOpenDialog({
-    properties: ['openFile', 'openDirectory'],
+    properties: ['openFile'],
     filters: [{ name: 'Resource Packs', extensions: ['zip'] }],
   });
   if (canceled || filePaths.length === 0) return null;
   const src = filePaths[0];
-  const ext = path.extname(src).toLowerCase();
-  const name = ext === '.zip' ? path.basename(src, ext) : path.basename(src);
+  if (path.extname(src).toLowerCase() !== '.zip') return null;
+  const name = path.basename(src, '.zip');
   const dest = path.join(baseDir, name);
   const start = Date.now();
-  let fileCount = 0;
-  if (ext === '.zip') {
-    await fs.promises.mkdir(dest, { recursive: true });
-    fileCount = await extractZip(src, dest);
-    const version = (await detectVersion(dest)) ?? 'unknown';
-    let meta: ProjectMetadata;
-    if (fs.existsSync(path.join(dest, 'project.json'))) {
-      try {
-        meta = await readProjectMeta(dest);
-      } catch {
-        meta = defaultMeta(name, version);
-      }
-    } else {
+  await fs.promises.mkdir(dest, { recursive: true });
+  const fileCount = await extractZip(src, dest);
+  const version = (await detectVersion(dest)) ?? 'unknown';
+  let meta: ProjectMetadata;
+  if (fs.existsSync(path.join(dest, 'project.json'))) {
+    try {
+      meta = await readProjectMeta(dest);
+    } catch {
       meta = defaultMeta(name, version);
     }
-    meta.minecraft_version = version;
-    await writeProjectMeta(dest, meta);
   } else {
-    await fs.promises.cp(src, dest, { recursive: true });
-    fileCount = await countFiles(dest);
+    meta = defaultMeta(name, version);
   }
+  meta.minecraft_version = version;
+  await writeProjectMeta(dest, meta);
   const durationMs = Date.now() - start;
   return { name, fileCount, durationMs };
 }
