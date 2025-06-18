@@ -239,4 +239,35 @@ describe('ProjectManagerView', () => {
     await screen.findByText('New');
     expect(screen.getByText('New')).toBeInTheDocument();
   });
+
+  it('shows context menu on right click', async () => {
+    render(<ProjectManagerView />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    const row = screen.getAllByRole('row')[1];
+    fireEvent.contextMenu(row);
+    expect(screen.getByRole('menuitem', { name: 'Open' })).toBeInTheDocument();
+  });
+
+  it('context menu actions work', async () => {
+    render(<ProjectManagerView />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    const row = screen.getAllByRole('row')[1];
+    fireEvent.contextMenu(row);
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Open' }));
+    expect(openProject).toHaveBeenCalledWith('Alpha');
+
+    fireEvent.contextMenu(row);
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Duplicate' }));
+    const modal = await screen.findByTestId('daisy-modal');
+    const input = modal.querySelector('input') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 'Alpha Copy' } });
+    fireEvent.submit(input.closest('form') as HTMLFormElement);
+    expect(duplicateProject).toHaveBeenCalledWith('Alpha', 'Alpha Copy');
+
+    fireEvent.contextMenu(row);
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Delete' }));
+    const delModal = await screen.findByTestId('daisy-modal');
+    fireEvent.click(within(delModal).getByText('Delete'));
+    expect(deleteProject).toHaveBeenCalledWith('Alpha');
+  });
 });
