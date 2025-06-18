@@ -11,6 +11,10 @@ vi.mock('child_process', () => {
   return { spawn: spawnMock, default: { spawn: spawnMock } };
 });
 
+vi.mock('../src/main/revision', () => ({
+  saveRevisionForFile: vi.fn(async () => {}),
+}));
+
 vi.mock('../src/main/layout', () => ({
   getTextureEditor: () => '/usr/bin/gimp',
 }));
@@ -30,6 +34,8 @@ describe('open-external-editor IPC', () => {
   it('spawns configured editor with file path', async () => {
     expect(handler).toBeTypeOf('function');
     await handler?.({}, '/tmp/a.png');
+    const { saveRevisionForFile } = await import('../src/main/revision');
+    expect(saveRevisionForFile).toHaveBeenCalledWith('/tmp/a.png');
     expect(spawnMock).toHaveBeenCalledWith('/usr/bin/gimp', ['/tmp/a.png'], {
       detached: true,
       stdio: 'ignore',

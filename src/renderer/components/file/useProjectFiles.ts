@@ -10,22 +10,39 @@ export function useProjectFiles() {
   const toast = useToast();
 
   useEffect(() => {
+    const isHistory = (p: string) =>
+      p === '.history' || p.startsWith('.history/') || p.includes('/.history/');
     let alive = true;
     window.electronAPI
       ?.watchProject(projectPath)
       .then((list) => {
-        if (alive && list) setFiles(list);
+        if (alive && list) {
+          const filtered = list.filter((p) => !isHistory(p));
+          setFiles(filtered);
+        }
       })
       .catch(() => {
         /* ignore */
       });
-    const add = (_e: unknown, p: string) => setFiles((f) => [...f, p]);
-    const remove = (_e: unknown, p: string) =>
+    const add = (_e: unknown, p: string) => {
+      if (isHistory(p)) return;
+      setFiles((f) => [...f, p]);
+    };
+    const remove = (_e: unknown, p: string) => {
+      if (isHistory(p)) return;
       setFiles((f) => f.filter((x) => x !== p));
-    const rename = (_e: unknown, args: { oldPath: string; newPath: string }) =>
+    };
+    const rename = (
+      _e: unknown,
+      args: { oldPath: string; newPath: string }
+    ) => {
+      if (isHistory(args.oldPath) || isHistory(args.newPath)) return;
       setFiles((f) => f.map((x) => (x === args.oldPath ? args.newPath : x)));
-    const change = (_e: unknown, args: { path: string; stamp: number }) =>
+    };
+    const change = (_e: unknown, args: { path: string; stamp: number }) => {
+      if (isHistory(args.path)) return;
       setVersions((v) => ({ ...v, [args.path]: args.stamp }));
+    };
     window.electronAPI?.onFileAdded(add);
     window.electronAPI?.onFileRemoved(remove);
     window.electronAPI?.onFileRenamed(rename);

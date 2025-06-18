@@ -12,7 +12,7 @@ interface Props {
   onSelectionChange?: (sel: string[]) => void;
 }
 
-const FILTERS = ['blocks', 'items', 'entity', 'ui', 'audio'] as const;
+const FILTERS = ['blocks', 'items', 'entity', 'ui', 'audio', 'lang'] as const;
 type Filter = (typeof FILTERS)[number];
 
 const normalizeForCategory = (file: string) => {
@@ -36,6 +36,7 @@ const getCategory = (name: string): Filter | 'misc' => {
   )
     return 'ui';
   if (name.startsWith('sound/') || name.startsWith('sounds/')) return 'audio';
+  if (name.startsWith('lang/')) return 'lang';
   return 'misc';
 };
 
@@ -94,6 +95,7 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
       entity: [],
       ui: [],
       audio: [],
+      lang: [],
       misc: [],
     };
     for (const f of visible) {
@@ -163,33 +165,41 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
       </div>
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2">
-          {(['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
-            (key) => {
-              const list = categories[key];
-              if (list.length === 0) return null;
-              return (
-                <Accordion key={key} title={key} className="mb-2" defaultOpen>
-                  <div className="grid grid-cols-6 gap-2">
-                    {list.map((f) => (
-                      <AssetBrowserItem
-                        key={f}
-                        projectPath={projectPath}
-                        file={f}
-                        selected={selected}
-                        setSelected={setSelected}
-                        noExport={noExport}
-                        toggleNoExport={toggleNoExport}
-                        deleteFiles={deleteFiles}
-                        openRename={(file) => setRenameTarget(file)}
-                        zoom={zoom}
-                        stamp={versions[f]}
-                      />
-                    ))}
-                  </div>
-                </Accordion>
-              );
-            }
-          )}
+          {(
+            [
+              'blocks',
+              'items',
+              'entity',
+              'ui',
+              'audio',
+              'lang',
+              'misc',
+            ] as const
+          ).map((key) => {
+            const list = categories[key];
+            if (list.length === 0) return null;
+            return (
+              <Accordion key={key} title={key} className="mb-2" defaultOpen>
+                <div className="grid grid-cols-6 gap-2">
+                  {list.map((f) => (
+                    <AssetBrowserItem
+                      key={f}
+                      projectPath={projectPath}
+                      file={f}
+                      selected={selected}
+                      setSelected={setSelected}
+                      noExport={noExport}
+                      toggleNoExport={toggleNoExport}
+                      deleteFiles={deleteFiles}
+                      openRename={(file) => setRenameTarget(file)}
+                      zoom={zoom}
+                      stamp={versions[f]}
+                    />
+                  ))}
+                </div>
+              </Accordion>
+            );
+          })}
         </div>
         <div>
           <FileTree

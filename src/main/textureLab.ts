@@ -1,11 +1,13 @@
 import sharp from 'sharp';
 import type { IpcMain } from 'electron';
 import type { TextureEditOptions } from '../shared/texture';
+import { saveRevisionForFile } from './revision';
 
 export async function editTexture(
   file: string,
   opts: TextureEditOptions
 ): Promise<void> {
+  await saveRevisionForFile(file);
   let img = sharp(file);
   if (opts.rotate) img = img.rotate(opts.rotate);
 

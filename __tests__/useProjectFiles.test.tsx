@@ -94,6 +94,26 @@ describe('useProjectFiles', () => {
     expect(unwatchProject).toHaveBeenCalledWith('/proj');
   });
 
+  it('ignores files in .history directories', async () => {
+    watchProject.mockResolvedValue(['.history/a.txt', 'keep.txt']);
+    let added: ((e: unknown, p: string) => void) | undefined;
+    onFileAdded.mockImplementation((cb) => {
+      added = cb;
+    });
+    const { result } = renderHook(() => useProjectFiles(), {
+      wrapper: ({ children }) => (
+        <ProjectProvider>
+          <SetPath path="/proj">{children}</SetPath>
+        </ProjectProvider>
+      ),
+    });
+    await waitFor(() => expect(result.current.files).toEqual(['keep.txt']));
+    act(() => {
+      added?.({}, '.history/b.txt');
+    });
+    expect(result.current.files).toEqual(['keep.txt']);
+  });
+
   it('toggles noExport state', async () => {
     const { result } = renderHook(() => useProjectFiles(), {
       wrapper: ({ children }) => (

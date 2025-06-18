@@ -51,6 +51,21 @@ describe('AssetBrowser', () => {
     expect(img.style.imageRendering).toBe('pixelated');
   });
 
+  it('filters out .history files', async () => {
+    watchProject.mockResolvedValue(['.history/a.txt', 'visible.txt']);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
+    expect((await screen.findAllByText('visible.txt')).length).toBeGreaterThan(
+      0
+    );
+    expect(screen.queryByText('a.txt')).toBeNull();
+  });
+
   it('is scrollable', async () => {
     render(
       <ProjectProvider>
