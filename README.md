@@ -39,3 +39,17 @@ The Project Manager supports a few hotkeys:
 
 - [User Guide](docs/user-guide.md)
 - [Developer Handbook](docs/developer-handbook.md)
+
+## Development
+
+Run the development build with:
+
+```bash
+npm run dev
+```
+
+On headless systems (for example in CI) use the headless variant which relies on `xvfb-maybe` to provide a virtual display:
+
+```bash
+npm run dev:headless
+```

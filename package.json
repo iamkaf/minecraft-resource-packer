@@ -13,7 +13,7 @@
     "lint": "eslint --no-warn-ignored --ext .ts,.tsx src __tests__ *.ts",
     "test": "vitest run --coverage",
     "dev": "electron-forge start",
-    "dev:headless": "xvfb-run -a electron-forge start -- --no-sandbox",
+    "dev:headless": "xvfb-maybe -- electron-forge start -- --no-sandbox",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit"
   },
@@ -90,6 +90,7 @@
     "ts-node": "^10.9.2",
     "typescript": "~5.8.3",
     "unzipper": "^0.12.3",
-    "vitest": "^3.2.3"
+    "vitest": "^3.2.3",
+    "xvfb-maybe": "^0.2.1"
   }
 }

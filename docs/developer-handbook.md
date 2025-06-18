@@ -22,6 +22,8 @@ Electron requires a graphical environment. Running on a headless server will fai
 npm run dev:headless
 ```
 
+This command uses [`xvfb-maybe`](https://github.com/anaisbetts/xvfb-maybe) to launch Electron under a virtual display when one is not available. See the [Electron headless CI guide](https://www.electronjs.org/docs/latest/tutorial/testing-on-headless-ci) for more details.
+
 3. Run the linter and tests:
 
 ```bash
