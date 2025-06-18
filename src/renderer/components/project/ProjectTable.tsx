@@ -5,6 +5,8 @@ import {
   ArrowRightCircleIcon,
   DocumentDuplicateIcon,
   TrashIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
 } from '@heroicons/react/24/outline';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - webpack replaces import with URL string
@@ -19,6 +21,8 @@ export interface ProjectInfo {
 
 export default function ProjectTable({
   projects,
+  sortKey,
+  asc,
   onSort,
   selected,
   onSelect,
@@ -37,6 +41,8 @@ export default function ProjectTable({
   onDuplicate: (name: string) => void;
   onDelete: (name: string) => void;
   onRowClick: (name: string) => void;
+  sortKey: keyof ProjectInfo;
+  asc: boolean;
 }) {
   const lastIndex = React.useRef<number | null>(null);
   const allSelected =
@@ -58,15 +64,39 @@ export default function ProjectTable({
             </th>
             <th onClick={() => onSort('name')} className="cursor-pointer">
               Name
+              {sortKey === 'name' &&
+                (asc ? (
+                  <ChevronUpIcon className="w-3 h-3 inline-block ml-1" />
+                ) : (
+                  <ChevronDownIcon className="w-3 h-3 inline-block ml-1" />
+                ))}
             </th>
             <th onClick={() => onSort('version')} className="cursor-pointer">
               MC Version
+              {sortKey === 'version' &&
+                (asc ? (
+                  <ChevronUpIcon className="w-3 h-3 inline-block ml-1" />
+                ) : (
+                  <ChevronDownIcon className="w-3 h-3 inline-block ml-1" />
+                ))}
             </th>
             <th onClick={() => onSort('assets')} className="cursor-pointer">
               Assets
+              {sortKey === 'assets' &&
+                (asc ? (
+                  <ChevronUpIcon className="w-3 h-3 inline-block ml-1" />
+                ) : (
+                  <ChevronDownIcon className="w-3 h-3 inline-block ml-1" />
+                ))}
             </th>
             <th onClick={() => onSort('lastOpened')} className="cursor-pointer">
               Last opened
+              {sortKey === 'lastOpened' &&
+                (asc ? (
+                  <ChevronUpIcon className="w-3 h-3 inline-block ml-1" />
+                ) : (
+                  <ChevronDownIcon className="w-3 h-3 inline-block ml-1" />
+                ))}
             </th>
             <th></th>
           </tr>

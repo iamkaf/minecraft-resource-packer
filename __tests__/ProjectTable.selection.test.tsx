@@ -24,6 +24,8 @@ describe('ProjectTable selection', () => {
     render(
       <ProjectTable
         projects={projects}
+        sortKey="name"
+        asc
         onSort={noop}
         selected={selected}
         onSelect={select}
@@ -53,6 +55,8 @@ describe('ProjectTable selection', () => {
     const { rerender } = render(
       <ProjectTable
         projects={projects}
+        sortKey="name"
+        asc
         onSort={noop}
         selected={selected}
         onSelect={select}
@@ -71,6 +75,8 @@ describe('ProjectTable selection', () => {
     rerender(
       <ProjectTable
         projects={[...projects].reverse()}
+        sortKey="name"
+        asc
         onSort={noop}
         selected={selected}
         onSelect={select}
