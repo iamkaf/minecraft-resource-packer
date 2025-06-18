@@ -1,10 +1,10 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Modal from '../../../src/renderer/components/daisy/actions/Modal';
 
 describe('daisy Modal', () => {
-  it('renders modal when open and uses custom test id', () => {
+  it('renders modal when open and uses custom test id', async () => {
     render(
       <Modal open testId="custom">
         <p>Content</p>
@@ -13,6 +13,7 @@ describe('daisy Modal', () => {
     expect(screen.getByTestId('custom')).toBeInTheDocument();
     const root = document.getElementById('overlay-root');
     expect(root?.querySelector('dialog')).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByTestId('custom')).toHaveFocus());
   });
 
   it('calls onClose with Escape and backdrop click', () => {
