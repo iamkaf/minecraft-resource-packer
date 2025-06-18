@@ -8,6 +8,7 @@ describe('AssetContextMenu', () => {
     const reveal = vi.fn();
     const open = vi.fn();
     const rename = vi.fn();
+    const move = vi.fn();
     const del = vi.fn();
     const toggle = vi.fn();
     render(
@@ -19,6 +20,7 @@ describe('AssetContextMenu', () => {
         onOpen={open}
         onRename={rename}
         onDelete={del}
+        onMove={move}
         onToggleNoExport={toggle}
       />
     );
@@ -28,6 +30,8 @@ describe('AssetContextMenu', () => {
     expect(open).toHaveBeenCalledWith('/proj/a.txt');
     fireEvent.click(screen.getByRole('menuitem', { name: 'Rename' }));
     expect(rename).toHaveBeenCalledWith('/proj/a.txt');
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Move…' }));
+    expect(move).toHaveBeenCalledWith('/proj/a.txt');
     fireEvent.click(screen.getByRole('menuitem', { name: 'Delete' }));
     expect(del).toHaveBeenCalledWith('/proj/a.txt');
     fireEvent.click(screen.getByRole('checkbox', { name: /No Export/i }));

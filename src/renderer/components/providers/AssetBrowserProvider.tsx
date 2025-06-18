@@ -7,6 +7,7 @@ interface AssetBrowserContextValue {
   toggleNoExport: (files: string[], flag: boolean) => void;
   deleteFiles: (files: string[]) => void;
   openRename: (file: string) => void;
+  openMove: (file: string) => void;
 }
 
 const noop = () => {
@@ -22,6 +23,7 @@ const AssetBrowserContext = createContext<AssetBrowserContextValue>({
   toggleNoExport: noop,
   deleteFiles: noop,
   openRename: noop,
+  openMove: noop,
 });
 
 export function useAssetBrowser() {
@@ -33,6 +35,7 @@ interface ProviderProps {
   noExport: Set<string>;
   toggleNoExport: (files: string[], flag: boolean) => void;
   openRename: (file: string) => void;
+  openMove: (file: string) => void;
   onSelectionChange?: (sel: string[]) => void;
 }
 
@@ -41,6 +44,7 @@ export function AssetBrowserProvider({
   noExport,
   toggleNoExport,
   openRename,
+  openMove,
   onSelectionChange,
 }: ProviderProps) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -63,6 +67,7 @@ export function AssetBrowserProvider({
         toggleNoExport,
         deleteFiles,
         openRename,
+        openMove,
       }}
     >
       {children}

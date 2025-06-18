@@ -25,6 +25,7 @@ const AssetBrowserItem: React.FC<Props> = ({
     toggleNoExport,
     deleteFiles,
     openRename,
+    openMove,
   } = useAssetBrowser();
   const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
   const firstItem = useRef<HTMLButtonElement>(null);
@@ -130,6 +131,7 @@ const AssetBrowserItem: React.FC<Props> = ({
         onReveal={() => window.electronAPI?.openInFolder(full)}
         onOpen={() => window.electronAPI?.openFile(full)}
         onRename={() => openRename(file)}
+        onMove={() => openMove(file)}
         onDelete={() =>
           deleteFiles(
             selected.size > 1

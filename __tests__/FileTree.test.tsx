@@ -34,6 +34,7 @@ describe('FileTree', () => {
           noExport={new Set()}
           toggleNoExport={vi.fn()}
           openRename={vi.fn()}
+          openMove={vi.fn()}
         >
           <Wrapper />
         </AssetBrowserProvider>
@@ -66,6 +67,7 @@ describe('FileTree', () => {
           noExport={new Set()}
           toggleNoExport={vi.fn()}
           openRename={vi.fn()}
+          openMove={vi.fn()}
         >
           <Wrapper />
         </AssetBrowserProvider>

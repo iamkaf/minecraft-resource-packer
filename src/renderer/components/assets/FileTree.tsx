@@ -20,6 +20,7 @@ export default function FileTree({ files, versions }: Props) {
     toggleNoExport,
     deleteFiles,
     openRename,
+    openMove,
   } = useAssetBrowser();
   const { path: projectPath } = useProject();
   const data = React.useMemo<TreeItem[]>(() => buildTree(files), [files]);
@@ -109,6 +110,7 @@ export default function FileTree({ files, versions }: Props) {
             onReveal={(f) => window.electronAPI?.openInFolder(f)}
             onOpen={(f) => window.electronAPI?.openFile(f)}
             onRename={() => openRename(menuInfo.file)}
+            onMove={() => openMove(menuInfo.file)}
             onDelete={() =>
               deleteFiles(
                 selected.size > 1
@@ -203,6 +205,7 @@ export default function FileTree({ files, versions }: Props) {
           onReveal={(f) => window.electronAPI?.openInFolder(f)}
           onOpen={(f) => window.electronAPI?.openFile(f)}
           onRename={() => openRename(menuInfo.file)}
+          onMove={() => openMove(menuInfo.file)}
           onDelete={() =>
             deleteFiles(
               selected.size > 1
