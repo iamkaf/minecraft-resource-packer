@@ -2,10 +2,15 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import AssetBrowserItem from '../src/renderer/components/assets/AssetBrowserItem';
+import {
+  AssetBrowserProvider,
+  useAssetBrowser,
+} from '../src/renderer/components/providers/AssetBrowserProvider';
 import path from 'path';
 
 const openInFolder = vi.fn();
 const openFile = vi.fn();
+const deleteFile = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -14,30 +19,27 @@ beforeEach(() => {
       electronAPI: {
         openInFolder: typeof openInFolder;
         openFile: typeof openFile;
+        deleteFile: typeof deleteFile;
       };
     }
   ).electronAPI = {
     openInFolder,
     openFile,
+    deleteFile,
   };
 });
 
 describe('AssetBrowserItem', () => {
   it('calls IPC actions from context menu', async () => {
-    const deleteFiles = vi.fn();
     const openRename = vi.fn();
     render(
-      <AssetBrowserItem
-        projectPath="/proj"
-        file="a.txt"
-        selected={new Set()}
-        setSelected={() => undefined}
+      <AssetBrowserProvider
         noExport={new Set()}
-        toggleNoExport={() => undefined}
-        deleteFiles={deleteFiles}
+        toggleNoExport={vi.fn()}
         openRename={openRename}
-        zoom={64}
-      />
+      >
+        <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />
+      </AssetBrowserProvider>
     );
     const item = screen.getAllByText('a.txt')[0];
     fireEvent.contextMenu(item);
@@ -51,24 +53,26 @@ describe('AssetBrowserItem', () => {
     expect(openRename).toHaveBeenCalledWith('a.txt');
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Delete' }));
-    expect(deleteFiles).toHaveBeenCalledWith([path.join('/proj', 'a.txt')]);
+    expect(deleteFile).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
   });
 
   it('toggles noExport for selected files', () => {
     const toggleNoExport = vi.fn();
-    const selected = new Set(['a.txt', 'b.txt']);
+    function Wrapper() {
+      const { setSelected } = useAssetBrowser();
+      React.useEffect(() => {
+        setSelected(new Set(['a.txt', 'b.txt']));
+      }, []);
+      return <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />;
+    }
     render(
-      <AssetBrowserItem
-        projectPath="/proj"
-        file="a.txt"
-        selected={selected}
-        setSelected={() => undefined}
+      <AssetBrowserProvider
         noExport={new Set()}
         toggleNoExport={toggleNoExport}
-        deleteFiles={() => undefined}
         openRename={() => undefined}
-        zoom={64}
-      />
+      >
+        <Wrapper />
+      </AssetBrowserProvider>
     );
     const item = screen.getAllByText('a.txt')[0];
     fireEvent.contextMenu(item);
@@ -79,17 +83,13 @@ describe('AssetBrowserItem', () => {
 
   it('closes context menu on blur', () => {
     render(
-      <AssetBrowserItem
-        projectPath="/proj"
-        file="a.txt"
-        selected={new Set()}
-        setSelected={() => undefined}
+      <AssetBrowserProvider
         noExport={new Set()}
         toggleNoExport={() => undefined}
-        deleteFiles={() => undefined}
         openRename={() => undefined}
-        zoom={64}
-      />
+      >
+        <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />
+      </AssetBrowserProvider>
     );
     const item = screen.getAllByText('a.txt')[0];
     const container = item.closest('div[tabindex="0"]') as HTMLElement;
@@ -102,17 +102,13 @@ describe('AssetBrowserItem', () => {
 
   it('menu is not dimmed when item is flagged noExport', () => {
     render(
-      <AssetBrowserItem
-        projectPath="/proj"
-        file="a.txt"
-        selected={new Set()}
-        setSelected={() => undefined}
+      <AssetBrowserProvider
         noExport={new Set(['a.txt'])}
         toggleNoExport={() => undefined}
-        deleteFiles={() => undefined}
         openRename={() => undefined}
-        zoom={64}
-      />
+      >
+        <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />
+      </AssetBrowserProvider>
     );
     const item = screen.getAllByText('a.txt')[0];
     fireEvent.contextMenu(item);

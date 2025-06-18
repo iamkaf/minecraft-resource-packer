@@ -5,28 +5,22 @@ import { buildTree, TreeItem } from '../../utils/tree';
 import TextureThumb from './TextureThumb';
 import AssetContextMenu from '../file/AssetContextMenu';
 import { useProject } from '../providers/ProjectProvider';
+import { useAssetBrowser } from '../providers/AssetBrowserProvider';
 
 interface Props {
   files: string[];
-  selected: Set<string>;
-  setSelected: React.Dispatch<React.SetStateAction<Set<string>>>;
-  noExport: Set<string>;
-  toggleNoExport: (files: string[], flag: boolean) => void;
-  deleteFiles: (files: string[]) => void;
-  openRename: (file: string) => void;
   versions: Record<string, number>;
 }
 
-export default function FileTree({
-  files,
-  selected,
-  setSelected,
-  noExport,
-  toggleNoExport,
-  deleteFiles,
-  openRename,
-  versions,
-}: Props) {
+export default function FileTree({ files, versions }: Props) {
+  const {
+    selected,
+    setSelected,
+    noExport,
+    toggleNoExport,
+    deleteFiles,
+    openRename,
+  } = useAssetBrowser();
   const { path: projectPath } = useProject();
   const data = React.useMemo<TreeItem[]>(() => buildTree(files), [files]);
   const [menuInfo, setMenuInfo] = useState<{
