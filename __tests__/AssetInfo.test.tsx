@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, within, act } from '@testing-library/react';
+import { render, screen, fireEvent, within, act, waitFor } from '@testing-library/react';
 import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 vi.mock('@monaco-editor/react', () => ({
@@ -36,6 +36,7 @@ describe('AssetInfo', () => {
     electronAPI.readFile.mockResolvedValue('');
     electronAPI.saveRevision.mockResolvedValue(undefined);
     electronAPI.openExternalEditor.mockResolvedValue(undefined);
+    electronAPI.getTextureEditor.mockResolvedValue('/bin/editor');
     electronAPI.onFileChanged.mockImplementation(() => () => undefined);
   });
 
@@ -75,7 +76,9 @@ describe('AssetInfo', () => {
     );
     const btn = await screen.findByRole('button', { name: 'Edit Externally' });
     fireEvent.click(btn);
-    expect(openExternalEditor).toHaveBeenCalledWith(path.join('/p', 'img.png'));
+    await waitFor(() =>
+      expect(openExternalEditor).toHaveBeenCalledWith(path.join('/p', 'img.png'))
+    );
   });
 
   it('shows toast when external editor fails', async () => {
@@ -94,6 +97,23 @@ describe('AssetInfo', () => {
     expect(
       await screen.findAllByText('Failed to open external editor')
     ).toHaveLength(2);
+  });
+
+  it('shows modal when no external editor configured', async () => {
+    electronAPI.getTextureEditor.mockResolvedValueOnce('');
+    render(
+      <ProjectProvider>
+        <SetPath path="/p">
+          <AssetInfo asset="img.png" />
+        </SetPath>
+      </ProjectProvider>
+    );
+    const btn = await screen.findByRole('button', { name: 'Edit Externally' });
+    fireEvent.click(btn);
+    expect(
+      await screen.findByText('External Editor Missing')
+    ).toBeInTheDocument();
+    expect(openExternalEditor).not.toHaveBeenCalled();
   });
 
   it('edits a text file', async () => {

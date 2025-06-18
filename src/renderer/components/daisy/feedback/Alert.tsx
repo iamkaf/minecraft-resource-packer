@@ -1,16 +1,16 @@
 import React from 'react';
 
-export type AlertType = 'info' | 'success' | 'warning' | 'error';
+export type AlertVariant = 'info' | 'success' | 'warning' | 'error';
 
 export default function Alert({
   children,
-  type = 'info',
+  variant = 'info',
 }: {
   children: React.ReactNode;
-  type?: AlertType;
+  variant?: AlertVariant;
 }) {
   return (
-    <div role="alert" className={`alert alert-${type}`}>
+    <div role="alert" className={`alert alert-${variant}`}>
       {children}
     </div>
   );
