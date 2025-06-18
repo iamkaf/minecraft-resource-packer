@@ -4,7 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { PackMeta, ProjectMetadata } from '../../shared/project';
-import { PackMetaSchema } from '../../shared/project';
+import { PackMetaSchema, createDefaultProjectMeta } from '../../shared/project';
 import { readProjectMeta, writeProjectMeta } from '../projectMeta';
 
 export async function loadPackMeta(
@@ -45,19 +45,8 @@ export async function savePackMeta(
     }
   }
   if (!data) {
-    data = {
-      name,
-      minecraft_version: 'unknown',
-      version: meta.version ?? 'unknown',
-      assets: [],
-      noExport: [],
-      lastOpened: Date.now(),
-      description: '',
-      author: '',
-      urls: [],
-      created: Date.now(),
-      license: '',
-    };
+    data = createDefaultProjectMeta(name, 'unknown');
+    data.version = meta.version ?? 'unknown';
   }
   if (meta.version) data.version = meta.version;
   data.description = meta.description;

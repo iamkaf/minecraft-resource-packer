@@ -45,7 +45,7 @@ A task is _complete_ when:
 3. The feature appears in the UI without console errors,
 4. All files lint clean (`npm run lint`),
 5. There are no type errors (`npm run typecheck`),
-5. Code is formatted (`npm run format`).
+6. Code is formatted (`npm run format`).
 
 ## Bad practices to avoid
 
