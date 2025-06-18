@@ -22,20 +22,17 @@ export default function ConfirmModal({
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onCancel();
-      } else if (e.key === 'Enter') {
+      if (e.key === 'Enter') {
         e.preventDefault();
         onConfirm();
       }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [onCancel, onConfirm]);
+  }, [onConfirm]);
 
   return (
-    <Modal open>
+    <Modal open onClose={onCancel}>
       <h3 className="font-bold text-lg mb-2">{title}</h3>
       <div>{message}</div>
       <div className="modal-action">

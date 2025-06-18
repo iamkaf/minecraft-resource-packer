@@ -26,20 +26,17 @@ export default function RenameModal({
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onCancel();
-      } else if (e.key === 'Enter') {
+      if (e.key === 'Enter') {
         e.preventDefault();
         formRef.current?.requestSubmit();
       }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [onCancel]);
+  }, []);
 
   return (
-    <Modal open>
+    <Modal open onClose={onCancel}>
       <form
         ref={formRef}
         className="flex flex-col gap-2"

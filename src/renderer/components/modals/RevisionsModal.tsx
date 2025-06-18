@@ -22,7 +22,7 @@ export default function RevisionsModal({
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === 'Enter') {
+      if (e.key === 'Enter') {
         e.preventDefault();
         onClose();
       }
@@ -54,7 +54,7 @@ export default function RevisionsModal({
   const basename = (rev: string) => path.parse(rev).name;
 
   return (
-    <Modal open className="max-w-sm">
+    <Modal open onClose={onClose} className="max-w-sm">
       <h3 className="font-bold text-lg mb-2">Revisions</h3>
       <ul className="menu bg-base-200 rounded-box mb-2 max-h-60 overflow-y-auto">
         {list.map((rev) => (

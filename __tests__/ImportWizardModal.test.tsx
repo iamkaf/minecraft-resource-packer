@@ -24,7 +24,8 @@ describe('ImportWizardModal', () => {
     const onClose = vi.fn();
     const summary = { name: 'Pack', fileCount: 3, durationMs: 1000 };
     render(<ImportWizardModal summary={summary} onClose={onClose} />);
-    fireEvent.keyDown(window, { key: 'Escape' });
+    const dialog = screen.getByTestId('daisy-modal');
+    fireEvent.keyDown(dialog, { key: 'Escape' });
     expect(onClose).toHaveBeenCalled();
     fireEvent.keyDown(window, { key: 'Enter' });
     expect(onClose).toHaveBeenCalledTimes(2);

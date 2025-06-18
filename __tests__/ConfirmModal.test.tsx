@@ -34,7 +34,8 @@ describe('ConfirmModal', () => {
     );
     const confirmBtn = screen.getByText('OK');
     expect(confirmBtn).toHaveFocus();
-    fireEvent.keyDown(window, { key: 'Escape' });
+    const dialog = screen.getByTestId('daisy-modal');
+    fireEvent.keyDown(dialog, { key: 'Escape' });
     expect(cancel).toHaveBeenCalled();
     fireEvent.keyDown(window, { key: 'Enter' });
     expect(confirm).toHaveBeenCalled();
