@@ -37,6 +37,19 @@ The Project Manager supports a few hotkeys:
 
 ## Documentation
 
+The docs are built with [VitePress](https://vitepress.dev) and published to
+GitHub Pages. View them locally with:
+
+```bash
+npm run docs:dev
+```
+
+Generate the static site using:
+
+```bash
+npm run docs:build
+```
+
 - [User Guide](docs/user-guide.md)
 - [Developer Handbook](docs/developer-handbook.md)
 
