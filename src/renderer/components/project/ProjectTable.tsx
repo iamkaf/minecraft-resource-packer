@@ -81,7 +81,13 @@ export default function ProjectTable({
       className="flex-1 overflow-x-auto"
       tabIndex={0}
       onBlur={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node)) closeMenu();
+        const overlay = document.getElementById('overlay-root');
+        const next = e.relatedTarget as Node | null;
+        if (
+          !e.currentTarget.contains(next) &&
+          !(overlay && overlay.contains(next))
+        )
+          closeMenu();
       }}
     >
       <table className="table table-zebra w-full">
