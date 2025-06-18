@@ -39,4 +39,13 @@ describe('ExportWizardModal', () => {
     fireEvent.click(screen.getByText('Open Folder'));
     expect(onOpen).toHaveBeenCalled();
   });
+
+  it('handles Escape and Enter', () => {
+    const onClose = vi.fn();
+    render(<ExportWizardModal summary={summary} onClose={onClose} />);
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalled();
+    fireEvent.keyDown(window, { key: 'Enter' });
+    expect(onClose).toHaveBeenCalledTimes(2);
+  });
 });

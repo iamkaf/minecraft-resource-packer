@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import path from 'path';
 import { Modal, Button } from '../daisy/actions';
 import { useProject } from '../providers/ProjectProvider';
@@ -14,6 +14,22 @@ export default function RevisionsModal({
   const { path: projectPath } = useProject();
   const toast = useToast();
   const [list, setList] = useState<string[]>([]);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    closeRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Enter') {
+        e.preventDefault();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onClose]);
 
   useEffect(() => {
     if (!projectPath) return;
@@ -56,7 +72,9 @@ export default function RevisionsModal({
         {list.length === 0 && <li className="p-2">No revisions</li>}
       </ul>
       <div className="modal-action">
-        <Button onClick={onClose}>Close</Button>
+        <Button ref={closeRef} onClick={onClose}>
+          Close
+        </Button>
       </div>
     </Modal>
   );

@@ -29,4 +29,14 @@ describe('RenameModal', () => {
     fireEvent.click(screen.getByText('Cancel'));
     expect(cancel).toHaveBeenCalled();
   });
+
+  it('handles Escape and Enter', () => {
+    const cancel = vi.fn();
+    const rename = vi.fn();
+    render(<RenameModal current="a.txt" onCancel={cancel} onRename={rename} />);
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(cancel).toHaveBeenCalled();
+    fireEvent.keyDown(window, { key: 'Enter' });
+    expect(rename).toHaveBeenCalledWith('a.txt');
+  });
 });

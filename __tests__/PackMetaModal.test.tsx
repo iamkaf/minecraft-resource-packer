@@ -64,4 +64,29 @@ describe('PackMetaModal', () => {
       path.join('/tmp', 'projects', 'Pack')
     );
   });
+
+  it('handles Escape and Enter', () => {
+    const meta: PackMeta = {
+      version: '1.21.1',
+      description: '',
+      author: '',
+      urls: [],
+      created: 0,
+      license: '',
+    };
+    const onSave = vi.fn();
+    const onCancel = vi.fn();
+    render(
+      <PackMetaModal
+        project="Pack"
+        meta={meta}
+        onSave={onSave}
+        onCancel={onCancel}
+      />
+    );
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(onCancel).toHaveBeenCalled();
+    fireEvent.keyDown(window, { key: 'Enter' });
+    expect(onSave).toHaveBeenCalled();
+  });
 });

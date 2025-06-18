@@ -73,4 +73,21 @@ describe('Revision history', () => {
     fireEvent.click(btn);
     expect(restoreRevision).toHaveBeenCalledWith('/p', 'a.txt', '1.png');
   });
+
+  it('closes on Escape or Enter', async () => {
+    const onClose = vi.fn();
+    render(
+      <ProjectProvider>
+        <SetPath path="/p">
+          <ToastProvider>
+            <RevisionsModal asset="a.txt" onClose={onClose} />
+          </ToastProvider>
+        </SetPath>
+      </ProjectProvider>
+    );
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalled();
+    fireEvent.keyDown(window, { key: 'Enter' });
+    expect(onClose).toHaveBeenCalledTimes(2);
+  });
 });
