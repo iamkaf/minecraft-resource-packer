@@ -14,6 +14,7 @@ describe('ProjectManagerView', () => {
   const deleteProject = vi.fn();
   const getProjectSort = vi.fn();
   const setProjectSort = vi.fn();
+  const loadPackMeta = vi.fn();
 
   beforeEach(() => {
     interface ElectronAPI {
@@ -40,6 +41,7 @@ describe('ProjectManagerView', () => {
       deleteProject: (name: string) => Promise<void>;
       getProjectSort: () => Promise<{ key: keyof ProjectInfo; asc: boolean }>;
       setProjectSort: (key: keyof ProjectInfo, asc: boolean) => Promise<void>;
+      loadPackMeta: (name: string) => Promise<unknown>;
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       listProjects,
@@ -51,6 +53,7 @@ describe('ProjectManagerView', () => {
       deleteProject,
       getProjectSort,
       setProjectSort,
+      loadPackMeta,
     };
     listProjects.mockResolvedValue([
       { name: 'Pack', version: '1.20', assets: 2, lastOpened: 0 },
@@ -66,6 +69,12 @@ describe('ProjectManagerView', () => {
     ]);
     getProjectSort.mockResolvedValue({ key: 'name', asc: true });
     setProjectSort.mockResolvedValue(undefined);
+    loadPackMeta.mockResolvedValue({
+      description: '',
+      author: '',
+      urls: [],
+      created: 0,
+    });
     vi.clearAllMocks();
   });
 
