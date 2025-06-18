@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import RenameModal from '../modals/RenameModal';
 import ConfirmModal from '../modals/ConfirmModal';
 import type { ToastType } from '../providers/ToastProvider';
@@ -9,6 +9,8 @@ export function useProjectModals(
 ) {
   const [duplicateTarget, setDuplicateTarget] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleteMany, setDeleteMany] = useState<string[] | null>(null);
+  const deleteManyAfter = useRef<(() => void) | null>(null);
 
   const modals = (
     <>
@@ -44,6 +46,25 @@ export function useProjectModals(
           }}
         />
       )}
+      {deleteMany && (
+        <ConfirmModal
+          title="Delete Projects"
+          message={`Delete ${deleteMany.length} projects?`}
+          confirmText="Delete"
+          onCancel={() => setDeleteMany(null)}
+          onConfirm={() => {
+            const targets = deleteMany;
+            setDeleteMany(null);
+            Promise.all(
+              targets.map((t) => window.electronAPI?.deleteProject(t))
+            ).then(() => {
+              refresh();
+              deleteManyAfter.current?.();
+              toast({ message: 'Projects deleted', type: 'info' });
+            });
+          }}
+        />
+      )}
     </>
   );
 
@@ -51,5 +72,9 @@ export function useProjectModals(
     modals,
     openDuplicate: setDuplicateTarget,
     openDelete: setDeleteTarget,
+    openDeleteMany: (names: string[], cb?: () => void) => {
+      deleteManyAfter.current = cb ?? null;
+      setDeleteMany(names);
+    },
   };
 }
