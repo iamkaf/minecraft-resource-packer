@@ -21,6 +21,7 @@ vi.mock('electron', () => {
   sendMock = vi.fn();
   return {
     BrowserWindow: vi.fn(() => ({ webContents: { send: sendMock } })),
+    app: { getPath: vi.fn(() => os.tmpdir()) },
     ipcMain: {
       handle: (channel: string, fn: (...args: unknown[]) => unknown) => {
         if (channel === 'watch-project')

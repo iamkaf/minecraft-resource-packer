@@ -10,9 +10,23 @@ import { readProjectMeta, writeProjectMeta } from '../projectMeta';
 import { ensureAssets } from './cache';
 import { setCacheTexturesDir } from './protocols';
 
+/** Cache of texture lists keyed by project path and Minecraft version. */
+const textureCache = new Map<string, string[]>();
+
+/** Remove cached entries for the given project path. */
+export function clearTextureCache(projectPath: string) {
+  for (const key of textureCache.keys()) {
+    if (key.startsWith(`${projectPath}:`)) textureCache.delete(key);
+  }
+}
+
 /** Recursively list all texture paths available for the given project version. */
 export async function listTextures(projectPath: string): Promise<string[]> {
   const meta = await readProjectMeta(projectPath);
+  const key = `${projectPath}:${meta.minecraft_version}`;
+  const cached = textureCache.get(key);
+  if (cached) return cached;
+
   const root = await ensureAssets(meta.minecraft_version);
   const texRoot = path.join(root, 'assets', 'minecraft', 'textures');
   const out: string[] = [];
@@ -29,6 +43,7 @@ export async function listTextures(projectPath: string): Promise<string[]> {
     }
   };
   await walk(texRoot);
+  textureCache.set(key, out);
   return out;
 }
 

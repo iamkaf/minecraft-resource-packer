@@ -3,6 +3,7 @@ import { BrowserWindow } from 'electron';
 import { watch, FSWatcher } from 'chokidar';
 import fs from 'fs';
 import path from 'path';
+import { clearTextureCache } from '../assets/textures';
 
 let win: BrowserWindow | null = null;
 const watchers = new Map<string, FSWatcher>();
@@ -44,18 +45,21 @@ export function registerFileWatcherHandlers(
           'file-added',
           path.relative(projectPath, file).split(path.sep).join('/')
         );
+        clearTextureCache(projectPath);
       });
       watcher.on('unlink', (file) => {
         win?.webContents.send(
           'file-removed',
           path.relative(projectPath, file).split(path.sep).join('/')
         );
+        clearTextureCache(projectPath);
       });
       watcher.on('change', (file) => {
         win?.webContents.send('file-changed', {
           path: path.relative(projectPath, file).split(path.sep).join('/'),
           stamp: Date.now(),
         });
+        clearTextureCache(projectPath);
       });
       watchers.set(projectPath, watcher);
     }
@@ -85,6 +89,7 @@ export function emitRenamed(oldPath: string, newPath: string) {
         oldPath: path.relative(projectPath, oldPath).split(path.sep).join('/'),
         newPath: path.relative(projectPath, newPath).split(path.sep).join('/'),
       });
+      clearTextureCache(projectPath);
     }
   }
 }
