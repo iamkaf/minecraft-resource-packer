@@ -183,28 +183,22 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
   const [filters, setFilters] = useState<Filter[]>([]);
 
   useEffect(() => {
-    window.electronAPI?.getAssetSearch?.().then((v) => {
-      if (v) setQuery(v);
-    });
-    window.electronAPI?.getAssetFilters?.().then((v) => {
-      if (v) setFilters(v as Filter[]);
-    });
-    window.electronAPI?.getAssetZoom?.().then((v) => {
-      if (v) setZoom(v);
+    Promise.all([
+      window.electronAPI?.getAssetSearch?.(),
+      window.electronAPI?.getAssetFilters?.(),
+      window.electronAPI?.getAssetZoom?.(),
+    ]).then(([search, filts, z]) => {
+      if (search) setQuery(search);
+      if (filts) setFilters(filts as Filter[]);
+      if (z) setZoom(z);
     });
   }, []);
 
   useEffect(() => {
     window.electronAPI?.setAssetSearch?.(query);
-  }, [query]);
-
-  useEffect(() => {
     window.electronAPI?.setAssetFilters?.(filters);
-  }, [filters]);
-
-  useEffect(() => {
     window.electronAPI?.setAssetZoom?.(zoom);
-  }, [zoom]);
+  }, [query, filters, zoom]);
 
   const visible = files.filter((f) => {
     if (query && !f.includes(query)) return false;
