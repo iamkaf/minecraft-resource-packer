@@ -37,8 +37,11 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
     const listener = (_e: unknown, args: { path: string; stamp: number }) => {
       if (args.path === asset) setStamp(args.stamp);
     };
-    window.electronAPI?.onFileChanged(listener);
+    const off = window.electronAPI?.onFileChanged(listener);
     setStamp(undefined);
+    return () => {
+      off?.();
+    };
   }, [asset]);
 
   const isText = asset

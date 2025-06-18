@@ -8,10 +8,10 @@ import { SetPath, electronAPI } from './test-utils';
 
 const watchProject = vi.fn(async () => ['a.txt', 'b.png']);
 const unwatchProject = vi.fn();
-const onFileAdded = vi.fn();
-const onFileRemoved = vi.fn();
-const onFileRenamed = vi.fn();
-const onFileChanged = vi.fn();
+const onFileAdded = vi.fn(() => () => undefined);
+const onFileRemoved = vi.fn(() => () => undefined);
+const onFileRenamed = vi.fn(() => () => undefined);
+const onFileChanged = vi.fn(() => () => undefined);
 const getNoExport = vi.fn(async () => []);
 const setNoExport = vi.fn();
 
@@ -52,17 +52,25 @@ describe('useProjectFiles', () => {
     let changed:
       | ((e: unknown, args: { path: string; stamp: number }) => void)
       | undefined;
+    const offAdd = vi.fn();
+    const offRemove = vi.fn();
+    const offRename = vi.fn();
+    const offChange = vi.fn();
     onFileAdded.mockImplementation((cb) => {
       added = cb;
+      return offAdd;
     });
     onFileRemoved.mockImplementation((cb) => {
       removed = cb;
+      return offRemove;
     });
     onFileRenamed.mockImplementation((cb) => {
       renamed = cb;
+      return offRename;
     });
     onFileChanged.mockImplementation((cb) => {
       changed = cb;
+      return offChange;
     });
     const { result, unmount } = renderHook(() => useProjectFiles(), {
       wrapper: ({ children }) => (
@@ -92,6 +100,10 @@ describe('useProjectFiles', () => {
     expect(result.current.versions['d.png']).toBe(1);
     unmount();
     expect(unwatchProject).toHaveBeenCalledWith('/proj');
+    expect(offAdd).toHaveBeenCalled();
+    expect(offRemove).toHaveBeenCalled();
+    expect(offRename).toHaveBeenCalled();
+    expect(offChange).toHaveBeenCalled();
   });
 
   it('ignores files in .history directories', async () => {

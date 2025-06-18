@@ -36,7 +36,7 @@ describe('AssetInfo', () => {
     electronAPI.readFile.mockResolvedValue('');
     electronAPI.saveRevision.mockResolvedValue(undefined);
     electronAPI.openExternalEditor.mockResolvedValue(undefined);
-    electronAPI.onFileChanged.mockImplementation(() => undefined);
+    electronAPI.onFileChanged.mockImplementation(() => () => undefined);
   });
 
   it('shows placeholder when no asset', () => {
@@ -152,5 +152,20 @@ describe('AssetInfo', () => {
     });
     expect(img.src).not.toBe(before);
     expect(img.src).toContain('t=2');
+  });
+
+  it('cleans up listener on unmount', async () => {
+    const off = vi.fn();
+    onFileChanged.mockReturnValue(off);
+    const { unmount } = render(
+      <ProjectProvider>
+        <SetPath path="/p">
+          <AssetInfo asset="foo.png" />
+        </SetPath>
+      </ProjectProvider>
+    );
+    await screen.findByTestId('preview-pane');
+    unmount();
+    expect(off).toHaveBeenCalled();
   });
 });

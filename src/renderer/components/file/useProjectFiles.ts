@@ -45,13 +45,17 @@ export function useProjectFiles() {
       if (isHistory(args.path)) return;
       setVersions((v) => ({ ...v, [args.path]: args.stamp }));
     };
-    window.electronAPI?.onFileAdded(add);
-    window.electronAPI?.onFileRemoved(remove);
-    window.electronAPI?.onFileRenamed(rename);
-    window.electronAPI?.onFileChanged(change);
+    const offAdd = window.electronAPI?.onFileAdded(add);
+    const offRemove = window.electronAPI?.onFileRemoved(remove);
+    const offRename = window.electronAPI?.onFileRenamed(rename);
+    const offChange = window.electronAPI?.onFileChanged(change);
     return () => {
       alive = false;
       window.electronAPI?.unwatchProject(projectPath);
+      offAdd?.();
+      offRemove?.();
+      offRename?.();
+      offChange?.();
     };
   }, [projectPath]);
 

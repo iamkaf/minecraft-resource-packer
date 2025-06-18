@@ -9,7 +9,7 @@ type IpcInvoke<C extends keyof IpcRequestMap> = (
 
 type IpcListener<C extends keyof IpcEventMap> = (
   listener: (event: unknown, data: IpcEventMap[C]) => void
-) => void;
+) => () => void;
 
 declare global {
   interface Window {

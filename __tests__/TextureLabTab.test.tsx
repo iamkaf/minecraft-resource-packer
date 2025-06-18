@@ -21,7 +21,7 @@ describe('TextureLabTab', () => {
   });
 
   it('renders controls for selected texture', () => {
-    electronAPI.onFileChanged.mockImplementation(() => {});
+    electronAPI.onFileChanged.mockImplementation(() => () => undefined);
     render(
       <ProjectProvider>
         <SetPath path="/proj">
