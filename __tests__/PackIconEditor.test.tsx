@@ -1,6 +1,8 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import os from 'os';
+import path from 'path';
 import PackIconEditor from '../src/renderer/components/project/PackIconEditor';
 
 describe('PackIconEditor', () => {
@@ -17,9 +19,10 @@ describe('PackIconEditor', () => {
       randomizeIcon: randomise,
       savePackIcon: vi.fn(),
     } as never;
-    render(<PackIconEditor project="/tmp/proj" onClose={() => undefined} />);
+    const proj = path.join(os.tmpdir(), 'proj');
+    render(<PackIconEditor project={proj} onClose={() => undefined} />);
     fireEvent.click(screen.getByText('Randomise'));
-    expect(randomise).toHaveBeenCalledWith('/tmp/proj');
+    expect(randomise).toHaveBeenCalledWith(proj);
   });
 
   it('saves uploaded file with border colour', () => {
@@ -32,9 +35,11 @@ describe('PackIconEditor', () => {
       randomizeIcon: vi.fn(),
       savePackIcon: save,
     } as never;
-    render(<PackIconEditor project="/tmp/proj" onClose={() => undefined} />);
+    const proj = path.join(os.tmpdir(), 'proj');
+    render(<PackIconEditor project={proj} onClose={() => undefined} />);
     const file = new File(['a'], 'icon.png', { type: 'image/png' });
-    Object.defineProperty(file, 'path', { value: '/tmp/icon.png' });
+    const iconPath = path.join(os.tmpdir(), 'icon.png');
+    Object.defineProperty(file, 'path', { value: iconPath });
     fireEvent.change(screen.getByTestId('file-input'), {
       target: { files: [file] },
     });
@@ -45,6 +50,6 @@ describe('PackIconEditor', () => {
       .getByTestId('file-input')
       .closest('form') as HTMLFormElement;
     fireEvent.submit(form);
-    expect(save).toHaveBeenCalledWith('/tmp/proj', '/tmp/icon.png', '#ff00ff');
+    expect(save).toHaveBeenCalledWith(proj, iconPath, '#ff00ff');
   });
 });

@@ -1,6 +1,8 @@
 import React, { Suspense } from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, act, fireEvent } from '@testing-library/react';
+import os from 'os';
+import path from 'path';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 
 import App from '../src/renderer/components/App';
@@ -67,6 +69,8 @@ const renderApp = () =>
     </MemoryRouter>
   );
 
+const proj = path.join(os.tmpdir(), 'proj');
+
 describe('App', () => {
   let openHandler: ((e: unknown, path: string) => void) | undefined;
   const exportProject = vi.fn();
@@ -109,16 +113,16 @@ describe('App', () => {
     renderApp();
     await screen.findByText('manager');
     act(() => {
-      openHandler?.({}, '/tmp/proj');
+      openHandler?.({}, proj);
     });
-    await screen.findByText('/tmp/proj');
+    await screen.findByText(proj);
     expect(window.location.hash).toBe('#/editor');
   });
 
   it('invokes exportProject when button clicked', async () => {
     renderApp();
     act(() => {
-      openHandler?.({}, '/tmp/proj');
+      openHandler?.({}, proj);
     });
     await screen.findByText('Export Pack');
     const btn = screen.getByText('Export Pack');
@@ -129,13 +133,13 @@ describe('App', () => {
       warnings: [],
     });
     fireEvent.click(btn);
-    expect(exportProject).toHaveBeenCalledWith('/tmp/proj');
+    expect(exportProject).toHaveBeenCalledWith(proj);
   });
 
   it('fires confetti after successful export', async () => {
     renderApp();
     act(() => {
-      openHandler?.({}, '/tmp/proj');
+      openHandler?.({}, proj);
     });
     exportProject.mockResolvedValueOnce({
       fileCount: 1,
@@ -160,7 +164,7 @@ describe('App', () => {
     });
     renderApp();
     act(() => {
-      openHandler?.({}, '/tmp/proj');
+      openHandler?.({}, proj);
     });
     exportProject.mockResolvedValueOnce({
       fileCount: 1,
@@ -181,7 +185,7 @@ describe('App', () => {
     getConfetti.mockResolvedValueOnce(false);
     renderApp();
     act(() => {
-      openHandler?.({}, '/tmp/proj');
+      openHandler?.({}, proj);
     });
     await screen.findByText('Export Pack');
     await act(async () => {
@@ -205,7 +209,7 @@ describe('App', () => {
   it('shows summary modal after export', async () => {
     renderApp();
     act(() => {
-      openHandler?.({}, '/tmp/proj');
+      openHandler?.({}, proj);
     });
     exportProject.mockResolvedValueOnce({
       fileCount: 2,

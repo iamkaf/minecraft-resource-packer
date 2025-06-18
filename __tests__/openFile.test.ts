@@ -1,4 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
+import os from 'os';
+import path from 'path';
 
 // Capture the IPC handler registered by registerFileHandlers
 // eslint-disable-next-line no-var
@@ -11,7 +13,7 @@ vi.mock('electron', () => {
   openPathMock = vi.fn();
   return {
     app: {
-      getPath: () => '/tmp',
+      getPath: () => os.tmpdir(),
       whenReady: () => Promise.resolve(),
       on: vi.fn(),
     },
@@ -38,7 +40,8 @@ registerFileHandlers(ipcMainMock as unknown as import('electron').IpcMain);
 describe('open-file IPC', () => {
   it('calls shell.openPath with the provided path', async () => {
     expect(openHandler).toBeTypeOf('function');
-    await openHandler?.({}, '/tmp/foo.txt');
-    expect(openPathMock).toHaveBeenCalledWith('/tmp/foo.txt');
+    const file = path.join(os.tmpdir(), 'foo.txt');
+    await openHandler?.({}, file);
+    expect(openPathMock).toHaveBeenCalledWith(file);
   });
 });

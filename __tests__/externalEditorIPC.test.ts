@@ -1,4 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
+import os from 'os';
+import path from 'path';
 
 // Capture the IPC handler registered by registerExternalEditorHandlers
 // eslint-disable-next-line no-var
@@ -33,10 +35,11 @@ registerExternalEditorHandlers(
 describe('open-external-editor IPC', () => {
   it('spawns configured editor with file path', async () => {
     expect(handler).toBeTypeOf('function');
-    await handler?.({}, '/tmp/a.png');
+    const file = path.join(os.tmpdir(), 'a.png');
+    await handler?.({}, file);
     const { saveRevisionForFile } = await import('../src/main/revision');
-    expect(saveRevisionForFile).toHaveBeenCalledWith('/tmp/a.png');
-    expect(spawnMock).toHaveBeenCalledWith('/usr/bin/gimp', ['/tmp/a.png'], {
+    expect(saveRevisionForFile).toHaveBeenCalledWith(file);
+    expect(spawnMock).toHaveBeenCalledWith('/usr/bin/gimp', [file], {
       detached: true,
       stdio: 'ignore',
     });

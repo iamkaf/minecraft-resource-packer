@@ -17,7 +17,7 @@ vi.mock('electron', () => {
   showOpenDialogMock = vi.fn();
   return {
     dialog: { showOpenDialog: showOpenDialogMock },
-    app: { getPath: () => '/tmp' },
+    app: { getPath: () => os.tmpdir() },
   };
 });
 

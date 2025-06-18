@@ -1,8 +1,9 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
+import os from 'os';
 
-vi.mock('electron', () => ({ app: { getPath: () => '/tmp' } }));
+vi.mock('electron', () => ({ app: { getPath: () => os.tmpdir() } }));
 
 import PackMetaModal from '../src/renderer/components/modals/PackMetaModal';
 import type { PackMeta } from '../src/main/projects';

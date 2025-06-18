@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-vi.mock('electron', () => ({ app: { getPath: () => '/tmp' } }));
+import os from 'os';
+vi.mock('electron', () => ({ app: { getPath: () => os.tmpdir() } }));
 import { exportPack } from '../src/main/exporter';
 import unzipper from 'unzipper';
-import os from 'os';
 import { v4 as uuid } from 'uuid';
 
 const tmpDir = path.join(os.tmpdir(), `packtest-${uuid()}`);

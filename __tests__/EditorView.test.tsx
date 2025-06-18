@@ -1,6 +1,8 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
+import os from 'os';
+import path from 'path';
 import {
   ProjectProvider,
   useProject,
@@ -72,20 +74,21 @@ describe('EditorView', () => {
   });
 
   it('shows project path and exports pack', async () => {
+    const proj = path.join(os.tmpdir(), 'proj');
     render(
       <ProjectProvider>
-        <SetPath path="/tmp/proj">
+        <SetPath path={proj}>
           <EditorView onBack={() => undefined} />
         </SetPath>
       </ProjectProvider>
     );
-    expect(screen.getByText('/tmp/proj')).toBeInTheDocument();
+    expect(screen.getByText(proj)).toBeInTheDocument();
     const btn = screen.getByText('Export Pack');
     await act(async () => {
       fireEvent.click(btn);
       await Promise.resolve();
     });
-    expect(exportProject).toHaveBeenCalledWith('/tmp/proj');
+    expect(exportProject).toHaveBeenCalledWith(proj);
     expect(screen.getByTestId('daisy-modal')).toBeInTheDocument();
   });
 
@@ -93,7 +96,7 @@ describe('EditorView', () => {
     const back = vi.fn();
     render(
       <ProjectProvider>
-        <SetPath path="/tmp">
+        <SetPath path={os.tmpdir()}>
           <EditorView onBack={back} />
         </SetPath>
       </ProjectProvider>
@@ -105,7 +108,7 @@ describe('EditorView', () => {
   it('opens help link externally', () => {
     render(
       <ProjectProvider>
-        <SetPath path="/tmp">
+        <SetPath path={os.tmpdir()}>
           <EditorView onBack={() => undefined} />
         </SetPath>
       </ProjectProvider>
@@ -122,7 +125,7 @@ describe('EditorView', () => {
   it('opens asset selector modal', () => {
     render(
       <ProjectProvider>
-        <SetPath path="/tmp">
+        <SetPath path={os.tmpdir()}>
           <EditorView onBack={() => undefined} />
         </SetPath>
       </ProjectProvider>
