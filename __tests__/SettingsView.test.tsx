@@ -97,7 +97,7 @@ describe('SettingsView', () => {
     const input = await screen.findByLabelText('External texture editor');
     expect(input).toHaveValue('/usr/bin/gimp');
     fireEvent.change(input, { target: { value: '/opt/editor' } });
-    fireEvent.click(screen.getAllByRole('button', { name: 'Save' })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Save' })[1]);
     expect(setTextureEditor).toHaveBeenCalledWith('/opt/editor');
     expect(await screen.findAllByText('Editor path saved')).toHaveLength(2);
   });
@@ -111,7 +111,7 @@ describe('SettingsView', () => {
     const input = await screen.findByLabelText('Default export folder');
     expect(input).toHaveValue('/home');
     fireEvent.change(input, { target: { value: '/out' } });
-    const btn = screen.getAllByRole('button', { name: 'Save' })[1];
+    const btn = screen.getAllByRole('button', { name: 'Save' })[0];
     fireEvent.click(btn);
     expect(setDefaultExportDir).toHaveBeenCalledWith('/out');
     expect(await screen.findAllByText('Export directory saved')).toHaveLength(
@@ -146,5 +146,15 @@ describe('SettingsView', () => {
     fireEvent.click(toggle);
     expect(setConfetti).toHaveBeenCalledWith(false);
     expect(await screen.findAllByText('Preference saved')).toHaveLength(2);
+  });
+
+  it('shows keyboard shortcuts', () => {
+    render(
+      <ToastProvider>
+        <SettingsView />
+      </ToastProvider>
+    );
+    expect(screen.getByText('Keyboard Shortcuts')).toBeInTheDocument();
+    expect(screen.getAllByTestId('kbd')).toHaveLength(2);
   });
 });

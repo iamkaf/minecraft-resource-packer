@@ -35,3 +35,4 @@ The Project Manager supports a few hotkeys:
 
 - **Enter** – open all selected projects.
 - **Delete** – remove all selected projects.
+  The list can be found inside **Settings → Shortcuts**.
