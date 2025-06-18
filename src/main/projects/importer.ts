@@ -5,7 +5,10 @@ import fs from 'fs';
 import path from 'path';
 import { dialog } from 'electron';
 import unzipper from 'unzipper';
-import type { ProjectMetadata } from '../../shared/project';
+import {
+  createDefaultProjectMeta,
+  type ProjectMetadata,
+} from '../../shared/project';
 import { readProjectMeta, writeProjectMeta } from '../projectMeta';
 import { versionForFormat } from '../../shared/packFormat';
 
@@ -41,22 +44,6 @@ async function extractZip(src: string, dest: string): Promise<number> {
       .on('error', reject);
   });
   return count;
-}
-
-function defaultMeta(name: string, version: string): ProjectMetadata {
-  return {
-    name,
-    minecraft_version: version,
-    version: '1.0.0',
-    assets: [],
-    noExport: [],
-    lastOpened: Date.now(),
-    description: '',
-    author: '',
-    urls: [],
-    created: Date.now(),
-    license: '',
-  };
 }
 
 async function detectVersion(dir: string): Promise<string | null> {
@@ -95,10 +82,10 @@ export async function importProject(
     try {
       meta = await readProjectMeta(dest);
     } catch {
-      meta = defaultMeta(name, version);
+      meta = createDefaultProjectMeta(name, version);
     }
   } else {
-    meta = defaultMeta(name, version);
+    meta = createDefaultProjectMeta(name, version);
   }
   meta.minecraft_version = version;
   await writeProjectMeta(dest, meta);

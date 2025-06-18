@@ -17,6 +17,19 @@ export const ProjectMetadataSchema = z.object({
 
 export type ProjectMetadata = z.infer<typeof ProjectMetadataSchema>;
 
+/** Create a default project metadata object. */
+export function createDefaultProjectMeta(
+  name: string,
+  minecraftVersion: string
+): ProjectMetadata {
+  return ProjectMetadataSchema.parse({
+    name,
+    minecraft_version: minecraftVersion,
+    created: Date.now(),
+    lastOpened: Date.now(),
+  });
+}
+
 export const PackMetaSchema = z.object({
   version: z.string().default('unknown'),
   description: z.string().default(''),

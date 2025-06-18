@@ -4,7 +4,10 @@
 import fs from 'fs';
 import path from 'path';
 import { generatePackIcon } from '../icon';
-import type { ProjectMetadata } from '../../shared/project';
+import {
+  createDefaultProjectMeta,
+  type ProjectMetadata,
+} from '../../shared/project';
 import { readProjectMeta, writeProjectMeta } from '../projectMeta';
 
 export interface ProjectInfo {
@@ -21,19 +24,10 @@ export async function createProject(
 ): Promise<void> {
   const dir = path.join(baseDir, name);
   if (!fs.existsSync(dir)) await fs.promises.mkdir(dir, { recursive: true });
-  const meta: ProjectMetadata = {
+  const meta: ProjectMetadata = createDefaultProjectMeta(
     name,
-    minecraft_version: minecraftVersion,
-    version: '1.0.0',
-    assets: [],
-    noExport: [],
-    lastOpened: Date.now(),
-    description: '',
-    author: '',
-    urls: [],
-    created: Date.now(),
-    license: '',
-  };
+    minecraftVersion
+  );
   await fs.promises.writeFile(
     path.join(dir, 'project.json'),
     JSON.stringify(meta, null, 2)
