@@ -11,6 +11,20 @@ export async function readProjectMeta(
   return ProjectMetadataSchema.parse(data);
 }
 
+/**
+ * Read project.json if present, returning undefined when the file cannot be
+ * parsed. This helper avoids scattered try/catch blocks around metadata reads.
+ */
+export async function readProjectMetaSafe(
+  projectPath: string
+): Promise<ProjectMetadata | undefined> {
+  try {
+    return await readProjectMeta(projectPath);
+  } catch {
+    return undefined;
+  }
+}
+
 /** Write the given metadata to project.json. */
 export async function writeProjectMeta(
   projectPath: string,
