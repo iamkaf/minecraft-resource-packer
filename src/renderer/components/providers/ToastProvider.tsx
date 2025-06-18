@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import ReactDOM from 'react-dom';
 
 export type ToastType =
@@ -37,6 +43,7 @@ export default function ToastProvider({
   children: React.ReactNode;
 }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const timeouts = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
 
   const removeToast = (id: number) => {
     setToasts((t) => t.filter((toast) => toast.id !== id));
@@ -56,11 +63,20 @@ export default function ToastProvider({
     const id = Date.now() + Math.random();
     setToasts((t) => [...t, { id, message, type, duration, closable }]);
     if (duration > 0) {
-      setTimeout(() => {
+      const tid = setTimeout(() => {
         removeToast(id);
+        delete timeouts.current[id];
       }, duration);
+      timeouts.current[id] = tid;
     }
   };
+
+  useEffect(() => {
+    return () => {
+      Object.values(timeouts.current).forEach((t) => clearTimeout(t));
+      timeouts.current = {};
+    };
+  }, []);
 
   return (
     <ToastContext.Provider value={showToast}>
