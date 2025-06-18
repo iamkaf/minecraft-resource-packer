@@ -1,4 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
+import os from 'os';
+import path from 'path';
 vi.mock('../src/main/icon', () => ({
   generatePackIcon: vi.fn().mockResolvedValue(undefined),
 }));
@@ -18,7 +20,11 @@ const ipcMainMock: {
 
 describe('create-project IPC', () => {
   it('registers handler and executes without error', async () => {
-    projects.registerProjectHandlers(ipcMainMock, '/tmp/base', vi.fn());
+    projects.registerProjectHandlers(
+      ipcMainMock,
+      path.join(os.tmpdir(), 'base'),
+      vi.fn()
+    );
     expect(createHandler).toBeTypeOf('function');
     await expect(createHandler?.({}, 'Test', '1.21')).resolves.toBeUndefined();
   });

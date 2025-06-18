@@ -1,6 +1,7 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import os from 'os';
 
 import SettingsView from '../src/renderer/views/SettingsView';
 import ToastProvider from '../src/renderer/components/providers/ToastProvider';
@@ -43,7 +44,7 @@ beforeEach(() => {
   getTextureEditor.mockResolvedValue('');
   getTheme.mockResolvedValue('system');
   getConfetti.mockResolvedValue(true);
-  getDefaultExportDir.mockResolvedValue('/tmp');
+  getDefaultExportDir.mockResolvedValue(os.tmpdir());
   getOpenLastProject.mockResolvedValue(true);
   setOpenLastProject.mockResolvedValue(undefined);
 });

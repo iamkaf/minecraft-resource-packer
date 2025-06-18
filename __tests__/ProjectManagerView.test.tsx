@@ -80,7 +80,7 @@ describe('ProjectManagerView', () => {
     render(<ProjectManagerView />);
     fireEvent.click(screen.getByText('New Project'));
     const modal = await screen.findByTestId('daisy-modal');
-    const option = within(modal).getByRole('option', { name: '1.21.1' });
+    const option = await within(modal).findByRole('option', { name: '1.21.1' });
     expect(option).toBeInTheDocument();
   });
 
