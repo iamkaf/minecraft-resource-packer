@@ -76,4 +76,17 @@ describe('ToastProvider', () => {
     const region = screen.getByRole('status');
     expect(region).toHaveAttribute('aria-live', 'polite');
   });
+
+  it('clears timeouts on unmount', () => {
+    vi.useFakeTimers();
+    const spy = vi.spyOn(global, 'clearTimeout');
+    const { unmount } = render(
+      <ToastProvider>
+        <TestComp />
+      </ToastProvider>
+    );
+    fireEvent.click(screen.getByText('Show'));
+    unmount();
+    expect(spy).toHaveBeenCalled();
+  });
 });
