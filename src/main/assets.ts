@@ -37,7 +37,9 @@ let activeProjectDir = '';
  * manifest URL is requested and the network is unavailable, a bundled copy is
  * used as a fallback.
  *
- * @throws if the request fails.
+ * @param url URL to request.
+ * @returns Parsed JSON typed as `T`.
+ * @throws If the request fails.
  */
 async function fetchJson<T>(url: string): Promise<T> {
   try {
@@ -60,6 +62,10 @@ async function fetchJson<T>(url: string): Promise<T> {
  *
  * The target directory is created if it does not exist. The body is saved as a
  * binary buffer so any file type can be retrieved.
+ *
+ * @param url URL to download.
+ * @param dest Absolute output path on disk.
+ * @returns Promise that resolves when the file is written.
  */
 async function downloadFile(url: string, dest: string): Promise<void> {
   const res = await fetch(url);
@@ -74,6 +80,10 @@ async function downloadFile(url: string, dest: string): Promise<void> {
  *
  * The operation streams the archive to disk to avoid buffering large files in
  * memory.
+ *
+ * @param src Path to the source zip archive.
+ * @param dest Directory that receives the extracted files.
+ * @returns Promise that resolves once extraction completes.
  */
 async function extractZip(src: string, dest: string): Promise<void> {
   await new Promise<void>((resolve, reject) => {
