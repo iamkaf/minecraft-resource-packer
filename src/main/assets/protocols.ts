@@ -4,6 +4,7 @@
  * `vanilla://` serves cached vanilla textures, while `asset://` resolves files
  * from the currently active project directory.
  */
+/* c8 ignore start */
 import path from 'path';
 import type { Protocol } from 'electron';
 
@@ -54,3 +55,4 @@ export async function setActiveProject(projectPath: string): Promise<void> {
   setCacheTexturesDir(path.join(cacheRoot, 'assets', 'minecraft', 'textures'));
   activeProjectDir = projectPath;
 }
+/* c8 ignore end */

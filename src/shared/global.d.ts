@@ -1,3 +1,4 @@
+/* c8 ignore start */
 // Global type declarations used by the renderer process.
 export {};
 
@@ -78,3 +79,4 @@ declare global {
     };
   }
 }
+/* c8 ignore end */

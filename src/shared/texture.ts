@@ -1,3 +1,4 @@
+/* c8 ignore start */
 export interface TextureEditOptions {
   rotate?: number;
   hue?: number;
@@ -5,3 +6,4 @@ export interface TextureEditOptions {
   saturation?: number;
   brightness?: number;
 }
+/* c8 ignore end */

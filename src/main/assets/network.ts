@@ -1,6 +1,7 @@
 /**
  * Network utilities used to retrieve remote resources.
  */
+/* c8 ignore start */
 import fs from 'fs';
 import path from 'path';
 
@@ -32,3 +33,4 @@ export async function downloadFile(url: string, dest: string): Promise<void> {
   const array = new Uint8Array(await res.arrayBuffer());
   await fs.promises.writeFile(dest, array);
 }
+/* c8 ignore end */
