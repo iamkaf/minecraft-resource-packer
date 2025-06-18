@@ -1,16 +1,18 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import Fuse from 'fuse.js';
 import { useToast } from '../components/providers/ToastProvider';
 import ExternalLink from '../components/common/ExternalLink';
 import ProjectSidebar from '../components/project/ProjectSidebar';
-import ProjectForm, { FormatOption } from '../components/project/ProjectForm';
-import ProjectTable, { ProjectInfo } from '../components/project/ProjectTable';
+import ProjectForm from '../components/project/ProjectForm';
+import ProjectTable from '../components/project/ProjectTable';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { useProjectModals } from '../components/project/ProjectModals';
 import SearchToolbar from '../components/project/SearchToolbar';
 import ExportWizardModal, {
   BulkProgress,
 } from '../components/modals/ExportWizardModal';
+import useProjectList from '../hooks/useProjectList';
+import useProjectSelection from '../hooks/useProjectSelection';
 import ImportWizardModal from '../components/modals/ImportWizardModal';
 import type { ImportSummary } from '../../main/projects';
 import useProjectHotkeys from '../hooks/useProjectHotkeys';
@@ -18,14 +20,11 @@ import useProjectHotkeys from '../hooks/useProjectHotkeys';
 // Lists all available projects and lets the user open them.
 
 const ProjectManagerView: React.FC = () => {
-  const [projects, setProjects] = useState<ProjectInfo[]>([]);
-  const [sortKey, setSortKey] = useState<keyof ProjectInfo>('name');
-  const [asc, setAsc] = useState(true);
-  const [formats, setFormats] = useState<FormatOption[]>([]);
+  const { projects, formats, sortKey, asc, refresh, handleSort } =
+    useProjectList();
   const [search, setSearch] = useState('');
   const [filterVersion, setFilterVersion] = useState<string | null>(null);
   const [activeProject, setActiveProject] = useState<string | null>(null);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [progress, setProgress] = useState<BulkProgress | null>(null);
   const [importing, setImporting] = useState(false);
   const [importSummary, setImportSummary] = useState<ImportSummary | null>(
@@ -33,21 +32,6 @@ const ProjectManagerView: React.FC = () => {
   );
 
   const toast = useToast();
-
-  const refresh = () => {
-    window.electronAPI?.listProjects().then(setProjects);
-  };
-
-  useEffect(() => {
-    refresh();
-    window.electronAPI?.listPackFormats().then(setFormats);
-    window.electronAPI?.getProjectSort().then((s) => {
-      if (s) {
-        setSortKey(s.key);
-        setAsc(s.asc);
-      }
-    });
-  }, []);
 
   const { modals, openDuplicate, openDelete } = useProjectModals(
     refresh,
@@ -76,17 +60,18 @@ const ProjectManagerView: React.FC = () => {
     });
   };
 
-  const handleSort = (key: keyof ProjectInfo) => {
-    if (sortKey === key) {
-      const next = !asc;
-      setAsc(next);
-      window.electronAPI?.setProjectSort(sortKey, next);
-    } else {
-      setSortKey(key);
-      setAsc(true);
-      window.electronAPI?.setProjectSort(key, true);
-    }
+  let clearSelection: () => void = () => {};
+  const handleDeleteSelected = (names: string[]) => {
+    names.forEach((n) => window.electronAPI?.deleteProject(n));
+    clearSelection();
+    refresh();
   };
+
+  const { selected, toggleAll, toggleOne, clear } = useProjectSelection(
+    handleOpen,
+    handleDeleteSelected
+  );
+  clearSelection = clear;
 
   const handleBulkExport = () => {
     if (selected.size === 0) return;
@@ -95,16 +80,10 @@ const ProjectManagerView: React.FC = () => {
       ?.exportProjects(Array.from(selected))
       .then(() => {
         toast({ message: 'Bulk export complete', type: 'success' });
-        setSelected(new Set());
+        clearSelection();
       })
       .catch(() => toast({ message: 'Bulk export failed', type: 'error' }))
       .finally(() => setProgress(null));
-  };
-
-  const handleDeleteSelected = (names: string[]) => {
-    names.forEach((n) => window.electronAPI?.deleteProject(n));
-    setSelected(new Set());
-    refresh();
   };
 
   const chipVersions = useMemo(
@@ -128,23 +107,6 @@ const ProjectManagerView: React.FC = () => {
     if (a[sortKey] > b[sortKey]) return 1 * dir;
     return 0;
   });
-
-  const toggleAll = (checked: boolean) => {
-    if (checked) {
-      setSelected(new Set(sortedProjects.map((p) => p.name)));
-    } else {
-      setSelected(new Set());
-    }
-  };
-
-  const handleSelect = (name: string, checked: boolean) => {
-    const ns = new Set(selected);
-    if (checked) ns.add(name);
-    else ns.delete(name);
-    setSelected(ns);
-  };
-
-  useProjectHotkeys(selected, handleOpen, handleDeleteSelected);
 
   return (
     <section className="flex gap-4 max-w-5xl mx-auto">
@@ -179,8 +141,13 @@ const ProjectManagerView: React.FC = () => {
           projects={sortedProjects}
           onSort={handleSort}
           selected={selected}
-          onSelect={handleSelect}
-          onSelectAll={toggleAll}
+          onSelect={toggleOne}
+          onSelectAll={(c) =>
+            toggleAll(
+              sortedProjects.map((p) => p.name),
+              c
+            )
+          }
           onOpen={handleOpen}
           onDuplicate={openDuplicate}
           onDelete={openDelete}
