@@ -1,21 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import path from 'path';
-import RenameModal from '../modals/RenameModal';
-import MoveFileModal from '../modals/MoveFileModal';
 import AssetBrowserItem from './AssetBrowserItem';
-import { useProjectFiles } from '../file/useProjectFiles';
 import FileTree from './FileTree';
 import { useProject } from '../providers/ProjectProvider';
-import {
-  AssetBrowserProvider,
-  useAssetBrowser,
-} from '../providers/AssetBrowserProvider';
+import { useAssetBrowser } from '../providers/AssetBrowserProvider';
 import { FilterBadge, InputField, Range } from '../daisy/input';
 import { Accordion } from '../daisy/display';
-
-interface Props {
-  onSelectionChange?: (sel: string[]) => void;
-}
 
 const FILTERS = ['blocks', 'items', 'entity', 'ui', 'audio', 'lang'] as const;
 type Filter = (typeof FILTERS)[number];
@@ -173,11 +163,9 @@ const BrowserBody: React.FC<{
   );
 };
 
-const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
+const AssetBrowser: React.FC = () => {
   const { path: projectPath } = useProject();
-  const { files, noExport, toggleNoExport, versions } = useProjectFiles();
-  const [renameTarget, setRenameTarget] = useState<string | null>(null);
-  const [moveTarget, setMoveTarget] = useState<string | null>(null);
+  const { files, versions } = useAssetBrowser();
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -223,53 +211,17 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
   };
 
   return (
-    <AssetBrowserProvider
-      noExport={noExport}
-      toggleNoExport={toggleNoExport}
-      openRename={(file) => setRenameTarget(file)}
-      openMove={(file) => setMoveTarget(file)}
-      onSelectionChange={onSelectionChange}
-    >
-      <BrowserBody
-        projectPath={projectPath}
-        visible={visible}
-        versions={versions}
-        query={query}
-        setQuery={setQuery}
-        zoom={zoom}
-        setZoom={setZoom}
-        filters={filters}
-        toggleFilter={toggleFilter}
-      />
-      {renameTarget && (
-        <RenameModal
-          current={path.basename(renameTarget)}
-          onCancel={() => setRenameTarget(null)}
-          onRename={(n) => {
-            const full = path.join(projectPath, renameTarget);
-            const target = path.join(path.dirname(full), n);
-            window.electronAPI?.renameFile(full, target);
-            setRenameTarget(null);
-          }}
-        />
-      )}
-      {moveTarget && (
-        <MoveFileModal
-          current={moveTarget}
-          onCancel={() => setMoveTarget(null)}
-          onMove={(dest) => {
-            const full = path.join(projectPath, moveTarget);
-            const target = path.join(
-              projectPath,
-              dest,
-              path.basename(moveTarget)
-            );
-            window.electronAPI?.renameFile(full, target);
-            setMoveTarget(null);
-          }}
-        />
-      )}
-    </AssetBrowserProvider>
+    <BrowserBody
+      projectPath={projectPath}
+      visible={visible}
+      versions={versions}
+      query={query}
+      setQuery={setQuery}
+      zoom={zoom}
+      setZoom={setZoom}
+      filters={filters}
+      toggleFilter={toggleFilter}
+    />
   );
 };
 

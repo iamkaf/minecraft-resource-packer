@@ -15,17 +15,19 @@ export function useProjectFiles() {
     const isHistory = (p: string) =>
       p === '.history' || p.startsWith('.history/') || p.includes('/.history/');
     let alive = true;
-    window.electronAPI
-      ?.watchProject(projectPath)
-      .then((list) => {
-        if (alive && list) {
-          const filtered = list.filter((p) => !isHistory(p));
-          setFiles(filtered);
-        }
-      })
-      .catch(() => {
-        /* ignore */
-      });
+    const watch = window.electronAPI?.watchProject;
+    if (watch) {
+      watch(projectPath)
+        .then((list) => {
+          if (alive && list) {
+            const filtered = list.filter((p) => !isHistory(p));
+            setFiles(filtered);
+          }
+        })
+        .catch(() => {
+          /* ignore */
+        });
+    }
     const add = (_e: unknown, p: string) => {
       if (isHistory(p)) return;
       setFiles((f) => [...f, p]);
@@ -45,13 +47,13 @@ export function useProjectFiles() {
       if (isHistory(args.path)) return;
       setVersions((v) => ({ ...v, [args.path]: args.stamp }));
     };
-    const offAdd = window.electronAPI?.onFileAdded(add);
-    const offRemove = window.electronAPI?.onFileRemoved(remove);
-    const offRename = window.electronAPI?.onFileRenamed(rename);
-    const offChange = window.electronAPI?.onFileChanged(change);
+    const offAdd = window.electronAPI?.onFileAdded?.(add);
+    const offRemove = window.electronAPI?.onFileRemoved?.(remove);
+    const offRename = window.electronAPI?.onFileRenamed?.(rename);
+    const offChange = window.electronAPI?.onFileChanged?.(change);
     return () => {
       alive = false;
-      window.electronAPI?.unwatchProject(projectPath);
+      window.electronAPI?.unwatchProject?.(projectPath);
       offAdd?.();
       offRemove?.();
       offRename?.();
@@ -61,7 +63,7 @@ export function useProjectFiles() {
 
   useEffect(() => {
     let active = true;
-    window.electronAPI?.getNoExport(projectPath).then((list) => {
+    window.electronAPI?.getNoExport?.(projectPath).then((list) => {
       if (active && list) setNoExport(new Set(list));
     });
     return () => {
@@ -70,7 +72,7 @@ export function useProjectFiles() {
   }, [projectPath]);
 
   const toggleNoExport = (list: string[], flag: boolean) => {
-    window.electronAPI?.setNoExport(projectPath, list, flag);
+    window.electronAPI?.setNoExport?.(projectPath, list, flag);
     setNoExport((prev) => {
       const ns = new Set(prev);
       list.forEach((file) => {

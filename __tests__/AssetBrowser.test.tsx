@@ -6,6 +6,7 @@ import { SetPath, electronAPI } from './test-utils';
 import path from 'path';
 
 import AssetBrowser from '../src/renderer/components/assets/AssetBrowser';
+import { AssetBrowserProvider } from '../src/renderer/components/providers/AssetBrowserProvider';
 
 const watchProject = vi.fn(async () => ['a.txt', 'b.png']);
 const unwatchProject = vi.fn();
@@ -13,6 +14,18 @@ const onFileAdded = vi.fn(() => () => undefined);
 const onFileRemoved = vi.fn(() => () => undefined);
 const onFileRenamed = vi.fn(() => () => undefined);
 const onFileChanged = vi.fn(() => () => undefined);
+
+function renderBrowser() {
+  return render(
+    <ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowserProvider>
+          <AssetBrowser />
+        </AssetBrowserProvider>
+      </SetPath>
+    </ProjectProvider>
+  );
+}
 
 describe('AssetBrowser', () => {
   beforeEach(() => {
@@ -35,13 +48,7 @@ describe('AssetBrowser', () => {
   });
 
   it('renders files from directory', async () => {
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     expect(watchProject).toHaveBeenCalledWith('/proj');
     expect((await screen.findAllByText('a.txt'))[0]).toBeInTheDocument();
     const img = screen.getByAltText('B') as HTMLImageElement;
@@ -53,13 +60,7 @@ describe('AssetBrowser', () => {
 
   it('filters out .history files', async () => {
     watchProject.mockResolvedValue(['.history/a.txt', 'visible.txt']);
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     expect((await screen.findAllByText('visible.txt')).length).toBeGreaterThan(
       0
     );
@@ -67,13 +68,7 @@ describe('AssetBrowser', () => {
   });
 
   it('is scrollable', async () => {
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     await screen.findAllByText('a.txt');
     const wrapper = screen.getByTestId('asset-browser');
     expect(wrapper.className).toMatch(/overflow-auto/);
@@ -96,13 +91,7 @@ describe('AssetBrowser', () => {
     electronAPI.onFileChanged.mockImplementation(onFileChanged);
     electronAPI.getNoExport.mockResolvedValue([]);
     electronAPI.setNoExport.mockImplementation(() => undefined);
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     const item = (await screen.findAllByText('a.txt'))[0];
     fireEvent.contextMenu(item);
     const revealBtn = (
@@ -159,13 +148,7 @@ describe('AssetBrowser', () => {
       changed = cb;
     });
 
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     await screen.findAllByText('a.txt');
 
     added?.({}, 'c.txt');
@@ -202,13 +185,7 @@ describe('AssetBrowser', () => {
     electronAPI.onFileChanged.mockImplementation(onFileChanged);
     electronAPI.getNoExport.mockResolvedValue([]);
     electronAPI.setNoExport.mockImplementation(() => undefined);
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     const a = (await screen.findAllByText('a.txt'))[0];
     const b = screen.getAllByText('b.png')[0];
     fireEvent.click(a);
@@ -229,13 +206,7 @@ describe('AssetBrowser', () => {
     electronAPI.onFileRemoved.mockImplementation(onFileRemoved);
     electronAPI.onFileRenamed.mockImplementation(onFileRenamed);
     electronAPI.onFileChanged.mockImplementation(onFileChanged);
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     const a = (await screen.findAllByText('a.txt'))[0];
     const b = screen.getAllByText('b.png')[0];
     fireEvent.click(a);
@@ -260,13 +231,7 @@ describe('AssetBrowser', () => {
     electronAPI.onFileRemoved.mockImplementation(onFileRemoved);
     electronAPI.onFileRenamed.mockImplementation(onFileRenamed);
     electronAPI.onFileChanged.mockImplementation(onFileChanged);
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     const el = (await screen.findAllByText('a.txt'))[0];
     const container = el.closest('div[tabindex="0"]') as HTMLElement;
     expect(container.className).toMatch(/border-gray-400/);
@@ -275,13 +240,7 @@ describe('AssetBrowser', () => {
   });
 
   it('filters by search and adjusts zoom', async () => {
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     await screen.findAllByText('a.txt');
     const search = screen.getByPlaceholderText('Search files');
     fireEvent.change(search, { target: { value: 'b.png' } });
@@ -299,13 +258,7 @@ describe('AssetBrowser', () => {
       'assets/minecraft/textures/block/stone.png',
       'assets/minecraft/textures/item/apple.png',
     ]);
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     await screen.findAllByText('stone.png');
     const itemsChip = screen.getByText('Items');
     fireEvent.click(itemsChip);
@@ -315,13 +268,7 @@ describe('AssetBrowser', () => {
   });
 
   it('renders grid and tree together', async () => {
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     await screen.findAllByText('a.txt');
     expect(screen.getByTestId('file-tree')).toBeInTheDocument();
     expect(screen.getAllByText('a.txt')[0]).toBeInTheDocument();

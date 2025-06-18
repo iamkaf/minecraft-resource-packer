@@ -4,6 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 import AssetBrowser from '../src/renderer/components/assets/AssetBrowser';
+import { AssetBrowserProvider } from '../src/renderer/components/providers/AssetBrowserProvider';
 
 const watchProject = vi.fn(async () => []);
 const unwatchProject = vi.fn();
@@ -18,6 +19,18 @@ const getAssetFilters = vi.fn();
 const setAssetFilters = vi.fn();
 const getAssetZoom = vi.fn();
 const setAssetZoom = vi.fn();
+
+function renderBrowser() {
+  return render(
+    <ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowserProvider>
+          <AssetBrowser />
+        </AssetBrowserProvider>
+      </SetPath>
+    </ProjectProvider>
+  );
+}
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -42,13 +55,7 @@ describe('AssetBrowser persistence', () => {
     getAssetSearch.mockResolvedValue('stone');
     getAssetFilters.mockResolvedValue(['blocks']);
     getAssetZoom.mockResolvedValue(80);
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     await screen.findByDisplayValue('stone');
     expect(getAssetSearch).toHaveBeenCalled();
     expect(getAssetFilters).toHaveBeenCalled();
@@ -64,13 +71,7 @@ describe('AssetBrowser persistence', () => {
     getAssetSearch.mockResolvedValue('');
     getAssetFilters.mockResolvedValue([]);
     getAssetZoom.mockResolvedValue(64);
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
+    renderBrowser();
     await Promise.resolve();
     const input = screen.getByPlaceholderText('Search files');
     fireEvent.change(input, { target: { value: 'apple' } });

@@ -13,6 +13,26 @@ import {
 } from '../src/renderer/components/providers/AssetBrowserProvider';
 
 const files = ['a.txt', 'b.png'];
+const watchProject = vi.fn(async () => files);
+const unwatchProject = vi.fn();
+const onFileAdded = vi.fn(() => () => undefined);
+const onFileRemoved = vi.fn(() => () => undefined);
+const onFileRenamed = vi.fn(() => () => undefined);
+const onFileChanged = vi.fn(() => () => undefined);
+
+beforeEach(() => {
+  (window as any).electronAPI = {
+    watchProject,
+    unwatchProject,
+    onFileAdded,
+    onFileRemoved,
+    onFileRenamed,
+    onFileChanged,
+    getNoExport: vi.fn(async () => []),
+    setNoExport: vi.fn(),
+    deleteFile: vi.fn(),
+  };
+});
 
 function Wrapper(props: Partial<Parameters<typeof FileTree>[0]>) {
   const { setPath } = useProject();
@@ -30,14 +50,11 @@ describe('FileTree', () => {
   it('supports multi selection', () => {
     render(
       <ProjectProvider>
-        <AssetBrowserProvider
-          noExport={new Set()}
-          toggleNoExport={vi.fn()}
-          openRename={vi.fn()}
-          openMove={vi.fn()}
-        >
-          <Wrapper />
-        </AssetBrowserProvider>
+        <SetPath path="/proj">
+          <AssetBrowserProvider>
+            <Wrapper />
+          </AssetBrowserProvider>
+        </SetPath>
       </ProjectProvider>
     );
     fireEvent.click(
@@ -63,14 +80,11 @@ describe('FileTree', () => {
     });
     render(
       <ProjectProvider>
-        <AssetBrowserProvider
-          noExport={new Set()}
-          toggleNoExport={vi.fn()}
-          openRename={vi.fn()}
-          openMove={vi.fn()}
-        >
-          <Wrapper />
-        </AssetBrowserProvider>
+        <SetPath path="/proj">
+          <AssetBrowserProvider>
+            <Wrapper />
+          </AssetBrowserProvider>
+        </SetPath>
       </ProjectProvider>
     );
     const b = screen.getAllByText('b.png')[0].parentElement as HTMLElement;

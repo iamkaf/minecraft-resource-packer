@@ -1,8 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import path from 'path';
+import RenameModal from '../modals/RenameModal';
+import MoveFileModal from '../modals/MoveFileModal';
+import { useProjectFiles } from '../file/useProjectFiles';
+import { useProject } from './ProjectProvider';
+import { useEditor } from '../editor/EditorContext';
 
 interface AssetBrowserContextValue {
   selected: Set<string>;
   setSelected: React.Dispatch<React.SetStateAction<Set<string>>>;
+  files: string[];
+  versions: Record<string, number>;
   noExport: Set<string>;
   toggleNoExport: (files: string[], flag: boolean) => void;
   deleteFiles: (files: string[]) => void;
@@ -19,6 +27,8 @@ const AssetBrowserContext = createContext<AssetBrowserContextValue>({
   setSelected: () => {
     /* noop */
   },
+  files: [],
+  versions: {},
   noExport: new Set<string>(),
   toggleNoExport: noop,
   deleteFiles: noop,
@@ -32,37 +42,36 @@ export function useAssetBrowser() {
 
 interface ProviderProps {
   children: React.ReactNode;
-  noExport: Set<string>;
-  toggleNoExport: (files: string[], flag: boolean) => void;
-  openRename: (file: string) => void;
-  openMove: (file: string) => void;
-  onSelectionChange?: (sel: string[]) => void;
 }
 
-export function AssetBrowserProvider({
-  children,
-  noExport,
-  toggleNoExport,
-  openRename,
-  openMove,
-  onSelectionChange,
-}: ProviderProps) {
+export function AssetBrowserProvider({ children }: ProviderProps) {
+  const { path: projectPath } = useProject();
+  const { files, noExport, toggleNoExport, versions } = useProjectFiles();
+  const { setSelected: setGlobalSelected } = useEditor();
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [renameTarget, setRenameTarget] = useState<string | null>(null);
+  const [moveTarget, setMoveTarget] = useState<string | null>(null);
 
   useEffect(() => {
-    onSelectionChange?.(Array.from(selected));
-  }, [selected, onSelectionChange]);
+    setGlobalSelected(Array.from(selected));
+  }, [selected, setGlobalSelected]);
 
-  const deleteFiles = (files: string[]) => {
-    files.forEach((f) => window.electronAPI?.deleteFile(f));
+  const deleteFiles = (paths: string[]) => {
+    paths.forEach((f) => window.electronAPI?.deleteFile(f));
     setSelected(new Set());
   };
+
+  const openRename = (file: string) => setRenameTarget(file);
+
+  const openMove = (file: string) => setMoveTarget(file);
 
   return (
     <AssetBrowserContext.Provider
       value={{
         selected,
         setSelected,
+        files,
+        versions,
         noExport,
         toggleNoExport,
         deleteFiles,
@@ -71,6 +80,34 @@ export function AssetBrowserProvider({
       }}
     >
       {children}
+      {renameTarget && (
+        <RenameModal
+          current={path.basename(renameTarget)}
+          onCancel={() => setRenameTarget(null)}
+          onRename={(n) => {
+            const full = path.join(projectPath, renameTarget);
+            const target = path.join(path.dirname(full), n);
+            window.electronAPI?.renameFile(full, target);
+            setRenameTarget(null);
+          }}
+        />
+      )}
+      {moveTarget && (
+        <MoveFileModal
+          current={moveTarget}
+          onCancel={() => setMoveTarget(null)}
+          onMove={(dest) => {
+            const full = path.join(projectPath, moveTarget);
+            const target = path.join(
+              projectPath,
+              dest,
+              path.basename(moveTarget)
+            );
+            window.electronAPI?.renameFile(full, target);
+            setMoveTarget(null);
+          }}
+        />
+      )}
     </AssetBrowserContext.Provider>
   );
 }

@@ -25,6 +25,22 @@ vi.mock('../src/renderer/components/assets/AssetSelector', () => ({
 vi.mock('../src/renderer/components/assets/AssetBrowser', () => ({
   default: () => <div>browser</div>,
 }));
+vi.mock('../src/renderer/components/providers/AssetBrowserProvider', () => ({
+  AssetBrowserProvider: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+  useAssetBrowser: () => ({
+    selected: new Set<string>(),
+    setSelected: vi.fn(),
+    files: [],
+    versions: {},
+    noExport: new Set(),
+    toggleNoExport: vi.fn(),
+    deleteFiles: vi.fn(),
+    openRename: vi.fn(),
+    openMove: vi.fn(),
+  }),
+}));
 vi.mock('../src/renderer/components/project/ProjectInfoPanel', () => ({
   default: ({
     onExport,

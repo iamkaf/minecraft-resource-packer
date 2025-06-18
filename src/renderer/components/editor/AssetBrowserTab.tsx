@@ -7,7 +7,10 @@ import AssetSelectorInfoPanel from '../assets/AssetSelectorInfoPanel';
 import { Skeleton } from '../daisy/feedback';
 import ExternalLink from '../common/ExternalLink';
 import { Modal, Button } from '../daisy/actions';
-import { useEditor } from './EditorContext';
+import {
+  AssetBrowserProvider,
+  useAssetBrowser,
+} from '../providers/AssetBrowserProvider';
 /* eslint-disable import/no-unresolved */
 import {
   PanelGroup,
@@ -23,12 +26,9 @@ interface Props {
   onExport: () => void;
 }
 
-export default function AssetBrowserTab({
-  onBack,
-  onSettings,
-  onExport,
-}: Props) {
-  const { selected, setSelected } = useEditor();
+function AssetBrowserTabInner({ onBack, onSettings, onExport }: Props) {
+  const { selected } = useAssetBrowser();
+  const list = Array.from(selected);
   const [selectorAsset, setSelectorAsset] = useState<string | null>(null);
   const [layout, setLayout] = useState<number[]>([20, 80]);
   const [selectorOpen, setSelectorOpen] = useState(false);
@@ -94,14 +94,14 @@ export default function AssetBrowserTab({
           <PanelGroup direction="vertical" className="h-full">
             <Panel defaultSize={70} className="overflow-y-auto">
               <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-                <AssetBrowser onSelectionChange={setSelected} />
+                <AssetBrowser />
               </Suspense>
             </Panel>
             <PanelResizeHandle className="flex items-center" tagName="div">
               <div className="w-full h-px bg-base-content"></div>
             </PanelResizeHandle>
             <Panel defaultSize={30} className="overflow-y-auto">
-              <AssetInfo asset={selected[0] ?? null} count={selected.length} />
+              <AssetInfo asset={list[0] ?? null} count={list.length} />
             </Panel>
           </PanelGroup>
         </Panel>
@@ -127,5 +127,13 @@ export default function AssetBrowserTab({
         </Modal>
       )}
     </div>
+  );
+}
+
+export default function AssetBrowserTab(props: Props) {
+  return (
+    <AssetBrowserProvider>
+      <AssetBrowserTabInner {...props} />
+    </AssetBrowserProvider>
   );
 }
