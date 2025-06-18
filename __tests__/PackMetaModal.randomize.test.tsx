@@ -6,16 +6,6 @@ import PackMetaModal from '../src/renderer/components/modals/PackMetaModal';
 import type { PackMeta } from '../src/main/projects';
 
 vi.mock('electron', () => ({ app: { getPath: () => '/tmp' } }));
-vi.mock('@monaco-editor/react', () => ({
-  __esModule: true,
-  default: ({
-    value,
-    onChange,
-  }: {
-    value: string;
-    onChange: (v: string) => void;
-  }) => <textarea value={value} onChange={(e) => onChange(e.target.value)} />,
-}));
 
 describe('PackMetaModal randomize regression', () => {
   it('sends absolute path to randomizeIcon', () => {
