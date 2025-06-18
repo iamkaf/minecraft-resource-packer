@@ -23,7 +23,7 @@ export default defineConfig({
         'src/main/index.ts',
         'src/renderer/index.tsx',
         'src/main/assets.ts',
-        'src/main/projects.ts',
+        'src/main/projects/index.ts',
       ],
       all: true,
     },
