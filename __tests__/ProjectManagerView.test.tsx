@@ -212,4 +212,31 @@ describe('ProjectManagerView', () => {
     const input = screen.getByPlaceholderText('Search');
     expect(input).toHaveClass('w-40');
   });
+
+  it('shows newly created project in the table', async () => {
+    listProjects.mockResolvedValueOnce([
+      { name: 'Pack', version: '1.20', assets: 2, lastOpened: 0 },
+      { name: 'Alpha', version: '1.21', assets: 5, lastOpened: 1 },
+    ]);
+    listProjects.mockResolvedValueOnce([
+      { name: 'Pack', version: '1.20', assets: 2, lastOpened: 0 },
+      { name: 'Alpha', version: '1.21', assets: 5, lastOpened: 1 },
+      { name: 'New', version: '1.21.1', assets: 0, lastOpened: 2 },
+    ]);
+
+    render(<ProjectManagerView />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    fireEvent.click(screen.getByText('New Project'));
+    const modal = await screen.findByTestId('daisy-modal');
+    fireEvent.change(within(modal).getByPlaceholderText('Name'), {
+      target: { value: 'New' },
+    });
+    fireEvent.change(within(modal).getByRole('combobox'), {
+      target: { value: '34' },
+    });
+    fireEvent.click(within(modal).getByRole('button', { name: 'Create' }));
+
+    await screen.findByText('New');
+    expect(screen.getByText('New')).toBeInTheDocument();
+  });
 });
