@@ -2,12 +2,13 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 import path from 'path';
 import { useToast } from '../providers/ToastProvider';
 import { Skeleton } from '../daisy/feedback';
-import MonacoEditor from '@monaco-editor/react';
-import { Button } from '../daisy/actions';
 import { useProject } from '../providers/ProjectProvider';
 import RevisionsModal from '../modals/RevisionsModal';
+import AssetInfoHeader from './AssetInfoHeader';
+import TextPanel from './assetInfo/TextPanel';
+import PngPanel from './assetInfo/PngPanel';
+import AudioPanel from './assetInfo/AudioPanel';
 
-const PreviewPane = lazy(() => import('./PreviewPane'));
 const TextureLab = lazy(() => import('./TextureLab'));
 const TextureDiff = lazy(() => import('./TextureDiff'));
 const AudioPreview = lazy(() => import('./AudioPreview'));
@@ -88,123 +89,55 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
 
   if (!asset) return <div>No asset selected</div>;
   return (
-    <div className="p-2 flex gap-2" data-testid="asset-info">
-      <Suspense
-        fallback={
-          <div className="flex items-center justify-center w-32 h-32">
-            <div
-              className="skeleton w-32 h-32"
-              data-testid="preview-skeleton"
-            />
-          </div>
+    <div className="p-2" data-testid="asset-info">
+      <AssetInfoHeader
+        asset={asset}
+        count={count}
+        isText={isText}
+        isPng={isPng}
+        isAudio={isAudio}
+        stamp={stamp}
+        onSave={handleSave}
+        onReset={handleReset}
+        onOpenLab={() => setLab(true)}
+        onOpenDiff={() => setDiff(true)}
+        onOpenAudio={() => setAudio(true)}
+        onOpenRevisions={() => setRevs(true)}
+        onOpenExternal={() =>
+          window.electronAPI?.openExternalEditor(full).catch(() =>
+            toast({
+              message: 'Failed to open external editor',
+              type: 'error',
+            })
+          )
         }
-      >
-        <PreviewPane texture={isPng ? asset : null} stamp={stamp} />
-      </Suspense>
-      <div className="flex-1 w-100">
-        <h3 className="font-bold mb-1 break-all">{asset}</h3>
-        {count === 1 && isText && (
-          <>
-            {error && <div className="text-error mb-1">{error}</div>}
-            <div className="flex gap-2">
-              <Button className="btn-primary btn-sm" onClick={handleSave}>
-                Save
-              </Button>
-              <Button className="btn-secondary btn-sm" onClick={handleReset}>
-                Reset
-              </Button>
-              <Button
-                className="btn-secondary btn-sm"
-                onClick={() => setRevs(true)}
-              >
-                Revisions
-              </Button>
-            </div>
-            <div className="h-[14rem]">
-              <MonacoEditor
-                defaultLanguage={isJson ? 'json' : 'plaintext'}
-                value={text}
-                onChange={(v) => setText(v ?? '')}
-                options={{ minimap: { enabled: false } }}
-                theme="vs-dark"
-              />
-            </div>
-          </>
-        )}
-        {isPng && count === 1 && (
-          <div className="flex flex-col gap-2 mt-2">
-            <Button
-              className="btn-secondary btn-sm"
-              onClick={() => setLab(true)}
-            >
-              Open Texture Lab
-            </Button>
-            <Button
-              className="btn-secondary btn-sm"
-              onClick={() =>
-                window.electronAPI?.openExternalEditor(full).catch(() =>
-                  toast({
-                    message: 'Failed to open external editor',
-                    type: 'error',
-                  })
-                )
-              }
-            >
-              Edit Externally
-            </Button>
-            <Button
-              className="btn-secondary btn-sm"
-              onClick={() => setDiff(true)}
-            >
-              Compare with Vanilla
-            </Button>
-            <Button
-              className="btn-secondary btn-sm"
-              onClick={() => setRevs(true)}
-            >
-              Revisions
-            </Button>
-          </div>
-        )}
-        {isAudio && count === 1 && (
-          <div className="flex flex-col gap-2 mt-2">
-            <Button
-              className="btn-secondary btn-sm"
-              onClick={() => setAudio(true)}
-            >
-              Play Audio
-            </Button>
-            <Button
-              className="btn-secondary btn-sm"
-              onClick={() => setRevs(true)}
-            >
-              Revisions
-            </Button>
-          </div>
-        )}
-        {lab && (
-          <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-            <TextureLab
-              file={full}
-              onClose={() => setLab(false)}
-              stamp={stamp}
-            />
-          </Suspense>
-        )}
-        {diff && (
-          <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-            <TextureDiff asset={asset} onClose={() => setDiff(false)} />
-          </Suspense>
-        )}
-        {audio && (
-          <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-            <AudioPreview asset={asset} onClose={() => setAudio(false)} />
-          </Suspense>
-        )}
-        {revs && (
-          <RevisionsModal asset={asset} onClose={() => setRevs(false)} />
-        )}
-      </div>
+      />
+      {count === 1 && isText && (
+        <TextPanel
+          text={text}
+          setText={setText}
+          error={error}
+          isJson={isJson}
+        />
+      )}
+      {isPng && count === 1 && <PngPanel />}
+      {isAudio && count === 1 && <AudioPanel />}
+      {lab && (
+        <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
+          <TextureLab file={full} onClose={() => setLab(false)} stamp={stamp} />
+        </Suspense>
+      )}
+      {diff && (
+        <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
+          <TextureDiff asset={asset} onClose={() => setDiff(false)} />
+        </Suspense>
+      )}
+      {audio && (
+        <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
+          <AudioPreview asset={asset} onClose={() => setAudio(false)} />
+        </Suspense>
+      )}
+      {revs && <RevisionsModal asset={asset} onClose={() => setRevs(false)} />}
     </div>
   );
 }
