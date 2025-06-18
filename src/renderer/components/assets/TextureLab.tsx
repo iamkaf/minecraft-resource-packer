@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import path from 'path';
+import { toPosixPath } from '../../../shared/toPosixPath';
 import { Loading } from '../daisy/feedback';
 import type { TextureEditOptions } from '../../../shared/texture';
 import { Modal, Button } from '../daisy/actions';
@@ -29,14 +30,14 @@ export default function TextureLab({
   }, [stamp]);
 
   useEffect(() => {
-    const relPath = path.relative(projectPath, file).split(path.sep).join('/');
+    const relPath = toPosixPath(path.relative(projectPath, file));
     const listener = (_e: unknown, args: { path: string; stamp: number }) => {
       if (args.path === relPath) setVersion(args.stamp);
     };
     window.electronAPI?.onFileChanged(listener);
   }, [file, projectPath]);
 
-  const rel = path.relative(projectPath, file).split(path.sep).join('/');
+  const rel = toPosixPath(path.relative(projectPath, file));
   const filter = `hue-rotate(${hue}deg) saturate(${sat}) brightness(${bright})${
     gray ? ' grayscale(1)' : ''
   }`;

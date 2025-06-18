@@ -1,5 +1,6 @@
 import React from 'react';
 import path from 'path';
+import { toPosixPath } from '../../../shared/toPosixPath';
 import TextIcon from '../common/TextIcon';
 
 interface Props {
@@ -28,7 +29,7 @@ export default function TextureThumb({
   const ext = texture ? path.extname(texture).toLowerCase() : '';
   const url =
     texture && ext === '.png'
-      ? `${protocol}://${texture.split(path.sep).join('/')}${stamp ? `?t=${stamp}` : ''}`
+      ? `${protocol}://${toPosixPath(texture)}${stamp ? `?t=${stamp}` : ''}`
       : null;
   const isText = ext === '.txt' || ext === '.json';
 
