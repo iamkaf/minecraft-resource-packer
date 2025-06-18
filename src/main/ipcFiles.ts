@@ -3,7 +3,12 @@ import { shell } from 'electron';
 import { emitRenamed } from './ipc/fileWatcher';
 import fs from 'fs';
 import path from 'path';
-import { saveRevision, listRevisions, restoreRevision } from './revision';
+import {
+  saveRevision,
+  listRevisions,
+  restoreRevision,
+  saveRevisionForFile,
+} from './revision';
 
 /** Register IPC handlers for file interactions. */
 export function registerFileHandlers(ipc: IpcMain) {
@@ -20,6 +25,7 @@ export function registerFileHandlers(ipc: IpcMain) {
   });
 
   ipc.handle('write-file', async (_e, file: string, data: string) => {
+    await saveRevisionForFile(file);
     await fs.promises.writeFile(file, data, 'utf-8');
   });
 

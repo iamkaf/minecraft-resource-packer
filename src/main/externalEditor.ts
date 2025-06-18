@@ -1,10 +1,12 @@
 import { spawn } from 'child_process';
 import type { IpcMain } from 'electron';
 import { getTextureEditor } from './layout';
+import { saveRevisionForFile } from './revision';
 
-export function openWithEditor(file: string): void {
+export async function openWithEditor(file: string): Promise<void> {
   const editor = getTextureEditor();
   if (!editor) return;
+  await saveRevisionForFile(file);
   spawn(editor, [file], {
     detached: true,
     stdio: 'ignore',

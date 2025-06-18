@@ -1,9 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import sharp from 'sharp';
 import { registerTextureLabHandlers } from '../src/main/textureLab';
+
+vi.mock('../src/main/revision', () => ({
+  saveRevisionForFile: vi.fn(async () => {}),
+}));
 
 let handler:
   | ((e: unknown, file: string, opts: unknown) => Promise<void>)
@@ -27,6 +31,8 @@ describe('edit-texture IPC', () => {
     );
     expect(handler).toBeTypeOf('function');
     await handler?.({}, tmp, { grayscale: true });
+    const { saveRevisionForFile } = await import('../src/main/revision');
+    expect(saveRevisionForFile).toHaveBeenCalledWith(tmp);
     const meta = await sharp(tmp).metadata();
     expect(meta.format).toBe('png');
     fs.unlinkSync(tmp);
