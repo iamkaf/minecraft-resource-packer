@@ -11,6 +11,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - webpack replaces import with URL string
 import defaultPack from '../../../../resources/default_pack.png';
+import ProjectContextMenu from './ProjectContextMenu';
 
 export interface ProjectInfo {
   name: string;
@@ -47,9 +48,42 @@ export default function ProjectTable({
   const lastIndex = React.useRef<number | null>(null);
   const allSelected =
     selected.size > 0 && projects.every((p) => selected.has(p.name));
+  const [menuInfo, setMenuInfo] = React.useState<{
+    name: string;
+    x: number;
+    y: number;
+  } | null>(null);
+  const firstItem = React.useRef<HTMLButtonElement>(null);
+
+  React.useEffect(() => {
+    if (menuInfo && firstItem.current) firstItem.current.focus();
+  }, [menuInfo]);
+
+  const closeMenu = () => setMenuInfo(null);
+
+  const handleOpen = (n: string) => {
+    onOpen(n);
+    closeMenu();
+  };
+
+  const handleDuplicate = (n: string) => {
+    onDuplicate(n);
+    closeMenu();
+  };
+
+  const handleDelete = (n: string) => {
+    onDelete(n);
+    closeMenu();
+  };
 
   return (
-    <div className="flex-1 overflow-x-auto">
+    <div
+      className="flex-1 overflow-x-auto"
+      tabIndex={0}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) closeMenu();
+      }}
+    >
       <table className="table table-zebra w-full">
         <thead>
           <tr>
@@ -107,9 +141,23 @@ export default function ProjectTable({
               key={p.name}
               onClick={() => onRowClick(p.name)}
               onDoubleClick={() => onOpen(p.name)}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                setMenuInfo({ name: p.name, x: e.clientX, y: e.clientY });
+              }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && selected.size <= 1) onOpen(p.name);
                 if (e.key === 'Delete' && selected.size <= 1) onDelete(p.name);
+                if (
+                  e.key === 'ContextMenu' ||
+                  (e.shiftKey && e.key === 'F10')
+                ) {
+                  e.preventDefault();
+                  const rect = (
+                    e.currentTarget as HTMLElement
+                  ).getBoundingClientRect();
+                  setMenuInfo({ name: p.name, x: rect.right, y: rect.bottom });
+                }
               }}
               tabIndex={0}
               className={`cursor-pointer ${
@@ -189,6 +237,20 @@ export default function ProjectTable({
           ))}
         </tbody>
       </table>
+      {menuInfo && (
+        <ProjectContextMenu
+          project={menuInfo.name}
+          style={{
+            left: menuInfo.x,
+            top: menuInfo.y,
+            display: menuInfo ? 'block' : 'none',
+          }}
+          firstItemRef={firstItem}
+          onOpen={handleOpen}
+          onDuplicate={handleDuplicate}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 }

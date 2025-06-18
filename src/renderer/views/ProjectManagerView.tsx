@@ -15,7 +15,6 @@ import useProjectList from '../hooks/useProjectList';
 import useProjectSelection from '../hooks/useProjectSelection';
 import ImportWizardModal from '../components/modals/ImportWizardModal';
 import type { ImportSummary } from '../../main/projects';
-import useProjectHotkeys from '../hooks/useProjectHotkeys';
 
 // Lists all available projects and lets the user open them.
 
