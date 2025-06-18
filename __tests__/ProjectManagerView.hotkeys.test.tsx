@@ -19,7 +19,9 @@ describe('ProjectManagerView hotkeys', () => {
       openProject: (name: string) => void;
       deleteProject: (name: string) => Promise<void>;
       createProject: (name: string, version: string) => Promise<void>;
-      importProject: () => Promise<void>;
+      importProject: () => Promise<
+        import('../src/main/projects').ImportSummary | null
+      >;
       duplicateProject: (name: string, newName: string) => Promise<void>;
       getProjectSort: () => Promise<{ key: keyof ProjectInfo; asc: boolean }>;
       setProjectSort: (key: keyof ProjectInfo, asc: boolean) => Promise<void>;

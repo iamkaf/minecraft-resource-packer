@@ -151,6 +151,13 @@ Each project's `project.json` stores a `noExport` array listing files that
 should be excluded from exports. The asset browser context menu includes a
 **No Export** toggle to manage this flag on one or multiple selected files.
 
+## Import Wizard
+
+Click **Import** in the New Project dialog to bring up the Import Wizard.
+The wizard asks the main process to open an `electron.dialog` so the user can
+select a `.zip` archive. A modal shows a spinner while the project is extracted
+and then displays a brief summary of the import.
+
 ## Asset Browser
 
 The vanilla asset browser lets you search textures from the selected Minecraft

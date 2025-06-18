@@ -14,6 +14,12 @@ import { versionForFormat } from '../shared/packFormat';
 export type { PackMeta } from '../shared/project';
 import { generatePackIcon } from './icon';
 
+export interface ImportSummary {
+  name: string;
+  fileCount: number;
+  durationMs: number;
+}
+
 export async function createProject(
   baseDir: string,
   name: string,
@@ -141,13 +147,32 @@ export async function deleteProject(
   await fs.promises.rm(dir, { recursive: true, force: true });
 }
 
-async function extractZip(src: string, dest: string): Promise<void> {
+async function extractZip(src: string, dest: string): Promise<number> {
+  let count = 0;
   await new Promise<void>((resolve, reject) => {
     fs.createReadStream(src)
-      .pipe(unzipper.Extract({ path: dest }))
+      .pipe(unzipper.Parse())
+      .on('entry', (entry: unknown) => {
+        const e = entry as {
+          type: string;
+          path: string;
+          autodrain(): void;
+          pipe(dest: fs.WriteStream): void;
+        };
+        const outPath = path.join(dest, e.path);
+        if (e.type === 'Directory') {
+          fs.mkdirSync(outPath, { recursive: true });
+          e.autodrain();
+        } else {
+          fs.mkdirSync(path.dirname(outPath), { recursive: true });
+          e.pipe(fs.createWriteStream(outPath));
+          count++;
+        }
+      })
       .on('close', resolve)
       .on('error', reject);
   });
+  return count;
 }
 
 function defaultMeta(name: string, version: string): ProjectMetadata {
@@ -181,35 +206,36 @@ async function detectVersion(dir: string): Promise<string | null> {
   return null;
 }
 
-export async function importProject(baseDir: string): Promise<void> {
+export async function importProject(
+  baseDir: string
+): Promise<ImportSummary | null> {
   const { canceled, filePaths } = await dialog.showOpenDialog({
-    properties: ['openFile', 'openDirectory'],
+    properties: ['openFile'],
     filters: [{ name: 'Resource Packs', extensions: ['zip'] }],
   });
-  if (canceled || filePaths.length === 0) return;
+  if (canceled || filePaths.length === 0) return null;
   const src = filePaths[0];
-  const ext = path.extname(src).toLowerCase();
-  const name = ext === '.zip' ? path.basename(src, ext) : path.basename(src);
+  if (path.extname(src).toLowerCase() !== '.zip') return null;
+  const name = path.basename(src, '.zip');
   const dest = path.join(baseDir, name);
-  if (ext === '.zip') {
-    await fs.promises.mkdir(dest, { recursive: true });
-    await extractZip(src, dest);
-    const version = (await detectVersion(dest)) ?? 'unknown';
-    let meta: ProjectMetadata;
-    if (fs.existsSync(path.join(dest, 'project.json'))) {
-      try {
-        meta = await readProjectMeta(dest);
-      } catch {
-        meta = defaultMeta(name, version);
-      }
-    } else {
+  const start = Date.now();
+  await fs.promises.mkdir(dest, { recursive: true });
+  const fileCount = await extractZip(src, dest);
+  const version = (await detectVersion(dest)) ?? 'unknown';
+  let meta: ProjectMetadata;
+  if (fs.existsSync(path.join(dest, 'project.json'))) {
+    try {
+      meta = await readProjectMeta(dest);
+    } catch {
       meta = defaultMeta(name, version);
     }
-    meta.minecraft_version = version;
-    await writeProjectMeta(dest, meta);
   } else {
-    await fs.promises.cp(src, dest, { recursive: true });
+    meta = defaultMeta(name, version);
   }
+  meta.minecraft_version = version;
+  await writeProjectMeta(dest, meta);
+  const durationMs = Date.now() - start;
+  return { name, fileCount, durationMs };
 }
 
 export async function loadPackMeta(
@@ -300,7 +326,7 @@ export function registerProjectHandlers(
     return deleteProject(baseDir, name);
   });
   ipc.handle('import-project', async () => {
-    await importProject(baseDir);
+    return importProject(baseDir);
   });
   ipc.handle('load-pack-meta', (_e, name: string) => {
     return loadPackMeta(baseDir, name);

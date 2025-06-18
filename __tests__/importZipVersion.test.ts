@@ -50,7 +50,7 @@ describe('importProject (zip)', () => {
       canceled: false,
       filePaths: [zipPath],
     });
-    await importProject(baseDir);
+    const summary = await importProject(baseDir);
     const dest = path.join(baseDir, 'pack');
     const data = JSON.parse(
       fs.readFileSync(path.join(dest, 'project.json'), 'utf-8')
@@ -58,5 +58,7 @@ describe('importProject (zip)', () => {
     const meta = ProjectMetadataSchema.parse(data);
     expect(meta.minecraft_version).toBe('1.20.1');
     expect(fs.existsSync(path.join(dest, 'foo.txt'))).toBe(true);
+    expect(summary?.name).toBe('pack');
+    expect(summary?.fileCount).toBeGreaterThan(0);
   });
 });
