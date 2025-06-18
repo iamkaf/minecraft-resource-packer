@@ -89,6 +89,10 @@ export const SNAPSHOT_FORMATS: VersionRange[] = [
   { min: '25w21a', max: '25w21a', format: 62 },
 ];
 
+// ----- Release version helpers -----
+// Release versions follow the typical "major.minor.patch" pattern. These helpers
+// parse and compare them numerically so we can determine if a given release is
+// within a range from the PACK_FORMATS table.
 function parseRelease(ver: string): number[] {
   return ver.split('.').map((n) => parseInt(n, 10));
 }
@@ -111,8 +115,12 @@ function betweenRelease(ver: string, min: string, max: string): boolean {
   );
 }
 
+// Snapshots have a format like "24w11a" consisting of the year, week and a
+// letter suffix. SNAP_RE matches this format for quick detection.
 const SNAP_RE = /^(\d{2})w(\d{2})([a-z])$/i;
 
+// ----- Snapshot version helpers -----
+// Convert a snapshot string to [year, week, letterIndex] for comparison.
 function parseSnapshot(ver: string): [number, number, number] | null {
   const m = SNAP_RE.exec(ver);
   if (!m) return null;
@@ -142,6 +150,8 @@ function betweenSnapshot(ver: string, min: string, max: string): boolean {
   return compareSnapshot(v, mi) >= 0 && compareSnapshot(v, ma) <= 0;
 }
 
+// Determine the pack format number for a given Minecraft version. Snapshot
+// versions are matched against SNAPSHOT_FORMATS while releases use PACK_FORMATS.
 export function packFormatForVersion(ver: string): number | null {
   if (SNAP_RE.test(ver)) {
     for (const r of SNAPSHOT_FORMATS) {
