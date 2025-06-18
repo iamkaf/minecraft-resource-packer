@@ -7,3 +7,4 @@ coverage/
 .webpack/
 out/
 docs/.vitepress/dist
+docs/.vitepress/cache
