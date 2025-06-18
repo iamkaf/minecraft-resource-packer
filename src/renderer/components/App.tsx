@@ -14,9 +14,11 @@ const SettingsView = lazy(() => import('../views/SettingsView'));
 const AboutView = lazy(() => import('../views/AboutView'));
 
 import { ProjectProvider, useProject } from './providers/ProjectProvider';
+import { useToast } from './providers/ToastProvider';
 
 function AppContent() {
   const { path: projectPath, setPath: setProjectPath } = useProject();
+  const toast = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,7 +26,10 @@ function AppContent() {
       setProjectPath(path);
       navigate('/editor');
     });
-  }, [navigate, setProjectPath]);
+    window.electronAPI?.onPackMetaMissing(() => {
+      toast({ message: 'project.json not found', type: 'warning' });
+    });
+  }, [navigate, setProjectPath, toast]);
 
   const toManager = () => {
     setProjectPath(null);

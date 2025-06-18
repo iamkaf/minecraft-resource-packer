@@ -3,6 +3,7 @@
  */
 import fs from 'fs';
 import path from 'path';
+import { BrowserWindow } from 'electron';
 import { generatePackIcon } from '../icon';
 import type { ProjectMetadata } from '../../shared/project';
 import { readProjectMeta, writeProjectMeta } from '../projectMeta';
@@ -84,6 +85,10 @@ export async function openProject(
     } catch {
       // ignore corrupted metadata
     }
+  } else {
+    BrowserWindow.getAllWindows().forEach((w) =>
+      w.webContents.send('pack-meta-missing', projectPath)
+    );
   }
   return projectPath;
 }

@@ -71,6 +71,7 @@ declare global {
       setLastProject: IpcInvoke<'set-last-project'>;
       openExternalEditor: IpcInvoke<'open-external-editor'>;
       onOpenProject: IpcListener<'project-opened'>;
+      onPackMetaMissing: IpcListener<'pack-meta-missing'>;
       onFileAdded: IpcListener<'file-added'>;
       onFileRemoved: IpcListener<'file-removed'>;
       onFileRenamed: IpcListener<'file-renamed'>;

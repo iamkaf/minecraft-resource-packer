@@ -108,6 +108,8 @@ const api = {
   onFileChanged: (
     listener: (e: unknown, args: { path: string; stamp: number }) => void
   ) => on('file-changed', listener),
+  onPackMetaMissing: (listener: (e: unknown, path: string) => void) =>
+    on('pack-meta-missing', listener),
   loadPackMeta: (name: string) => invoke('load-pack-meta', name),
   savePackMeta: (name: string, meta: import('../main/projects').PackMeta) =>
     invoke('save-pack-meta', name, meta),

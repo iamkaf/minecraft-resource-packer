@@ -101,6 +101,7 @@ describe('App', () => {
       setEditorLayout: vi.fn(),
       loadPackMeta: vi.fn(async () => ({ version: '1.21.1', description: '' })),
       getConfetti,
+      onPackMetaMissing: vi.fn(),
     };
     getConfetti.mockResolvedValue(true);
   });

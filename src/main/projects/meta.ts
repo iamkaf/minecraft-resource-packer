@@ -3,6 +3,7 @@
  */
 import fs from 'fs';
 import path from 'path';
+import { BrowserWindow } from 'electron';
 import type { PackMeta, ProjectMetadata } from '../../shared/project';
 import { PackMetaSchema } from '../../shared/project';
 import { readProjectMeta, writeProjectMeta } from '../projectMeta';
@@ -19,6 +20,10 @@ export async function loadPackMeta(
     } catch {
       // ignore malformed data
     }
+  } else {
+    BrowserWindow.getAllWindows().forEach((w) =>
+      w.webContents.send('pack-meta-missing', projectPath)
+    );
   }
   return {
     version: 'unknown',

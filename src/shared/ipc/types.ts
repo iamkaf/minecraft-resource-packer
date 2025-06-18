@@ -124,6 +124,7 @@ export interface IpcResponseMap {
 
 export interface IpcEventMap {
   'project-opened': string;
+  'pack-meta-missing': string;
   'file-added': string;
   'file-removed': string;
   'file-renamed': { oldPath: string; newPath: string };
