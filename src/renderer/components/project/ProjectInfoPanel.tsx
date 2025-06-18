@@ -48,7 +48,6 @@ export default function ProjectInfoPanel({
             }}
           />
           <h2 className="card-title text-lg font-display">{name}</h2>
-          <p className="text-xs break-all">{projectPath}</p>
           <div className="card-actions justify-end w-full mt-auto">
             <Button
               className="btn-neutral btn-sm"

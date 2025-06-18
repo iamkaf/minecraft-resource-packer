@@ -97,26 +97,6 @@ export function PackMetaForm({
         />
       </label>
       <label className="flex items-center gap-2">
-        Created
-        <InputField
-          data-testid="created-input"
-          className="flex-1"
-          type="number"
-          value={created}
-          onChange={(e) => setCreated(e.target.value)}
-        />
-      </label>
-      <label className="flex items-center gap-2">
-        Updated
-        <InputField
-          data-testid="updated-input"
-          className="flex-1"
-          type="number"
-          value={updated}
-          onChange={(e) => setUpdated(e.target.value)}
-        />
-      </label>
-      <label className="flex items-center gap-2">
         License
         <InputField
           data-testid="license-input"
