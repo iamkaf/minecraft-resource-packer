@@ -4,10 +4,9 @@ import { render, screen, fireEvent, within } from '@testing-library/react';
 import ProjectManagerView from '../src/renderer/views/ProjectManagerView';
 import type { ProjectInfo } from '../src/renderer/components/project/ProjectTable';
 
-describe('ProjectManagerView hotkeys', () => {
+describe('ProjectManagerView bulk delete confirm', () => {
   const listProjects = vi.fn();
   const listPackFormats = vi.fn();
-  const openProject = vi.fn();
   const deleteProject = vi.fn();
   const getProjectSort = vi.fn();
   const setProjectSort = vi.fn();
@@ -16,62 +15,52 @@ describe('ProjectManagerView hotkeys', () => {
     interface API {
       listProjects: () => Promise<ProjectInfo[]>;
       listPackFormats: () => Promise<{ format: number; label: string }[]>;
-      openProject: (name: string) => void;
       deleteProject: (name: string) => Promise<void>;
-      createProject: (name: string, version: string) => Promise<void>;
+      openProject: (name: string) => void;
+      createProject: (n: string, v: string) => Promise<void>;
       importProject: () => Promise<
         import('../src/main/projects').ImportSummary | null
       >;
-      duplicateProject: (name: string, newName: string) => Promise<void>;
+      duplicateProject: (n: string, nn: string) => Promise<void>;
+      exportProjects: (paths: string[]) => Promise<void>;
       getProjectSort: () => Promise<{ key: keyof ProjectInfo; asc: boolean }>;
       setProjectSort: (key: keyof ProjectInfo, asc: boolean) => Promise<void>;
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       listProjects,
       listPackFormats,
-      openProject,
       deleteProject,
+      openProject: vi.fn(),
       createProject: vi.fn(),
       importProject: vi.fn(),
       duplicateProject: vi.fn(),
+      exportProjects: vi.fn(),
       getProjectSort,
       setProjectSort,
     };
     listProjects.mockResolvedValue([
-      { name: 'Alpha', version: '1.20', assets: 2, lastOpened: 0 },
-      { name: 'Beta', version: '1.20', assets: 3, lastOpened: 1 },
+      { name: 'Alpha', version: '1.21', assets: 2, lastOpened: 0 },
+      { name: 'Beta', version: '1.20', assets: 3, lastOpened: 0 },
     ]);
     listPackFormats.mockResolvedValue([]);
     deleteProject.mockResolvedValue(Promise.resolve());
     getProjectSort.mockResolvedValue({ key: 'name', asc: true });
     setProjectSort.mockResolvedValue(Promise.resolve());
-    openProject.mockReset();
-    deleteProject.mockReset();
+    vi.clearAllMocks();
   });
 
-  it('opens all selected projects with Enter', async () => {
-    render(<ProjectManagerView />);
-    await screen.findAllByRole('checkbox');
-    const boxes = screen.getAllByRole('checkbox', { name: /Select/ });
-    fireEvent.click(boxes[1]);
-    fireEvent.click(boxes[2], { ctrlKey: true });
-    fireEvent.keyDown(window, { key: 'Enter' });
-    expect(openProject).toHaveBeenCalledWith('Alpha');
-    expect(openProject).toHaveBeenCalledWith('Beta');
-  });
-
-  it('deletes all selected projects with Delete', async () => {
+  it('shows confirmation modal before deleting multiple projects', async () => {
     render(<ProjectManagerView />);
     await screen.findAllByRole('checkbox');
     const boxes = screen.getAllByRole('checkbox', { name: /Select/ });
     fireEvent.click(boxes[1]);
     fireEvent.click(boxes[2], { ctrlKey: true });
     fireEvent.keyDown(window, { key: 'Delete' });
-    const modal = await screen.findByText('Delete Projects');
+    const modalTitle = await screen.findByText('Delete Projects');
     expect(deleteProject).not.toHaveBeenCalled();
     fireEvent.click(
       within(
-        modal.closest('[data-testid="daisy-modal"]') as HTMLElement
+        modalTitle.closest('[data-testid="daisy-modal"]') as HTMLElement
       ).getByText('Delete')
     );
     expect(deleteProject).toHaveBeenCalledWith('Alpha');

@@ -32,10 +32,8 @@ const ProjectManagerView: React.FC = () => {
 
   const toast = useToast();
 
-  const { modals, openDuplicate, openDelete } = useProjectModals(
-    refresh,
-    toast
-  );
+  const { modals, openDuplicate, openDelete, openDeleteMany } =
+    useProjectModals(refresh, toast);
 
   const handleOpen = (n: string) => {
     window.electronAPI?.openProject(n);
@@ -60,9 +58,15 @@ const ProjectManagerView: React.FC = () => {
 
   let clearSelection: () => void = () => {};
   const handleDeleteSelected = (names: string[]) => {
-    names.forEach((n) => window.electronAPI?.deleteProject(n));
-    clearSelection();
-    refresh();
+    if (names.length > 1) {
+      openDeleteMany(names, () => {
+        clearSelection();
+        refresh();
+      });
+    } else if (names.length === 1) {
+      openDelete(names[0]);
+      clearSelection();
+    }
   };
 
   const { selected, toggleAll, toggleOne, clear } = useProjectSelection(
