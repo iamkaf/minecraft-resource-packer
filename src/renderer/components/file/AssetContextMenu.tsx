@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { Button } from '../daisy/actions';
 import { Checkbox } from '../daisy/input';
@@ -32,6 +32,14 @@ export default function AssetContextMenu({
 }: Props) {
   const root = document.getElementById('overlay-root');
   if (!root) return null;
+  const fallbackRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!firstItemRef || typeof firstItemRef === 'function') {
+      fallbackRef.current?.focus();
+    } else {
+      firstItemRef.current?.focus();
+    }
+  }, []);
   return ReactDOM.createPortal(
     <ul
       className="menu dropdown-content bg-base-200 rounded-box fixed z-50 w-40 p-1 shadow"
@@ -40,7 +48,11 @@ export default function AssetContextMenu({
     >
       <li>
         <Button
-          ref={firstItemRef}
+          ref={
+            (firstItemRef && typeof firstItemRef !== 'function'
+              ? firstItemRef
+              : fallbackRef) as React.Ref<HTMLButtonElement>
+          }
           role="menuitem"
           onClick={() => onReveal(filePath)}
         >

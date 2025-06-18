@@ -1,10 +1,10 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ProjectContextMenu from '../src/renderer/components/project/ProjectContextMenu';
 
 describe('ProjectContextMenu', () => {
-  it('fires callbacks and renders to overlay root', () => {
+  it('fires callbacks and renders to overlay root', async () => {
     const open = vi.fn();
     const dup = vi.fn();
     const del = vi.fn();
@@ -18,6 +18,9 @@ describe('ProjectContextMenu', () => {
     );
     const root = document.getElementById('overlay-root');
     expect(root?.querySelector('ul')).toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getByRole('menuitem', { name: 'Open' })).toHaveFocus()
+    );
     fireEvent.click(screen.getByRole('menuitem', { name: 'Open' }));
     expect(open).toHaveBeenCalledWith('Test');
     fireEvent.click(screen.getByRole('menuitem', { name: 'Duplicate' }));

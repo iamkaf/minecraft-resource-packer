@@ -41,10 +41,14 @@ export default function Modal({
       dialog.removeEventListener('click', handleClick);
     };
   }, [onClose]);
+  useEffect(() => {
+    dialogRef.current?.focus();
+  }, []);
   return ReactDOM.createPortal(
     <dialog
       ref={dialogRef}
       open
+      tabIndex={-1}
       className="modal modal-open"
       data-testid={testId}
     >
