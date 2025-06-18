@@ -25,12 +25,6 @@ export function PackMetaForm({
   const [description, setDescription] = useState(meta.description);
   const [author, setAuthor] = useState(meta.author);
   const [urls, setUrls] = useState(meta.urls.join('\n'));
-  const [created, setCreated] = useState(
-    meta.created ? String(meta.created) : ''
-  );
-  const [updated, setUpdated] = useState(
-    meta.updated ? String(meta.updated) : ''
-  );
   const [license, setLicense] = useState(meta.license);
 
   return (
@@ -47,8 +41,6 @@ export function PackMetaForm({
               .split(/\n+/)
               .map((u) => u.trim())
               .filter(Boolean),
-            created: created ? Number(created) : undefined,
-            updated: updated ? Number(updated) : undefined,
             license,
           };
           const parsed = PackMetaSchema.parse(data);

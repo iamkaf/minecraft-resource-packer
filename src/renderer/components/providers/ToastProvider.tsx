@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import ReactDOM from 'react-dom';
 
 export type ToastType =
   | 'info'
@@ -64,39 +65,42 @@ export default function ToastProvider({
   return (
     <ToastContext.Provider value={showToast}>
       {children}
-      <div className="toast toast-top toast-end z-50" aria-live="assertive">
-        {toasts.map((t) => (
-          <div key={t.id} className={`alert alert-${t.type} relative`}>
-            {t.message}
-            {t.closable && (
-              <button
-                className="btn btn-xs btn-circle btn-ghost absolute right-1 top-1"
-                onClick={() => removeToast(t.id)}
-                aria-label="Close"
-              >
-                ✕
-              </button>
-            )}
-            {t.duration && t.duration > 0 && (
-              <div
-                className={`absolute bottom-0 left-0 h-1 w-full rounded-b ${
-                  {
-                    info: 'bg-info',
-                    success: 'bg-success',
-                    warning: 'bg-warning',
-                    error: 'bg-error',
-                    neutral: 'bg-neutral',
-                    loading: 'bg-primary',
-                  }[t.type]
-                }`}
-                style={{
-                  animation: `toast-progress linear ${t.duration}ms forwards`,
-                }}
-              />
-            )}
-          </div>
-        ))}
-      </div>
+      {ReactDOM.createPortal(
+        <div className="toast toast-top toast-end z-50" aria-live="assertive">
+          {toasts.map((t) => (
+            <div key={t.id} className={`alert alert-${t.type} relative`}>
+              {t.message}
+              {t.closable && (
+                <button
+                  className="btn btn-xs btn-circle btn-ghost absolute right-1 top-1"
+                  onClick={() => removeToast(t.id)}
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              )}
+              {t.duration && t.duration > 0 && (
+                <div
+                  className={`absolute bottom-0 left-0 h-1 w-full rounded-b ${
+                    {
+                      info: 'bg-info',
+                      success: 'bg-success',
+                      warning: 'bg-warning',
+                      error: 'bg-error',
+                      neutral: 'bg-neutral',
+                      loading: 'bg-primary',
+                    }[t.type]
+                  }`}
+                  style={{
+                    animation: `toast-progress linear ${t.duration}ms forwards`,
+                  }}
+                />
+              )}
+            </div>
+          ))}
+        </div>,
+        document.getElementById('overlay-root') as HTMLElement
+      )}
       <div
         role="status"
         aria-live="polite"

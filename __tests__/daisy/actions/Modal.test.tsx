@@ -11,5 +11,7 @@ describe('daisy Modal', () => {
       </Modal>
     );
     expect(screen.getByTestId('custom')).toBeInTheDocument();
+    const root = document.getElementById('overlay-root');
+    expect(root?.querySelector('dialog')).toBeInTheDocument();
   });
 });

@@ -46,7 +46,7 @@ describe('ProjectInfoPanel', () => {
     expect(open).toHaveBeenCalledWith('/p/Pack');
     fireEvent.click(screen.getByText('Back to Projects'));
     expect(onBack).toHaveBeenCalled();
-    expect(screen.getByText('/p/Pack')).toBeInTheDocument();
+    expect(screen.getByText('Pack')).toBeInTheDocument();
   });
 
   it('falls back to default icon when pack.png missing', async () => {
