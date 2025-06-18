@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Button } from '../daisy/actions';
+import { useEditor } from '../providers/EditorProvider';
 
 const PreviewPane = lazy(() => import('./PreviewPane'));
 
@@ -12,7 +13,6 @@ interface Props {
   stamp?: number;
   onSave?: () => void;
   onReset?: () => void;
-  onOpenLab?: () => void;
   onOpenDiff?: () => void;
   onOpenAudio?: () => void;
   onOpenRevisions?: () => void;
@@ -28,12 +28,12 @@ export default function AssetInfoHeader({
   stamp,
   onSave,
   onReset,
-  onOpenLab,
   onOpenDiff,
   onOpenAudio,
   onOpenRevisions,
   onOpenExternal,
 }: Props) {
+  const { openLab } = useEditor();
   return (
     <div className="flex gap-2 mb-2" data-testid="asset-info-header">
       <Suspense
@@ -65,7 +65,10 @@ export default function AssetInfoHeader({
         )}
         {isPng && count === 1 && (
           <div className="flex flex-col gap-2 mt-2" data-testid="png-actions">
-            <Button className="btn-secondary btn-sm" onClick={onOpenLab}>
+            <Button
+              className="btn-secondary btn-sm"
+              onClick={() => openLab(asset, stamp)}
+            >
               Open Texture Lab
             </Button>
             <Button className="btn-secondary btn-sm" onClick={onOpenExternal}>

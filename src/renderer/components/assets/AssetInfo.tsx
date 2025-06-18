@@ -9,7 +9,6 @@ import TextPanel from './assetInfo/TextPanel';
 import PngPanel from './assetInfo/PngPanel';
 import AudioPanel from './assetInfo/AudioPanel';
 
-const TextureLab = lazy(() => import('./TextureLab'));
 const TextureDiff = lazy(() => import('./TextureDiff'));
 const AudioPreview = lazy(() => import('./AudioPreview'));
 
@@ -24,7 +23,6 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
   const [text, setText] = useState('');
   const [orig, setOrig] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [lab, setLab] = useState(false);
   const [diff, setDiff] = useState(false);
   const [audio, setAudio] = useState(false);
   const [stamp, setStamp] = useState<number>();
@@ -99,7 +97,6 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
         stamp={stamp}
         onSave={handleSave}
         onReset={handleReset}
-        onOpenLab={() => setLab(true)}
         onOpenDiff={() => setDiff(true)}
         onOpenAudio={() => setAudio(true)}
         onOpenRevisions={() => setRevs(true)}
@@ -122,11 +119,6 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
       )}
       {isPng && count === 1 && <PngPanel />}
       {isAudio && count === 1 && <AudioPanel />}
-      {lab && (
-        <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-          <TextureLab file={full} onClose={() => setLab(false)} stamp={stamp} />
-        </Suspense>
-      )}
       {diff && (
         <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
           <TextureDiff asset={asset} onClose={() => setDiff(false)} />
