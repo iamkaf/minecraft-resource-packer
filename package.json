@@ -15,7 +15,9 @@
     "dev": "electron-forge start",
     "dev:headless": "xvfb-maybe -- electron-forge start -- --no-sandbox",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -90,6 +92,7 @@
     "ts-node": "^10.9.2",
     "typescript": "~5.8.3",
     "unzipper": "^0.12.3",
+    "vitepress": "^1.6.3",
     "vitest": "^3.2.3",
     "xvfb-maybe": "^0.2.1"
   }

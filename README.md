@@ -39,6 +39,7 @@ The Project Manager supports a few hotkeys:
 
 - [User Guide](docs/user-guide.md)
 - [Developer Handbook](docs/developer-handbook.md)
+- Hosted docs are published via **GitHub Pages**.
 
 ## Development
 
