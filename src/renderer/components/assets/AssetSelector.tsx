@@ -130,7 +130,12 @@ const AssetSelector: React.FC<Props> = ({ onAssetSelect }) => {
       className="mb-4"
       tabIndex={0}
       onBlur={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+        const overlay = document.getElementById('overlay-root');
+        const next = e.relatedTarget as Node | null;
+        if (
+          !e.currentTarget.contains(next) &&
+          !(overlay && overlay.contains(next))
+        ) {
           closeMenu();
         }
       }}

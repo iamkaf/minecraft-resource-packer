@@ -64,7 +64,13 @@ export default function FileTree({ files, versions }: Props) {
         data-testid="file-tree"
         tabIndex={0}
         onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget as Node)) closeMenu();
+          const overlay = document.getElementById('overlay-root');
+          const next = e.relatedTarget as Node | null;
+          if (
+            !e.currentTarget.contains(next) &&
+            !(overlay && overlay.contains(next))
+          )
+            closeMenu();
         }}
       >
         {files.map((f) => (
@@ -136,7 +142,13 @@ export default function FileTree({ files, versions }: Props) {
       data-testid="file-tree"
       tabIndex={0}
       onBlur={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node)) closeMenu();
+        const overlay = document.getElementById('overlay-root');
+        const next = e.relatedTarget as Node | null;
+        if (
+          !e.currentTarget.contains(next) &&
+          !(overlay && overlay.contains(next))
+        )
+          closeMenu();
       }}
     >
       <Tree
