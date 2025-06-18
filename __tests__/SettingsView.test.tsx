@@ -125,6 +125,7 @@ describe('SettingsView', () => {
         <SettingsView />
       </ToastProvider>
     );
+    fireEvent.click(screen.getByRole('button', { name: 'Appearance' }));
     const select = await screen.findByLabelText('Theme');
     fireEvent.change(select, { target: { value: 'dark' } });
     await Promise.resolve();
@@ -141,10 +142,33 @@ describe('SettingsView', () => {
         <SettingsView />
       </ToastProvider>
     );
+    fireEvent.click(screen.getByRole('button', { name: 'Appearance' }));
     const toggle = await screen.findByLabelText('Confetti effects');
     expect(toggle).toBeChecked();
     fireEvent.click(toggle);
     expect(setConfetti).toHaveBeenCalledWith(false);
     expect(await screen.findAllByText('Preference saved')).toHaveLength(2);
+  });
+
+  it('renders navigation sidebar', () => {
+    render(
+      <ToastProvider>
+        <SettingsView />
+      </ToastProvider>
+    );
+    expect(screen.getByTestId('settings-nav')).toBeInTheDocument();
+  });
+
+  it('shows keyboard shortcuts section', async () => {
+    render(
+      <ToastProvider>
+        <SettingsView />
+      </ToastProvider>
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Keyboard Shortcuts' }));
+    expect(
+      await screen.findByText(/open all selected projects/i)
+    ).toBeInTheDocument();
+    expect(screen.getAllByTestId('kbd')[0]).toHaveTextContent('Enter');
   });
 });
