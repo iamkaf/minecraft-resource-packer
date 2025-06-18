@@ -2,6 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import AssetBrowserItem from '../src/renderer/components/assets/AssetBrowserItem';
+import MoveFileModal from '../src/renderer/components/modals/MoveFileModal';
 import {
   AssetBrowserProvider,
   useAssetBrowser,
@@ -11,6 +12,7 @@ import path from 'path';
 const openInFolder = vi.fn();
 const openFile = vi.fn();
 const deleteFile = vi.fn();
+const renameFile = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -20,23 +22,27 @@ beforeEach(() => {
         openInFolder: typeof openInFolder;
         openFile: typeof openFile;
         deleteFile: typeof deleteFile;
+        renameFile: typeof renameFile;
       };
     }
   ).electronAPI = {
     openInFolder,
     openFile,
     deleteFile,
+    renameFile,
   };
 });
 
 describe('AssetBrowserItem', () => {
   it('calls IPC actions from context menu', async () => {
     const openRename = vi.fn();
+    const openMove = vi.fn();
     render(
       <AssetBrowserProvider
         noExport={new Set()}
         toggleNoExport={vi.fn()}
         openRename={openRename}
+        openMove={openMove}
       >
         <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />
       </AssetBrowserProvider>
@@ -51,6 +57,9 @@ describe('AssetBrowserItem', () => {
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Rename' }));
     expect(openRename).toHaveBeenCalledWith('a.txt');
+    fireEvent.contextMenu(item);
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Move…' }));
+    expect(openMove).toHaveBeenCalledWith('a.txt');
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Delete' }));
     expect(deleteFile).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
@@ -70,6 +79,7 @@ describe('AssetBrowserItem', () => {
         noExport={new Set()}
         toggleNoExport={toggleNoExport}
         openRename={() => undefined}
+        openMove={() => undefined}
       >
         <Wrapper />
       </AssetBrowserProvider>
@@ -87,6 +97,7 @@ describe('AssetBrowserItem', () => {
         noExport={new Set()}
         toggleNoExport={() => undefined}
         openRename={() => undefined}
+        openMove={() => undefined}
       >
         <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />
       </AssetBrowserProvider>
@@ -106,6 +117,7 @@ describe('AssetBrowserItem', () => {
         noExport={new Set(['a.txt'])}
         toggleNoExport={() => undefined}
         openRename={() => undefined}
+        openMove={() => undefined}
       >
         <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />
       </AssetBrowserProvider>
@@ -114,5 +126,46 @@ describe('AssetBrowserItem', () => {
     fireEvent.contextMenu(item);
     const menu = screen.getByRole('menu');
     expect(menu.className).not.toMatch('opacity-50');
+  });
+
+  it('moves file via modal', async () => {
+    function Wrapper() {
+      const [move, setMove] = React.useState<string | null>(null);
+      return (
+        <AssetBrowserProvider
+          noExport={new Set()}
+          toggleNoExport={() => undefined}
+          openRename={() => undefined}
+          openMove={(f) => setMove(f)}
+        >
+          <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />
+          {move && (
+            <MoveFileModal
+              current={move}
+              onCancel={() => setMove(null)}
+              onMove={(dest) => {
+                renameFile(
+                  path.join('/proj', move),
+                  path.join('/proj', dest, path.basename(move))
+                );
+                setMove(null);
+              }}
+            />
+          )}
+        </AssetBrowserProvider>
+      );
+    }
+    render(<Wrapper />);
+    const item = screen.getAllByText('a.txt')[0];
+    fireEvent.contextMenu(item);
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Move…' }));
+    const modal = await screen.findByTestId('daisy-modal');
+    const input = modal.querySelector('input') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 'dest' } });
+    fireEvent.submit(input.closest('form') as HTMLFormElement);
+    expect(renameFile).toHaveBeenCalledWith(
+      path.join('/proj', 'a.txt'),
+      path.join('/proj', 'dest', 'a.txt')
+    );
   });
 });

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import path from 'path';
 import RenameModal from '../modals/RenameModal';
+import MoveFileModal from '../modals/MoveFileModal';
 import AssetBrowserItem from './AssetBrowserItem';
 import { useProjectFiles } from '../file/useProjectFiles';
 import FileTree from './FileTree';
@@ -176,6 +177,7 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
   const { path: projectPath } = useProject();
   const { files, noExport, toggleNoExport, versions } = useProjectFiles();
   const [renameTarget, setRenameTarget] = useState<string | null>(null);
+  const [moveTarget, setMoveTarget] = useState<string | null>(null);
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -225,6 +227,7 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
       noExport={noExport}
       toggleNoExport={toggleNoExport}
       openRename={(file) => setRenameTarget(file)}
+      openMove={(file) => setMoveTarget(file)}
       onSelectionChange={onSelectionChange}
     >
       <BrowserBody
@@ -247,6 +250,22 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
             const target = path.join(path.dirname(full), n);
             window.electronAPI?.renameFile(full, target);
             setRenameTarget(null);
+          }}
+        />
+      )}
+      {moveTarget && (
+        <MoveFileModal
+          current={moveTarget}
+          onCancel={() => setMoveTarget(null)}
+          onMove={(dest) => {
+            const full = path.join(projectPath, moveTarget);
+            const target = path.join(
+              projectPath,
+              dest,
+              path.basename(moveTarget)
+            );
+            window.electronAPI?.renameFile(full, target);
+            setMoveTarget(null);
           }}
         />
       )}

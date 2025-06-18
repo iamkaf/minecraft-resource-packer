@@ -11,6 +11,7 @@ interface Props {
   onReveal: (file: string) => void;
   onOpen: (file: string) => void;
   onRename: (file: string) => void;
+  onMove: (file: string) => void;
   onDelete: (file: string) => void;
   onToggleNoExport: (checked: boolean) => void;
 }
@@ -24,6 +25,7 @@ export default function AssetContextMenu({
   onReveal,
   onOpen,
   onRename,
+  onMove,
   onDelete,
   onToggleNoExport,
 }: Props) {
@@ -54,6 +56,15 @@ export default function AssetContextMenu({
           disabled={selectionCount > 1}
         >
           Rename
+        </Button>
+      </li>
+      <li>
+        <Button
+          role="menuitem"
+          onClick={() => onMove(filePath)}
+          disabled={selectionCount > 1}
+        >
+          Move…
         </Button>
       </li>
       <li>
