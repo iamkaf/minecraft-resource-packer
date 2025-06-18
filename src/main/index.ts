@@ -12,12 +12,12 @@ import path from 'path';
 import { registerExportHandlers } from './exporter';
 import { registerProjectHandlers, openProject } from './projects';
 import { registerNoExportHandlers } from './noExport';
+import { registerAssetHandlers } from './assets';
 import {
-  registerAssetHandlers,
   registerVanillaProtocol,
   registerAssetProtocol,
   setActiveProject,
-} from './assets';
+} from './assets/protocols';
 import { registerIconHandlers } from './icon';
 import { registerTextureLabHandlers } from './textureLab';
 import {

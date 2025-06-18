@@ -4,7 +4,7 @@ import path from 'path';
 import os from 'os';
 import { v4 as uuid } from 'uuid';
 import { createProject } from '../src/main/projects';
-import { addTexture } from '../src/main/assets';
+import { addTexture } from '../src/main/assets/textures';
 
 const tmpDir = path.join(os.tmpdir(), `texturetest-${uuid()}`);
 
