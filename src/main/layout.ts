@@ -4,7 +4,7 @@ import Store from 'electron-store';
 
 type ThemePref = 'light' | 'dark' | 'system';
 
-const store = new Store<{
+type StoreSchema = {
   editorLayout: number[];
   textureEditor: string;
   theme: ThemePref;
@@ -17,7 +17,9 @@ const store = new Store<{
   assetZoom: number;
   openLastProject: boolean;
   lastProject: string;
-}>({
+};
+
+const store = new Store<StoreSchema>({
   defaults: {
     editorLayout: [20, 80],
     textureEditor: '',
@@ -34,45 +36,29 @@ const store = new Store<{
   },
 });
 
-export function getEditorLayout(): number[] {
-  return store.get('editorLayout');
-}
+const getter =
+  <K extends keyof StoreSchema>(key: K) =>
+  () =>
+    store.get(key);
+const setter =
+  <K extends keyof StoreSchema>(key: K) =>
+  (value: StoreSchema[K]) =>
+    store.set(key, value);
 
-export function setEditorLayout(layout: number[]): void {
-  store.set('editorLayout', layout);
-}
+export const getEditorLayout = getter('editorLayout');
+export const setEditorLayout = setter('editorLayout');
 
-export function getTextureEditor(): string {
-  return store.get('textureEditor');
-}
+export const getTextureEditor = getter('textureEditor');
+export const setTextureEditor = setter('textureEditor');
 
-export function setTextureEditor(path: string): void {
-  store.set('textureEditor', path);
-}
+export const getTheme = getter('theme');
+export const setTheme = setter('theme');
 
-export function getTheme(): ThemePref {
-  return store.get('theme');
-}
+export const getConfetti = getter('confetti');
+export const setConfetti = setter('confetti');
 
-export function setTheme(pref: ThemePref): void {
-  store.set('theme', pref);
-}
-
-export function getConfetti(): boolean {
-  return store.get('confetti');
-}
-
-export function setConfetti(flag: boolean): void {
-  store.set('confetti', flag);
-}
-
-export function getDefaultExportDir(): string {
-  return store.get('defaultExportDir');
-}
-
-export function setDefaultExportDir(dir: string): void {
-  store.set('defaultExportDir', dir);
-}
+export const getDefaultExportDir = getter('defaultExportDir');
+export const setDefaultExportDir = setter('defaultExportDir');
 
 export function getProjectSort(): {
   key: keyof import('./projects').ProjectInfo;
@@ -89,77 +75,42 @@ export function setProjectSort(
   store.set('projectSortAsc', asc);
 }
 
-export function getAssetSearch(): string {
-  return store.get('assetSearch');
-}
+export const getAssetSearch = getter('assetSearch');
+export const setAssetSearch = setter('assetSearch');
 
-export function setAssetSearch(text: string): void {
-  store.set('assetSearch', text);
-}
+export const getAssetFilters = getter('assetFilters');
+export const setAssetFilters = setter('assetFilters');
 
-export function getAssetFilters(): string[] {
-  return store.get('assetFilters');
-}
+export const getAssetZoom = getter('assetZoom');
+export const setAssetZoom = setter('assetZoom');
 
-export function setAssetFilters(list: string[]): void {
-  store.set('assetFilters', list);
-}
+export const getOpenLastProject = getter('openLastProject');
+export const setOpenLastProject = setter('openLastProject');
 
-export function getAssetZoom(): number {
-  return store.get('assetZoom');
-}
-
-export function setAssetZoom(z: number): void {
-  store.set('assetZoom', z);
-}
-
-export function getOpenLastProject(): boolean {
-  return store.get('openLastProject');
-}
-
-export function setOpenLastProject(flag: boolean): void {
-  store.set('openLastProject', flag);
-}
-
-export function getLastProject(): string {
-  return store.get('lastProject');
-}
-
-export function setLastProject(name: string): void {
-  store.set('lastProject', name);
-}
+export const getLastProject = getter('lastProject');
+export const setLastProject = setter('lastProject');
 
 export function registerLayoutHandlers(ipc: IpcMain): void {
-  ipc.handle('get-editor-layout', () => getEditorLayout());
-  ipc.handle('set-editor-layout', (_e, layout: number[]) =>
-    setEditorLayout(layout)
-  );
-  ipc.handle('get-texture-editor', () => getTextureEditor());
-  ipc.handle('set-texture-editor', (_e, p: string) => setTextureEditor(p));
-  ipc.handle('get-theme', () => getTheme());
-  ipc.handle('set-theme', (_e, t: ThemePref) => setTheme(t));
-  ipc.handle('get-confetti', () => getConfetti());
-  ipc.handle('set-confetti', (_e, c: boolean) => setConfetti(c));
-  ipc.handle('get-default-export-dir', () => getDefaultExportDir());
-  ipc.handle('set-default-export-dir', (_e, d: string) =>
-    setDefaultExportDir(d)
-  );
+  const pairs: [string, () => unknown, (v: unknown) => void][] = [
+    ['editor-layout', getEditorLayout, setEditorLayout],
+    ['texture-editor', getTextureEditor, setTextureEditor],
+    ['theme', getTheme, setTheme],
+    ['confetti', getConfetti, setConfetti],
+    ['default-export-dir', getDefaultExportDir, setDefaultExportDir],
+    ['asset-search', getAssetSearch, setAssetSearch],
+    ['asset-filters', getAssetFilters, setAssetFilters],
+    ['asset-zoom', getAssetZoom, setAssetZoom],
+    ['open-last-project', getOpenLastProject, setOpenLastProject],
+    ['last-project', getLastProject, setLastProject],
+  ];
+  for (const [name, get, set] of pairs) {
+    ipc.handle(`get-${name}`, () => get());
+    ipc.handle(`set-${name}`, (_e, val) => set(val));
+  }
   ipc.handle('get-project-sort', () => getProjectSort());
   ipc.handle(
     'set-project-sort',
     (_e, k: keyof import('./projects').ProjectInfo, s: boolean) =>
       setProjectSort(k, s)
   );
-  ipc.handle('get-asset-search', () => getAssetSearch());
-  ipc.handle('set-asset-search', (_e, q: string) => setAssetSearch(q));
-  ipc.handle('get-asset-filters', () => getAssetFilters());
-  ipc.handle('set-asset-filters', (_e, f: string[]) => setAssetFilters(f));
-  ipc.handle('get-asset-zoom', () => getAssetZoom());
-  ipc.handle('set-asset-zoom', (_e, z: number) => setAssetZoom(z));
-  ipc.handle('get-open-last-project', () => getOpenLastProject());
-  ipc.handle('set-open-last-project', (_e, flag: boolean) =>
-    setOpenLastProject(flag)
-  );
-  ipc.handle('get-last-project', () => getLastProject());
-  ipc.handle('set-last-project', (_e, name: string) => setLastProject(name));
 }
