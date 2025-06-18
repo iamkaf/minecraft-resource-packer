@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Button } from '../daisy/actions';
 import { Checkbox } from '../daisy/input';
 
@@ -29,7 +30,9 @@ export default function AssetContextMenu({
   onDelete,
   onToggleNoExport,
 }: Props) {
-  return (
+  const root = document.getElementById('overlay-root');
+  if (!root) return null;
+  return ReactDOM.createPortal(
     <ul
       className="menu dropdown-content bg-base-200 rounded-box fixed z-50 w-40 p-1 shadow"
       style={style}
@@ -83,6 +86,7 @@ export default function AssetContextMenu({
           {selectionCount > 1 ? 'Delete Selected' : 'Delete'}
         </Button>
       </li>
-    </ul>
+    </ul>,
+    root
   );
 }
