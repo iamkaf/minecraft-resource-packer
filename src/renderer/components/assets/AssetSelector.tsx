@@ -1,32 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
-import TextureGrid, { TextureInfo } from './TextureGrid';
 import TextureTree from './TextureTree';
-import { FilterBadge, InputField, Range } from '../daisy/input';
+import AssetSelectorControls, { Filter } from './AssetSelectorControls';
+import AssetCategoryList, { getCategory } from './AssetCategoryList';
+import { TextureInfo } from './TextureGrid';
 import { Button } from '../daisy/actions';
-import { Accordion } from '../daisy/display';
 import { useProject } from '../providers/ProjectProvider';
 import AssetSelectorContextMenu from './AssetSelectorContextMenu';
 
 interface Props {
   onAssetSelect?: (name: string) => void;
 }
-
-const FILTERS = ['blocks', 'items', 'entity', 'ui', 'audio'] as const;
-type Filter = (typeof FILTERS)[number];
-
-const getCategory = (name: string): Filter | 'misc' => {
-  if (name.startsWith('block/')) return 'blocks';
-  if (name.startsWith('item/')) return 'items';
-  if (name.startsWith('entity/')) return 'entity';
-  if (
-    name.startsWith('gui/') ||
-    name.startsWith('font/') ||
-    name.startsWith('misc/')
-  )
-    return 'ui';
-  if (name.startsWith('sound/') || name.startsWith('sounds/')) return 'audio';
-  return 'misc';
-};
 
 const AssetSelector: React.FC<Props> = ({ onAssetSelect }) => {
   const { path: projectPath } = useProject();
@@ -77,23 +60,6 @@ const AssetSelector: React.FC<Props> = ({ onAssetSelect }) => {
       })
     : [];
 
-  const categories = React.useMemo(() => {
-    const out: Record<Filter | 'misc', TextureInfo[]> = {
-      blocks: [],
-      items: [],
-      entity: [],
-      ui: [],
-      audio: [],
-      misc: [],
-    };
-    for (const tex of filtered) {
-      const cat = getCategory(tex.name);
-      if (out[cat]) out[cat].push(tex);
-      else out.misc.push(tex);
-    }
-    return out;
-  }, [filtered]);
-
   const handleSelect = (name: string) => {
     onAssetSelect?.(name);
   };
@@ -140,23 +106,15 @@ const AssetSelector: React.FC<Props> = ({ onAssetSelect }) => {
         }
       }}
     >
+      <AssetSelectorControls
+        query={query}
+        setQuery={setQuery}
+        zoom={zoom}
+        setZoom={setZoom}
+        filters={filters}
+        toggleFilter={toggleFilter}
+      />
       <div className="flex items-center gap-2 mb-2">
-        <InputField
-          className="flex-1"
-          placeholder="Search texture"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <Range
-          min={24}
-          max={128}
-          step={1}
-          value={zoom}
-          aria-label="Zoom"
-          data-testid="zoom-range"
-          onChange={(e) => setZoom(Number(e.target.value))}
-          className="range-xs w-32"
-        />
         <div className="btn-group">
           <Button
             className={`btn-xs ${view === 'grid' ? 'btn-primary' : ''}`}
@@ -172,38 +130,14 @@ const AssetSelector: React.FC<Props> = ({ onAssetSelect }) => {
           </Button>
         </div>
       </div>
-      <div className="flex gap-1 mb-2">
-        {FILTERS.map((f) => (
-          <FilterBadge
-            key={f}
-            label={f.charAt(0).toUpperCase() + f.slice(1)}
-            selected={filters.includes(f)}
-            onClick={() => toggleFilter(f)}
-            onKeyDown={(e) => e.key === 'Enter' && toggleFilter(f)}
-          />
-        ))}
-      </div>
       {view === 'grid' ? (
-        (['blocks', 'items', 'entity', 'ui', 'audio', 'misc'] as const).map(
-          (key) => {
-            const list = categories[key];
-            if (list.length === 0) return null;
-            return (
-              <Accordion key={key} title={key} className="mb-2" defaultOpen>
-                <TextureGrid
-                  testId="texture-grid"
-                  textures={list}
-                  zoom={zoom}
-                  onSelect={handleSelect}
-                  onContextMenu={(e, name) =>
-                    showMenu(name, e.clientX, e.clientY)
-                  }
-                  onKeyDown={(e, name) => handleContext(e, name)}
-                />
-              </Accordion>
-            );
-          }
-        )
+        <AssetCategoryList
+          textures={filtered}
+          zoom={zoom}
+          onSelect={handleSelect}
+          onContextMenu={(e, name) => showMenu(name, e.clientX, e.clientY)}
+          onKeyDown={(e, name) => handleContext(e, name)}
+        />
       ) : (
         <TextureTree
           textures={filtered}
