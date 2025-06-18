@@ -30,8 +30,8 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Custom namespace support (non-`minecraft` assets)
 - [x] Persist search query, category filters and zoom level between sessions
 - [ ] Arrow key navigation between thumbnails
-- [x] Audio & language asset management with previews (`.ogg`, `.wav`, `.json`)
-- [ ] Asset atlas viewer for stitching HD texture previews
+- [x] Audio & language previews (`.ogg`, `.wav`, `.json`)
+- [x] Asset atlas viewer for stitching HD texture previews
 - [ ] Asset dependency graph showing overrides
 
 ### Asset Info & Texture Inspector

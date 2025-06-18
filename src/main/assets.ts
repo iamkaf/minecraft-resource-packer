@@ -4,6 +4,7 @@ import { app as electronApp } from 'electron';
 import type { Protocol, IpcMain } from 'electron';
 import os from 'os';
 import unzipper from 'unzipper';
+import sharp from 'sharp';
 import { readProjectMeta, writeProjectMeta } from './projectMeta';
 import { generatePackIcon } from './icon';
 import {
@@ -209,6 +210,43 @@ export async function getTextureURL(
 }
 
 /**
+ * Combine multiple textures into a single PNG and return a data URL.
+ */
+export async function createTextureAtlas(
+  projectPath: string,
+  textures: string[]
+): Promise<string> {
+  const meta = await readProjectMeta(projectPath);
+  const root = await ensureAssets(meta.minecraft_version);
+  const texDir = path.join(root, 'assets', 'minecraft', 'textures');
+
+  const composites: Array<{ input: Buffer; left: number; top: number }> = [];
+  let width = 0;
+  let height = 0;
+  for (const tex of textures) {
+    const img = sharp(path.join(texDir, tex));
+    const info = await img.metadata();
+    const buf = await img.png().toBuffer();
+    composites.push({ input: buf, left: width, top: 0 });
+    width += info.width ?? 0;
+    height = Math.max(height, info.height ?? 0);
+  }
+  if (width === 0 || height === 0) return '';
+  const out = await sharp({
+    create: {
+      width,
+      height,
+      channels: 4,
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    },
+  })
+    .composite(composites)
+    .png()
+    .toBuffer();
+  return `data:image/png;base64,${out.toString('base64')}`;
+}
+
+/**
  * Register the `vanilla` protocol so it serves files directly from disk.
  */
 export function registerVanillaProtocol(protocol: Protocol) {
@@ -257,6 +295,10 @@ export function registerAssetHandlers(ipc: IpcMain) {
 
   ipc.handle('get-texture-url', (_e, projectPath: string, tex: string) => {
     return getTextureURL(projectPath, tex);
+  });
+
+  ipc.handle('create-atlas', (_e, projectPath: string, tex: string[]) => {
+    return createTextureAtlas(projectPath, tex);
   });
 
   ipc.handle('randomize-icon', (_e, projectPath: string) => {

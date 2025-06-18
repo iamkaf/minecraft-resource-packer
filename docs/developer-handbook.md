@@ -175,6 +175,10 @@ It exposes hue shift, rotation, grayscale, saturation and brightness controls.
 Edits are processed in the main process via Sharp and the modal shows a spinner
 while the file is being updated.
 
+The **Atlas Viewer** modal stitches multiple textures together for a high-
+resolution preview. It requests the combined image through the `createAtlas`
+IPC handler and displays a loading spinner until the data URL is returned.
+
 The **Pack Icon Editor** modal customises `pack.png` for a project. You can
 randomise the item and background, choose a border colour or upload a custom PNG.
 The image is processed with Sharp in the main process and saved at 128×128.

@@ -28,6 +28,7 @@ declare global {
       listTextures: IpcInvoke<'list-textures'>;
       getTexturePath: IpcInvoke<'get-texture-path'>;
       getTextureUrl: IpcInvoke<'get-texture-url'>;
+      createAtlas: IpcInvoke<'create-atlas'>;
       randomizeIcon: IpcInvoke<'randomize-icon'>;
       savePackIcon: IpcInvoke<'save-pack-icon'>;
       exportProject: IpcInvoke<'export-project'>;

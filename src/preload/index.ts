@@ -45,6 +45,8 @@ const api = {
     invoke('get-texture-path', project, name),
   getTextureUrl: (project: string, name: string) =>
     invoke('get-texture-url', project, name),
+  createAtlas: (project: string, files: string[]) =>
+    invoke('create-atlas', project, files),
   randomizeIcon: (project: string) => invoke('randomize-icon', project),
   savePackIcon: (project: string, file: string, border: string) =>
     invoke('save-pack-icon', project, file, border),
