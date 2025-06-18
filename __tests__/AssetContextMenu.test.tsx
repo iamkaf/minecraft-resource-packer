@@ -24,6 +24,8 @@ describe('AssetContextMenu', () => {
         onToggleNoExport={toggle}
       />
     );
+    const root = document.getElementById('overlay-root');
+    expect(root?.querySelector('ul')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('menuitem', { name: 'Reveal' }));
     expect(reveal).toHaveBeenCalledWith('/proj/a.txt');
     fireEvent.click(screen.getByRole('menuitem', { name: 'Open' }));

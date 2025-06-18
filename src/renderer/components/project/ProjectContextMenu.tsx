@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Button } from '../daisy/actions';
 
 interface Props {
@@ -18,7 +19,9 @@ export default function ProjectContextMenu({
   onDuplicate,
   onDelete,
 }: Props) {
-  return (
+  const root = document.getElementById('overlay-root');
+  if (!root) return null;
+  return ReactDOM.createPortal(
     <ul
       className="menu dropdown-content bg-base-200 rounded-box fixed z-50 w-40 p-1 shadow"
       style={style}
@@ -43,6 +46,7 @@ export default function ProjectContextMenu({
           Delete
         </Button>
       </li>
-    </ul>
+    </ul>,
+    root
   );
 }
