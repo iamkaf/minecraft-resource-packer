@@ -6,7 +6,7 @@ import Modal from '../../../src/renderer/components/daisy/actions/Modal';
 describe('daisy Modal', () => {
   it('renders modal when open and uses custom test id', async () => {
     render(
-      <Modal open testId="custom">
+      <Modal open testId="custom" variant="success">
         <p>Content</p>
       </Modal>
     );
@@ -14,6 +14,8 @@ describe('daisy Modal', () => {
     const root = document.getElementById('overlay-root');
     expect(root?.querySelector('dialog')).toBeInTheDocument();
     await waitFor(() => expect(screen.getByTestId('custom')).toHaveFocus());
+    const box = screen.getByTestId('custom').querySelector('.modal-box');
+    expect(box).toHaveClass('bg-success');
   });
 
   it('calls onClose with Escape and backdrop click', () => {

@@ -5,9 +5,9 @@ import { FilterBadge } from '../../../src/renderer/components/daisy/input';
 
 describe('FilterBadge', () => {
   it('renders label and selected class', () => {
-    render(<FilterBadge label="Test" selected />);
+    render(<FilterBadge label="Test" selected variant="secondary" />);
     const badge = screen.getByRole('button', { name: 'Test' });
     expect(badge).toBeInTheDocument();
-    expect(badge).toHaveClass('badge-primary');
+    expect(badge).toHaveClass('badge-secondary');
   });
 });

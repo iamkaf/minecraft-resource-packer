@@ -4,6 +4,7 @@ import { useToast } from '../providers/ToastProvider';
 import { Skeleton } from '../daisy/feedback';
 import { useProject } from '../providers/ProjectProvider';
 import RevisionsModal from '../modals/RevisionsModal';
+import ConfirmModal2 from '../modals/ConfirmModal2';
 import AssetInfoHeader from './AssetInfoHeader';
 import TextPanel from './assetInfo/TextPanel';
 import PngPanel from './assetInfo/PngPanel';
@@ -29,6 +30,7 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
   const [audio, setAudio] = useState(false);
   const [stamp, setStamp] = useState<number>();
   const [revs, setRevs] = useState(false);
+  const [noEditor, setNoEditor] = useState(false);
 
   const full = asset ? path.join(projectPath, asset) : '';
 
@@ -106,14 +108,21 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
         onOpenDiff={() => setDiff(true)}
         onOpenAudio={() => setAudio(true)}
         onOpenRevisions={() => setRevs(true)}
-        onOpenExternal={() =>
-          window.electronAPI?.openExternalEditor(full).catch(() =>
-            toast({
-              message: 'Failed to open external editor',
-              type: 'error',
-            })
-          )
-        }
+        onOpenExternal={async () => {
+          const editor = await window.electronAPI?.getTextureEditor();
+          if (!editor) {
+            setNoEditor(true);
+            return;
+          }
+          window.electronAPI
+            ?.openExternalEditor(full)
+            .catch(() =>
+              toast({
+                message: 'Failed to open external editor',
+                type: 'error',
+              })
+            );
+        }}
       />
       {count === 1 && isText && (
         <TextPanel
@@ -141,6 +150,15 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
         </Suspense>
       )}
       {revs && <RevisionsModal asset={asset} onClose={() => setRevs(false)} />}
+      {noEditor && (
+        <ConfirmModal2
+          title="External Editor Missing"
+          message="Set an external editor path in Settings first."
+          variant="error"
+          onCancel={() => setNoEditor(false)}
+          onConfirm={() => setNoEditor(false)}
+        />
+      )}
     </div>
   );
 }

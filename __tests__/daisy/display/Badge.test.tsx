@@ -5,7 +5,9 @@ import Badge from '../../../src/renderer/components/daisy/display/Badge';
 
 describe('Badge', () => {
   it('renders', () => {
-    render(<Badge>Hi</Badge>);
-    expect(screen.getByTestId('badge')).toBeInTheDocument();
+    render(<Badge variant="accent">Hi</Badge>);
+    const badge = screen.getByTestId('badge');
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveClass('badge-accent');
   });
 });

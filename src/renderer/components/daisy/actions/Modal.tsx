@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import type { DaisyColor } from '../types';
 
 interface ModalProps {
   open?: boolean;
   children: React.ReactNode;
   className?: string;
+  variant?: DaisyColor;
   testId?: string;
   onClose?: () => void;
 }
@@ -13,6 +15,7 @@ export default function Modal({
   open = false,
   children,
   className = '',
+  variant,
   testId = 'daisy-modal',
   onClose,
 }: ModalProps) {
@@ -52,7 +55,13 @@ export default function Modal({
       className="modal modal-open"
       data-testid={testId}
     >
-      <div className={`modal-box ${className}`.trim()}>{children}</div>
+      <div
+        className={`modal-box ${
+          variant ? `bg-${variant} text-${variant}-content` : ''
+        } ${className}`.trim()}
+      >
+        {children}
+      </div>
     </dialog>,
     root
   );
