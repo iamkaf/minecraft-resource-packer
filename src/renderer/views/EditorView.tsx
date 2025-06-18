@@ -1,52 +1,33 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactCanvasConfetti from 'react-canvas-confetti';
-import AssetBrowser from '../components/assets/AssetBrowser';
-import AssetSelector from '../components/assets/AssetSelector';
-import AssetInfo from '../components/assets/AssetInfo';
-import ProjectInfoPanel from '../components/project/ProjectInfoPanel';
-import AssetSelectorInfoPanel from '../components/assets/AssetSelectorInfoPanel';
-import { Skeleton } from '../components/daisy/feedback';
 import ExportWizardModal, {
   BulkProgress,
 } from '../components/modals/ExportWizardModal';
-import ExternalLink from '../components/common/ExternalLink';
-import { Modal, Button } from '../components/daisy/actions';
 import type { ExportSummary } from '../../main/exporter';
-/* eslint-disable import/no-unresolved */
+import { useProject } from '../components/providers/ProjectProvider';
 import {
-  PanelGroup,
-  Panel,
-  PanelResizeHandle,
-  ImperativePanelGroupHandle,
-} from 'react-resizable-panels';
-/* eslint-enable import/no-unresolved */
+  EditorProvider,
+  AssetBrowserTab,
+  TextureLabTab,
+  ExporterTab,
+} from '../components/editor';
+import Tab from '../components/daisy/navigation/Tab';
 
 interface EditorViewProps {
   onBack: () => void;
   onSettings: () => void;
 }
 
-import { useProject } from '../components/providers/ProjectProvider';
-
 export default function EditorView({ onBack, onSettings }: EditorViewProps) {
   const { path: projectPath } = useProject();
   const [selected, setSelected] = useState<string[]>([]);
-  const [selectorAsset, setSelectorAsset] = useState<string | null>(null);
-  const [layout, setLayout] = useState<number[]>([20, 80]);
+  const [mode, setMode] = useState<'browser' | 'lab' | 'exporter'>('browser');
   const [summary, setSummary] = useState<ExportSummary | null>(null);
   const [progress, setProgress] = useState<BulkProgress | null>(null);
-  const [selectorOpen, setSelectorOpen] = useState(false);
   const [allowConfetti, setAllowConfetti] = useState(true);
   const confetti = useRef<((opts: unknown) => void) | null>(null);
-  const groupRef = useRef<ImperativePanelGroupHandle>(null);
 
   useEffect(() => {
-    window.electronAPI?.getEditorLayout().then((l) => {
-      if (Array.isArray(l)) {
-        if (l.length === 2) setLayout(l);
-        else if (l.length === 3) setLayout([l[0], l[1] + l[2]]);
-      }
-    });
     window.electronAPI?.getConfetti().then((c) => setAllowConfetti(c));
   }, []);
 
@@ -74,94 +55,47 @@ export default function EditorView({ onBack, onSettings }: EditorViewProps) {
   };
 
   return (
-    <main
-      className="p-4 flex flex-col gap-4 flex-1 min-h-0"
-      data-testid="editor-view"
-    >
-      <div className="flex items-center justify-end mb-2 gap-2">
-        <Button
-          className="btn-primary btn-sm"
-          onClick={() => setSelectorOpen(true)}
-        >
-          Add From Vanilla
-        </Button>
-        <ExternalLink
-          href="https://minecraft.wiki/w/Resource_pack"
-          aria-label="Help"
-          className="btn btn-circle btn-ghost btn-sm"
-        >
-          ?
-        </ExternalLink>
-      </div>
-      <PanelGroup
-        ref={groupRef}
-        direction="horizontal"
-        onLayout={(l) => {
-          setLayout(l);
-          window.electronAPI?.setEditorLayout(l);
-        }}
-        className="flex-1 min-h-0"
+    <EditorProvider value={{ selected, setSelected }}>
+      <main
+        className="p-4 flex flex-col gap-4 flex-1 min-h-0"
+        data-testid="editor-view"
       >
-        <Panel
-          minSize={15}
-          defaultSize={layout[0]}
-          className="bg-base-100 border border-base-300 rounded flex flex-col"
-        >
-          <ProjectInfoPanel
-            onExport={handleExport}
+        <div role="tablist" className="tabs tabs-bordered mb-2">
+          <Tab
+            className={mode === 'browser' ? 'tab-active' : ''}
+            onClick={() => setMode('browser')}
+          >
+            Asset Browser
+          </Tab>
+          <Tab
+            className={mode === 'lab' ? 'tab-active' : ''}
+            onClick={() => setMode('lab')}
+          >
+            Texture Lab
+          </Tab>
+          <Tab
+            className={mode === 'exporter' ? 'tab-active' : ''}
+            onClick={() => setMode('exporter')}
+          >
+            Exporter
+          </Tab>
+        </div>
+        {mode === 'browser' && (
+          <AssetBrowserTab
             onBack={onBack}
             onSettings={onSettings}
+            onExport={handleExport}
           />
-        </Panel>
-        <PanelResizeHandle className="flex items-center" tagName="div">
-          <div className="w-1 bg-base-content h-full mx-auto"></div>
-        </PanelResizeHandle>
-        <Panel
-          minSize={20}
-          defaultSize={layout[1]}
-          className="overflow-hidden bg-base-100 border border-base-300 rounded"
-        >
-          <PanelGroup direction="vertical" className="h-full">
-            <Panel defaultSize={70} className="overflow-y-auto">
-              <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-                <AssetBrowser onSelectionChange={(sel) => setSelected(sel)} />
-              </Suspense>
-            </Panel>
-            <PanelResizeHandle className="flex items-center" tagName="div">
-              <div className="w-full h-px bg-base-content"></div>
-            </PanelResizeHandle>
-            <Panel defaultSize={30} className="overflow-y-auto">
-              <AssetInfo asset={selected[0] ?? null} count={selected.length} />
-            </Panel>
-          </PanelGroup>
-        </Panel>
-      </PanelGroup>
+        )}
+        {mode === 'lab' && <TextureLabTab />}
+        {mode === 'exporter' && <ExporterTab onExport={handleExport} />}
+      </main>
       {(progress || summary) && (
         <ExportWizardModal
           progress={progress ?? undefined}
           summary={summary ?? undefined}
           onClose={() => setSummary(null)}
         />
-      )}
-      {selectorOpen && (
-        <Modal open testId="asset-selector-modal" className="max-w-[1200px]">
-          <div className="w-[95%] h-[800px]">
-            <h3 className="font-bold text-lg mb-2">Add Assets</h3>
-            <div className="flex gap-4 max-h-[70vh]">
-              <div className="flex-1 overflow-y-auto">
-                <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-                  <AssetSelector onAssetSelect={(n) => setSelectorAsset(n)} />
-                </Suspense>
-              </div>
-              <div className="w-48 overflow-y-auto">
-                <AssetSelectorInfoPanel asset={selectorAsset} />
-              </div>
-            </div>
-            <div className="modal-action">
-              <Button onClick={() => setSelectorOpen(false)}>Close</Button>
-            </div>
-          </div>
-        </Modal>
       )}
       <ReactCanvasConfetti
         onInit={({ confetti: c }) => {
@@ -176,6 +110,6 @@ export default function EditorView({ onBack, onSettings }: EditorViewProps) {
           left: 0,
         }}
       />
-    </main>
+    </EditorProvider>
   );
 }
