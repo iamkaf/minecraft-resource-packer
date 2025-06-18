@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Modal, Button } from '../daisy/actions';
 import { Loading } from '../daisy/feedback';
 import type { ImportSummary } from '../../../main/projects';
@@ -14,6 +14,23 @@ export default function ImportWizardModal({
   summary,
   onClose,
 }: ImportWizardModalProps) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (summary) closeRef.current?.focus();
+  }, [summary]);
+
+  useEffect(() => {
+    if (!summary) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Enter') {
+        e.preventDefault();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [summary, onClose]);
   if (inProgress && !summary) {
     return (
       <Modal open className="flex flex-col items-center">
@@ -33,7 +50,9 @@ export default function ImportWizardModal({
         </p>
         <p>{seconds} seconds</p>
         <div className="modal-action">
-          <Button onClick={onClose}>Close</Button>
+          <Button ref={closeRef} onClick={onClose}>
+            Close
+          </Button>
         </div>
       </Modal>
     );

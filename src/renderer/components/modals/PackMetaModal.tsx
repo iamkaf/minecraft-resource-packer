@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import path from 'path';
 import { app } from 'electron';
 import { PackMetaSchema } from '../../../shared/project';
@@ -26,9 +26,25 @@ export function PackMetaForm({
   const [author, setAuthor] = useState(meta.author);
   const [urls, setUrls] = useState(meta.urls.join('\n'));
   const [license, setLicense] = useState(meta.license);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onCancel?.();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        formRef.current?.requestSubmit();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onCancel]);
 
   return (
     <form
+      ref={formRef}
       className="flex flex-col gap-2"
       onSubmit={(e) => {
         e.preventDefault();

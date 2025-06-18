@@ -19,4 +19,14 @@ describe('ImportWizardModal', () => {
     fireEvent.click(screen.getByText('Close'));
     expect(onClose).toHaveBeenCalled();
   });
+
+  it('handles Escape and Enter', () => {
+    const onClose = vi.fn();
+    const summary = { name: 'Pack', fileCount: 3, durationMs: 1000 };
+    render(<ImportWizardModal summary={summary} onClose={onClose} />);
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalled();
+    fireEvent.keyDown(window, { key: 'Enter' });
+    expect(onClose).toHaveBeenCalledTimes(2);
+  });
 });

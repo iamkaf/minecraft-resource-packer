@@ -20,4 +20,23 @@ describe('ConfirmModal', () => {
     fireEvent.click(screen.getByText('OK'));
     expect(confirm).toHaveBeenCalled();
   });
+
+  it('focuses confirm and handles keys', () => {
+    const cancel = vi.fn();
+    const confirm = vi.fn();
+    render(
+      <ConfirmModal
+        title="Delete"
+        message="Are you sure?"
+        onCancel={cancel}
+        onConfirm={confirm}
+      />
+    );
+    const confirmBtn = screen.getByText('OK');
+    expect(confirmBtn).toHaveFocus();
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(cancel).toHaveBeenCalled();
+    fireEvent.keyDown(window, { key: 'Enter' });
+    expect(confirm).toHaveBeenCalled();
+  });
 });

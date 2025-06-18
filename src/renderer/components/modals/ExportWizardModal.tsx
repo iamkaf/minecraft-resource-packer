@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Modal, Button } from '../daisy/actions';
 import { RadialProgress } from '../daisy/feedback';
 import type { ExportSummary } from '../../../main/exporter';
@@ -21,6 +21,23 @@ export default function ExportWizardModal({
   onClose,
   onOpenFolder,
 }: ExportWizardModalProps) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (summary) closeRef.current?.focus();
+  }, [summary]);
+
+  useEffect(() => {
+    if (!summary) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Enter') {
+        e.preventDefault();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [summary, onClose]);
   if (progress && !summary) {
     const percent = progress.total
       ? Math.floor((progress.current / progress.total) * 100)
@@ -63,7 +80,9 @@ export default function ExportWizardModal({
               Open Folder
             </Button>
           )}
-          <Button onClick={onClose}>Close</Button>
+          <Button ref={closeRef} onClick={onClose}>
+            Close
+          </Button>
         </div>
       </Modal>
     );
