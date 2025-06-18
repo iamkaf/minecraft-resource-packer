@@ -2,10 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import type { IpcMain } from 'electron';
 import { dialog } from 'electron';
-import { ProjectMetadata, PackMeta, PackMetaSchema } from '../shared/project';
+import type { ProjectMetadata, PackMeta } from '../shared/project';
+import { PackMetaSchema } from '../shared/project';
 import { readProjectMeta, writeProjectMeta } from './projectMeta';
 import { listPackFormats, setActiveProject } from './assets';
 import { setLastProject } from './layout';
+import unzipper from 'unzipper';
+import { versionForFormat } from '../shared/packFormat';
 
 // Re-export PackMeta so renderer and preload can import the type from this file
 export type { PackMeta } from '../shared/project';
@@ -138,14 +141,75 @@ export async function deleteProject(
   await fs.promises.rm(dir, { recursive: true, force: true });
 }
 
+async function extractZip(src: string, dest: string): Promise<void> {
+  await new Promise<void>((resolve, reject) => {
+    fs.createReadStream(src)
+      .pipe(unzipper.Extract({ path: dest }))
+      .on('close', resolve)
+      .on('error', reject);
+  });
+}
+
+function defaultMeta(name: string, version: string): ProjectMetadata {
+  return {
+    name,
+    minecraft_version: version,
+    version: '1.0.0',
+    assets: [],
+    noExport: [],
+    lastOpened: Date.now(),
+    description: '',
+    author: '',
+    urls: [],
+    created: Date.now(),
+    license: '',
+  };
+}
+
+async function detectVersion(dir: string): Promise<string | null> {
+  const mcmeta = path.join(dir, 'pack.mcmeta');
+  if (!fs.existsSync(mcmeta)) return null;
+  try {
+    const data = JSON.parse(await fs.promises.readFile(mcmeta, 'utf-8'));
+    const fmt = data?.pack?.pack_format;
+    if (typeof fmt === 'number') {
+      return versionForFormat(fmt);
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
 export async function importProject(baseDir: string): Promise<void> {
   const { canceled, filePaths } = await dialog.showOpenDialog({
-    properties: ['openDirectory'],
+    properties: ['openFile', 'openDirectory'],
+    filters: [{ name: 'Resource Packs', extensions: ['zip'] }],
   });
   if (canceled || filePaths.length === 0) return;
   const src = filePaths[0];
-  const dest = path.join(baseDir, path.basename(src));
-  await fs.promises.cp(src, dest, { recursive: true });
+  const ext = path.extname(src).toLowerCase();
+  const name = ext === '.zip' ? path.basename(src, ext) : path.basename(src);
+  const dest = path.join(baseDir, name);
+  if (ext === '.zip') {
+    await fs.promises.mkdir(dest, { recursive: true });
+    await extractZip(src, dest);
+    const version = (await detectVersion(dest)) ?? 'unknown';
+    let meta: ProjectMetadata;
+    if (fs.existsSync(path.join(dest, 'project.json'))) {
+      try {
+        meta = await readProjectMeta(dest);
+      } catch {
+        meta = defaultMeta(name, version);
+      }
+    } else {
+      meta = defaultMeta(name, version);
+    }
+    meta.minecraft_version = version;
+    await writeProjectMeta(dest, meta);
+  } else {
+    await fs.promises.cp(src, dest, { recursive: true });
+  }
 }
 
 export async function loadPackMeta(
