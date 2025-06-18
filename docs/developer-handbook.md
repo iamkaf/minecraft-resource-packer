@@ -193,3 +193,19 @@ and store the current file as a new revision.
 When writing tests or other code that constructs file system paths, prefer
 `path.join()` over string concatenation. Hard coded `/` separators can cause
 failures on Windows where the standard separator is `\`.
+
+## 3D Model Preview
+
+Use the `MinecraftModelPreview` component to display vanilla models. The
+`getTexture` utility resolves texture paths to the custom `vanilla://` protocol.
+
+```tsx
+import MinecraftModelPreview from '../components/assets/MinecraftModelPreview';
+import getTexture from '../utils/getTexture';
+
+<MinecraftModelPreview
+  modelType="block"
+  modelJson={{ parent: 'block/cube_all', textures: { all: 'minecraft:stone' } }}
+  getTexture={getTexture}
+/>;
+```
