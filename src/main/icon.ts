@@ -1,6 +1,6 @@
 import path from 'path';
 import sharp from 'sharp';
-import { listTextures, getTexturePath } from './assets';
+import { listTextures, getTexturePath } from './assets/textures';
 
 /** Pastel color palette for icon backgrounds. */
 const pastel = ['#fbcfe8', '#bfdbfe', '#bbf7d0', '#fde68a', '#fcd5ce'];
