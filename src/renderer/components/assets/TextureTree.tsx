@@ -7,9 +7,16 @@ import type { TextureInfo } from './TextureGrid';
 interface Props {
   textures: TextureInfo[];
   onSelect: (name: string) => void;
+  onContextMenu?: (e: React.MouseEvent, name: string) => void;
+  onKeyDown?: (e: React.KeyboardEvent, name: string) => void;
 }
 
-export default function TextureTree({ textures, onSelect }: Props) {
+export default function TextureTree({
+  textures,
+  onSelect,
+  onContextMenu,
+  onKeyDown,
+}: Props) {
   const data = React.useMemo<TreeItem[]>(
     () => buildTree(textures.map((t) => t.name)),
     [textures]
@@ -36,6 +43,13 @@ export default function TextureTree({ textures, onSelect }: Props) {
             onClick={() => {
               if (node.isLeaf) onSelect(node.id);
             }}
+            onContextMenu={(e) => node.isLeaf && onContextMenu?.(e, node.id)}
+            onKeyDown={(e) =>
+              node.isLeaf &&
+              (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) &&
+              onKeyDown?.(e, node.id)
+            }
+            tabIndex={node.isLeaf ? 0 : undefined}
           >
             {node.isLeaf && (
               <img
