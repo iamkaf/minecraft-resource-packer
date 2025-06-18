@@ -34,7 +34,10 @@ export default function TextureLab({
     const listener = (_e: unknown, args: { path: string; stamp: number }) => {
       if (args.path === relPath) setVersion(args.stamp);
     };
-    window.electronAPI?.onFileChanged(listener);
+    const off = window.electronAPI?.onFileChanged(listener);
+    return () => {
+      off?.();
+    };
   }, [file, projectPath]);
 
   const rel = toPosixPath(path.relative(projectPath, file));

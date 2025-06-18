@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import TextureLab from '../src/renderer/components/assets/TextureLab';
 import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
@@ -29,5 +29,20 @@ describe('TextureLab', () => {
       changed?.({}, { path: 'foo.png', stamp: 1 });
     });
     expect(img.src).toContain('t=1');
+  });
+
+  it('cleans up listener on unmount', () => {
+    const off = vi.fn();
+    electronAPI.onFileChanged.mockReturnValue(off);
+
+    const { unmount } = render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <TextureLab file="/proj/foo.png" onClose={() => {}} />
+        </SetPath>
+      </ProjectProvider>
+    );
+    unmount();
+    expect(off).toHaveBeenCalled();
   });
 });

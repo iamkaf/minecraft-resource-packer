@@ -7,10 +7,10 @@ import AssetBrowser from '../src/renderer/components/assets/AssetBrowser';
 
 const watchProject = vi.fn(async () => []);
 const unwatchProject = vi.fn();
-const onFileAdded = vi.fn();
-const onFileRemoved = vi.fn();
-const onFileRenamed = vi.fn();
-const onFileChanged = vi.fn();
+const onFileAdded = vi.fn(() => () => undefined);
+const onFileRemoved = vi.fn(() => () => undefined);
+const onFileRenamed = vi.fn(() => () => undefined);
+const onFileChanged = vi.fn(() => () => undefined);
 
 const getAssetSearch = vi.fn();
 const setAssetSearch = vi.fn();

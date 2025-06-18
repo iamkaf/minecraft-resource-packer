@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 import SettingsView from '../src/renderer/views/SettingsView';
 import ToastProvider from '../src/renderer/components/providers/ToastProvider';
@@ -109,7 +109,7 @@ describe('SettingsView', () => {
       </ToastProvider>
     );
     const input = await screen.findByLabelText('Default export folder');
-    expect(input).toHaveValue('/home');
+    await waitFor(() => expect(input).toHaveValue('/home'));
     fireEvent.change(input, { target: { value: '/out' } });
     const btn = screen.getAllByRole('button', { name: 'Save' })[1];
     fireEvent.click(btn);

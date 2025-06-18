@@ -19,7 +19,9 @@ function on<C extends keyof IpcEventMap>(
   channel: C,
   listener: (event: unknown, data: IpcEventMap[C]) => void
 ) {
-  ipcRenderer.on(channel, (_e, d) => listener(_e, d));
+  const handler = (_e: unknown, d: IpcEventMap[C]) => listener(_e, d);
+  ipcRenderer.on(channel, handler);
+  return () => ipcRenderer.removeListener(channel, handler);
 }
 
 const api = {
