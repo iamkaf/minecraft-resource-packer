@@ -12,6 +12,7 @@ import {
   displayForFormat,
   PackFormatInfo,
 } from '../shared/packFormat';
+import { toPosixPath } from '../shared/toPosixPath';
 
 /** URL pointing to Mojang's version manifest which lists all official releases. */
 const VERSION_MANIFEST =
@@ -150,7 +151,7 @@ export async function listTextures(projectPath: string): Promise<string[]> {
         await walk(p);
       } else if (entry.name.endsWith('.png')) {
         const rel = path.relative(texRoot, p);
-        out.push(rel.split(path.sep).join('/'));
+        out.push(toPosixPath(rel));
       }
     }
   };
