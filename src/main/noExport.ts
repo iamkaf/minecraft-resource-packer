@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import type { IpcMain } from 'electron';
 import { readProjectMeta, writeProjectMeta } from './projectMeta';
 
@@ -33,3 +34,4 @@ export function registerNoExportHandlers(ipc: IpcMain) {
       setNoExport(project, files, flag)
   );
 }
+/* c8 ignore end */

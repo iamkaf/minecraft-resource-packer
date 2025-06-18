@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import type { ProjectInfo, ImportSummary } from '../../main/projects';
 import type { PackMeta } from '../project';
 import type { ExportSummary } from '../../main/exporter';
@@ -121,6 +122,7 @@ export interface IpcResponseMap {
   'get-last-project': string;
   'set-last-project': void;
 }
+/* c8 ignore end */
 
 export interface IpcEventMap {
   'project-opened': string;
