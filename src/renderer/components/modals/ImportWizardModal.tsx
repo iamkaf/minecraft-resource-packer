@@ -23,7 +23,7 @@ export default function ImportWizardModal({
   useEffect(() => {
     if (!summary) return;
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === 'Enter') {
+      if (e.key === 'Enter') {
         e.preventDefault();
         onClose();
       }
@@ -43,7 +43,7 @@ export default function ImportWizardModal({
   if (summary) {
     const seconds = (summary.durationMs / 1000).toFixed(1);
     return (
-      <Modal open>
+      <Modal open onClose={onClose}>
         <h3 className="font-bold text-lg mb-2">Import Complete</h3>
         <p>
           Imported {summary.fileCount} files into {summary.name}

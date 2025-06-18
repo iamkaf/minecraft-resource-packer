@@ -30,7 +30,7 @@ export default function ExportWizardModal({
   useEffect(() => {
     if (!summary) return;
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === 'Enter') {
+      if (e.key === 'Enter') {
         e.preventDefault();
         onClose();
       }
@@ -59,7 +59,7 @@ export default function ExportWizardModal({
     const sizeMB = (summary.totalSize / (1024 * 1024)).toFixed(2);
     const seconds = (summary.durationMs / 1000).toFixed(1);
     return (
-      <Modal open>
+      <Modal open onClose={onClose}>
         <h3 className="font-bold text-lg mb-2">Export Complete</h3>
         <p>
           {summary.fileCount} files, {sizeMB} MB

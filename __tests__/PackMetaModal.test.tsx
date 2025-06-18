@@ -84,7 +84,8 @@ describe('PackMetaModal', () => {
         onCancel={onCancel}
       />
     );
-    fireEvent.keyDown(window, { key: 'Escape' });
+    const dialog = screen.getByTestId('daisy-modal');
+    fireEvent.keyDown(dialog, { key: 'Escape' });
     expect(onCancel).toHaveBeenCalled();
     fireEvent.keyDown(window, { key: 'Enter' });
     expect(onSave).toHaveBeenCalled();

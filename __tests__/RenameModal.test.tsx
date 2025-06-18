@@ -34,7 +34,8 @@ describe('RenameModal', () => {
     const cancel = vi.fn();
     const rename = vi.fn();
     render(<RenameModal current="a.txt" onCancel={cancel} onRename={rename} />);
-    fireEvent.keyDown(window, { key: 'Escape' });
+    const dialog = screen.getByTestId('daisy-modal');
+    fireEvent.keyDown(dialog, { key: 'Escape' });
     expect(cancel).toHaveBeenCalled();
     fireEvent.keyDown(window, { key: 'Enter' });
     expect(rename).toHaveBeenCalledWith('a.txt');

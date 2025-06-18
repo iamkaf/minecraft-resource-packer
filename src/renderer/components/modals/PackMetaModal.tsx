@@ -30,17 +30,14 @@ export function PackMetaForm({
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onCancel?.();
-      } else if (e.key === 'Enter') {
+      if (e.key === 'Enter') {
         e.preventDefault();
         formRef.current?.requestSubmit();
       }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [onCancel]);
+  }, []);
 
   return (
     <form
@@ -147,7 +144,7 @@ export default function PackMetaModal(props: {
   onCancel: () => void;
 }) {
   return (
-    <Modal open>
+    <Modal open onClose={props.onCancel}>
       <PackMetaForm {...props} />
     </Modal>
   );
