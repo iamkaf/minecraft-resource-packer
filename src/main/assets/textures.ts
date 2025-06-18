@@ -98,6 +98,9 @@ export async function createTextureAtlas(
   const root = await ensureAssets(meta.minecraft_version);
   const texDir = path.join(root, 'assets', 'minecraft', 'textures');
 
+  // Prepare a list of images to composite together. Each texture is appended
+  // horizontally so we track the running width while keeping a constant top
+  // offset. The height of the atlas is the tallest texture seen.
   const composites: Array<{ input: Buffer; left: number; top: number }> = [];
   let width = 0;
   let height = 0;
@@ -105,11 +108,15 @@ export async function createTextureAtlas(
     const img = sharp(path.join(texDir, tex));
     const info = await img.metadata();
     const buf = await img.png().toBuffer();
+    // Place the texture at the current x offset and advance the offset by the
+    // texture's width.
     composites.push({ input: buf, left: width, top: 0 });
     width += info.width ?? 0;
     height = Math.max(height, info.height ?? 0);
   }
   if (width === 0 || height === 0) return '';
+  // Create a transparent image large enough to hold all textures and composite
+  // them in. The result is encoded as a PNG and returned as a base64 data URL.
   const out = await sharp({
     create: {
       width,
