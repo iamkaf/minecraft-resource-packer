@@ -14,6 +14,12 @@ import { versionForFormat } from '../shared/packFormat';
 export type { PackMeta } from '../shared/project';
 import { generatePackIcon } from './icon';
 
+export interface ImportSummary {
+  name: string;
+  fileCount: number;
+  durationMs: number;
+}
+
 export async function createProject(
   baseDir: string,
   name: string,
@@ -141,13 +147,26 @@ export async function deleteProject(
   await fs.promises.rm(dir, { recursive: true, force: true });
 }
 
-async function extractZip(src: string, dest: string): Promise<void> {
+async function extractZip(src: string, dest: string): Promise<number> {
+  let count = 0;
   await new Promise<void>((resolve, reject) => {
     fs.createReadStream(src)
-      .pipe(unzipper.Extract({ path: dest }))
+      .pipe(unzipper.Parse())
+      .on('entry', (entry: any) => {
+        const outPath = path.join(dest, entry.path);
+        if (entry.type === 'Directory') {
+          fs.mkdirSync(outPath, { recursive: true });
+          entry.autodrain();
+        } else {
+          fs.mkdirSync(path.dirname(outPath), { recursive: true });
+          entry.pipe(fs.createWriteStream(outPath));
+          count++;
+        }
+      })
       .on('close', resolve)
       .on('error', reject);
   });
+  return count;
 }
 
 function defaultMeta(name: string, version: string): ProjectMetadata {
@@ -181,19 +200,37 @@ async function detectVersion(dir: string): Promise<string | null> {
   return null;
 }
 
-export async function importProject(baseDir: string): Promise<void> {
+async function countFiles(dir: string): Promise<number> {
+  const entries = await fs.promises.readdir(dir, { withFileTypes: true });
+  let total = 0;
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      total += await countFiles(full);
+    } else {
+      total++;
+    }
+  }
+  return total;
+}
+
+export async function importProject(
+  baseDir: string
+): Promise<ImportSummary | null> {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ['openFile', 'openDirectory'],
     filters: [{ name: 'Resource Packs', extensions: ['zip'] }],
   });
-  if (canceled || filePaths.length === 0) return;
+  if (canceled || filePaths.length === 0) return null;
   const src = filePaths[0];
   const ext = path.extname(src).toLowerCase();
   const name = ext === '.zip' ? path.basename(src, ext) : path.basename(src);
   const dest = path.join(baseDir, name);
+  const start = Date.now();
+  let fileCount = 0;
   if (ext === '.zip') {
     await fs.promises.mkdir(dest, { recursive: true });
-    await extractZip(src, dest);
+    fileCount = await extractZip(src, dest);
     const version = (await detectVersion(dest)) ?? 'unknown';
     let meta: ProjectMetadata;
     if (fs.existsSync(path.join(dest, 'project.json'))) {
@@ -209,7 +246,10 @@ export async function importProject(baseDir: string): Promise<void> {
     await writeProjectMeta(dest, meta);
   } else {
     await fs.promises.cp(src, dest, { recursive: true });
+    fileCount = await countFiles(dest);
   }
+  const durationMs = Date.now() - start;
+  return { name, fileCount, durationMs };
 }
 
 export async function loadPackMeta(
@@ -300,7 +340,7 @@ export function registerProjectHandlers(
     return deleteProject(baseDir, name);
   });
   ipc.handle('import-project', async () => {
-    await importProject(baseDir);
+    return importProject(baseDir);
   });
   ipc.handle('load-pack-meta', (_e, name: string) => {
     return loadPackMeta(baseDir, name);

@@ -1,4 +1,4 @@
-import type { ProjectInfo } from '../../main/projects';
+import type { ProjectInfo, ImportSummary } from '../../main/projects';
 import type { PackMeta } from '../project';
 import type { ExportSummary } from '../../main/exporter';
 import type { TextureEditOptions } from '../texture';
@@ -67,7 +67,7 @@ export interface IpcResponseMap {
   'list-projects': ProjectInfo[];
   'list-formats': PackFormatInfo[];
   'create-project': void;
-  'import-project': void;
+  'import-project': ImportSummary | null;
   'duplicate-project': void;
   'rename-project': void;
   'delete-project': void;

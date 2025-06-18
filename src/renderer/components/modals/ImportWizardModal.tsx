@@ -1,0 +1,43 @@
+import React from 'react';
+import { Modal, Button } from '../daisy/actions';
+import { Loading } from '../daisy/feedback';
+import type { ImportSummary } from '../../../main/projects';
+
+interface ImportWizardModalProps {
+  inProgress?: boolean;
+  summary?: ImportSummary | null;
+  onClose: () => void;
+}
+
+export default function ImportWizardModal({
+  inProgress,
+  summary,
+  onClose,
+}: ImportWizardModalProps) {
+  if (inProgress && !summary) {
+    return (
+      <Modal open className="flex flex-col items-center">
+        <h3 className="font-bold text-lg mb-2">Importing...</h3>
+        <Loading style="spinner" size="lg" />
+      </Modal>
+    );
+  }
+
+  if (summary) {
+    const seconds = (summary.durationMs / 1000).toFixed(1);
+    return (
+      <Modal open>
+        <h3 className="font-bold text-lg mb-2">Import Complete</h3>
+        <p>
+          Imported {summary.fileCount} files into {summary.name}
+        </p>
+        <p>{seconds} seconds</p>
+        <div className="modal-action">
+          <Button onClick={onClose}>Close</Button>
+        </div>
+      </Modal>
+    );
+  }
+
+  return null;
+}
