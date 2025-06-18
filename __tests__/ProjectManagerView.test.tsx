@@ -33,7 +33,9 @@ describe('ProjectManagerView', () => {
       >;
       openProject: (name: string) => void;
       createProject: (name: string, version: string) => Promise<void>;
-      importProject: () => Promise<void>;
+      importProject: () => Promise<
+        import('../src/main/projects').ImportSummary | null
+      >;
       duplicateProject: (name: string, newName: string) => Promise<void>;
       deleteProject: (name: string) => Promise<void>;
       getProjectSort: () => Promise<{ key: keyof ProjectInfo; asc: boolean }>;

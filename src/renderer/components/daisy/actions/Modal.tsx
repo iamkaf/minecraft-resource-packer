@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 interface ModalProps {
   open?: boolean;
@@ -14,9 +15,12 @@ export default function Modal({
   testId = 'daisy-modal',
 }: ModalProps) {
   if (!open) return null;
-  return (
+  const root = document.getElementById('overlay-root');
+  if (!root) return null;
+  return ReactDOM.createPortal(
     <dialog open className="modal modal-open" data-testid={testId}>
       <div className={`modal-box ${className}`.trim()}>{children}</div>
-    </dialog>
+    </dialog>,
+    root
   );
 }

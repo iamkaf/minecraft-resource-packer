@@ -24,6 +24,8 @@ describe('ToastProvider', () => {
     );
     fireEvent.click(screen.getByText('Show'));
     expect(screen.getAllByText('hello')).toHaveLength(2);
+    const overlay = document.getElementById('overlay-root');
+    expect(overlay?.textContent).toContain('hello');
     act(() => {
       vi.advanceTimersByTime(3000);
     });

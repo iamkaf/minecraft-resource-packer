@@ -132,7 +132,7 @@ these fields and save back to `project.json`. The sidebar also includes a
 **Rename** button that opens a modal to change the project's folder name and
 updates `project.json` accordingly.
 
-Pack metadata, including the pack version, can also be edited from the Editor's **Project Info Panel** by clicking the description. The selected version is stored in `project.json` and appended to export filenames.
+Pack metadata, including the pack version, can also be edited from the Editor's **Project Info Panel** using the form at the bottom of the panel. The selected version is stored in `project.json` and appended to export filenames.
 
 ## Row Selection
 
@@ -150,6 +150,13 @@ toast confirming success or failure.
 Each project's `project.json` stores a `noExport` array listing files that
 should be excluded from exports. The asset browser context menu includes a
 **No Export** toggle to manage this flag on one or multiple selected files.
+
+## Import Wizard
+
+Click **Import** in the New Project dialog to bring up the Import Wizard.
+The wizard asks the main process to open an `electron.dialog` so the user can
+select a `.zip` archive. A modal shows a spinner while the project is extracted
+and then displays a brief summary of the import.
 
 ## Asset Browser
 

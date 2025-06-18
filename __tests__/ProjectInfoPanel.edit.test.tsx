@@ -2,22 +2,6 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-vi.mock('@monaco-editor/react', () => ({
-  __esModule: true,
-  default: ({
-    value,
-    onChange,
-  }: {
-    value: string;
-    onChange: (v: string) => void;
-  }) => (
-    <textarea
-      data-testid="editor"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
-  ),
-}));
 import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 import ProjectInfoPanel from '../src/renderer/components/project/ProjectInfoPanel';
@@ -41,7 +25,7 @@ describe('ProjectInfoPanel metadata editing', () => {
     vi.clearAllMocks();
   });
 
-  it('opens modal and saves edited metadata', async () => {
+  it('saves edited metadata using inline form', async () => {
     render(
       <ProjectProvider>
         <SetPath path="/p/Pack">
@@ -54,19 +38,13 @@ describe('ProjectInfoPanel metadata editing', () => {
       </ProjectProvider>
     );
 
-    await screen.findByText('desc');
-    fireEvent.click(screen.getByText('desc'));
-    await screen.findByTestId('daisy-modal');
-    fireEvent.change(screen.getByTestId('editor'), {
-      target: {
-        value: JSON.stringify({ ...meta, description: 'new desc' }, null, 2),
-      },
-    });
+    const input = await screen.findByTestId('description-input');
+    fireEvent.change(input, { target: { value: 'new desc' } });
     fireEvent.click(screen.getByText('Save'));
     expect(save).toHaveBeenCalledWith(
       'Pack',
       expect.objectContaining({ description: 'new desc' })
     );
-    await screen.findByText('new desc');
+    expect((input as HTMLTextAreaElement).value).toBe('new desc');
   });
 });

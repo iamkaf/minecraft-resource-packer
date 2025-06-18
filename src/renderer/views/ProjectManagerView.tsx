@@ -13,6 +13,9 @@ import ExportWizardModal, {
 } from '../components/modals/ExportWizardModal';
 import useProjectList from '../hooks/useProjectList';
 import useProjectSelection from '../hooks/useProjectSelection';
+import ImportWizardModal from '../components/modals/ImportWizardModal';
+import type { ImportSummary } from '../../main/projects';
+import useProjectHotkeys from '../hooks/useProjectHotkeys';
 
 // Lists all available projects and lets the user open them.
 
@@ -23,6 +26,10 @@ const ProjectManagerView: React.FC = () => {
   const [filterVersion, setFilterVersion] = useState<string | null>(null);
   const [activeProject, setActiveProject] = useState<string | null>(null);
   const [progress, setProgress] = useState<BulkProgress | null>(null);
+  const [importing, setImporting] = useState(false);
+  const [importSummary, setImportSummary] = useState<ImportSummary | null>(
+    null
+  );
 
   const toast = useToast();
 
@@ -36,7 +43,14 @@ const ProjectManagerView: React.FC = () => {
   };
 
   const handleImport = () => {
-    window.electronAPI?.importProject().then(refresh);
+    setImporting(true);
+    window.electronAPI
+      ?.importProject()
+      .then((s) => {
+        if (s) setImportSummary(s);
+        refresh();
+      })
+      .finally(() => setImporting(false));
   };
 
   const handleCreate = (name: string, minecraftVersion: string) => {
@@ -139,6 +153,13 @@ const ProjectManagerView: React.FC = () => {
           onDelete={openDelete}
           onRowClick={setActiveProject}
         />
+        {(importing || importSummary) && (
+          <ImportWizardModal
+            inProgress={importing}
+            summary={importSummary ?? undefined}
+            onClose={() => setImportSummary(null)}
+          />
+        )}
         {progress && (
           <ExportWizardModal progress={progress} onClose={() => {}} />
         )}

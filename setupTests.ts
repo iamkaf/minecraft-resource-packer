@@ -15,3 +15,10 @@ if (!window.matchMedia) {
     removeEventListener: vi.fn(),
   })) as unknown as typeof window.matchMedia;
 }
+
+// ensure overlay root exists for portals
+if (!document.getElementById('overlay-root')) {
+  const div = document.createElement('div');
+  div.id = 'overlay-root';
+  document.body.appendChild(div);
+}

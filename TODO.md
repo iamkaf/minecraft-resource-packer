@@ -33,6 +33,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [x] Audio & language previews (`.ogg`, `.wav`, `.json`)
 - [x] Asset atlas viewer for stitching HD texture previews
 - [ ] Asset dependency graph showing overrides
+- [ ] Use React context for asset selection and file actions to reduce prop chaining
 
 ### Asset Info & Texture Inspector
 
@@ -71,7 +72,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ## Import & Export
 
-- [ ] Import wizard supporting folders or `.zip` archives
+- [x] Import wizard supporting `.zip` archives
 - [ ] Detect pack version from `pack.mcmeta` when importing `.zip`
 - [ ] Import wizard: option to merge into existing project
 - [ ] Compression progress with ETA

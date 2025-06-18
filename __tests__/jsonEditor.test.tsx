@@ -3,29 +3,13 @@ import { describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 vi.mock('electron', () => ({ app: { getPath: () => '/tmp' } }));
-vi.mock('@monaco-editor/react', () => ({
-  __esModule: true,
-  default: ({
-    value,
-    onChange,
-  }: {
-    value: string;
-    onChange: (v: string) => void;
-  }) => (
-    <textarea
-      data-testid="editor"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
-  ),
-}));
 
 import PackMetaModal from '../src/renderer/components/modals/PackMetaModal';
 import type { PackMeta } from '../src/main/projects';
 import ToastProvider from '../src/renderer/components/providers/ToastProvider';
 
 describe('JsonEditor integration', () => {
-  it('rejects invalid JSON', () => {
+  it('saves metadata through the form', () => {
     const meta: PackMeta = {
       version: '1.21.1',
       description: '',
@@ -45,9 +29,12 @@ describe('JsonEditor integration', () => {
         />
       </ToastProvider>
     );
-    fireEvent.change(screen.getByTestId('editor'), { target: { value: '{' } });
+    fireEvent.change(screen.getByTestId('description-input'), {
+      target: { value: 'new' },
+    });
     fireEvent.click(screen.getByText('Save'));
-    expect(onSave).not.toHaveBeenCalled();
-    expect(screen.getAllByText('Invalid metadata').length).toBeGreaterThan(0);
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ description: 'new' })
+    );
   });
 });
