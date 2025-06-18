@@ -53,11 +53,10 @@ const ProjectManagerView: React.FC = () => {
       .finally(() => setImporting(false));
   };
 
-  const handleCreate = (name: string, minecraftVersion: string) => {
-    window.electronAPI?.createProject(name, minecraftVersion).then(() => {
-      refresh();
-      toast({ message: 'Project created', type: 'success' });
-    });
+  const handleCreate = async (name: string, minecraftVersion: string) => {
+    await window.electronAPI?.createProject(name, minecraftVersion);
+    await refresh();
+    toast({ message: 'Project created', type: 'success' });
   };
 
   let clearSelection: () => void = () => {};

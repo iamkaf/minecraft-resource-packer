@@ -8,8 +8,10 @@ export default function useProjectList() {
   const [sortKey, setSortKey] = useState<keyof ProjectInfo>('name');
   const [asc, setAsc] = useState(true);
 
-  const refresh = useCallback(() => {
-    window.electronAPI?.listProjects().then(setProjects);
+  const refresh = useCallback((): Promise<void> => {
+    return (
+      window.electronAPI?.listProjects().then(setProjects) ?? Promise.resolve()
+    );
   }, []);
 
   useEffect(() => {
