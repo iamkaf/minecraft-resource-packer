@@ -26,14 +26,12 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 
 ### Asset Browser
 
-- [ ] Dirty badge for changed assets
 - [ ] Custom namespace support (non-`minecraft` assets)
 - [x] Persist search query, category filters and zoom level between sessions
 - [ ] Arrow key navigation between thumbnails
 - [x] Audio & language previews (`.ogg`, `.wav`, `.json`)
 - [x] Asset atlas viewer for stitching HD texture previews
 - [ ] Asset dependency graph showing overrides
-- [ ] Use React context for asset selection and file actions to reduce prop chaining
 
 ### Asset Info & Texture Inspector
 
@@ -97,16 +95,6 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Path override for `.minecraft` folder
 - [ ] Editable keyboard shortcuts
 - [ ] Update channel + analytics opt‑in
-
----
-
-## Quality & Accessibility
-
-- [ ] Keyboard navigation across all components
-- [ ] High‑contrast mode via daisyUI preset
-- [ ] Responsive grid (single‑column < 1024 px)
-- [ ] 8‑pt spacing grid for pixel crispness
-- [ ] **Tests for every UI component and util**
 
 ---
 
