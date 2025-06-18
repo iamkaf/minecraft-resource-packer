@@ -33,5 +33,9 @@ module.exports = [
       'plugin:import/typescript',
     ],
     parser: '@typescript-eslint/parser',
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+    }
   }),
 ];
