@@ -10,6 +10,8 @@ export function useProjectFiles() {
   const toast = useToast();
 
   useEffect(() => {
+    // Revisions live under `.history` and should never appear in the asset
+    // browser or trigger file events, so we filter those paths out.
     const isHistory = (p: string) =>
       p === '.history' || p.startsWith('.history/') || p.includes('/.history/');
     let alive = true;

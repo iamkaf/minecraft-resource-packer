@@ -1,5 +1,8 @@
 /**
  * Custom file protocols used by the renderer to load assets.
+ *
+ * `vanilla://` serves cached vanilla textures, while `asset://` resolves files
+ * from the currently active project directory.
  */
 import path from 'path';
 import type { Protocol } from 'electron';
@@ -10,12 +13,15 @@ import { ensureAssets } from './cache';
 let cacheTexturesDir = '';
 let activeProjectDir = '';
 
-/** Update cached texture directory used by vanilla protocol. */
+/** Update cached texture directory used by the `vanilla` protocol. */
 export function setCacheTexturesDir(dir: string): void {
   cacheTexturesDir = dir;
 }
 
-/** Register the `vanilla` protocol so it serves files directly from disk. */
+/**
+ * Register a file protocol that maps `vanilla://` URLs to cached vanilla
+ * texture files on disk.
+ */
 export function registerVanillaProtocol(protocol: Protocol): void {
   protocol.registerFileProtocol('vanilla', (request, callback) => {
     const rel = decodeURI(request.url.replace('vanilla://', ''));
@@ -24,7 +30,10 @@ export function registerVanillaProtocol(protocol: Protocol): void {
   });
 }
 
-/** Register the `asset` protocol to serve files from the active project. */
+/**
+ * Register a file protocol that resolves `asset://` URLs relative to the
+ * currently active project directory.
+ */
 export function registerAssetProtocol(protocol: Protocol): void {
   protocol.registerFileProtocol('asset', (request, callback) => {
     const rel = decodeURI(request.url.replace('asset://', ''));
@@ -35,7 +44,10 @@ export function registerAssetProtocol(protocol: Protocol): void {
   });
 }
 
-/** Update directories used by the custom protocols for the active project. */
+/**
+ * Point the custom protocols at a new project and ensure vanilla assets are
+ * cached for that project's Minecraft version.
+ */
 export async function setActiveProject(projectPath: string): Promise<void> {
   const meta = await readProjectMeta(projectPath);
   const cacheRoot = await ensureAssets(meta.minecraft_version);

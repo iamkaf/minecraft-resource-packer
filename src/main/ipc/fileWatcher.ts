@@ -24,6 +24,13 @@ async function listFiles(dir: string): Promise<string[]> {
   return files;
 }
 
+/**
+ * Register IPC handlers that watch project directories for changes.
+ *
+ * - `watch-project` starts watching `projectPath` and returns the initial list
+ *   of files relative to that directory.
+ * - `unwatch-project` stops watching the previously watched path.
+ */
 export function registerFileWatcherHandlers(
   ipc: IpcMain,
   window: BrowserWindow
@@ -64,6 +71,12 @@ export function registerFileWatcherHandlers(
   });
 }
 
+/**
+ * Emit a `file-renamed` event for all open watchers.
+ *
+ * Chokidar does not report rename operations, so actions that rename files
+ * manually call this helper to notify the renderer.
+ */
 export function emitRenamed(oldPath: string, newPath: string) {
   if (!win) return;
   for (const projectPath of watchers.keys()) {
