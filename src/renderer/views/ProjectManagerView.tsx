@@ -139,6 +139,8 @@ const ProjectManagerView: React.FC = () => {
         />
         <ProjectTable
           projects={sortedProjects}
+          sortKey={sortKey}
+          asc={asc}
           onSort={handleSort}
           selected={selected}
           onSelect={toggleOne}

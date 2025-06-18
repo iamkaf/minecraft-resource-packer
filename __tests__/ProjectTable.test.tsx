@@ -112,6 +112,8 @@ describe('ProjectTable', () => {
     render(
       <ProjectTable
         projects={projects}
+        sortKey="name"
+        asc
         onSort={() => {}}
         selected={new Set()}
         onSelect={() => {}}
@@ -124,5 +126,31 @@ describe('ProjectTable', () => {
     );
     const imgs = screen.getAllByAltText('Pack icon');
     expect(imgs.length).toBe(2);
+  });
+
+  it('shows a sort icon on the active column', () => {
+    render(
+      <ProjectTable
+        projects={projects}
+        sortKey="assets"
+        asc={false}
+        onSort={() => {}}
+        selected={new Set()}
+        onSelect={() => {}}
+        onSelectAll={() => {}}
+        onOpen={() => {}}
+        onDuplicate={() => {}}
+        onDelete={() => {}}
+        onRowClick={() => {}}
+      />
+    );
+    const assetsHeader = screen.getByText('Assets');
+    const svg = assetsHeader.querySelector('svg');
+    expect(svg).toBeInTheDocument();
+    expect(svg?.querySelector('path')?.getAttribute('d')).toBe(
+      'm19.5 8.25-7.5 7.5-7.5-7.5'
+    );
+    const nameHeader = screen.getByText('Name');
+    expect(nameHeader.querySelector('svg')).toBeNull();
   });
 });
