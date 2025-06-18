@@ -3,16 +3,11 @@ import path from 'path';
 import { formatTextureName } from '../../utils/textureNames';
 import AssetContextMenu from '../file/AssetContextMenu';
 import TextureThumb from './TextureThumb';
+import { useAssetBrowser } from '../providers/AssetBrowserProvider';
 
 interface Props {
   projectPath: string;
   file: string;
-  selected: Set<string>;
-  setSelected: React.Dispatch<React.SetStateAction<Set<string>>>;
-  noExport: Set<string>;
-  toggleNoExport: (files: string[], flag: boolean) => void;
-  deleteFiles: (files: string[]) => void;
-  openRename: (file: string) => void;
   zoom: number;
   stamp?: number;
 }
@@ -20,15 +15,17 @@ interface Props {
 const AssetBrowserItem: React.FC<Props> = ({
   projectPath,
   file,
-  selected,
-  setSelected,
-  noExport,
-  toggleNoExport,
-  deleteFiles,
-  openRename,
   zoom,
   stamp,
 }) => {
+  const {
+    selected,
+    setSelected,
+    noExport,
+    toggleNoExport,
+    deleteFiles,
+    openRename,
+  } = useAssetBrowser();
   const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
   const firstItem = useRef<HTMLButtonElement>(null);
 

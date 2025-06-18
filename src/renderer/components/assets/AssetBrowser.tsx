@@ -5,6 +5,10 @@ import AssetBrowserItem from './AssetBrowserItem';
 import { useProjectFiles } from '../file/useProjectFiles';
 import FileTree from './FileTree';
 import { useProject } from '../providers/ProjectProvider';
+import {
+  AssetBrowserProvider,
+  useAssetBrowser,
+} from '../providers/AssetBrowserProvider';
 import { FilterBadge, InputField, Range } from '../daisy/input';
 import { Accordion } from '../daisy/display';
 
@@ -40,53 +44,29 @@ const getCategory = (name: string): Filter | 'misc' => {
   return 'misc';
 };
 
-const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
-  const { path: projectPath } = useProject();
-  const { files, noExport, toggleNoExport, versions } = useProjectFiles();
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [renameTarget, setRenameTarget] = useState<string | null>(null);
-  const [query, setQuery] = useState('');
-  const [zoom, setZoom] = useState(64);
-  const [filters, setFilters] = useState<Filter[]>([]);
+const BrowserBody: React.FC<{
+  projectPath: string;
+  visible: string[];
+  versions: Record<string, number>;
+  query: string;
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
+  zoom: number;
+  setZoom: React.Dispatch<React.SetStateAction<number>>;
+  filters: Filter[];
+  toggleFilter: (f: Filter) => void;
+}> = ({
+  projectPath,
+  visible,
+  versions,
+  query,
+  setQuery,
+  zoom,
+  setZoom,
+  filters,
+  toggleFilter,
+}) => {
+  const { selected, deleteFiles } = useAssetBrowser();
   const wrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    window.electronAPI?.getAssetSearch?.().then((v) => {
-      if (v) setQuery(v);
-    });
-    window.electronAPI?.getAssetFilters?.().then((v) => {
-      if (v) setFilters(v as Filter[]);
-    });
-    window.electronAPI?.getAssetZoom?.().then((v) => {
-      if (v) setZoom(v);
-    });
-  }, []);
-
-  useEffect(() => {
-    window.electronAPI?.setAssetSearch?.(query);
-  }, [query]);
-
-  useEffect(() => {
-    window.electronAPI?.setAssetFilters?.(filters);
-  }, [filters]);
-
-  useEffect(() => {
-    window.electronAPI?.setAssetZoom?.(zoom);
-  }, [zoom]);
-
-  useEffect(() => {
-    onSelectionChange?.(Array.from(selected));
-  }, [selected, onSelectionChange]);
-
-  const visible = files.filter((f) => {
-    if (query && !f.includes(query)) return false;
-    const cat = getCategory(normalizeForCategory(f));
-    if (filters.length > 0) {
-      if (cat === 'misc') return false;
-      if (!filters.includes(cat)) return false;
-    }
-    return true;
-  });
 
   const categories = React.useMemo(() => {
     const out: Record<Filter | 'misc', string[]> = {
@@ -105,17 +85,6 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
     }
     return out;
   }, [visible]);
-
-  const toggleFilter = (f: Filter) => {
-    setFilters((prev) =>
-      prev.includes(f) ? prev.filter((p) => p !== f) : [...prev, f]
-    );
-  };
-
-  const deleteFiles = (files: string[]) => {
-    files.forEach((f) => window.electronAPI?.deleteFile(f));
-    setSelected(new Set());
-  };
 
   const handleDeleteSelected = () => {
     deleteFiles(Array.from(selected).map((s) => path.join(projectPath, s)));
@@ -186,12 +155,6 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
                       key={f}
                       projectPath={projectPath}
                       file={f}
-                      selected={selected}
-                      setSelected={setSelected}
-                      noExport={noExport}
-                      toggleNoExport={toggleNoExport}
-                      deleteFiles={deleteFiles}
-                      openRename={(file) => setRenameTarget(file)}
                       zoom={zoom}
                       stamp={versions[f]}
                     />
@@ -202,18 +165,79 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
           })}
         </div>
         <div>
-          <FileTree
-            files={visible}
-            selected={selected}
-            setSelected={setSelected}
-            noExport={noExport}
-            toggleNoExport={toggleNoExport}
-            deleteFiles={deleteFiles}
-            openRename={(file) => setRenameTarget(file)}
-            versions={versions}
-          />
+          <FileTree files={visible} versions={versions} />
         </div>
       </div>
+    </div>
+  );
+};
+
+const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
+  const { path: projectPath } = useProject();
+  const { files, noExport, toggleNoExport, versions } = useProjectFiles();
+  const [renameTarget, setRenameTarget] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
+  const [zoom, setZoom] = useState(64);
+  const [filters, setFilters] = useState<Filter[]>([]);
+
+  useEffect(() => {
+    window.electronAPI?.getAssetSearch?.().then((v) => {
+      if (v) setQuery(v);
+    });
+    window.electronAPI?.getAssetFilters?.().then((v) => {
+      if (v) setFilters(v as Filter[]);
+    });
+    window.electronAPI?.getAssetZoom?.().then((v) => {
+      if (v) setZoom(v);
+    });
+  }, []);
+
+  useEffect(() => {
+    window.electronAPI?.setAssetSearch?.(query);
+  }, [query]);
+
+  useEffect(() => {
+    window.electronAPI?.setAssetFilters?.(filters);
+  }, [filters]);
+
+  useEffect(() => {
+    window.electronAPI?.setAssetZoom?.(zoom);
+  }, [zoom]);
+
+  const visible = files.filter((f) => {
+    if (query && !f.includes(query)) return false;
+    const cat = getCategory(normalizeForCategory(f));
+    if (filters.length > 0) {
+      if (cat === 'misc') return false;
+      if (!filters.includes(cat)) return false;
+    }
+    return true;
+  });
+
+  const toggleFilter = (f: Filter) => {
+    setFilters((prev) =>
+      prev.includes(f) ? prev.filter((p) => p !== f) : [...prev, f]
+    );
+  };
+
+  return (
+    <AssetBrowserProvider
+      noExport={noExport}
+      toggleNoExport={toggleNoExport}
+      openRename={(file) => setRenameTarget(file)}
+      onSelectionChange={onSelectionChange}
+    >
+      <BrowserBody
+        projectPath={projectPath}
+        visible={visible}
+        versions={versions}
+        query={query}
+        setQuery={setQuery}
+        zoom={zoom}
+        setZoom={setZoom}
+        filters={filters}
+        toggleFilter={toggleFilter}
+      />
       {renameTarget && (
         <RenameModal
           current={path.basename(renameTarget)}
@@ -226,7 +250,7 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
           }}
         />
       )}
-    </div>
+    </AssetBrowserProvider>
   );
 };
 

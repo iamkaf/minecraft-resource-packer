@@ -7,37 +7,36 @@ import {
   ProjectProvider,
   useProject,
 } from '../src/renderer/components/providers/ProjectProvider';
+import {
+  AssetBrowserProvider,
+  useAssetBrowser,
+} from '../src/renderer/components/providers/AssetBrowserProvider';
 
 const files = ['a.txt', 'b.png'];
 
 function Wrapper(props: Partial<Parameters<typeof FileTree>[0]>) {
-  const [sel, setSel] = React.useState<Set<string>>(new Set());
   const { setPath } = useProject();
+  const { setSelected } = useAssetBrowser();
   const [ready, setReady] = React.useState(false);
   React.useEffect(() => {
     setPath('/proj');
+    setSelected(new Set());
     setReady(true);
   }, []);
-  return ready ? (
-    <FileTree
-      files={files}
-      selected={sel}
-      setSelected={setSel}
-      noExport={new Set()}
-      toggleNoExport={vi.fn()}
-      deleteFiles={vi.fn()}
-      openRename={vi.fn()}
-      versions={{}}
-      {...props}
-    />
-  ) : null;
+  return ready ? <FileTree files={files} versions={{}} {...props} /> : null;
 }
 
 describe('FileTree', () => {
   it('supports multi selection', () => {
     render(
       <ProjectProvider>
-        <Wrapper />
+        <AssetBrowserProvider
+          noExport={new Set()}
+          toggleNoExport={vi.fn()}
+          openRename={vi.fn()}
+        >
+          <Wrapper />
+        </AssetBrowserProvider>
       </ProjectProvider>
     );
     fireEvent.click(
@@ -56,15 +55,26 @@ describe('FileTree', () => {
 
   it('context menu triggers actions', () => {
     const del = vi.fn();
+    (
+      window as unknown as { electronAPI: { deleteFile: typeof del } }
+    ).electronAPI = Object.assign(window.electronAPI ?? {}, {
+      deleteFile: del,
+    });
     render(
       <ProjectProvider>
-        <Wrapper deleteFiles={del} />
+        <AssetBrowserProvider
+          noExport={new Set()}
+          toggleNoExport={vi.fn()}
+          openRename={vi.fn()}
+        >
+          <Wrapper />
+        </AssetBrowserProvider>
       </ProjectProvider>
     );
     const b = screen.getAllByText('b.png')[0].parentElement as HTMLElement;
     fireEvent.contextMenu(b);
     const delBtn = screen.getByRole('menuitem', { name: /Delete/ });
     fireEvent.click(delBtn);
-    expect(del).toHaveBeenCalledWith([path.join('/proj', 'b.png')]);
+    expect(del).toHaveBeenCalledWith(path.join('/proj', 'b.png'));
   });
 });
