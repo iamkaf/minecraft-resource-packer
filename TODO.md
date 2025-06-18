@@ -38,10 +38,10 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ### Asset Info & Texture Inspector
 
 - [x] Initial revision history implementation (max 20)
-- [ ] Make revision history work for textures as soon as they're updated
+- [x] Make revision history work for textures as soon as they're updated
 - [ ] Add confirmation dialog when restoring or deleting revisions
 - [ ] Add revision history preview
-- [ ] Skip .history on asset browser and exports
+- [x] Skip .history on asset browser and exports
 - [x] Preview against the vanilla texture using the `Diff` component
 - [x] Generic icon thumbnail for text files
 - [x] More robust JSON editor
@@ -61,7 +61,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## Pack Settings
 
 - [ ] Editable `pack.mcmeta` (description, `pack_format`, language)
-- [ ] Editable license field in Pack Metadata modal
+- [x] Editable license field in Pack Metadata modal
 - [ ] Target resolution radio (16×/32×/64×)
 - [ ] Validation checklist (missing textures, duplicates)
 - [x] Version field for projects; it should also appear in exported file names
@@ -73,7 +73,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 ## Import & Export
 
 - [x] Import wizard supporting `.zip` archives
-- [ ] Detect pack version from `pack.mcmeta` when importing `.zip`
+- [x] Detect pack version from `pack.mcmeta` when importing `.zip`
 - [ ] Import wizard: option to merge into existing project
 - [ ] Compression progress with ETA
 - [ ] Post‑actions: Open folder • Copy to resourcepacks • Test‑launch Minecraft
