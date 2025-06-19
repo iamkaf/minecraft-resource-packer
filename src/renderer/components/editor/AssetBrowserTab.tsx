@@ -108,7 +108,7 @@ export default function AssetBrowserTab({
       </PanelGroup>
       {selectorOpen && (
         <Modal open testId="asset-selector-modal" className="max-w-[1200px]">
-          <div className="w-[95%] h-[800px]">
+          <div className="w-full h-[800px]">
             <h3 className="font-bold text-lg mb-2">Add Assets</h3>
             <div className="flex gap-4 max-h-[70vh]">
               <div className="flex-1 overflow-y-auto">
@@ -116,7 +116,7 @@ export default function AssetBrowserTab({
                   <AssetSelector onAssetSelect={(n) => setSelectorAsset(n)} />
                 </Suspense>
               </div>
-              <div className="w-48 overflow-y-auto">
+              <div className="w-96 overflow-y-auto">
                 <AssetSelectorInfoPanel asset={selectorAsset} />
               </div>
             </div>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { FixedSizeGrid as Grid, GridChildComponentProps } from 'react-window';
 import { Button } from '../daisy/actions';
 import { formatTextureName } from '../../utils/textureNames';
 
@@ -17,59 +16,6 @@ interface Props {
   onKeyDown?: (e: React.KeyboardEvent, name: string) => void;
 }
 
-interface CellData {
-  textures: TextureInfo[];
-  columnCount: number;
-  zoom: number;
-  onSelect: (name: string) => void;
-  onContextMenu?: (e: React.MouseEvent, name: string) => void;
-  onKeyDown?: (e: React.KeyboardEvent, name: string) => void;
-}
-
-const Cell: React.FC<GridChildComponentProps<CellData>> = ({
-  columnIndex,
-  rowIndex,
-  style,
-  data,
-}) => {
-  const index = rowIndex * data.columnCount + columnIndex;
-  if (index >= data.textures.length) return null;
-  const tex = data.textures[index];
-  const formatted = formatTextureName(tex.name);
-  return (
-    <div style={style} className="p-2 box-border">
-      <div
-        className="text-center tooltip"
-        data-tip={`${formatted} \n${tex.name}`}
-      >
-        <Button
-          aria-label={tex.name}
-          onClick={() => data.onSelect(tex.name)}
-          onContextMenu={(e) => data.onContextMenu?.(e, tex.name)}
-          onKeyDown={(e) =>
-            (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) &&
-            data.onKeyDown?.(e, tex.name)
-          }
-          className="p-1 hover:ring ring-accent rounded"
-        >
-          <img
-            src={tex.url}
-            alt={formatted}
-            style={{
-              width: data.zoom,
-              height: data.zoom,
-              imageRendering: 'pixelated',
-            }}
-          />
-        </Button>
-        <div className="text-xs leading-tight">
-          <div>{formatted}</div>
-          <div className="opacity-50">{tex.name}</div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const TextureGrid: React.FC<Props> = ({
   textures,
@@ -79,35 +25,51 @@ const TextureGrid: React.FC<Props> = ({
   onContextMenu,
   onKeyDown,
 }) => {
-  const width = typeof window !== 'undefined' ? window.innerWidth : 640;
-  const columnWidth = zoom + 40;
-  const rowHeight = zoom + 48;
-  const columnCount = Math.max(1, Math.floor(width / columnWidth));
-  const rowCount = Math.ceil(textures.length / columnCount);
   return (
     <div
-      style={{ height: '12rem' }}
       data-testid={testId}
-      className="overflow-y-auto"
+      // className="overflow-y-auto"
     >
-      <Grid
-        columnCount={columnCount}
-        columnWidth={columnWidth}
-        height={192}
-        rowCount={rowCount}
-        rowHeight={rowHeight}
-        width={columnCount * columnWidth}
-        itemData={{
-          textures,
-          columnCount,
-          zoom,
-          onSelect,
-          onContextMenu,
-          onKeyDown,
-        }}
+      <div
+        className="flex flex-wrap justify-start items-start gap-2"
       >
-        {Cell}
-      </Grid>
+        {textures.map((tex) => {
+          const formatted = formatTextureName(tex.name);
+          return (
+            <div key={tex.name} className="p-2 box-border">
+              <div
+                className="text-center tooltip w-[96px] h-[96px]"
+                data-tip={`${formatted} \n${tex.name}`}
+              >
+                <Button
+                  aria-label={tex.name}
+                  onClick={() => onSelect(tex.name)}
+                  onContextMenu={(e) => onContextMenu?.(e, tex.name)}
+                  onKeyDown={(e) =>
+                    (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) &&
+                    onKeyDown?.(e, tex.name)
+                  }
+                  className="p-1 hover:ring ring-accent rounded"
+                >
+                  <img
+                    src={tex.url}
+                    alt={formatted}
+                    style={{
+                      width: zoom,
+                      height: zoom,
+                      imageRendering: 'pixelated',
+                    }}
+                  />
+                </Button>
+                <div className="text-xs leading-tight">
+                  <div>{formatted}</div>
+                  <div className="opacity-50">{tex.name}</div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

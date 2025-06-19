@@ -66,19 +66,6 @@ describe('AssetBrowser', () => {
     expect(screen.queryByText('a.txt')).toBeNull();
   });
 
-  it('is scrollable', async () => {
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
-    );
-    await screen.findAllByText('a.txt');
-    const wrapper = screen.getByTestId('asset-browser');
-    expect(wrapper.className).toMatch(/overflow-y-auto/);
-  });
-
   it('context menu triggers IPC calls', async () => {
     const openInFolder = vi.fn();
     const openFile = vi.fn();

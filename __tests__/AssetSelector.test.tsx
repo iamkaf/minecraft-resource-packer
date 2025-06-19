@@ -33,7 +33,7 @@ describe('AssetSelector', () => {
     expect(listTextures).toHaveBeenCalledWith('/proj');
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });
-    const section = await screen.findByText('blocks');
+    const section = await screen.findByRole('heading', { name: 'blocks' });
     expect(section.parentElement).not.toBeNull();
     const sectionParent = section.parentElement as HTMLElement;
     const button = within(sectionParent).getByRole('button', {
@@ -57,7 +57,7 @@ describe('AssetSelector', () => {
     );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'axe' } });
-    const section = await screen.findByText('items');
+    const section = await screen.findByRole('heading', { name: 'items' });
     expect(section.parentElement).not.toBeNull();
     const itemParent = section.parentElement as HTMLElement;
     expect(
@@ -77,7 +77,7 @@ describe('AssetSelector', () => {
     );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'custom' } });
-    const section = await screen.findByText('misc');
+    const section = await screen.findByRole('heading', { name: 'misc' });
     expect(section.parentElement).not.toBeNull();
     const miscParent = section.parentElement as HTMLElement;
     expect(
@@ -105,7 +105,7 @@ describe('AssetSelector', () => {
     expect(img.style.width).toBe('100px');
   });
 
-  it('renders only visible items', async () => {
+  it('renders all items', async () => {
     listTextures.mockResolvedValue(
       Array.from({ length: 50 }, (_, i) => `block/test${i}.png`)
     );
@@ -119,9 +119,9 @@ describe('AssetSelector', () => {
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'test' } });
     await screen.findByText('blocks');
-    expect(
-      screen.getAllByRole('button', { name: /block\/test/ }).length
-    ).toBeLessThan(50);
+    expect(screen.getAllByRole('button', { name: /block\/test/ }).length).toBe(
+      50
+    );
   });
 
   it('shows tree view', async () => {
