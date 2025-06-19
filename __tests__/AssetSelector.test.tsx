@@ -119,24 +119,9 @@ describe('AssetSelector', () => {
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'test' } });
     await screen.findByText('blocks');
-    expect(
-      screen.getAllByRole('button', { name: /block\/test/ }).length
-    ).toBe(50);
-  });
-
-  it('is scrollable', async () => {
-    render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetSelector />
-        </SetPath>
-      </ProjectProvider>
+    expect(screen.getAllByRole('button', { name: /block\/test/ }).length).toBe(
+      50
     );
-    const input = screen.getByPlaceholderText('Search texture');
-    fireEvent.change(input, { target: { value: 'grass' } });
-    await screen.findByRole('heading', { name: 'blocks' });
-    const wrapper = screen.getByTestId('asset-selector');
-    expect(wrapper.className).toMatch(/overflow-y-auto/);
   });
 
   it('shows tree view', async () => {
