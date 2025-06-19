@@ -36,7 +36,10 @@ const ProjectManagerView: React.FC = () => {
     useProjectModals(refresh, toast);
 
   const handleOpen = (n: string) => {
-    window.electronAPI?.openProject(n);
+    const res = window.electronAPI?.openProject(n);
+    res?.catch?.(() =>
+      toast({ message: 'Invalid project.json', type: 'error' })
+    );
   };
 
   const handleImport = () => {

@@ -66,6 +66,21 @@ describe('AssetBrowser', () => {
     expect(screen.queryByText('a.txt')).toBeNull();
   });
 
+  it('hides project.json', async () => {
+    watchProject.mockResolvedValue(['project.json', 'visible.txt']);
+    render(
+      <ProjectProvider>
+        <SetPath path="/proj">
+          <AssetBrowser />
+        </SetPath>
+      </ProjectProvider>
+    );
+    expect((await screen.findAllByText('visible.txt')).length).toBeGreaterThan(
+      0
+    );
+    expect(screen.queryByText('project.json')).toBeNull();
+  });
+
   it('is scrollable', async () => {
     render(
       <ProjectProvider>

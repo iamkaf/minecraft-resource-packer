@@ -126,6 +126,26 @@ describe('useProjectFiles', () => {
     expect(result.current.files).toEqual(['keep.txt']);
   });
 
+  it('hides project.json from the file list', async () => {
+    watchProject.mockResolvedValue(['project.json', 'keep.txt']);
+    let added: ((e: unknown, p: string) => void) | undefined;
+    onFileAdded.mockImplementation((cb) => {
+      added = cb;
+    });
+    const { result } = renderHook(() => useProjectFiles(), {
+      wrapper: ({ children }) => (
+        <ProjectProvider>
+          <SetPath path="/proj">{children}</SetPath>
+        </ProjectProvider>
+      ),
+    });
+    await waitFor(() => expect(result.current.files).toEqual(['keep.txt']));
+    act(() => {
+      added?.({}, 'project.json');
+    });
+    expect(result.current.files).toEqual(['keep.txt']);
+  });
+
   it('toggles noExport state', async () => {
     const { result } = renderHook(() => useProjectFiles(), {
       wrapper: ({ children }) => (

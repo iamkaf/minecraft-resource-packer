@@ -112,9 +112,11 @@ app.whenReady().then(() => {
   if (shouldOpen && last) {
     mainWindow?.webContents.once('did-finish-load', async () => {
       const projectPath = await openProject(projectsDir, last);
-      setLastProject(last);
-      await setActiveProject(projectPath);
-      mainWindow?.webContents.send('project-opened', projectPath);
+      const ok = await setActiveProject(projectPath);
+      if (ok) {
+        setLastProject(last);
+        mainWindow?.webContents.send('project-opened', projectPath);
+      }
     });
   }
 });
