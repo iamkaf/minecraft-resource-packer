@@ -1,5 +1,4 @@
 import React from 'react';
-import { Accordion } from '../daisy/display';
 import AssetBrowserItem from './AssetBrowserItem';
 import { Filter } from './AssetBrowserControls';
 
@@ -20,7 +19,8 @@ export default function AssetCategorySection({
 }: Props) {
   if (files.length === 0) return null;
   return (
-    <Accordion title={title} className="mb-2" defaultOpen>
+    <div className="mb-2">
+      <h3 className="text-lg font-medium capitalize mb-1">{title}</h3>
       <div className="grid grid-cols-6 gap-2">
         {files.map((f) => (
           <AssetBrowserItem
@@ -32,6 +32,6 @@ export default function AssetCategorySection({
           />
         ))}
       </div>
-    </Accordion>
+    </div>
   );
 }

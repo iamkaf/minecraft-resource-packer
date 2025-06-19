@@ -70,7 +70,7 @@ const BrowserBody: React.FC<{
     <div
       data-testid="asset-browser"
       ref={wrapperRef}
-      className="overflow-auto"
+      className="h-full overflow-y-auto"
       onKeyDown={(e) => {
         if (e.key === 'Delete' && selected.size > 0) {
           e.preventDefault();

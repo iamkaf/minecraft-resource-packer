@@ -1,6 +1,5 @@
 import React from 'react';
 import TextureGrid, { TextureInfo } from './TextureGrid';
-import { Accordion } from '../daisy/display';
 import type { Filter } from './AssetSelectorControls';
 
 export const CATEGORY_KEYS = [
@@ -64,7 +63,8 @@ export default function AssetCategoryList({
         const list = categories[key];
         if (list.length === 0) return null;
         return (
-          <Accordion key={key} title={key} className="mb-2" defaultOpen>
+          <div key={key} className="mb-2">
+            <h3 className="text-lg font-medium capitalize mb-1">{key}</h3>
             <TextureGrid
               testId="texture-grid"
               textures={list}
@@ -73,7 +73,7 @@ export default function AssetCategoryList({
               onContextMenu={onContextMenu}
               onKeyDown={onKeyDown}
             />
-          </Accordion>
+          </div>
         );
       })}
     </>

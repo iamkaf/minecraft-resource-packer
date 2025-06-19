@@ -9,7 +9,7 @@ vi.mock('../src/renderer/components/assets/AssetBrowserItem', () => ({
 }));
 
 describe('AssetCategorySection', () => {
-  it('renders items inside accordion', () => {
+  it('renders items with header', () => {
     render(
       <AssetCategorySection
         title="blocks"
@@ -19,7 +19,7 @@ describe('AssetCategorySection', () => {
         zoom={64}
       />
     );
-    expect(screen.getByText('blocks')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'blocks' })).toBeInTheDocument();
     expect(screen.getByTestId('item')).toHaveTextContent('a.png');
   });
 
