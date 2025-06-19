@@ -20,7 +20,6 @@ vi.mock('@monaco-editor/react', () => ({
 import AssetInfo from '../src/renderer/components/assets/AssetInfo';
 import RevisionsModal from '../src/renderer/components/modals/RevisionsModal';
 import ToastProvider from '../src/renderer/components/providers/ToastProvider';
-import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 
 const saveRevision = vi.fn();
@@ -45,13 +44,11 @@ beforeEach(() => {
 describe('Revision history', () => {
   it('saves revision on save', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <ToastProvider>
-            <AssetInfo asset="a.txt" />
-          </ToastProvider>
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <ToastProvider>
+          <AssetInfo asset="a.txt" />
+        </ToastProvider>
+      </SetPath>
     );
     const box = await screen.findByRole('textbox');
     fireEvent.change(box, { target: { value: 'hi' } });
@@ -61,13 +58,11 @@ describe('Revision history', () => {
 
   it('restores a revision', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <ToastProvider>
-            <RevisionsModal asset="a.txt" onClose={() => {}} />
-          </ToastProvider>
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <ToastProvider>
+          <RevisionsModal asset="a.txt" onClose={() => {}} />
+        </ToastProvider>
+      </SetPath>
     );
     const btn = await screen.findByText('Restore');
     fireEvent.click(btn);
@@ -77,13 +72,11 @@ describe('Revision history', () => {
   it('closes on Escape or Enter', async () => {
     const onClose = vi.fn();
     render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <ToastProvider>
-            <RevisionsModal asset="a.txt" onClose={onClose} />
-          </ToastProvider>
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <ToastProvider>
+          <RevisionsModal asset="a.txt" onClose={onClose} />
+        </ToastProvider>
+      </SetPath>
     );
     const dialog = screen.getByTestId('daisy-modal');
     fireEvent.keyDown(dialog, { key: 'Escape' });

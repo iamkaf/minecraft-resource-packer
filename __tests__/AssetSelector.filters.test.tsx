@@ -1,7 +1,6 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 import AssetSelector from '../src/renderer/components/assets/AssetSelector';
 
@@ -21,11 +20,9 @@ describe('AssetSelector filters', () => {
 
   it('filters textures by category chip and supports keyboard toggle', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetSelector />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetSelector />
+      </SetPath>
     );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'png' } });

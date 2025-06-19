@@ -7,7 +7,7 @@ import { PackMetaForm } from '../modals/PackMetaModal';
 // @ts-ignore - webpack replaces import with URL string
 import defaultIcon from '../../../../resources/default_pack.png';
 
-import { useProject } from '../providers/ProjectProvider';
+import { useAppStore } from '../../store';
 
 interface Props {
   onExport: () => void;
@@ -20,7 +20,7 @@ export default function ProjectInfoPanel({
   onBack,
   onSettings,
 }: Props) {
-  const { path: projectPath } = useProject();
+  const projectPath = useAppStore((s) => s.projectPath)!;
   const [meta, setMeta] = useState<PackMeta | null>(null);
   const name = path.basename(projectPath);
 

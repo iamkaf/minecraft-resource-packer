@@ -3,10 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import AssetBrowserItem from '../src/renderer/components/assets/AssetBrowserItem';
 import MoveFileModal from '../src/renderer/components/modals/MoveFileModal';
-import {
-  AssetBrowserProvider,
-  useAssetBrowser,
-} from '../src/renderer/components/providers/AssetBrowserProvider';
+import { useAppStore } from '../src/renderer/store';
 import path from 'path';
 
 const openInFolder = vi.fn();
@@ -31,22 +28,17 @@ beforeEach(() => {
     deleteFile,
     renameFile,
   };
+  useAppStore.setState({
+    selectedAssets: [],
+    noExport: new Set(),
+    renameTarget: null,
+    moveTarget: null,
+  });
 });
 
 describe('AssetBrowserItem', () => {
   it('calls IPC actions from context menu', async () => {
-    const openRename = vi.fn();
-    const openMove = vi.fn();
-    render(
-      <AssetBrowserProvider
-        noExport={new Set()}
-        toggleNoExport={vi.fn()}
-        openRename={openRename}
-        openMove={openMove}
-      >
-        <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />
-      </AssetBrowserProvider>
-    );
+    render(<AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />);
     const item = screen.getAllByText('a.txt')[0];
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Reveal' }));
@@ -56,52 +48,28 @@ describe('AssetBrowserItem', () => {
     expect(openFile).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Rename' }));
-    expect(openRename).toHaveBeenCalledWith('a.txt');
+    expect(useAppStore.getState().renameTarget).toBe('a.txt');
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Move…' }));
-    expect(openMove).toHaveBeenCalledWith('a.txt');
+    expect(useAppStore.getState().moveTarget).toBe('a.txt');
     fireEvent.contextMenu(item);
     fireEvent.click(screen.getByRole('menuitem', { name: 'Delete' }));
     expect(deleteFile).toHaveBeenCalledWith(path.join('/proj', 'a.txt'));
   });
 
   it('toggles noExport for selected files', () => {
-    const toggleNoExport = vi.fn();
-    function Wrapper() {
-      const { setSelected } = useAssetBrowser();
-      React.useEffect(() => {
-        setSelected(new Set(['a.txt', 'b.txt']));
-      }, []);
-      return <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />;
-    }
-    render(
-      <AssetBrowserProvider
-        noExport={new Set()}
-        toggleNoExport={toggleNoExport}
-        openRename={() => undefined}
-        openMove={() => undefined}
-      >
-        <Wrapper />
-      </AssetBrowserProvider>
-    );
+    useAppStore.getState().setSelectedAssets(['a.txt', 'b.txt']);
+    render(<AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />);
     const item = screen.getAllByText('a.txt')[0];
     fireEvent.contextMenu(item);
     const toggle = screen.getByRole('checkbox', { name: /No Export/i });
     fireEvent.click(toggle);
-    expect(toggleNoExport).toHaveBeenCalledWith(['a.txt', 'b.txt'], true);
+    expect(useAppStore.getState().noExport.has('a.txt')).toBe(true);
+    expect(useAppStore.getState().noExport.has('b.txt')).toBe(true);
   });
 
   it('closes context menu on blur', () => {
-    render(
-      <AssetBrowserProvider
-        noExport={new Set()}
-        toggleNoExport={() => undefined}
-        openRename={() => undefined}
-        openMove={() => undefined}
-      >
-        <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />
-      </AssetBrowserProvider>
-    );
+    render(<AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />);
     const item = screen.getAllByText('a.txt')[0];
     const container = item.closest('div[tabindex="0"]') as HTMLElement;
     fireEvent.contextMenu(container);
@@ -112,16 +80,8 @@ describe('AssetBrowserItem', () => {
   });
 
   it('menu is not dimmed when item is flagged noExport', () => {
-    render(
-      <AssetBrowserProvider
-        noExport={new Set(['a.txt'])}
-        toggleNoExport={() => undefined}
-        openRename={() => undefined}
-        openMove={() => undefined}
-      >
-        <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />
-      </AssetBrowserProvider>
-    );
+    useAppStore.setState({ noExport: new Set(['a.txt']) });
+    render(<AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />);
     const item = screen.getAllByText('a.txt')[0];
     fireEvent.contextMenu(item);
     const menu = screen.getByRole('menu');
@@ -130,29 +90,25 @@ describe('AssetBrowserItem', () => {
 
   it('moves file via modal', async () => {
     function Wrapper() {
-      const [move, setMove] = React.useState<string | null>(null);
+      const move = useAppStore((s) => s.moveTarget);
+      const close = useAppStore((s) => s.closeDialogs);
       return (
-        <AssetBrowserProvider
-          noExport={new Set()}
-          toggleNoExport={() => undefined}
-          openRename={() => undefined}
-          openMove={(f) => setMove(f)}
-        >
+        <>
           <AssetBrowserItem projectPath="/proj" file="a.txt" zoom={64} />
           {move && (
             <MoveFileModal
               current={move}
-              onCancel={() => setMove(null)}
+              onCancel={close}
               onMove={(dest) => {
                 renameFile(
                   path.join('/proj', move),
                   path.join('/proj', dest, path.basename(move))
                 );
-                setMove(null);
+                close();
               }}
             />
           )}
-        </AssetBrowserProvider>
+        </>
       );
     }
     render(<Wrapper />);

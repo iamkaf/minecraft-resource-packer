@@ -1,7 +1,6 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, within, act } from '@testing-library/react';
-import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 import path from 'path';
 
@@ -36,11 +35,9 @@ describe('AssetBrowser', () => {
 
   it('renders files from directory', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     expect(watchProject).toHaveBeenCalledWith('/proj');
     expect((await screen.findAllByText('a.txt'))[0]).toBeInTheDocument();
@@ -54,11 +51,9 @@ describe('AssetBrowser', () => {
   it('filters out .history files', async () => {
     watchProject.mockResolvedValue(['.history/a.txt', 'visible.txt']);
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     expect((await screen.findAllByText('visible.txt')).length).toBeGreaterThan(
       0
@@ -69,11 +64,9 @@ describe('AssetBrowser', () => {
   it('hides project.json', async () => {
     watchProject.mockResolvedValue(['project.json', 'visible.txt']);
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     expect((await screen.findAllByText('visible.txt')).length).toBeGreaterThan(
       0
@@ -99,11 +92,9 @@ describe('AssetBrowser', () => {
     electronAPI.getNoExport.mockResolvedValue([]);
     electronAPI.setNoExport.mockImplementation(() => undefined);
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     const item = (await screen.findAllByText('a.txt'))[0];
     fireEvent.contextMenu(item);
@@ -162,11 +153,9 @@ describe('AssetBrowser', () => {
     });
 
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     await screen.findAllByText('a.txt');
 
@@ -205,11 +194,9 @@ describe('AssetBrowser', () => {
     electronAPI.getNoExport.mockResolvedValue([]);
     electronAPI.setNoExport.mockImplementation(() => undefined);
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     const a = (await screen.findAllByText('a.txt'))[0];
     const b = screen.getAllByText('b.png')[0];
@@ -232,11 +219,9 @@ describe('AssetBrowser', () => {
     electronAPI.onFileRenamed.mockImplementation(onFileRenamed);
     electronAPI.onFileChanged.mockImplementation(onFileChanged);
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     const a = (await screen.findAllByText('a.txt'))[0];
     const b = screen.getAllByText('b.png')[0];
@@ -263,11 +248,9 @@ describe('AssetBrowser', () => {
     electronAPI.onFileRenamed.mockImplementation(onFileRenamed);
     electronAPI.onFileChanged.mockImplementation(onFileChanged);
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     const el = (await screen.findAllByText('a.txt'))[0];
     const container = el.closest('div[tabindex="0"]') as HTMLElement;
@@ -278,11 +261,9 @@ describe('AssetBrowser', () => {
 
   it('filters by search and adjusts zoom', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     await screen.findAllByText('a.txt');
     const search = screen.getByPlaceholderText('Search files');
@@ -302,11 +283,9 @@ describe('AssetBrowser', () => {
       'assets/minecraft/textures/item/apple.png',
     ]);
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     await screen.findAllByText('stone.png');
     const itemsChip = screen.getByText('Items');
@@ -318,11 +297,9 @@ describe('AssetBrowser', () => {
 
   it('renders grid and tree together', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     await screen.findAllByText('a.txt');
     expect(screen.getByTestId('file-tree')).toBeInTheDocument();

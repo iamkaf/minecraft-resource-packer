@@ -16,7 +16,6 @@ interface Props {
   onKeyDown?: (e: React.KeyboardEvent, name: string) => void;
 }
 
-
 const TextureGrid: React.FC<Props> = ({
   textures,
   zoom,
@@ -30,9 +29,7 @@ const TextureGrid: React.FC<Props> = ({
       data-testid={testId}
       // className="overflow-y-auto"
     >
-      <div
-        className="flex flex-wrap justify-start items-start gap-2"
-      >
+      <div className="flex flex-wrap justify-start items-start gap-2">
         {textures.map((tex) => {
           const formatted = formatTextureName(tex.name);
           return (
@@ -46,7 +43,8 @@ const TextureGrid: React.FC<Props> = ({
                   onClick={() => onSelect(tex.name)}
                   onContextMenu={(e) => onContextMenu?.(e, tex.name)}
                   onKeyDown={(e) =>
-                    (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) &&
+                    (e.key === 'ContextMenu' ||
+                      (e.shiftKey && e.key === 'F10')) &&
                     onKeyDown?.(e, tex.name)
                   }
                   className="p-1 hover:ring ring-accent rounded"

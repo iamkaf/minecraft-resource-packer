@@ -7,7 +7,7 @@ import AssetSelectorInfoPanel from '../assets/AssetSelectorInfoPanel';
 import { Skeleton } from '../daisy/feedback';
 import ExternalLink from '../common/ExternalLink';
 import { Modal, Button } from '../daisy/actions';
-import { useEditor } from './EditorContext';
+import { useAppStore } from '../../store';
 /* eslint-disable import/no-unresolved */
 import {
   PanelGroup,
@@ -28,7 +28,8 @@ export default function AssetBrowserTab({
   onSettings,
   onExport,
 }: Props) {
-  const { selected, setSelected } = useEditor();
+  const selected = useAppStore((s) => s.selectedAssets);
+  const setSelected = useAppStore((s) => s.setSelectedAssets);
   const [selectorAsset, setSelectorAsset] = useState<string | null>(null);
   const [layout, setLayout] = useState<number[]>([20, 80]);
   const [selectorOpen, setSelectorOpen] = useState(false);

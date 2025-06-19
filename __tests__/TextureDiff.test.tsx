@@ -2,7 +2,6 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TextureDiff from '../src/renderer/components/assets/TextureDiff';
-import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 
 describe('TextureDiff', () => {
@@ -10,11 +9,9 @@ describe('TextureDiff', () => {
     electronAPI.getTextureUrl.mockResolvedValue('vanilla://foo.png');
 
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <TextureDiff asset="block/a.png" onClose={() => undefined} />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <TextureDiff asset="block/a.png" onClose={() => undefined} />
+      </SetPath>
     );
 
     expect(electronAPI.getTextureUrl).toHaveBeenCalledWith(
@@ -32,11 +29,9 @@ describe('TextureDiff', () => {
     electronAPI.getTextureUrl.mockResolvedValue('vanilla://foo.png');
 
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <TextureDiff asset="block/a.png" onClose={onClose} />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <TextureDiff asset="block/a.png" onClose={onClose} />
+      </SetPath>
     );
 
     const btn = await screen.findByRole('button', { name: 'Close' });

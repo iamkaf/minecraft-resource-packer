@@ -4,7 +4,7 @@ import AssetSelectorControls, { Filter } from './AssetSelectorControls';
 import AssetCategoryList, { getCategory } from './AssetCategoryList';
 import { TextureInfo } from './TextureGrid';
 import { Button } from '../daisy/actions';
-import { useProject } from '../providers/ProjectProvider';
+import { useAppStore } from '../../store';
 import AssetSelectorContextMenu from './AssetSelectorContextMenu';
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const AssetSelector: React.FC<Props> = ({ onAssetSelect }) => {
-  const { path: projectPath } = useProject();
+  const projectPath = useAppStore((s) => s.projectPath)!;
   const [all, setAll] = useState<TextureInfo[]>([]);
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);

@@ -4,8 +4,7 @@ import path from 'path';
 import { buildTree, TreeItem } from '../../utils/tree';
 import TextureThumb from './TextureThumb';
 import AssetContextMenu from '../file/AssetContextMenu';
-import { useProject } from '../providers/ProjectProvider';
-import { useAssetBrowser } from '../providers/AssetBrowserProvider';
+import { useAppStore } from '../../store';
 
 interface Props {
   files: string[];
@@ -13,16 +12,14 @@ interface Props {
 }
 
 export default function FileTree({ files, versions }: Props) {
-  const {
-    selected,
-    setSelected,
-    noExport,
-    toggleNoExport,
-    deleteFiles,
-    openRename,
-    openMove,
-  } = useAssetBrowser();
-  const { path: projectPath } = useProject();
+  const selected = useAppStore((s) => s.selectedAssets);
+  const setSelected = useAppStore((s) => s.setSelectedAssets);
+  const noExport = useAppStore((s) => s.noExport);
+  const toggleNoExport = useAppStore((s) => s.toggleNoExport);
+  const deleteFiles = useAppStore((s) => s.deleteFiles);
+  const openRename = useAppStore((s) => s.openRename);
+  const openMove = useAppStore((s) => s.openMove);
+  const projectPath = useAppStore((s) => s.projectPath)!;
   const data = React.useMemo<TreeItem[]>(() => buildTree(files), [files]);
   const [menuInfo, setMenuInfo] = useState<{
     file: string;
@@ -36,20 +33,19 @@ export default function FileTree({ files, versions }: Props) {
   }, [menuInfo]);
 
   const handleSelect = (e: React.MouseEvent, id: string) => {
-    const ns = new Set(selected);
+    let ns = selected.slice();
     if (e.ctrlKey || e.metaKey || e.shiftKey) {
-      if (ns.has(id)) ns.delete(id);
-      else ns.add(id);
+      if (ns.includes(id)) ns = ns.filter((x) => x !== id);
+      else ns = [...ns, id];
     } else {
-      ns.clear();
-      ns.add(id);
+      ns = [id];
     }
     setSelected(ns);
   };
 
   const handleContext = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
-    if (!selected.has(id)) setSelected(new Set([id]));
+    if (!selected.includes(id)) setSelected([id]);
     setMenuInfo({ file: id, x: e.clientX, y: e.clientY });
   };
 
@@ -77,7 +73,7 @@ export default function FileTree({ files, versions }: Props) {
           <div
             key={f}
             className={`cursor-pointer pl-1 flex items-center gap-1 ${
-              selected.has(f) ? 'bg-base-300' : ''
+              selected.includes(f) ? 'bg-base-300' : ''
             }`}
             onClick={(e) => handleSelect(e, f)}
             onDoubleClick={() =>
@@ -100,10 +96,10 @@ export default function FileTree({ files, versions }: Props) {
         {menuInfo && (
           <AssetContextMenu
             filePath={path.join(projectPath, menuInfo.file)}
-            selectionCount={selected.size}
+            selectionCount={selected.length}
             noExportChecked={(() => {
-              const list = selected.has(menuInfo.file)
-                ? Array.from(selected)
+              const list = selected.includes(menuInfo.file)
+                ? selected
                 : [menuInfo.file];
               return list.every((x) => noExport.has(x));
             })()}
@@ -119,14 +115,14 @@ export default function FileTree({ files, versions }: Props) {
             onMove={() => openMove(menuInfo.file)}
             onDelete={() =>
               deleteFiles(
-                selected.size > 1
-                  ? Array.from(selected).map((s) => path.join(projectPath, s))
+                selected.length > 1
+                  ? selected.map((s) => path.join(projectPath, s))
                   : [path.join(projectPath, menuInfo.file)]
               )
             }
             onToggleNoExport={(flag) => {
-              const list = selected.has(menuInfo.file)
-                ? Array.from(selected)
+              const list = selected.includes(menuInfo.file)
+                ? selected
                 : [menuInfo.file];
               toggleNoExport(list, flag);
             }}
@@ -162,7 +158,7 @@ export default function FileTree({ files, versions }: Props) {
           <div
             style={style}
             className={`cursor-pointer pl-1 flex items-center gap-1 ${
-              selected.has(node.id) ? 'bg-base-300' : ''
+              selected.includes(node.id) ? 'bg-base-300' : ''
             }`}
             onClick={(e) => node.isLeaf && handleSelect(e, node.id)}
             onDoubleClick={() =>
@@ -201,10 +197,10 @@ export default function FileTree({ files, versions }: Props) {
       {menuInfo && (
         <AssetContextMenu
           filePath={path.join(projectPath, menuInfo.file)}
-          selectionCount={selected.size}
+          selectionCount={selected.length}
           noExportChecked={(() => {
-            const list = selected.has(menuInfo.file)
-              ? Array.from(selected)
+            const list = selected.includes(menuInfo.file)
+              ? selected
               : [menuInfo.file];
             return list.every((x) => noExport.has(x));
           })()}
@@ -220,14 +216,14 @@ export default function FileTree({ files, versions }: Props) {
           onMove={() => openMove(menuInfo.file)}
           onDelete={() =>
             deleteFiles(
-              selected.size > 1
-                ? Array.from(selected).map((s) => path.join(projectPath, s))
+              selected.length > 1
+                ? selected.map((s) => path.join(projectPath, s))
                 : [path.join(projectPath, menuInfo.file)]
             )
           }
           onToggleNoExport={(flag) => {
-            const list = selected.has(menuInfo.file)
-              ? Array.from(selected)
+            const list = selected.includes(menuInfo.file)
+              ? selected
               : [menuInfo.file];
             toggleNoExport(list, flag);
           }}

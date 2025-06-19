@@ -3,7 +3,7 @@ import path from 'path';
 import { formatTextureName } from '../../utils/textureNames';
 import AssetContextMenu from '../file/AssetContextMenu';
 import TextureThumb from './TextureThumb';
-import { useAssetBrowser } from '../providers/AssetBrowserProvider';
+import { useAppStore } from '../../store';
 
 interface Props {
   projectPath: string;
@@ -18,15 +18,13 @@ const AssetBrowserItem: React.FC<Props> = ({
   zoom,
   stamp,
 }) => {
-  const {
-    selected,
-    setSelected,
-    noExport,
-    toggleNoExport,
-    deleteFiles,
-    openRename,
-    openMove,
-  } = useAssetBrowser();
+  const selected = useAppStore((s) => s.selectedAssets);
+  const setSelected = useAppStore((s) => s.setSelectedAssets);
+  const noExport = useAppStore((s) => s.noExport);
+  const toggleNoExport = useAppStore((s) => s.toggleNoExport);
+  const deleteFiles = useAppStore((s) => s.deleteFiles);
+  const openRename = useAppStore((s) => s.openRename);
+  const openMove = useAppStore((s) => s.openMove);
   const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null);
   const firstItem = useRef<HTMLButtonElement>(null);
 
@@ -42,17 +40,16 @@ const AssetBrowserItem: React.FC<Props> = ({
   const texPath = file.endsWith('.png') ? file : null;
   const altText = texPath ? formatted : name;
 
-  const isSelected = selected.has(file);
+  const isSelected = selected.includes(file);
 
   const toggleSelect = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const ns = new Set(selected);
+    let ns = selected.slice();
     if (e.ctrlKey || e.metaKey || e.shiftKey) {
-      if (ns.has(file)) ns.delete(file);
-      else ns.add(file);
+      if (ns.includes(file)) ns = ns.filter((x) => x !== file);
+      else ns = [...ns, file];
     } else {
-      ns.clear();
-      ns.add(file);
+      ns = [file];
     }
     setSelected(ns);
   };
@@ -63,8 +60,8 @@ const AssetBrowserItem: React.FC<Props> = ({
 
   const handleContext = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!selected.has(file)) {
-      setSelected(new Set([file]));
+    if (!selected.includes(file)) {
+      setSelected([file]);
     }
     showMenu(e.clientX, e.clientY);
   };
@@ -122,9 +119,9 @@ const AssetBrowserItem: React.FC<Props> = ({
       </div>
       <AssetContextMenu
         filePath={full}
-        selectionCount={selected.size}
+        selectionCount={selected.length}
         noExportChecked={(() => {
-          const list = selected.has(file) ? Array.from(selected) : [file];
+          const list = selected.includes(file) ? selected : [file];
           return list.every((x) => noExport.has(x));
         })()}
         style={{
@@ -139,13 +136,13 @@ const AssetBrowserItem: React.FC<Props> = ({
         onMove={() => openMove(file)}
         onDelete={() =>
           deleteFiles(
-            selected.size > 1
-              ? Array.from(selected).map((s) => path.join(projectPath, s))
+            selected.length > 1
+              ? selected.map((s) => path.join(projectPath, s))
               : [full]
           )
         }
         onToggleNoExport={(flag) => {
-          const list = selected.has(file) ? Array.from(selected) : [file];
+          const list = selected.includes(file) ? selected : [file];
           toggleNoExport(list, flag);
         }}
       />

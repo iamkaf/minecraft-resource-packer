@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useToast } from '../providers/ToastProvider';
-import { useProject } from '../providers/ProjectProvider';
+import { useAppStore, AppState } from '../../store';
 
 export function useProjectFiles() {
-  const { path: projectPath } = useProject();
+  const projectPath = useAppStore((s) => s.projectPath)!;
   const [files, setFiles] = useState<string[]>([]);
-  const [noExport, setNoExport] = useState<Set<string>>(new Set());
   const [versions, setVersions] = useState<Record<string, number>>({});
+  const { noExport } = useAppStore.getState();
   const toast = useToast();
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export function useProjectFiles() {
   useEffect(() => {
     let active = true;
     window.electronAPI?.getNoExport(projectPath).then((list) => {
-      if (active && list) setNoExport(new Set(list));
+      if (active && list) useAppStore.setState({ noExport: new Set(list) });
     });
     return () => {
       active = false;
@@ -74,13 +74,13 @@ export function useProjectFiles() {
 
   const toggleNoExport = (list: string[], flag: boolean) => {
     window.electronAPI?.setNoExport(projectPath, list, flag);
-    setNoExport((prev) => {
-      const ns = new Set(prev);
+    useAppStore.setState((state) => {
+      const ns = new Set(state.noExport);
       list.forEach((file) => {
         if (flag) ns.add(file);
         else ns.delete(file);
       });
-      return ns;
+      return { noExport: ns } as Partial<AppState>;
     });
     toast({
       message: flag
@@ -90,5 +90,10 @@ export function useProjectFiles() {
     });
   };
 
-  return { files, noExport, toggleNoExport, versions };
+  return {
+    files,
+    noExport: useAppStore.getState().noExport,
+    toggleNoExport,
+    versions,
+  };
 }

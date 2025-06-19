@@ -5,7 +5,7 @@ import { Loading } from '../daisy/feedback';
 import type { TextureEditOptions } from '../../../shared/texture';
 import { Modal, Button } from '../daisy/actions';
 import { Range, Select, Checkbox } from '../daisy/input';
-import { useProject } from '../providers/ProjectProvider';
+import { useAppStore } from '../../store';
 
 export default function TextureLab({
   file,
@@ -16,7 +16,7 @@ export default function TextureLab({
   onClose: () => void;
   stamp?: number;
 }) {
-  const { path: projectPath } = useProject();
+  const projectPath = useAppStore((s) => s.projectPath)!;
   const [hue, setHue] = useState(0);
   const [rotate, setRotate] = useState(0);
   const [gray, setGray] = useState(false);

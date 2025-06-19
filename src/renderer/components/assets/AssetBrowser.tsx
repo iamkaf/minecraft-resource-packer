@@ -4,11 +4,7 @@ import RenameModal from '../modals/RenameModal';
 import MoveFileModal from '../modals/MoveFileModal';
 import { useProjectFiles } from '../file/useProjectFiles';
 import FileTree from './FileTree';
-import { useProject } from '../providers/ProjectProvider';
-import {
-  AssetBrowserProvider,
-  useAssetBrowser,
-} from '../providers/AssetBrowserProvider';
+import { useAppStore } from '../../store';
 import AssetBrowserControls, {
   Filter,
   ControlsState,
@@ -59,11 +55,12 @@ const BrowserBody: React.FC<{
   onControlsChange,
   categories,
 }) => {
-  const { selected, deleteFiles } = useAssetBrowser();
+  const selected = useAppStore((s) => s.selectedAssets);
+  const deleteFiles = useAppStore((s) => s.deleteFiles);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleDeleteSelected = () => {
-    deleteFiles(Array.from(selected).map((s) => path.join(projectPath, s)));
+    deleteFiles(selected.map((s) => path.join(projectPath, s)));
   };
 
   return (
@@ -72,7 +69,7 @@ const BrowserBody: React.FC<{
       ref={wrapperRef}
       className="h-full overflow-y-auto"
       onKeyDown={(e) => {
-        if (e.key === 'Delete' && selected.size > 0) {
+        if (e.key === 'Delete' && selected.length > 0) {
           e.preventDefault();
           handleDeleteSelected();
         }
@@ -112,10 +109,16 @@ const BrowserBody: React.FC<{
 };
 
 const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
-  const { path: projectPath } = useProject();
-  const { files, noExport, toggleNoExport, versions } = useProjectFiles();
-  const [renameTarget, setRenameTarget] = useState<string | null>(null);
-  const [moveTarget, setMoveTarget] = useState<string | null>(null);
+  const projectPath = useAppStore((s) => s.projectPath)!;
+  const { files, noExport, versions } = useProjectFiles();
+  React.useEffect(() => {
+    useAppStore.setState({ noExport });
+  }, [noExport]);
+  const renameTarget = useAppStore((s) => s.renameTarget);
+  const moveTarget = useAppStore((s) => s.moveTarget);
+  const openRename = useAppStore((s) => s.openRename);
+  const openMove = useAppStore((s) => s.openMove);
+  const closeDialogs = useAppStore((s) => s.closeDialogs);
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -159,13 +162,7 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
   };
 
   return (
-    <AssetBrowserProvider
-      noExport={noExport}
-      toggleNoExport={toggleNoExport}
-      openRename={(file) => setRenameTarget(file)}
-      openMove={(file) => setMoveTarget(file)}
-      onSelectionChange={onSelectionChange}
-    >
+    <>
       <BrowserBody
         projectPath={projectPath}
         visible={visible}
@@ -177,19 +174,19 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
       {renameTarget && (
         <RenameModal
           current={path.basename(renameTarget)}
-          onCancel={() => setRenameTarget(null)}
+          onCancel={closeDialogs}
           onRename={(n) => {
             const full = path.join(projectPath, renameTarget);
             const target = path.join(path.dirname(full), n);
             window.electronAPI?.renameFile(full, target);
-            setRenameTarget(null);
+            closeDialogs();
           }}
         />
       )}
       {moveTarget && (
         <MoveFileModal
           current={moveTarget}
-          onCancel={() => setMoveTarget(null)}
+          onCancel={closeDialogs}
           onMove={(dest) => {
             const full = path.join(projectPath, moveTarget);
             const target = path.join(
@@ -198,11 +195,11 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
               path.basename(moveTarget)
             );
             window.electronAPI?.renameFile(full, target);
-            setMoveTarget(null);
+            closeDialogs();
           }}
         />
       )}
-    </AssetBrowserProvider>
+    </>
   );
 };
 

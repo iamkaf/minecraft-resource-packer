@@ -13,10 +13,11 @@ const EditorView = lazy(() => import('../views/EditorView'));
 const SettingsView = lazy(() => import('../views/SettingsView'));
 const AboutView = lazy(() => import('../views/AboutView'));
 
-import { ProjectProvider, useProject } from './providers/ProjectProvider';
+import { useAppStore } from '../store';
 
 function AppContent() {
-  const { path: projectPath, setPath: setProjectPath } = useProject();
+  const projectPath = useAppStore((s) => s.projectPath);
+  const setProjectPath = useAppStore((s) => s.setProjectPath);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -84,9 +85,5 @@ function AppContent() {
 }
 
 export default function App() {
-  return (
-    <ProjectProvider>
-      <AppContent />
-    </ProjectProvider>
-  );
+  return <AppContent />;
 }

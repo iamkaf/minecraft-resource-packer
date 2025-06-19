@@ -3,7 +3,6 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useProjectFiles } from '../src/renderer/components/file/useProjectFiles';
 import ToastProvider from '../src/renderer/components/providers/ToastProvider';
-import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 
 const watchProject = vi.fn(async () => ['a.txt', 'b.png']);
@@ -73,11 +72,7 @@ describe('useProjectFiles', () => {
       return offChange;
     });
     const { result, unmount } = renderHook(() => useProjectFiles(), {
-      wrapper: ({ children }) => (
-        <ProjectProvider>
-          <SetPath path="/proj">{children}</SetPath>
-        </ProjectProvider>
-      ),
+      wrapper: ({ children }) => <SetPath path="/proj">{children}</SetPath>,
     });
     await waitFor(() =>
       expect(result.current.files).toEqual(['a.txt', 'b.png'])
@@ -113,11 +108,7 @@ describe('useProjectFiles', () => {
       added = cb;
     });
     const { result } = renderHook(() => useProjectFiles(), {
-      wrapper: ({ children }) => (
-        <ProjectProvider>
-          <SetPath path="/proj">{children}</SetPath>
-        </ProjectProvider>
-      ),
+      wrapper: ({ children }) => <SetPath path="/proj">{children}</SetPath>,
     });
     await waitFor(() => expect(result.current.files).toEqual(['keep.txt']));
     act(() => {
@@ -133,11 +124,7 @@ describe('useProjectFiles', () => {
       added = cb;
     });
     const { result } = renderHook(() => useProjectFiles(), {
-      wrapper: ({ children }) => (
-        <ProjectProvider>
-          <SetPath path="/proj">{children}</SetPath>
-        </ProjectProvider>
-      ),
+      wrapper: ({ children }) => <SetPath path="/proj">{children}</SetPath>,
     });
     await waitFor(() => expect(result.current.files).toEqual(['keep.txt']));
     act(() => {
@@ -149,11 +136,9 @@ describe('useProjectFiles', () => {
   it('toggles noExport state', async () => {
     const { result } = renderHook(() => useProjectFiles(), {
       wrapper: ({ children }) => (
-        <ProjectProvider>
-          <SetPath path="/proj">
-            <ToastProvider>{children}</ToastProvider>
-          </SetPath>
-        </ProjectProvider>
+        <SetPath path="/proj">
+          <ToastProvider>{children}</ToastProvider>
+        </SetPath>
       ),
     });
     await waitFor(() => expect(result.current.files.length).toBeGreaterThan(0));

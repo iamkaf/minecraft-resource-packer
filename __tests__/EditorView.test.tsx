@@ -3,11 +3,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import os from 'os';
 import path from 'path';
-import {
-  ProjectProvider,
-  useProject,
-} from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
+import { useAppStore } from '../src/renderer/store';
 
 // eslint-disable-next-line no-var
 var openExternalMock: ReturnType<typeof vi.fn>;
@@ -35,7 +32,7 @@ vi.mock('../src/renderer/components/project/ProjectInfoPanel', () => ({
     onExport: () => void;
     onBack: () => void;
   }) => {
-    const { path } = useProject();
+    const path = useAppStore.getState().projectPath;
     return (
       <div>
         <button onClick={onExport}>Export Pack</button>
@@ -76,11 +73,9 @@ describe('EditorView', () => {
   it('shows project path and exports pack', async () => {
     const proj = path.join(os.tmpdir(), 'proj');
     render(
-      <ProjectProvider>
-        <SetPath path={proj}>
-          <EditorView onBack={() => undefined} />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path={proj}>
+        <EditorView onBack={() => undefined} />
+      </SetPath>
     );
     expect(screen.getByText(proj)).toBeInTheDocument();
     const btn = screen.getByText('Export Pack');
@@ -95,11 +90,9 @@ describe('EditorView', () => {
   it('calls onBack when Back clicked', () => {
     const back = vi.fn();
     render(
-      <ProjectProvider>
-        <SetPath path={os.tmpdir()}>
-          <EditorView onBack={back} />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path={os.tmpdir()}>
+        <EditorView onBack={back} />
+      </SetPath>
     );
     fireEvent.click(screen.getByText('Back to Projects'));
     expect(back).toHaveBeenCalled();
@@ -107,11 +100,9 @@ describe('EditorView', () => {
 
   it('opens help link externally', () => {
     render(
-      <ProjectProvider>
-        <SetPath path={os.tmpdir()}>
-          <EditorView onBack={() => undefined} />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path={os.tmpdir()}>
+        <EditorView onBack={() => undefined} />
+      </SetPath>
     );
     const link = screen.getByRole('link', { name: 'Help' });
     link.dispatchEvent(
@@ -124,11 +115,9 @@ describe('EditorView', () => {
 
   it('opens asset selector modal', () => {
     render(
-      <ProjectProvider>
-        <SetPath path={os.tmpdir()}>
-          <EditorView onBack={() => undefined} />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path={os.tmpdir()}>
+        <EditorView onBack={() => undefined} />
+      </SetPath>
     );
     fireEvent.click(screen.getByRole('button', { name: 'Add From Vanilla' }));
     expect(screen.getByTestId('asset-selector-modal')).toBeInTheDocument();

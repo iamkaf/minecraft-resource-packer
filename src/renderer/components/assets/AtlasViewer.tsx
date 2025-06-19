@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button } from '../daisy/actions';
 import { Loading } from '../daisy/feedback';
-import { useProject } from '../providers/ProjectProvider';
+import { useAppStore } from '../../store';
 
 export default function AtlasViewer({
   textures,
@@ -10,7 +10,7 @@ export default function AtlasViewer({
   textures: string[];
   onClose: () => void;
 }) {
-  const { path: projectPath } = useProject();
+  const projectPath = useAppStore((s) => s.projectPath)!;
   const [url, setUrl] = useState<string | null>(null);
 
   useEffect(() => {

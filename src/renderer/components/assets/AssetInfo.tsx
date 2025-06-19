@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 import path from 'path';
 import { useToast } from '../providers/ToastProvider';
 import { Skeleton } from '../daisy/feedback';
-import { useProject } from '../providers/ProjectProvider';
+import { useAppStore } from '../../store';
 import RevisionsModal from '../modals/RevisionsModal';
 import ConfirmModal2 from '../modals/ConfirmModal2';
 import AssetInfoHeader from './AssetInfoHeader';
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export default function AssetInfo({ asset, count = 1 }: Props) {
-  const { path: projectPath } = useProject();
+  const projectPath = useAppStore((s) => s.projectPath)!;
   const toast = useToast();
   const [text, setText] = useState('');
   const [orig, setOrig] = useState('');
@@ -114,14 +114,12 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
             setNoEditor(true);
             return;
           }
-          window.electronAPI
-            ?.openExternalEditor(full)
-            .catch(() =>
-              toast({
-                message: 'Failed to open external editor',
-                type: 'error',
-              })
-            );
+          window.electronAPI?.openExternalEditor(full).catch(() =>
+            toast({
+              message: 'Failed to open external editor',
+              type: 'error',
+            })
+          );
         }}
       />
       {count === 1 && isText && (
