@@ -105,7 +105,7 @@ describe('AssetSelector', () => {
     expect(img.style.width).toBe('100px');
   });
 
-  it('renders only visible items', async () => {
+  it('renders all items', async () => {
     listTextures.mockResolvedValue(
       Array.from({ length: 50 }, (_, i) => `block/test${i}.png`)
     );
@@ -121,7 +121,7 @@ describe('AssetSelector', () => {
     await screen.findByText('blocks');
     expect(
       screen.getAllByRole('button', { name: /block\/test/ }).length
-    ).toBeLessThan(50);
+    ).toBe(50);
   });
 
   it('is scrollable', async () => {
