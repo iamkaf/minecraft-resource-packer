@@ -29,6 +29,8 @@ describe('TextureLab', () => {
       changed?.({}, { path: 'foo.png', stamp: 1 });
     });
     expect(img.src).toContain('t=1');
+    expect(screen.getByText('Crop X')).toBeInTheDocument();
+    expect(screen.getByText('Undo')).toBeInTheDocument();
   });
 
   it('cleans up listener on unmount', () => {

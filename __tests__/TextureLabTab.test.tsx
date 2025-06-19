@@ -35,5 +35,6 @@ describe('TextureLabTab', () => {
     );
     expect(screen.getByTestId('texture-lab-view')).toBeInTheDocument();
     expect(screen.getByAltText('preview')).toBeInTheDocument();
+    expect(screen.getByText('Flip H')).toBeInTheDocument();
   });
 });

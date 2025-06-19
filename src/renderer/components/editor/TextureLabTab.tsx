@@ -18,6 +18,13 @@ export default function TextureLabTab() {
   const [gray, setGray] = useState(false);
   const [sat, setSat] = useState(1);
   const [bright, setBright] = useState(1);
+  const [crop, setCrop] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [resize, setResize] = useState({ width: 0, height: 0 });
+  const [flipH, setFlipH] = useState(false);
+  const [flipV, setFlipV] = useState(false);
+  const [drawColor, setDrawColor] = useState('#ff0000');
+  const [drawing, setDrawing] = useState(false);
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const [busy, setBusy] = useState(false);
   const [version, setVersion] = useState<number>();
 
@@ -51,6 +58,10 @@ export default function TextureLabTab() {
       grayscale: gray,
       saturation: sat,
       brightness: bright,
+      crop,
+      resize: resize.width && resize.height ? resize : undefined,
+      flip: flipH ? 'horizontal' : flipV ? 'vertical' : undefined,
+      overlay: canvasRef.current?.toDataURL(),
     };
     setBusy(true);
     window.electronAPI?.editTexture(file, opts).finally(() => setBusy(false));
@@ -128,7 +139,135 @@ export default function TextureLabTab() {
           className="range-xs flex-1"
         />
       </label>
+      <div className="flex gap-2">
+        <label className="flex items-center gap-1">
+          Crop X
+          <input
+            type="number"
+            value={crop.x}
+            onChange={(e) => setCrop({ ...crop, x: Number(e.target.value) })}
+            className="input input-xs w-16"
+          />
+        </label>
+        <label className="flex items-center gap-1">
+          Y
+          <input
+            type="number"
+            value={crop.y}
+            onChange={(e) => setCrop({ ...crop, y: Number(e.target.value) })}
+            className="input input-xs w-16"
+          />
+        </label>
+        <label className="flex items-center gap-1">
+          W
+          <input
+            type="number"
+            value={crop.width}
+            onChange={(e) =>
+              setCrop({ ...crop, width: Number(e.target.value) })
+            }
+            className="input input-xs w-16"
+          />
+        </label>
+        <label className="flex items-center gap-1">
+          H
+          <input
+            type="number"
+            value={crop.height}
+            onChange={(e) =>
+              setCrop({ ...crop, height: Number(e.target.value) })
+            }
+            className="input input-xs w-16"
+          />
+        </label>
+      </div>
+      <div className="flex gap-2">
+        <label className="flex items-center gap-1">
+          Resize W
+          <input
+            type="number"
+            value={resize.width}
+            onChange={(e) =>
+              setResize({ ...resize, width: Number(e.target.value) })
+            }
+            className="input input-xs w-16"
+          />
+        </label>
+        <label className="flex items-center gap-1">
+          H
+          <input
+            type="number"
+            value={resize.height}
+            onChange={(e) =>
+              setResize({ ...resize, height: Number(e.target.value) })
+            }
+            className="input input-xs w-16"
+          />
+        </label>
+        <label className="flex items-center gap-1">
+          <input
+            type="checkbox"
+            checked={flipH}
+            onChange={(e) => setFlipH(e.target.checked)}
+            className="checkbox checkbox-sm"
+          />
+          Flip H
+        </label>
+        <label className="flex items-center gap-1">
+          <input
+            type="checkbox"
+            checked={flipV}
+            onChange={(e) => setFlipV(e.target.checked)}
+            className="checkbox checkbox-sm"
+          />
+          Flip V
+        </label>
+      </div>
+      <div className="flex gap-2 items-center">
+        <input
+          type="color"
+          value={drawColor}
+          onChange={(e) => setDrawColor(e.target.value)}
+        />
+        <canvas
+          ref={canvasRef}
+          width={64}
+          height={64}
+          className="border"
+          onMouseDown={() => setDrawing(true)}
+          onMouseUp={() => setDrawing(false)}
+          onMouseLeave={() => setDrawing(false)}
+          onMouseMove={(e) => {
+            if (!drawing) return;
+            const rect = (
+              e.target as HTMLCanvasElement
+            ).getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const ctx = canvasRef.current?.getContext('2d');
+            if (ctx) {
+              ctx.fillStyle = drawColor;
+              ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
+            }
+          }}
+          style={{ imageRendering: 'pixelated' }}
+        />
+      </div>
       <div className="flex justify-end">
+        <Button
+          type="button"
+          onClick={() => window.electronAPI?.undoTexture(file)}
+          className="mr-2"
+        >
+          Undo
+        </Button>
+        <Button
+          type="button"
+          onClick={() => window.electronAPI?.redoTexture(file)}
+          className="mr-2"
+        >
+          Redo
+        </Button>
         <Button type="submit" className="btn-primary" disabled={busy}>
           Apply
         </Button>

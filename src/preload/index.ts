@@ -70,6 +70,8 @@ const api = {
     file: string,
     opts: import('../shared/texture').TextureEditOptions
   ) => invoke('edit-texture', file, opts),
+  undoTexture: (file: string) => invoke('undo-texture', file),
+  redoTexture: (file: string) => invoke('redo-texture', file),
   watchProject: (project: string) => invoke('watch-project', project),
   unwatchProject: (project: string) => invoke('unwatch-project', project),
   getNoExport: (project: string) => invoke('get-no-export', project),

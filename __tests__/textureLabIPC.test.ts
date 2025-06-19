@@ -9,12 +9,16 @@ vi.mock('../src/main/revision', () => ({
   saveRevisionForFile: vi.fn(async () => {}),
 }));
 
-let handler:
+let editHandler:
   | ((e: unknown, file: string, opts: unknown) => Promise<void>)
   | undefined;
+let undoHandler: ((e: unknown, file: string) => Promise<void>) | undefined;
+let redoHandler: ((e: unknown, file: string) => Promise<void>) | undefined;
 const ipcMock = {
   handle: (channel: string, fn: (...args: unknown[]) => unknown) => {
-    if (channel === 'edit-texture') handler = fn as typeof handler;
+    if (channel === 'edit-texture') editHandler = fn as typeof editHandler;
+    if (channel === 'undo-texture') undoHandler = fn as typeof undoHandler;
+    if (channel === 'redo-texture') redoHandler = fn as typeof redoHandler;
   },
 };
 
@@ -29,8 +33,10 @@ describe('edit-texture IPC', () => {
     registerTextureLabHandlers(
       ipcMock as unknown as import('electron').IpcMain
     );
-    expect(handler).toBeTypeOf('function');
-    await handler?.({}, tmp, { grayscale: true });
+    expect(editHandler).toBeTypeOf('function');
+    await editHandler?.({}, tmp, { grayscale: true, flip: 'horizontal' });
+    await undoHandler?.({}, tmp);
+    await redoHandler?.({}, tmp);
     const { saveRevisionForFile } = await import('../src/main/revision');
     expect(saveRevisionForFile).toHaveBeenCalledWith(tmp);
     const meta = await sharp(tmp).metadata();

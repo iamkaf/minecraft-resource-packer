@@ -20,6 +20,7 @@ This guide explains how to use **minecraft-resource-packer** to create and manag
 - **Export** – generate a zipped resource pack containing the selected files along with a valid `pack.mcmeta`. The output is ready to drop into Minecraft.
 - **External Editing** – configure your favourite image editor in **Settings** and launch it from the asset info panel.
 - **Revision History** – previous versions are kept in a hidden `.history` folder. Open the Revisions modal from Asset Info to restore any of the last 20 saves.
+- **Texture Lab** – edit textures in place with crop, resize, flip and brush tools. Use Undo/Redo to revert the last 20 changes.
 
 ## Texture Naming
 

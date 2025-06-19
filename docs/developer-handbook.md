@@ -189,7 +189,11 @@ daisyUI skeleton indicator while loading.
 
 The **Texture Lab** modal lets you adjust PNG textures without leaving the app.
 It exposes hue shift, rotation, grayscale, saturation and brightness controls.
-Edits are processed in the main process via Sharp and the modal shows a spinner
+Advanced tools include crop, resize and flip operations as well as a simple
+brush overlay. Drawing occurs on a 64×64 canvas and the resulting pixels are
+composited on the image when **Apply** is pressed. The modal also provides Undo
+and Redo buttons which call IPC handlers backed by a per‑texture history stack
+in the main process. Edits are processed via Sharp and a spinner is displayed
 while the file is being updated.
 
 The **Atlas Viewer** modal stitches multiple textures together for a high-
