@@ -10,16 +10,19 @@ export function useProjectFiles() {
   const toast = useToast();
 
   useEffect(() => {
-    // Revisions live under `.history` and should never appear in the asset
-    // browser or trigger file events, so we filter those paths out.
-    const isHistory = (p: string) =>
-      p === '.history' || p.startsWith('.history/') || p.includes('/.history/');
+    // Certain paths should never appear in the asset browser or trigger file
+    // events, namely revision history and the project's metadata file.
+    const isIgnored = (p: string) =>
+      p === '.history' ||
+      p.startsWith('.history/') ||
+      p.includes('/.history/') ||
+      p === 'project.json';
     let alive = true;
     window.electronAPI
       ?.watchProject(projectPath)
       .then((list) => {
         if (alive && list) {
-          const filtered = list.filter((p) => !isHistory(p));
+          const filtered = list.filter((p) => !isIgnored(p));
           setFiles(filtered);
         }
       })
@@ -27,22 +30,22 @@ export function useProjectFiles() {
         /* ignore */
       });
     const add = (_e: unknown, p: string) => {
-      if (isHistory(p)) return;
+      if (isIgnored(p)) return;
       setFiles((f) => [...f, p]);
     };
     const remove = (_e: unknown, p: string) => {
-      if (isHistory(p)) return;
+      if (isIgnored(p)) return;
       setFiles((f) => f.filter((x) => x !== p));
     };
     const rename = (
       _e: unknown,
       args: { oldPath: string; newPath: string }
     ) => {
-      if (isHistory(args.oldPath) || isHistory(args.newPath)) return;
+      if (isIgnored(args.oldPath) || isIgnored(args.newPath)) return;
       setFiles((f) => f.map((x) => (x === args.oldPath ? args.newPath : x)));
     };
     const change = (_e: unknown, args: { path: string; stamp: number }) => {
-      if (isHistory(args.path)) return;
+      if (isIgnored(args.path)) return;
       setVersions((v) => ({ ...v, [args.path]: args.stamp }));
     };
     const offAdd = window.electronAPI?.onFileAdded(add);

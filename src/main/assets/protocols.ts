@@ -8,7 +8,7 @@
 import path from 'path';
 import type { Protocol } from 'electron';
 
-import { readProjectMeta } from '../projectMeta';
+import { readProjectMetaSafe } from '../projectMeta';
 import { ensureAssets } from './cache';
 
 let cacheTexturesDir = '';
@@ -49,10 +49,18 @@ export function registerAssetProtocol(protocol: Protocol): void {
  * Point the custom protocols at a new project and ensure vanilla assets are
  * cached for that project's Minecraft version.
  */
-export async function setActiveProject(projectPath: string): Promise<void> {
-  const meta = await readProjectMeta(projectPath);
-  const cacheRoot = await ensureAssets(meta.minecraft_version);
-  setCacheTexturesDir(path.join(cacheRoot, 'assets', 'minecraft', 'textures'));
-  activeProjectDir = projectPath;
+export async function setActiveProject(projectPath: string): Promise<boolean> {
+  const meta = await readProjectMetaSafe(projectPath);
+  if (!meta) return false;
+  try {
+    const cacheRoot = await ensureAssets(meta.minecraft_version);
+    setCacheTexturesDir(
+      path.join(cacheRoot, 'assets', 'minecraft', 'textures')
+    );
+    activeProjectDir = projectPath;
+    return true;
+  } catch {
+    return false;
+  }
 }
 /* c8 ignore end */

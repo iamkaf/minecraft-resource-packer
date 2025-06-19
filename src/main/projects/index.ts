@@ -44,8 +44,9 @@ export function registerProjectHandlers(
   });
   ipc.handle('open-project', async (_e, name: string) => {
     const projectPath = await openProject(baseDir, name);
+    const ok = await setActiveProject(projectPath);
+    if (!ok) throw new Error('Invalid project.json');
     setLastProject(name);
-    await setActiveProject(projectPath);
     onOpen(projectPath);
   });
   ipc.handle('duplicate-project', (_e, name: string, newName: string) => {
