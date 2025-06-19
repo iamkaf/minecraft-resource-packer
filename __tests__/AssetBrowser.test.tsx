@@ -76,7 +76,7 @@ describe('AssetBrowser', () => {
     );
     await screen.findAllByText('a.txt');
     const wrapper = screen.getByTestId('asset-browser');
-    expect(wrapper.className).toMatch(/overflow-auto/);
+    expect(wrapper.className).toMatch(/overflow-y-auto/);
   });
 
   it('context menu triggers IPC calls', async () => {
