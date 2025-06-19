@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '../daisy/actions';
-import { useProject } from '../providers/ProjectProvider';
+import { useAppStore } from '../../store';
 
 export default function ExporterTab({ onExport }: { onExport: () => void }) {
-  const { path: projectPath } = useProject();
+  const projectPath = useAppStore((s) => s.projectPath);
   return (
     <div className="p-4 flex flex-col gap-2" data-testid="exporter-tab">
       <p>{projectPath}</p>

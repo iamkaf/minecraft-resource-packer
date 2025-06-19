@@ -1,7 +1,6 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 import AssetBrowser from '../src/renderer/components/assets/AssetBrowser';
 
@@ -43,11 +42,9 @@ describe('AssetBrowser persistence', () => {
     getAssetFilters.mockResolvedValue(['blocks']);
     getAssetZoom.mockResolvedValue(80);
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     await screen.findByDisplayValue('stone');
     expect(getAssetSearch).toHaveBeenCalled();
@@ -65,11 +62,9 @@ describe('AssetBrowser persistence', () => {
     getAssetFilters.mockResolvedValue([]);
     getAssetZoom.mockResolvedValue(64);
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetBrowser />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetBrowser />
+      </SetPath>
     );
     await Promise.resolve();
     const input = screen.getByPlaceholderText('Search files');

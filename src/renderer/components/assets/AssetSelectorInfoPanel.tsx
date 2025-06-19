@@ -1,7 +1,7 @@
 import React from 'react';
 import TextureThumb from './TextureThumb';
 import { Button } from '../daisy/actions';
-import { useProject } from '../providers/ProjectProvider';
+import { useAppStore } from '../../store';
 import { useToast } from '../providers/ToastProvider';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function AssetSelectorInfoPanel({ asset }: Props) {
-  const { path: projectPath } = useProject();
+  const projectPath = useAppStore((s) => s.projectPath)!;
   const toast = useToast();
   if (!asset) return <div className="p-2">No asset selected</div>;
   const handleAdd = () => {
@@ -18,7 +18,7 @@ export default function AssetSelectorInfoPanel({ asset }: Props) {
   };
   return (
     <div className="p-2" data-testid="selector-info">
-      <div className='flex items-center justify-center gap-2 mb-2'>
+      <div className="flex items-center justify-center gap-2 mb-2">
         <TextureThumb
           texture={asset}
           protocol="vanilla"

@@ -5,12 +5,11 @@ import { Loading } from '../daisy/feedback';
 import type { TextureEditOptions } from '../../../shared/texture';
 import { Button } from '../daisy/actions';
 import { Range, Select, Checkbox } from '../daisy/input';
-import { useProject } from '../providers/ProjectProvider';
-import { useEditor } from './EditorContext';
+import { useAppStore } from '../../store';
 
 export default function TextureLabTab() {
-  const { path: projectPath } = useProject();
-  const { selected } = useEditor();
+  const projectPath = useAppStore((s) => s.projectPath)!;
+  const selected = useAppStore((s) => s.selectedAssets);
   const file =
     selected.length === 1 ? path.join(projectPath, selected[0]) : null;
   const [hue, setHue] = useState(0);

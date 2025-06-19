@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button } from '../daisy/actions';
 import { Diff } from '../daisy/display';
-import { useProject } from '../providers/ProjectProvider';
+import { useAppStore } from '../../store';
 
 export default function TextureDiff({
   asset,
@@ -10,7 +10,7 @@ export default function TextureDiff({
   asset: string;
   onClose: () => void;
 }) {
-  const { path: projectPath } = useProject();
+  const projectPath = useAppStore((s) => s.projectPath)!;
   const [vanilla, setVanilla] = useState<string | null>(null);
 
   useEffect(() => {

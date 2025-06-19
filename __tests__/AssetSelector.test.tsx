@@ -1,7 +1,6 @@
 import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 
 import AssetSelector from '../src/renderer/components/assets/AssetSelector';
@@ -24,11 +23,9 @@ describe('AssetSelector', () => {
   it('lists textures and handles selection', async () => {
     const onSelect = vi.fn();
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetSelector onAssetSelect={onSelect} />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetSelector onAssetSelect={onSelect} />
+      </SetPath>
     );
     expect(listTextures).toHaveBeenCalledWith('/proj');
     const input = screen.getByPlaceholderText('Search texture');
@@ -49,11 +46,9 @@ describe('AssetSelector', () => {
 
   it('shows items in the items category', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetSelector />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetSelector />
+      </SetPath>
     );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'axe' } });
@@ -69,11 +64,9 @@ describe('AssetSelector', () => {
 
   it('puts uncategorized textures into misc', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetSelector />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetSelector />
+      </SetPath>
     );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'custom' } });
@@ -89,11 +82,9 @@ describe('AssetSelector', () => {
 
   it('adjusts zoom level with slider', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetSelector />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetSelector />
+      </SetPath>
     );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });
@@ -110,11 +101,9 @@ describe('AssetSelector', () => {
       Array.from({ length: 50 }, (_, i) => `block/test${i}.png`)
     );
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetSelector />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetSelector />
+      </SetPath>
     );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'test' } });
@@ -126,11 +115,9 @@ describe('AssetSelector', () => {
 
   it('shows tree view', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetSelector />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetSelector />
+      </SetPath>
     );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });
@@ -146,11 +133,9 @@ describe('AssetSelector', () => {
     electronAPI.openInFolder.mockImplementation(openInFolder);
     electronAPI.getTexturePath.mockImplementation(getTexturePath);
     render(
-      <ProjectProvider>
-        <SetPath path="/proj">
-          <AssetSelector />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/proj">
+        <AssetSelector />
+      </SetPath>
     );
     const input = screen.getByPlaceholderText('Search texture');
     fireEvent.change(input, { target: { value: 'grass' } });

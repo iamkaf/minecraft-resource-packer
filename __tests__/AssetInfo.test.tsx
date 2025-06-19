@@ -1,7 +1,13 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, within, act, waitFor } from '@testing-library/react';
-import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
+import {
+  render,
+  screen,
+  fireEvent,
+  within,
+  act,
+  waitFor,
+} from '@testing-library/react';
 import { SetPath, electronAPI } from './test-utils';
 vi.mock('@monaco-editor/react', () => ({
   __esModule: true,
@@ -42,22 +48,18 @@ describe('AssetInfo', () => {
 
   it('shows placeholder when no asset', () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <AssetInfo asset={null} />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <AssetInfo asset={null} />
+      </SetPath>
     );
     expect(screen.getByText('No asset selected')).toBeInTheDocument();
   });
 
   it('renders asset name', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <AssetInfo asset="foo.png" />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <AssetInfo asset="foo.png" />
+      </SetPath>
     );
     expect(screen.getByText('foo.png')).toBeInTheDocument();
     expect(screen.getByTestId('preview-skeleton')).toBeInTheDocument();
@@ -66,31 +68,29 @@ describe('AssetInfo', () => {
 
   it('opens external editor for png', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <ToastProvider>
-            <AssetInfo asset="img.png" />
-          </ToastProvider>
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <ToastProvider>
+          <AssetInfo asset="img.png" />
+        </ToastProvider>
+      </SetPath>
     );
     const btn = await screen.findByRole('button', { name: 'Edit Externally' });
     fireEvent.click(btn);
     await waitFor(() =>
-      expect(openExternalEditor).toHaveBeenCalledWith(path.join('/p', 'img.png'))
+      expect(openExternalEditor).toHaveBeenCalledWith(
+        path.join('/p', 'img.png')
+      )
     );
   });
 
   it('shows toast when external editor fails', async () => {
     openExternalEditor.mockRejectedValueOnce(new Error('fail'));
     render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <ToastProvider>
-            <AssetInfo asset="img.png" />
-          </ToastProvider>
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <ToastProvider>
+          <AssetInfo asset="img.png" />
+        </ToastProvider>
+      </SetPath>
     );
     const btn = await screen.findByRole('button', { name: 'Edit Externally' });
     fireEvent.click(btn);
@@ -102,11 +102,9 @@ describe('AssetInfo', () => {
   it('shows modal when no external editor configured', async () => {
     electronAPI.getTextureEditor.mockResolvedValueOnce('');
     render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <AssetInfo asset="img.png" />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <AssetInfo asset="img.png" />
+      </SetPath>
     );
     const btn = await screen.findByRole('button', { name: 'Edit Externally' });
     fireEvent.click(btn);
@@ -119,13 +117,11 @@ describe('AssetInfo', () => {
   it('edits a text file', async () => {
     readFile.mockResolvedValue('hello');
     render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <ToastProvider>
-            <AssetInfo asset="a.txt" />
-          </ToastProvider>
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <ToastProvider>
+          <AssetInfo asset="a.txt" />
+        </ToastProvider>
+      </SetPath>
     );
     const box = await screen.findByRole('textbox');
     expect(box).toHaveValue('hello');
@@ -137,11 +133,9 @@ describe('AssetInfo', () => {
   it('blocks invalid json', async () => {
     readFile.mockResolvedValue('{}');
     render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <AssetInfo asset="b.json" />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <AssetInfo asset="b.json" />
+      </SetPath>
     );
     const box = await screen.findByRole('textbox');
     fireEvent.change(box, { target: { value: '{' } });
@@ -158,11 +152,9 @@ describe('AssetInfo', () => {
       changed = cb;
     });
     render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <AssetInfo asset="foo.png" />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <AssetInfo asset="foo.png" />
+      </SetPath>
     );
     const pane = await screen.findByTestId('preview-pane');
     const img = within(pane).getByRole('img') as HTMLImageElement;
@@ -178,11 +170,9 @@ describe('AssetInfo', () => {
     const off = vi.fn();
     onFileChanged.mockReturnValue(off);
     const { unmount } = render(
-      <ProjectProvider>
-        <SetPath path="/p">
-          <AssetInfo asset="foo.png" />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p">
+        <AssetInfo asset="foo.png" />
+      </SetPath>
     );
     await screen.findByTestId('preview-pane');
     unmount();

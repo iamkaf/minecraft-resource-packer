@@ -1,6 +1,6 @@
 import React from 'react';
 import { vi } from 'vitest';
-import { useProject } from '../src/renderer/components/providers/ProjectProvider';
+import { useAppStore } from '../src/renderer/store';
 
 export function SetPath({
   path,
@@ -9,10 +9,10 @@ export function SetPath({
   path: string;
   children: React.ReactNode;
 }) {
-  const { setPath } = useProject();
+  const setProjectPath = useAppStore((s) => s.setProjectPath);
   const [ready, setReady] = React.useState(false);
   React.useEffect(() => {
-    setPath(path);
+    setProjectPath(path);
     setReady(true);
   }, [path]);
   return ready ? <>{children}</> : null;

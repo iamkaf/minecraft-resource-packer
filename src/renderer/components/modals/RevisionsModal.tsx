@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import path from 'path';
 import { Modal, Button } from '../daisy/actions';
-import { useProject } from '../providers/ProjectProvider';
+import { useAppStore } from '../../store';
 import { useToast } from '../providers/ToastProvider';
 
 export default function RevisionsModal({
@@ -11,7 +11,7 @@ export default function RevisionsModal({
   asset: string;
   onClose: () => void;
 }) {
-  const { path: projectPath } = useProject();
+  const projectPath = useAppStore((s) => s.projectPath)!;
   const toast = useToast();
   const [list, setList] = useState<string[]>([]);
   const closeRef = useRef<HTMLButtonElement>(null);

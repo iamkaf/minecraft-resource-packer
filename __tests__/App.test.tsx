@@ -4,9 +4,9 @@ import { render, screen, act, fireEvent } from '@testing-library/react';
 import os from 'os';
 import path from 'path';
 import { MemoryRouter, useLocation } from 'react-router-dom';
+import { useAppStore } from '../src/renderer/store';
 
 import App from '../src/renderer/components/App';
-import { useProject } from '../src/renderer/components/providers/ProjectProvider';
 
 const fire = vi.fn();
 
@@ -37,7 +37,7 @@ vi.mock('../src/renderer/components/project/ProjectInfoPanel', () => ({
     onExport: () => void;
     onBack: () => void;
   }) => {
-    const { path } = useProject();
+    const path = useAppStore.getState().projectPath;
     return (
       <div>
         <button onClick={onExport}>Export Pack</button>

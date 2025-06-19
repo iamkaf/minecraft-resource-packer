@@ -2,7 +2,6 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { SetPath, electronAPI } from './test-utils';
 import ProjectInfoPanel from '../src/renderer/components/project/ProjectInfoPanel';
 
@@ -27,15 +26,13 @@ describe('ProjectInfoPanel metadata editing', () => {
 
   it('saves edited metadata using inline form', async () => {
     render(
-      <ProjectProvider>
-        <SetPath path="/p/Pack">
-          <ProjectInfoPanel
-            onExport={vi.fn()}
-            onBack={vi.fn()}
-            onSettings={vi.fn()}
-          />
-        </SetPath>
-      </ProjectProvider>
+      <SetPath path="/p/Pack">
+        <ProjectInfoPanel
+          onExport={vi.fn()}
+          onBack={vi.fn()}
+          onSettings={vi.fn()}
+        />
+      </SetPath>
     );
 
     const input = await screen.findByTestId('description-input');

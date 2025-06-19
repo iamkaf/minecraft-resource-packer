@@ -4,9 +4,8 @@ import ExportWizardModal, {
   BulkProgress,
 } from '../components/modals/ExportWizardModal';
 import type { ExportSummary } from '../../main/exporter';
-import { useProject } from '../components/providers/ProjectProvider';
+import { useAppStore } from '../store';
 import {
-  EditorProvider,
   AssetBrowserTab,
   TextureLabTab,
   ExporterTab,
@@ -19,8 +18,9 @@ interface EditorViewProps {
 }
 
 export default function EditorView({ onBack, onSettings }: EditorViewProps) {
-  const { path: projectPath } = useProject();
-  const [selected, setSelected] = useState<string[]>([]);
+  const projectPath = useAppStore((s) => s.projectPath)!;
+  const selected = useAppStore((s) => s.selectedAssets);
+  const setSelected = useAppStore((s) => s.setSelectedAssets);
   const [mode, setMode] = useState<'browser' | 'lab' | 'exporter'>('browser');
   const [summary, setSummary] = useState<ExportSummary | null>(null);
   const [progress, setProgress] = useState<BulkProgress | null>(null);
@@ -55,41 +55,39 @@ export default function EditorView({ onBack, onSettings }: EditorViewProps) {
   };
 
   return (
-    <EditorProvider value={{ selected, setSelected }}>
-      <main
-        className="p-4 flex flex-col gap-4 flex-1 min-h-0"
-        data-testid="editor-view"
-      >
-        <div role="tablist" className="tabs tabs-bordered mb-2">
-          <Tab
-            className={mode === 'browser' ? 'tab-active' : ''}
-            onClick={() => setMode('browser')}
-          >
-            Asset Browser
-          </Tab>
-          <Tab
-            className={mode === 'lab' ? 'tab-active' : ''}
-            onClick={() => setMode('lab')}
-          >
-            Texture Lab
-          </Tab>
-          <Tab
-            className={mode === 'exporter' ? 'tab-active' : ''}
-            onClick={() => setMode('exporter')}
-          >
-            Exporter
-          </Tab>
-        </div>
-        {mode === 'browser' && (
-          <AssetBrowserTab
-            onBack={onBack}
-            onSettings={onSettings}
-            onExport={handleExport}
-          />
-        )}
-        {mode === 'lab' && <TextureLabTab />}
-        {mode === 'exporter' && <ExporterTab onExport={handleExport} />}
-      </main>
+    <main
+      className="p-4 flex flex-col gap-4 flex-1 min-h-0"
+      data-testid="editor-view"
+    >
+      <div role="tablist" className="tabs tabs-bordered mb-2">
+        <Tab
+          className={mode === 'browser' ? 'tab-active' : ''}
+          onClick={() => setMode('browser')}
+        >
+          Asset Browser
+        </Tab>
+        <Tab
+          className={mode === 'lab' ? 'tab-active' : ''}
+          onClick={() => setMode('lab')}
+        >
+          Texture Lab
+        </Tab>
+        <Tab
+          className={mode === 'exporter' ? 'tab-active' : ''}
+          onClick={() => setMode('exporter')}
+        >
+          Exporter
+        </Tab>
+      </div>
+      {mode === 'browser' && (
+        <AssetBrowserTab
+          onBack={onBack}
+          onSettings={onSettings}
+          onExport={handleExport}
+        />
+      )}
+      {mode === 'lab' && <TextureLabTab />}
+      {mode === 'exporter' && <ExporterTab onExport={handleExport} />}
       {(progress || summary) && (
         <ExportWizardModal
           progress={progress ?? undefined}
@@ -110,6 +108,6 @@ export default function EditorView({ onBack, onSettings }: EditorViewProps) {
           left: 0,
         }}
       />
-    </EditorProvider>
+    </main>
   );
 }
