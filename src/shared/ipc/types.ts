@@ -2,7 +2,7 @@
 import type { ProjectInfo, ImportSummary } from '../../main/projects';
 import type { PackMeta } from '../project';
 import type { ExportSummary } from '../../main/exporter';
-import type { TextureEditOptions } from '../texture';
+import type { TextureEditOptions, ImageEditOperation } from '../texture';
 import type { PackFormatInfo } from '../packFormat';
 
 export interface IpcRequestMap {
@@ -36,6 +36,7 @@ export interface IpcRequestMap {
   'rename-file': [string, string];
   'delete-file': [string];
   'edit-texture': [string, TextureEditOptions];
+  'apply-image-edits': [string, ImageEditOperation[]];
   'watch-project': [string];
   'unwatch-project': [string];
   'get-no-export': [string];
@@ -95,6 +96,7 @@ export interface IpcResponseMap {
   'rename-file': void;
   'delete-file': void;
   'edit-texture': void;
+  'apply-image-edits': void;
   'watch-project': string[];
   'unwatch-project': void;
   'get-no-export': string[];

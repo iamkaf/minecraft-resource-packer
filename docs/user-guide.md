@@ -21,6 +21,10 @@ This guide explains how to use **minecraft-resource-packer** to create and manag
 - **External Editing** – configure your favourite image editor in **Settings** and launch it from the asset info panel.
 - **Revision History** – previous versions are kept in a hidden `.history` folder. Open the Revisions modal from Asset Info to restore any of the last 20 saves.
 
+## Advanced Texture Lab
+
+The Texture Lab tab provides a canvas-based editor powered by `fabric.js`. Use the toolbar to crop, rotate or flip the active layer. Drawing and text tools let you annotate textures and you can reorder layers in the side panel. Click **Save** to apply the edits.
+
 ## Texture Naming
 
 Texture filenames are displayed in a friendlier form by removing the path and extension, replacing underscores with spaces and capitalising each word. The original filename is still shown alongside the formatted name and in tooltips.

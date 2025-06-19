@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import TextureLabTab from '../src/renderer/components/editor/TextureLabTab';
 import { ProjectProvider } from '../src/renderer/components/providers/ProjectProvider';
 import { EditorProvider } from '../src/renderer/components/editor';
-import { SetPath, electronAPI } from './test-utils';
+import { SetPath } from './test-utils';
 
 describe('TextureLabTab', () => {
   it('shows hint when no texture selected', () => {
@@ -20,8 +20,7 @@ describe('TextureLabTab', () => {
     expect(screen.getByText(/Select a PNG/)).toBeInTheDocument();
   });
 
-  it('renders controls for selected texture', () => {
-    electronAPI.onFileChanged.mockImplementation(() => () => undefined);
+  it('renders editor for selected texture', () => {
     render(
       <ProjectProvider>
         <SetPath path="/proj">
@@ -34,6 +33,6 @@ describe('TextureLabTab', () => {
       </ProjectProvider>
     );
     expect(screen.getByTestId('texture-lab-view')).toBeInTheDocument();
-    expect(screen.getByAltText('preview')).toBeInTheDocument();
+    expect(screen.getByTestId('advanced-lab')).toBeInTheDocument();
   });
 });

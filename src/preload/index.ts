@@ -70,6 +70,10 @@ const api = {
     file: string,
     opts: import('../shared/texture').TextureEditOptions
   ) => invoke('edit-texture', file, opts),
+  applyImageEdits: (
+    file: string,
+    ops: import('../shared/texture').ImageEditOperation[]
+  ) => invoke('apply-image-edits', file, ops),
   watchProject: (project: string) => invoke('watch-project', project),
   unwatchProject: (project: string) => invoke('unwatch-project', project),
   getNoExport: (project: string) => invoke('get-no-export', project),

@@ -44,6 +44,7 @@ declare global {
       renameFile: IpcInvoke<'rename-file'>;
       deleteFile: IpcInvoke<'delete-file'>;
       editTexture: IpcInvoke<'edit-texture'>;
+      applyImageEdits: IpcInvoke<'apply-image-edits'>;
       watchProject: IpcInvoke<'watch-project'>;
       unwatchProject: IpcInvoke<'unwatch-project'>;
       getNoExport: IpcInvoke<'get-no-export'>;

@@ -187,10 +187,10 @@ pixel scale and includes a zoom slider (1–8×). Scrolling the mouse wheel over
 the pane adjusts the zoom. The pane is lazy loaded and displays a
 daisyUI skeleton indicator while loading.
 
-The **Texture Lab** modal lets you adjust PNG textures without leaving the app.
-It exposes hue shift, rotation, grayscale, saturation and brightness controls.
-Edits are processed in the main process via Sharp and the modal shows a spinner
-while the file is being updated.
+The **Texture Lab** editor is canvas based and uses `fabric.js` for interaction.
+Users can crop, rotate, flip or scale images, draw freehand and add text layers.
+Edit operations are sent to the main process with the `apply-image-edits` IPC
+handler where Sharp applies them before saving.
 
 The **Atlas Viewer** modal stitches multiple textures together for a high-
 resolution preview. It requests the combined image through the `createAtlas`

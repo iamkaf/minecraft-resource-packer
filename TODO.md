@@ -47,6 +47,7 @@ UI components **must** ship with Vitest + RTL tests; overall coverage ≥ 90�
 - [ ] Custom models & blockstates editor with live validation
 - [ ] Normal & specular map creator using Sharp in the Texture Lab: Using Sharp to generate `_n` (normal) and `_s` (specular) maps from textures, optionally with user-tuneable detail intensity sliders. Useful for shader/HDR packs.
 - [ ] Wizard to configure CTM overrides and biome-shading variations: auto-generate `connect.json` or biome folder structures for advanced texture packs with live preview of the connected textures.
+- [ ] Full image editing suite with cropping, drawing tools and layers.
 
 ### Project Info Panel
 
