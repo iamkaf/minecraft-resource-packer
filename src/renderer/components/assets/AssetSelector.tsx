@@ -94,7 +94,7 @@ const AssetSelector: React.FC<Props> = ({ onAssetSelect }) => {
   return (
     <div
       data-testid="asset-selector"
-      className="mb-4 h-full overflow-y-auto"
+      className="mb-4 h-full"
       tabIndex={0}
       onBlur={(e) => {
         const overlay = document.getElementById('overlay-root');

@@ -27,22 +27,18 @@ const TextureGrid: React.FC<Props> = ({
 }) => {
   return (
     <div
-      style={{ height: '12rem' }}
       data-testid={testId}
-      className="overflow-y-auto"
+      // className="overflow-y-auto"
     >
       <div
-        className="grid gap-2"
-        style={{
-          gridTemplateColumns: `repeat(auto-fill, minmax(${zoom + 40}px, 1fr))`,
-        }}
+        className="flex flex-wrap justify-start items-start gap-2"
       >
         {textures.map((tex) => {
           const formatted = formatTextureName(tex.name);
           return (
             <div key={tex.name} className="p-2 box-border">
               <div
-                className="text-center tooltip"
+                className="text-center tooltip w-[96px] h-[96px]"
                 data-tip={`${formatted} \n${tex.name}`}
               >
                 <Button
