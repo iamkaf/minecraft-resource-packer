@@ -1,5 +1,4 @@
 import React from 'react';
-import { Tree } from 'react-arborist';
 import { formatTextureName } from '../../utils/textureNames';
 import { buildTree, TreeItem } from '../../utils/tree';
 import type { TextureInfo } from './TextureGrid';
@@ -27,41 +26,45 @@ export default function TextureTree({
     return map;
   }, [textures]);
 
+  const renderNode = (node: TreeItem) => {
+    if (node.children && node.children.length > 0) {
+      return (
+        <li key={node.id}>
+          <div className="font-semibold text-sm">{node.name}</div>
+          <ul className="ml-4">
+            {node.children.map((child) => renderNode(child))}
+          </ul>
+        </li>
+      );
+    }
+    return (
+      <li key={node.id}>
+        <div
+          className="flex items-center gap-1 cursor-pointer"
+          onClick={() => onSelect(node.id)}
+          onContextMenu={(e) => onContextMenu?.(e, node.id)}
+          onKeyDown={(e) =>
+            (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) &&
+            onKeyDown?.(e, node.id)
+          }
+          tabIndex={0}
+        >
+          <img
+            src={urlMap[node.id]}
+            alt={formatTextureName(node.id)}
+            style={{ width: 24, height: 24, imageRendering: 'pixelated' }}
+          />
+          <span className="text-sm break-all">{node.name}</span>
+        </div>
+      </li>
+    );
+  };
+
   return (
     <div style={{ height: '12rem' }} className="overflow-y-auto">
-      <Tree
-        initialData={data}
-        openByDefault
-        rowHeight={32}
-        width={300}
-        height={192}
-      >
-        {({ node, style }) => (
-          <div
-            style={style}
-            className="flex items-center gap-1 cursor-pointer"
-            onClick={() => {
-              if (node.isLeaf) onSelect(node.id);
-            }}
-            onContextMenu={(e) => node.isLeaf && onContextMenu?.(e, node.id)}
-            onKeyDown={(e) =>
-              node.isLeaf &&
-              (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) &&
-              onKeyDown?.(e, node.id)
-            }
-            tabIndex={node.isLeaf ? 0 : undefined}
-          >
-            {node.isLeaf && (
-              <img
-                src={urlMap[node.id]}
-                alt={formatTextureName(node.id)}
-                style={{ width: 24, height: 24, imageRendering: 'pixelated' }}
-              />
-            )}
-            <span className="text-sm break-all">{node.data.name}</span>
-          </div>
-        )}
-      </Tree>
+      <ul data-testid="texture-tree" className="pl-1">
+        {data.map((node) => renderNode(node))}
+      </ul>
     </div>
   );
 }

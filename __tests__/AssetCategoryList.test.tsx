@@ -20,9 +20,9 @@ describe('AssetCategoryList', () => {
         onSelect={handleSelect}
       />
     );
-    const blocks = screen.getByText('blocks');
-    const items = screen.getByText('items');
-    const misc = screen.getByText('misc');
+    const blocks = screen.getByRole('heading', { name: 'blocks' });
+    const items = screen.getByRole('heading', { name: 'items' });
+    const misc = screen.getByRole('heading', { name: 'misc' });
     expect(blocks).toBeInTheDocument();
     expect(items).toBeInTheDocument();
     expect(misc).toBeInTheDocument();

@@ -67,3 +67,6 @@ Minecraft version information can be found at: https://launchermeta.mojang.com/m
 
 - The Project Manager is the view in which the user can view and manage projects, the front page of the app.
 - The Editor is the view where the user edits a project.
+  - The Asset Selector is the part of the Editor that lets you pick an asset from vanilla Minecraft to add to your project
+  - The Asset Browser is the part of the Editor where you manage the assets in your project
+  - The Texture Lab is the part of the Editor where you can make quick edits to your textures
