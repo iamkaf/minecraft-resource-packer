@@ -8,7 +8,7 @@ describe('ProjectManagerView', () => {
   const listProjects = vi.fn();
   const openProject = vi.fn();
   const createProject = vi.fn();
-  const listPackFormats = vi.fn();
+  const listFormats = vi.fn();
   const importProject = vi.fn();
   const duplicateProject = vi.fn();
   const deleteProject = vi.fn();
@@ -26,7 +26,7 @@ describe('ProjectManagerView', () => {
           lastOpened: number;
         }>
       >;
-      listPackFormats: () => Promise<
+      listFormats: () => Promise<
         {
           format: number;
           label: string;
@@ -45,7 +45,7 @@ describe('ProjectManagerView', () => {
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
       listProjects,
-      listPackFormats,
+      listFormats,
       openProject,
       createProject,
       importProject,
@@ -63,7 +63,7 @@ describe('ProjectManagerView', () => {
     importProject.mockResolvedValue(undefined);
     duplicateProject.mockResolvedValue(undefined);
     deleteProject.mockResolvedValue(undefined);
-    listPackFormats.mockResolvedValue([
+    listFormats.mockResolvedValue([
       { format: 15, label: '1.20-1.20.1' },
       { format: 34, label: '1.21.1' },
     ]);

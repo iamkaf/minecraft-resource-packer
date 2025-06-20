@@ -21,7 +21,7 @@ function AppContent() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    window.electronAPI?.onOpenProject((_e, path: string) => {
+    window.electronAPI?.onProjectOpened((_e, path: string) => {
       setProjectPath(path);
       navigate('/editor');
     });

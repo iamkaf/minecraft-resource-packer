@@ -5,7 +5,7 @@ import ProjectManagerView from '../src/renderer/views/ProjectManagerView';
 
 describe('ProjectManagerView bulk export', () => {
   const listProjects = vi.fn();
-  const listPackFormats = vi.fn();
+  const listFormats = vi.fn();
   const exportProjects = vi.fn();
   const getProjectSort = vi.fn();
   const setProjectSort = vi.fn();
@@ -20,7 +20,7 @@ describe('ProjectManagerView bulk export', () => {
           lastOpened: number;
         }>
       >;
-      listPackFormats: () => Promise<{ format: number; label: string }[]>;
+      listFormats: () => Promise<{ format: number; label: string }[]>;
       exportProjects: (paths: string[]) => Promise<void>;
       openProject: (name: string) => void;
       createProject: (name: string, version: string) => Promise<void>;
@@ -34,7 +34,7 @@ describe('ProjectManagerView bulk export', () => {
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       listProjects,
-      listPackFormats,
+      listFormats,
       exportProjects,
       openProject: vi.fn(),
       createProject: vi.fn(),
@@ -48,7 +48,7 @@ describe('ProjectManagerView bulk export', () => {
       { name: 'Alpha', version: '1.21', assets: 2, lastOpened: 0 },
       { name: 'Beta', version: '1.20', assets: 3, lastOpened: 0 },
     ]);
-    listPackFormats.mockResolvedValue([]);
+    listFormats.mockResolvedValue([]);
     exportProjects.mockResolvedValue(undefined);
     getProjectSort.mockResolvedValue({ key: 'name', asc: true });
     setProjectSort.mockResolvedValue(undefined);

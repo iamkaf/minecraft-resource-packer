@@ -16,7 +16,7 @@ export default function useProjectList() {
 
   useEffect(() => {
     refresh();
-    window.electronAPI?.listPackFormats().then(setFormats);
+    window.electronAPI?.listFormats().then(setFormats);
     window.electronAPI?.getProjectSort().then((s) => {
       if (s) {
         setSortKey(s.key);

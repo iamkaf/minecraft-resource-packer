@@ -70,9 +70,9 @@ corresponds to a URL fragment: `#/`, `#/editor`, `#/settings` and `#/about`.
 
 When adding features that need access to Node APIs:
 
-1. Create a function in the `src/main` process and expose it via `ipcMain.handle`.
-2. Declare a matching function in `src/preload/index.ts` using `contextBridge.exposeInMainWorld`.
-3. Call this API from the React renderer via `window.electronAPI.yourApi()`.
+1. Create a function in the `src/main` process and expose it via `ipcMain.handle` or `ipcMain.on`.
+2. Add the request and response (or event) types to `src/shared/ipc/types.ts`.
+3. Call the API from the React renderer via `window.electronAPI.yourApi()`.
 
 Remember that the renderer runs in a browser-like sandbox, so heavy filesystem work belongs in the main process.
 
@@ -94,12 +94,13 @@ duration unless closable.
 ## IPC Pattern
 
 Electron uses a main ↔ preload ↔ renderer pipeline. Functions are implemented in
-`src/main` and registered via `ipcMain.handle`. The preload layer exposes typed
-wrappers with `contextBridge.exposeInMainWorld` so the React renderer can call
-them through `window.electronAPI.*`. Shared helpers and the IPC request/response
-types live under `src/shared`. Node integration is enabled and context
-isolation disabled in `src/main/index.ts` on purpose, so leave these settings
-as they are.
+`src/main` and registered via `ipcMain.handle`. The preload layer now exposes a
+single `electronAPI` object generated via a `Proxy`. Any request or event
+defined in `src/shared/ipc/types.ts` can be called from the renderer in camel
+case (e.g. `window.electronAPI.listProjects()`). Event channels are subscribed
+via `onEventName` helpers such as `window.electronAPI.onProjectOpened(cb)`.
+Node integration is enabled and context isolation disabled in
+`src/main/index.ts` on purpose, so leave these settings as they are.
 
 ## Styling
 

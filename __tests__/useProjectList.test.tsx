@@ -15,7 +15,7 @@ describe('useProjectList', () => {
         lastOpened: 0,
       } as ProjectInfo,
     ]);
-    (electronAPI.listPackFormats as unknown as vi.Mock).mockResolvedValue([
+    (electronAPI.listFormats as unknown as vi.Mock).mockResolvedValue([
       { format: 1, label: '1.20' },
     ]);
     (electronAPI.getProjectSort as unknown as vi.Mock).mockResolvedValue({
