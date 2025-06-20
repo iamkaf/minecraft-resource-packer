@@ -4,10 +4,19 @@ import { describe, it, expect } from 'vitest';
 import { Textarea } from '../../../src/renderer/components/daisy/input';
 
 describe('Textarea', () => {
-  it('renders and accepts className', () => {
-    render(<Textarea data-testid="ta" className="extra" />);
+  it('renders variant and size', () => {
+    render(
+      <Textarea
+        data-testid="ta"
+        variant="secondary"
+        size="xs"
+        className="extra"
+      />
+    );
     const el = screen.getByTestId('ta');
     expect(el).toBeInTheDocument();
+    expect(el).toHaveClass('textarea-secondary');
+    expect(el).toHaveClass('textarea-xs');
     expect(el).toHaveClass('extra');
   });
 });

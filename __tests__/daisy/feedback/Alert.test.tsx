@@ -5,15 +5,16 @@ import { render, screen } from '@testing-library/react';
 import Alert from '../../../src/renderer/components/daisy/feedback/Alert';
 
 describe('Alert', () => {
-  it('renders with variant and children', () => {
+  it('renders variant and size', () => {
     render(
-      <Alert variant="success" className="extra">
+      <Alert variant="success" size="lg" className="extra">
         done
       </Alert>
     );
     const el = screen.getByRole('alert');
     expect(el).toHaveTextContent('done');
     expect(el).toHaveClass('alert-success');
+    expect(el).toHaveClass('alert-lg');
     expect(el).toHaveClass('extra');
   });
 });

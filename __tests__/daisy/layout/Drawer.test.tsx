@@ -4,11 +4,12 @@ import { render } from '@testing-library/react';
 import Drawer from '../../../src/renderer/components/daisy/layout/Drawer';
 
 describe('Drawer', () => {
-  it('renders drawer structure', () => {
+  it('renders variant overlay', () => {
     const { container } = render(
       <Drawer
         id="d1"
         side={<div>Side</div>}
+        variant="accent"
         className="extra"
         data-testid="drawer"
       >
@@ -21,5 +22,7 @@ describe('Drawer', () => {
     const wrapper = container.querySelector('.drawer');
     expect(wrapper).toHaveClass('extra');
     expect(wrapper).toHaveAttribute('data-testid', 'drawer');
+    const overlay = container.querySelector('.drawer-overlay');
+    expect(overlay).toHaveClass('bg-accent');
   });
 });
