@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import path from 'path';
 import type { PackMeta } from '../../../main/projects';
 import { Button } from '../daisy/actions';
@@ -11,31 +12,42 @@ import { useAppStore } from '../../store';
 
 interface Props {
   onExport: () => void;
-  onBack: () => void;
-  onSettings: () => void;
 }
 
-export default function ProjectInfoPanel({
-  onExport,
-  onBack,
-  onSettings,
-}: Props) {
-  const projectPath = useAppStore((s) => s.projectPath)!;
+export default function ProjectInfoPanel({ onExport }: Props) {
+  const projectPath = useAppStore((s) => s.projectPath);
+  const setProjectPath = useAppStore((s) => s.setProjectPath);
+  const navigate = useNavigate();
   const [meta, setMeta] = useState<PackMeta | null>(null);
-  const name = path.basename(projectPath);
 
   useEffect(() => {
-    window.electronAPI?.loadPackMeta(name).then(setMeta);
-  }, [name]);
+    if (projectPath) {
+      const name = path.basename(projectPath);
+      window.electronAPI?.loadPackMeta(name).then(setMeta);
+    }
+  }, [projectPath]);
+
+  if (!projectPath) return null;
+
+  const name = path.basename(projectPath);
 
   return (
     <>
       <div className="card bg-base-100 shadow" data-testid="project-info">
         <div className="card-body items-center gap-2 p-2">
-          <Button className="link link-primary self-start" onClick={onBack}>
+          <Button
+            className="link link-primary self-start"
+            onClick={() => {
+              setProjectPath(null);
+              navigate('/');
+            }}
+          >
             Back to Projects
           </Button>
-          <Button className="link link-primary self-start" onClick={onSettings}>
+          <Button
+            className="link link-primary self-start"
+            onClick={() => navigate('/settings')}
+          >
             Settings
           </Button>
           <img

@@ -30,18 +30,20 @@ vi.mock('../src/renderer/views/ProjectManagerView', () => ({
   default: () => <div>manager</div>,
 }));
 vi.mock('../src/renderer/components/project/ProjectInfoPanel', () => ({
-  default: ({
-    onExport,
-    onBack,
-  }: {
-    onExport: () => void;
-    onBack: () => void;
-  }) => {
+  default: ({ onExport }: { onExport: () => void }) => {
     const path = useAppStore.getState().projectPath;
+    const setProjectPath = useAppStore.getState().setProjectPath;
     return (
       <div>
         <button onClick={onExport}>Export Pack</button>
-        <button onClick={onBack}>Back to Projects</button>
+        <button
+          onClick={() => {
+            setProjectPath(null);
+            window.location.hash = '#/';
+          }}
+        >
+          Back to Projects
+        </button>
         <span>{path}</span>
       </div>
     );
