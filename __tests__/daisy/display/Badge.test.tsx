@@ -4,10 +4,16 @@ import { render, screen } from '@testing-library/react';
 import Badge from '../../../src/renderer/components/daisy/display/Badge';
 
 describe('Badge', () => {
-  it('renders', () => {
-    render(<Badge variant="accent">Hi</Badge>);
+  it('renders and accepts props', () => {
+    render(
+      <Badge variant="accent" id="b1" className="extra">
+        Hi
+      </Badge>
+    );
     const badge = screen.getByTestId('badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveClass('badge-accent');
+    expect(badge).toHaveClass('extra');
+    expect(badge).toHaveAttribute('id', 'b1');
   });
 });

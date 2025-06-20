@@ -8,12 +8,19 @@ export type ToastPosition =
   | 'middle'
   | 'bottom';
 
+interface ToastProps extends React.HTMLAttributes<HTMLDivElement> {
+  position?: ToastPosition;
+}
+
 export default function Toast({
   children,
   position = 'end',
-}: {
-  children: React.ReactNode;
-  position?: ToastPosition;
-}) {
-  return <div className={`toast toast-${position}`}>{children}</div>;
+  className = '',
+  ...rest
+}: ToastProps & { children: React.ReactNode }) {
+  return (
+    <div className={`toast toast-${position} ${className}`.trim()} {...rest}>
+      {children}
+    </div>
+  );
 }

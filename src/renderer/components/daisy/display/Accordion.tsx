@@ -1,6 +1,7 @@
 import React from 'react';
 
-interface AccordionProps {
+interface AccordionProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   title: React.ReactNode;
   children: React.ReactNode;
   className?: string;
@@ -12,11 +13,13 @@ export default function Accordion({
   children,
   className = '',
   defaultOpen = false,
+  ...rest
 }: AccordionProps) {
   return (
     <div
       className={`collapse collapse-arrow rounded-box border border-base-300 ${className}`.trim()}
       data-testid="accordion"
+      {...rest}
     >
       <input type="checkbox" defaultChecked={defaultOpen} />
       <div className="collapse-title text-lg font-medium">{title}</div>

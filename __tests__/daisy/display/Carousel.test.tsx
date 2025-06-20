@@ -4,12 +4,15 @@ import { render, screen } from '@testing-library/react';
 import Carousel from '../../../src/renderer/components/daisy/display/Carousel';
 
 describe('Carousel', () => {
-  it('renders', () => {
+  it('renders and accepts props', () => {
     render(
-      <Carousel>
+      <Carousel className="extra" id="car1">
         <div>Item</div>
       </Carousel>
     );
-    expect(screen.getByTestId('carousel')).toBeInTheDocument();
+    const el = screen.getByTestId('carousel');
+    expect(el).toBeInTheDocument();
+    expect(el).toHaveClass('extra');
+    expect(el).toHaveAttribute('id', 'car1');
   });
 });

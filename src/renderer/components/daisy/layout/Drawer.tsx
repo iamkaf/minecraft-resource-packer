@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface DrawerProps {
+interface DrawerProps extends React.HTMLAttributes<HTMLDivElement> {
   id: string;
   side: React.ReactNode;
   children: React.ReactNode;
@@ -12,9 +12,10 @@ export default function Drawer({
   side,
   children,
   className = '',
+  ...rest
 }: DrawerProps) {
   return (
-    <div className={`drawer ${className}`.trim()}>
+    <div className={`drawer ${className}`.trim()} {...rest}>
       <input id={id} type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">{children}</div>
       <div className="drawer-side">

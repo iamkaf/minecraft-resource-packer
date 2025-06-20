@@ -1,8 +1,16 @@
 import React from 'react';
 
-export default function List({ children }: { children: React.ReactNode }) {
+interface ListProps extends React.HTMLAttributes<HTMLUListElement> {
+  children: React.ReactNode;
+}
+
+export default function List({ children, className = '', ...rest }: ListProps) {
   return (
-    <ul className="list list-disc" data-testid="list">
+    <ul
+      className={`list list-disc ${className}`.trim()}
+      data-testid="list"
+      {...rest}
+    >
       {children}
     </ul>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface DropdownProps {
+interface DropdownProps extends React.HTMLAttributes<HTMLDivElement> {
   label: React.ReactNode;
   children: React.ReactNode;
   className?: string;
@@ -10,11 +10,13 @@ export default function Dropdown({
   label,
   children,
   className = '',
+  ...rest
 }: DropdownProps) {
   return (
     <div
       className={`dropdown ${className}`.trim()}
       data-testid="daisy-dropdown"
+      {...rest}
     >
       <div tabIndex={0} role="button" className="btn m-1">
         {label}

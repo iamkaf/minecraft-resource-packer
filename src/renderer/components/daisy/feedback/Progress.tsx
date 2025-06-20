@@ -10,21 +10,27 @@ export type ProgressColor =
   | 'warning'
   | 'error';
 
+interface ProgressProps
+  extends React.ProgressHTMLAttributes<HTMLProgressElement> {
+  value: number;
+  max: number;
+  color?: ProgressColor;
+}
+
 export default function Progress({
   value,
   max,
   color = 'primary',
-}: {
-  value: number;
-  max: number;
-  color?: ProgressColor;
-}) {
+  className = '',
+  ...rest
+}: ProgressProps) {
   return (
     <progress
-      className={`progress progress-${color}`}
+      className={`progress progress-${color} ${className}`.trim()}
       value={value}
       max={max}
       data-testid="progress"
+      {...rest}
     />
   );
 }

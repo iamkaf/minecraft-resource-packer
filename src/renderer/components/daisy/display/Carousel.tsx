@@ -1,8 +1,20 @@
 import React from 'react';
 
-export default function Carousel({ children }: { children: React.ReactNode }) {
+interface CarouselProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+
+export default function Carousel({
+  children,
+  className = '',
+  ...rest
+}: CarouselProps) {
   return (
-    <div className="carousel" data-testid="carousel">
+    <div
+      className={`carousel ${className}`.trim()}
+      data-testid="carousel"
+      {...rest}
+    >
       {children}
     </div>
   );

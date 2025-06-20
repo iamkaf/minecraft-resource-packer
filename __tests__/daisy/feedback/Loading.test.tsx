@@ -12,9 +12,10 @@ describe('Loading', () => {
   });
 
   it('supports other styles', () => {
-    render(<Loading style="dots" size="lg" />);
+    render(<Loading loadingStyle="dots" size="lg" className="extra" />);
     const el = screen.getByTestId('loading');
     expect(el).toHaveClass('loading-dots');
     expect(el).toHaveClass('loading-lg');
+    expect(el).toHaveClass('extra');
   });
 });

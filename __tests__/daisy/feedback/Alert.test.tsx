@@ -6,9 +6,14 @@ import Alert from '../../../src/renderer/components/daisy/feedback/Alert';
 
 describe('Alert', () => {
   it('renders with variant and children', () => {
-    render(<Alert variant="success">done</Alert>);
+    render(
+      <Alert variant="success" className="extra">
+        done
+      </Alert>
+    );
     const el = screen.getByRole('alert');
     expect(el).toHaveTextContent('done');
     expect(el).toHaveClass('alert-success');
+    expect(el).toHaveClass('extra');
   });
 });

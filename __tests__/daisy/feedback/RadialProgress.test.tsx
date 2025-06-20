@@ -6,9 +6,10 @@ import RadialProgress from '../../../src/renderer/components/daisy/feedback/Radi
 
 describe('RadialProgress', () => {
   it('renders radial progress', () => {
-    render(<RadialProgress value={70} size="4rem" />);
+    render(<RadialProgress value={70} size="4rem" className="extra" />);
     const el = screen.getByTestId('radial-progress');
     expect(el).toHaveTextContent('70%');
     expect(el).toHaveAttribute('aria-valuenow', '70');
+    expect(el).toHaveClass('extra');
   });
 });
