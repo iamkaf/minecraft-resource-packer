@@ -86,7 +86,7 @@ describe('App', () => {
       removeEventListener: vi.fn(),
     });
     interface ElectronAPI {
-      onOpenProject: (cb: (e: unknown, path: string) => void) => void;
+      onProjectOpened: (cb: (e: unknown, path: string) => void) => void;
       exportProject: (path: string) => Promise<{
         fileCount: number;
         totalSize: number;
@@ -99,7 +99,7 @@ describe('App', () => {
       getConfetti: () => Promise<boolean>;
     }
     (window as unknown as { electronAPI: ElectronAPI }).electronAPI = {
-      onOpenProject: (cb) => {
+      onProjectOpened: (cb) => {
         openHandler = cb;
       },
       exportProject,

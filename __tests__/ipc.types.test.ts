@@ -1,5 +1,10 @@
 import { describe, it, expectTypeOf } from 'vitest';
-import type { IpcRequestMap, IpcResponseMap } from '../src/shared/ipc/types';
+import type {
+  IpcRequestMap,
+  IpcResponseMap,
+  IpcEventMap,
+} from '../src/shared/ipc/types';
+import type { IpcApi } from '../src/shared/ipc/generateApi';
 import type { ProjectInfo } from '../src/main/projects';
 import type { PackMeta } from '../src/shared/project';
 import type { TextureEditOptions } from '../src/shared/texture';
@@ -21,6 +26,17 @@ describe('IPC type mappings', () => {
     expectTypeOf<IpcRequestMap['list-projects']>().toEqualTypeOf<[]>();
     expectTypeOf<IpcResponseMap['list-projects']>().toEqualTypeOf<
       ProjectInfo[]
+    >();
+  });
+
+  it('IpcApi maps requests and events', () => {
+    expectTypeOf<IpcApi['editTexture']>().toEqualTypeOf<
+      (file: string, opts: TextureEditOptions) => Promise<void>
+    >();
+    expectTypeOf<IpcApi['onFileAdded']>().toEqualTypeOf<
+      (
+        listener: (event: unknown, data: IpcEventMap['file-added']) => void
+      ) => () => void
     >();
   });
 });

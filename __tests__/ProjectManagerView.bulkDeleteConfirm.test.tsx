@@ -6,7 +6,7 @@ import type { ProjectInfo } from '../src/renderer/components/project/ProjectTabl
 
 describe('ProjectManagerView bulk delete confirm', () => {
   const listProjects = vi.fn();
-  const listPackFormats = vi.fn();
+  const listFormats = vi.fn();
   const deleteProject = vi.fn();
   const getProjectSort = vi.fn();
   const setProjectSort = vi.fn();
@@ -14,7 +14,7 @@ describe('ProjectManagerView bulk delete confirm', () => {
   beforeEach(() => {
     interface API {
       listProjects: () => Promise<ProjectInfo[]>;
-      listPackFormats: () => Promise<{ format: number; label: string }[]>;
+      listFormats: () => Promise<{ format: number; label: string }[]>;
       deleteProject: (name: string) => Promise<void>;
       openProject: (name: string) => void;
       createProject: (n: string, v: string) => Promise<void>;
@@ -28,7 +28,7 @@ describe('ProjectManagerView bulk delete confirm', () => {
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       listProjects,
-      listPackFormats,
+      listFormats,
       deleteProject,
       openProject: vi.fn(),
       createProject: vi.fn(),
@@ -42,7 +42,7 @@ describe('ProjectManagerView bulk delete confirm', () => {
       { name: 'Alpha', version: '1.21', assets: 2, lastOpened: 0 },
       { name: 'Beta', version: '1.20', assets: 3, lastOpened: 0 },
     ]);
-    listPackFormats.mockResolvedValue([]);
+    listFormats.mockResolvedValue([]);
     deleteProject.mockResolvedValue(Promise.resolve());
     getProjectSort.mockResolvedValue({ key: 'name', asc: true });
     setProjectSort.mockResolvedValue(Promise.resolve());

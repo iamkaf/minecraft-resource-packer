@@ -6,7 +6,7 @@ import type { ProjectInfo } from '../src/renderer/components/project/ProjectTabl
 
 describe('ProjectManagerView hotkeys', () => {
   const listProjects = vi.fn();
-  const listPackFormats = vi.fn();
+  const listFormats = vi.fn();
   const openProject = vi.fn();
   const deleteProject = vi.fn();
   const getProjectSort = vi.fn();
@@ -15,7 +15,7 @@ describe('ProjectManagerView hotkeys', () => {
   beforeEach(() => {
     interface API {
       listProjects: () => Promise<ProjectInfo[]>;
-      listPackFormats: () => Promise<{ format: number; label: string }[]>;
+      listFormats: () => Promise<{ format: number; label: string }[]>;
       openProject: (name: string) => void;
       deleteProject: (name: string) => Promise<void>;
       createProject: (name: string, version: string) => Promise<void>;
@@ -28,7 +28,7 @@ describe('ProjectManagerView hotkeys', () => {
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       listProjects,
-      listPackFormats,
+      listFormats,
       openProject,
       deleteProject,
       createProject: vi.fn(),
@@ -41,7 +41,7 @@ describe('ProjectManagerView hotkeys', () => {
       { name: 'Alpha', version: '1.20', assets: 2, lastOpened: 0 },
       { name: 'Beta', version: '1.20', assets: 3, lastOpened: 1 },
     ]);
-    listPackFormats.mockResolvedValue([]);
+    listFormats.mockResolvedValue([]);
     deleteProject.mockResolvedValue(Promise.resolve());
     getProjectSort.mockResolvedValue({ key: 'name', asc: true });
     setProjectSort.mockResolvedValue(Promise.resolve());

@@ -9,7 +9,7 @@ import type { ProjectInfo } from '../src/renderer/components/project/ProjectTabl
 
 describe('ProjectManagerView open error', () => {
   const listProjects = vi.fn();
-  const listPackFormats = vi.fn();
+  const listFormats = vi.fn();
   const openProject = vi.fn();
   const getProjectSort = vi.fn();
   const setProjectSort = vi.fn();
@@ -17,7 +17,7 @@ describe('ProjectManagerView open error', () => {
   beforeEach(() => {
     interface API {
       listProjects: () => Promise<ProjectInfo[]>;
-      listPackFormats: () => Promise<{ format: number; label: string }[]>;
+      listFormats: () => Promise<{ format: number; label: string }[]>;
       openProject: (name: string) => Promise<void>;
       createProject: (n: string, v: string) => Promise<void>;
       importProject: () => Promise<
@@ -30,7 +30,7 @@ describe('ProjectManagerView open error', () => {
     }
     (window as unknown as { electronAPI: API }).electronAPI = {
       listProjects,
-      listPackFormats,
+      listFormats,
       openProject,
       createProject: vi.fn(),
       importProject: vi.fn(),
@@ -42,7 +42,7 @@ describe('ProjectManagerView open error', () => {
     listProjects.mockResolvedValue([
       { name: 'Pack', version: '1.21', assets: 2, lastOpened: 0 },
     ]);
-    listPackFormats.mockResolvedValue([]);
+    listFormats.mockResolvedValue([]);
     openProject.mockRejectedValue(new Error('fail'));
     getProjectSort.mockResolvedValue({ key: 'name', asc: true });
     setProjectSort.mockResolvedValue(undefined);
