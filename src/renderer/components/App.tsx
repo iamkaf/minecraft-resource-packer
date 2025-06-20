@@ -27,15 +27,6 @@ function AppContent() {
     });
   }, [navigate, setProjectPath]);
 
-  const toManager = () => {
-    setProjectPath(null);
-    navigate('/');
-  };
-
-  const toSettings = () => {
-    navigate('/settings');
-  };
-
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
       <Navbar />
@@ -46,7 +37,7 @@ function AppContent() {
             element={
               projectPath ? (
                 <Suspense fallback={<EditorViewSkeleton />}>
-                  <EditorView onBack={toManager} onSettings={toSettings} />
+                  <EditorView />
                 </Suspense>
               ) : (
                 <Navigate to="/" replace />

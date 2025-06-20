@@ -12,12 +12,7 @@ import {
 } from '../components/editor';
 import Tab from '../components/daisy/navigation/Tab';
 
-interface EditorViewProps {
-  onBack: () => void;
-  onSettings: () => void;
-}
-
-export default function EditorView({ onBack, onSettings }: EditorViewProps) {
+export default function EditorView() {
   const projectPath = useAppStore((s) => s.projectPath)!;
   const selected = useAppStore((s) => s.selectedAssets);
   const setSelected = useAppStore((s) => s.setSelectedAssets);
@@ -79,13 +74,7 @@ export default function EditorView({ onBack, onSettings }: EditorViewProps) {
           Exporter
         </Tab>
       </div>
-      {mode === 'browser' && (
-        <AssetBrowserTab
-          onBack={onBack}
-          onSettings={onSettings}
-          onExport={handleExport}
-        />
-      )}
+      {mode === 'browser' && <AssetBrowserTab onExport={handleExport} />}
       {mode === 'lab' && <TextureLabTab />}
       {mode === 'exporter' && <ExporterTab onExport={handleExport} />}
       {(progress || summary) && (

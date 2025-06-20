@@ -18,16 +18,10 @@ import {
 /* eslint-enable import/no-unresolved */
 
 interface Props {
-  onBack: () => void;
-  onSettings: () => void;
   onExport: () => void;
 }
 
-export default function AssetBrowserTab({
-  onBack,
-  onSettings,
-  onExport,
-}: Props) {
+export default function AssetBrowserTab({ onExport }: Props) {
   const selected = useAppStore((s) => s.selectedAssets);
   const setSelected = useAppStore((s) => s.setSelectedAssets);
   const [selectorAsset, setSelectorAsset] = useState<string | null>(null);
@@ -78,11 +72,7 @@ export default function AssetBrowserTab({
           defaultSize={layout[0]}
           className="bg-base-100 border border-base-300 rounded flex flex-col"
         >
-          <ProjectInfoPanel
-            onExport={onExport}
-            onBack={onBack}
-            onSettings={onSettings}
-          />
+          <ProjectInfoPanel onExport={onExport} />
         </Panel>
         <PanelResizeHandle className="flex items-center" tagName="div">
           <div className="w-1 bg-base-content h-full mx-auto"></div>

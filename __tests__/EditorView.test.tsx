@@ -4,7 +4,16 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import os from 'os';
 import path from 'path';
 import { SetPath, electronAPI } from './test-utils';
+import { MemoryRouter, useLocation } from 'react-router-dom';
 import { useAppStore } from '../src/renderer/store';
+
+function HashSync() {
+  const location = useLocation();
+  React.useEffect(() => {
+    window.location.hash = `#${location.pathname}`;
+  }, [location]);
+  return null;
+}
 
 // eslint-disable-next-line no-var
 var openExternalMock: ReturnType<typeof vi.fn>;
@@ -25,18 +34,20 @@ vi.mock('../src/renderer/components/assets/AssetBrowser', () => ({
   default: () => <div>browser</div>,
 }));
 vi.mock('../src/renderer/components/project/ProjectInfoPanel', () => ({
-  default: ({
-    onExport,
-    onBack,
-  }: {
-    onExport: () => void;
-    onBack: () => void;
-  }) => {
+  default: ({ onExport }: { onExport: () => void }) => {
     const path = useAppStore.getState().projectPath;
+    const setProjectPath = useAppStore.getState().setProjectPath;
     return (
       <div>
         <button onClick={onExport}>Export Pack</button>
-        <button onClick={onBack}>Back to Projects</button>
+        <button
+          onClick={() => {
+            setProjectPath(null);
+            window.location.hash = '#/';
+          }}
+        >
+          Back to Projects
+        </button>
         <span>{path}</span>
       </div>
     );
@@ -73,9 +84,12 @@ describe('EditorView', () => {
   it('shows project path and exports pack', async () => {
     const proj = path.join(os.tmpdir(), 'proj');
     render(
-      <SetPath path={proj}>
-        <EditorView onBack={() => undefined} />
-      </SetPath>
+      <MemoryRouter>
+        <HashSync />
+        <SetPath path={proj}>
+          <EditorView />
+        </SetPath>
+      </MemoryRouter>
     );
     expect(screen.getByText(proj)).toBeInTheDocument();
     const btn = screen.getByText('Export Pack');
@@ -87,22 +101,28 @@ describe('EditorView', () => {
     expect(screen.getByTestId('daisy-modal')).toBeInTheDocument();
   });
 
-  it('calls onBack when Back clicked', () => {
-    const back = vi.fn();
+  it('navigates back when Back clicked', () => {
     render(
-      <SetPath path={os.tmpdir()}>
-        <EditorView onBack={back} />
-      </SetPath>
+      <MemoryRouter>
+        <HashSync />
+        <SetPath path={os.tmpdir()}>
+          <EditorView />
+        </SetPath>
+      </MemoryRouter>
     );
     fireEvent.click(screen.getByText('Back to Projects'));
-    expect(back).toHaveBeenCalled();
+    expect(useAppStore.getState().projectPath).toBeNull();
+    expect(window.location.hash).toBe('#/');
   });
 
   it('opens help link externally', () => {
     render(
-      <SetPath path={os.tmpdir()}>
-        <EditorView onBack={() => undefined} />
-      </SetPath>
+      <MemoryRouter>
+        <HashSync />
+        <SetPath path={os.tmpdir()}>
+          <EditorView />
+        </SetPath>
+      </MemoryRouter>
     );
     const link = screen.getByRole('link', { name: 'Help' });
     link.dispatchEvent(
@@ -115,9 +135,12 @@ describe('EditorView', () => {
 
   it('opens asset selector modal', () => {
     render(
-      <SetPath path={os.tmpdir()}>
-        <EditorView onBack={() => undefined} />
-      </SetPath>
+      <MemoryRouter>
+        <HashSync />
+        <SetPath path={os.tmpdir()}>
+          <EditorView />
+        </SetPath>
+      </MemoryRouter>
     );
     fireEvent.click(screen.getByRole('button', { name: 'Add From Vanilla' }));
     expect(screen.getByTestId('asset-selector-modal')).toBeInTheDocument();

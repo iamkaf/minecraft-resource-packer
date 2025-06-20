@@ -2,6 +2,16 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { SetPath, electronAPI } from './test-utils';
+import { MemoryRouter, useLocation } from 'react-router-dom';
+import { useAppStore } from '../src/renderer/store';
+
+function HashSync() {
+  const location = useLocation();
+  React.useEffect(() => {
+    window.location.hash = `#${location.pathname}`;
+  }, [location]);
+  return null;
+}
 import ProjectInfoPanel from '../src/renderer/components/project/ProjectInfoPanel';
 
 const meta = {
@@ -17,7 +27,6 @@ describe('ProjectInfoPanel', () => {
   const load = electronAPI.loadPackMeta as ReturnType<typeof vi.fn>;
   const open = electronAPI.openInFolder as ReturnType<typeof vi.fn>;
   const onExport = vi.fn();
-  const onBack = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -27,13 +36,12 @@ describe('ProjectInfoPanel', () => {
 
   it('loads metadata and triggers export', async () => {
     render(
-      <SetPath path="/p/Pack">
-        <ProjectInfoPanel
-          onExport={onExport}
-          onBack={onBack}
-          onSettings={vi.fn()}
-        />
-      </SetPath>
+      <MemoryRouter>
+        <HashSync />
+        <SetPath path="/p/Pack">
+          <ProjectInfoPanel onExport={onExport} />
+        </SetPath>
+      </MemoryRouter>
     );
     expect(load).toHaveBeenCalledWith('Pack');
     await screen.findByText('desc');
@@ -42,19 +50,19 @@ describe('ProjectInfoPanel', () => {
     fireEvent.click(screen.getByText('Open Folder'));
     expect(open).toHaveBeenCalledWith('/p/Pack');
     fireEvent.click(screen.getByText('Back to Projects'));
-    expect(onBack).toHaveBeenCalled();
-    expect(screen.getByText('Pack')).toBeInTheDocument();
+    expect(useAppStore.getState().projectPath).toBeNull();
+    expect(window.location.hash).toBe('#/');
+    expect(screen.queryByText('Pack')).toBeNull();
   });
 
   it('falls back to default icon when pack.png missing', async () => {
     render(
-      <SetPath path="/p/Pack">
-        <ProjectInfoPanel
-          onExport={onExport}
-          onBack={onBack}
-          onSettings={vi.fn()}
-        />
-      </SetPath>
+      <MemoryRouter>
+        <HashSync />
+        <SetPath path="/p/Pack">
+          <ProjectInfoPanel onExport={onExport} />
+        </SetPath>
+      </MemoryRouter>
     );
     const img = screen.getByAltText('Pack icon') as HTMLImageElement;
     fireEvent.error(img);

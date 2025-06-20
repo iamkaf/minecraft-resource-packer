@@ -3,7 +3,16 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import { SetPath, electronAPI } from './test-utils';
+import { MemoryRouter, useLocation } from 'react-router-dom';
 import ProjectInfoPanel from '../src/renderer/components/project/ProjectInfoPanel';
+
+function HashSync() {
+  const location = useLocation();
+  React.useEffect(() => {
+    window.location.hash = `#${location.pathname}`;
+  }, [location]);
+  return null;
+}
 
 const meta = {
   version: '1.21.1',
@@ -26,13 +35,12 @@ describe('ProjectInfoPanel metadata editing', () => {
 
   it('saves edited metadata using inline form', async () => {
     render(
-      <SetPath path="/p/Pack">
-        <ProjectInfoPanel
-          onExport={vi.fn()}
-          onBack={vi.fn()}
-          onSettings={vi.fn()}
-        />
-      </SetPath>
+      <MemoryRouter>
+        <HashSync />
+        <SetPath path="/p/Pack">
+          <ProjectInfoPanel onExport={vi.fn()} />
+        </SetPath>
+      </MemoryRouter>
     );
 
     const input = await screen.findByTestId('description-input');
