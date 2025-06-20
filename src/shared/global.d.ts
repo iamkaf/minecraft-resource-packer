@@ -34,6 +34,7 @@ declare global {
       savePackIcon: IpcInvoke<'save-pack-icon'>;
       exportProject: IpcInvoke<'export-project'>;
       exportProjects: IpcInvoke<'export-projects'>;
+      openProjectFolder: IpcInvoke<'open-project-folder'>;
       openInFolder: IpcInvoke<'open-in-folder'>;
       openFile: IpcInvoke<'open-file'>;
       readFile: IpcInvoke<'read-file'>;

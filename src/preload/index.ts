@@ -41,6 +41,7 @@ const api = {
     on('project-opened', listener),
   exportProject: (project: string) => invoke('export-project', project),
   exportProjects: (paths: string[]) => invoke('export-projects', paths),
+  openProjectFolder: (name: string) => invoke('open-project-folder', name),
   addTexture: (project: string, name: string) =>
     invoke('add-texture', project, name),
   listTextures: (project: string) => invoke('list-textures', project),
