@@ -1,28 +1,41 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import RenameModal from '../modals/RenameModal';
 import ConfirmModal from '../modals/ConfirmModal';
+import { useAppStore } from '../../store';
 import type { ToastType } from '../providers/ToastProvider';
 
-export function useProjectModals(
-  refresh: () => void,
-  toast: (opts: { message: string; type?: ToastType }) => void
-) {
-  const [duplicateTarget, setDuplicateTarget] = useState<string | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-  const [deleteMany, setDeleteMany] = useState<string[] | null>(null);
-  const deleteManyAfter = useRef<(() => void) | null>(null);
+export default function ProjectModals({
+  refresh,
+  toast,
+}: {
+  refresh: () => void;
+  toast: (opts: { message: string; type?: ToastType }) => void;
+}) {
+  const {
+    duplicateTarget,
+    deleteTarget,
+    deleteMany,
+    deleteManyAfter,
+    closeProjectModals,
+  } = useAppStore((s) => ({
+    duplicateTarget: s.duplicateTarget,
+    deleteTarget: s.deleteTarget,
+    deleteMany: s.deleteMany,
+    deleteManyAfter: s.deleteManyAfter,
+    closeProjectModals: s.closeProjectModals,
+  }));
 
-  const modals = (
+  return (
     <>
       {duplicateTarget && (
         <RenameModal
           current={`${duplicateTarget} Copy`}
           title="Duplicate Project"
           confirmText="Duplicate"
-          onCancel={() => setDuplicateTarget(null)}
+          onCancel={closeProjectModals}
           onRename={(newName) => {
             const src = duplicateTarget;
-            setDuplicateTarget(null);
+            closeProjectModals();
             window.electronAPI?.duplicateProject(src, newName).then(() => {
               refresh();
               toast({ message: 'Project duplicated', type: 'success' });
@@ -35,10 +48,10 @@ export function useProjectModals(
           title="Delete Project"
           message={`Delete project ${deleteTarget}?`}
           confirmText="Delete"
-          onCancel={() => setDeleteTarget(null)}
+          onCancel={closeProjectModals}
           onConfirm={() => {
             const target = deleteTarget;
-            setDeleteTarget(null);
+            closeProjectModals();
             window.electronAPI?.deleteProject(target).then(() => {
               refresh();
               toast({ message: 'Project deleted', type: 'info' });
@@ -51,15 +64,16 @@ export function useProjectModals(
           title="Delete Projects"
           message={`Delete ${deleteMany.length} projects?`}
           confirmText="Delete"
-          onCancel={() => setDeleteMany(null)}
+          onCancel={closeProjectModals}
           onConfirm={() => {
             const targets = deleteMany;
-            setDeleteMany(null);
+            const after = deleteManyAfter;
+            closeProjectModals();
             Promise.all(
               targets.map((t) => window.electronAPI?.deleteProject(t))
             ).then(() => {
               refresh();
-              deleteManyAfter.current?.();
+              after?.();
               toast({ message: 'Projects deleted', type: 'info' });
             });
           }}
@@ -67,14 +81,4 @@ export function useProjectModals(
       )}
     </>
   );
-
-  return {
-    modals,
-    openDuplicate: setDuplicateTarget,
-    openDelete: setDeleteTarget,
-    openDeleteMany: (names: string[], cb?: () => void) => {
-      deleteManyAfter.current = cb ?? null;
-      setDeleteMany(names);
-    },
-  };
 }

@@ -17,9 +17,6 @@ export default function ProjectTable({
   selected,
   onSelect,
   onSelectAll,
-  onOpen,
-  onDuplicate,
-  onDelete,
   onRowClick,
 }: {
   projects: ProjectInfo[];
@@ -27,9 +24,6 @@ export default function ProjectTable({
   selected: Set<string>;
   onSelect: (name: string, checked: boolean) => void;
   onSelectAll: (checked: boolean) => void;
-  onOpen: (name: string) => void;
-  onDuplicate: (name: string) => void;
-  onDelete: (name: string) => void;
   onRowClick: (name: string) => void;
   sortKey: keyof ProjectInfo;
   asc: boolean;
@@ -58,9 +52,6 @@ export default function ProjectTable({
               selected={selected}
               onSelect={onSelect}
               lastIndexRef={lastIndex}
-              onOpen={onOpen}
-              onDuplicate={onDuplicate}
-              onDelete={onDelete}
               onRowClick={onRowClick}
             />
           ))}

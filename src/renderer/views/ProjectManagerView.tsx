@@ -6,7 +6,7 @@ import ProjectSidebar from '../components/project/ProjectSidebar';
 import ProjectForm from '../components/project/ProjectForm';
 import ProjectTable from '../components/project/ProjectTable';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
-import { useProjectModals } from '../components/project/ProjectModals';
+import ProjectModals from '../components/project/ProjectModals';
 import SearchToolbar from '../components/project/SearchToolbar';
 import ExportWizardModal, {
   BulkProgress,
@@ -15,6 +15,7 @@ import useProjectList from '../hooks/useProjectList';
 import useProjectSelection from '../hooks/useProjectSelection';
 import ImportWizardModal from '../components/modals/ImportWizardModal';
 import type { ImportSummary } from '../../main/projects';
+import { useAppStore } from '../store';
 
 // Lists all available projects and lets the user open them.
 
@@ -32,14 +33,13 @@ const ProjectManagerView: React.FC = () => {
 
   const toast = useToast();
 
-  const { modals, openDuplicate, openDelete, openDeleteMany } =
-    useProjectModals(refresh, toast);
+  const openProject = useAppStore((s) => s.openProject);
+  const duplicateProject = useAppStore((s) => s.duplicateProject);
+  const deleteProject = useAppStore((s) => s.deleteProject);
+  const deleteProjects = useAppStore((s) => s.deleteProjects);
 
   const handleOpen = (n: string) => {
-    const res = window.electronAPI?.openProject(n);
-    res?.catch?.(() =>
-      toast({ message: 'Invalid project.json', type: 'error' })
-    );
+    openProject(n);
   };
 
   const handleImport = () => {
@@ -62,12 +62,12 @@ const ProjectManagerView: React.FC = () => {
   let clearSelection: () => void = () => {};
   const handleDeleteSelected = (names: string[]) => {
     if (names.length > 1) {
-      openDeleteMany(names, () => {
+      deleteProjects(names, () => {
         clearSelection();
         refresh();
       });
     } else if (names.length === 1) {
-      openDelete(names[0]);
+      deleteProject(names[0]);
       clearSelection();
     }
   };
@@ -155,9 +155,6 @@ const ProjectManagerView: React.FC = () => {
               c
             )
           }
-          onOpen={handleOpen}
-          onDuplicate={openDuplicate}
-          onDelete={openDelete}
           onRowClick={setActiveProject}
         />
         {(importing || importSummary) && (
@@ -170,7 +167,7 @@ const ProjectManagerView: React.FC = () => {
         {progress && (
           <ExportWizardModal progress={progress} onClose={() => {}} />
         )}
-        {modals}
+        <ProjectModals refresh={refresh} toast={toast} />
       </div>
       <ProjectSidebar project={activeProject} />
     </section>

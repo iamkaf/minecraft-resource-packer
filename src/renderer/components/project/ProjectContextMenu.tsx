@@ -1,24 +1,22 @@
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { Button } from '../daisy/actions';
+import { useAppStore } from '../../store';
 
 interface Props {
   project: string;
   style?: React.CSSProperties;
   firstItemRef?: React.Ref<HTMLButtonElement>;
-  onOpen: (name: string) => void;
-  onDuplicate: (name: string) => void;
-  onDelete: (name: string) => void;
 }
 
 export default function ProjectContextMenu({
   project,
   style,
   firstItemRef,
-  onOpen,
-  onDuplicate,
-  onDelete,
 }: Props) {
+  const openProject = useAppStore((s) => s.openProject);
+  const duplicateProject = useAppStore((s) => s.duplicateProject);
+  const deleteProject = useAppStore((s) => s.deleteProject);
   const root = document.getElementById('overlay-root');
   if (!root) return null;
   const fallbackRef = useRef<HTMLButtonElement>(null);
@@ -43,18 +41,18 @@ export default function ProjectContextMenu({
               : fallbackRef) as React.Ref<HTMLButtonElement>
           }
           role="menuitem"
-          onClick={() => onOpen(project)}
+          onClick={() => openProject(project)}
         >
           Open
         </Button>
       </li>
       <li>
-        <Button role="menuitem" onClick={() => onDuplicate(project)}>
+        <Button role="menuitem" onClick={() => duplicateProject(project)}>
           Duplicate
         </Button>
       </li>
       <li>
-        <Button role="menuitem" onClick={() => onDelete(project)}>
+        <Button role="menuitem" onClick={() => deleteProject(project)}>
           Delete
         </Button>
       </li>

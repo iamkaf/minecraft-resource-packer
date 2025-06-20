@@ -1,27 +1,8 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
-import { useProjectModals } from '../src/renderer/components/project/ProjectModals';
-
-function Wrapper({
-  refresh,
-  toast,
-}: {
-  refresh: () => void;
-  toast: (m: string, t: 'success' | 'info' | 'error') => void;
-}) {
-  const { modals, openDuplicate, openDelete } = useProjectModals(
-    refresh,
-    toast
-  );
-  return (
-    <div>
-      <button onClick={() => openDuplicate('Alpha')}>dup</button>
-      <button onClick={() => openDelete('Alpha')}>del</button>
-      {modals}
-    </div>
-  );
-}
+import { render, screen, fireEvent, within, act } from '@testing-library/react';
+import ProjectModals from '../src/renderer/components/project/ProjectModals';
+import { useAppStore } from '../src/renderer/store';
 
 describe('ProjectModals', () => {
   it('duplicates project via modal', async () => {
@@ -36,15 +17,19 @@ describe('ProjectModals', () => {
     ).electronAPI = {
       duplicateProject,
       deleteProject: vi.fn(),
-    };
+    } as any;
     const refresh = vi.fn();
     const toast = vi.fn();
-    render(<Wrapper refresh={refresh} toast={toast} />);
-    fireEvent.click(screen.getByText('dup'));
+    render(<ProjectModals refresh={refresh} toast={toast} />);
+    act(() => {
+      useAppStore.getState().duplicateProject('Alpha');
+    });
     const modal = await screen.findByTestId('daisy-modal');
     const form = modal.querySelector('form') as HTMLFormElement;
     fireEvent.submit(form);
-    fireEvent.click(screen.getByText('dup')); // reopen
+    act(() => {
+      useAppStore.getState().duplicateProject('Alpha');
+    });
     const again = await screen.findByTestId('daisy-modal');
     fireEvent.click(within(again).getByText('Cancel'));
     expect(duplicateProject).toHaveBeenCalledWith('Alpha', 'Alpha Copy');
@@ -62,14 +47,18 @@ describe('ProjectModals', () => {
     ).electronAPI = {
       duplicateProject: vi.fn(),
       deleteProject,
-    };
+    } as any;
     const refresh = vi.fn();
     const toast = vi.fn();
-    render(<Wrapper refresh={refresh} toast={toast} />);
-    fireEvent.click(screen.getByText('del'));
+    render(<ProjectModals refresh={refresh} toast={toast} />);
+    act(() => {
+      useAppStore.getState().deleteProject('Alpha');
+    });
     await screen.findByTestId('daisy-modal');
     fireEvent.click(screen.getByText('Delete'));
-    fireEvent.click(screen.getByText('del'));
+    act(() => {
+      useAppStore.getState().deleteProject('Alpha');
+    });
     const delModal = await screen.findByTestId('daisy-modal');
     fireEvent.click(within(delModal).getByText('Cancel'));
     expect(deleteProject).toHaveBeenCalledWith('Alpha');

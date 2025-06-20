@@ -4,6 +4,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import ProjectTable, {
   ProjectInfo,
 } from '../src/renderer/components/project/ProjectTable';
+import ProjectModals from '../src/renderer/components/project/ProjectModals';
+import { useAppStore } from '../src/renderer/store';
 
 describe('ProjectTable', () => {
   const projects: ProjectInfo[] = [
@@ -13,54 +15,66 @@ describe('ProjectTable', () => {
 
   it('calls row action callbacks', () => {
     const open = vi.fn();
-    const dup = vi.fn();
-    const del = vi.fn();
+    (
+      window as unknown as { electronAPI: { openProject: typeof open } }
+    ).electronAPI = {
+      openProject: open,
+    } as any;
     render(
-      <ProjectTable
-        projects={projects}
-        sortKey="name"
-        asc
-        onSort={() => {}}
-        selected={new Set()}
-        onSelect={() => {}}
-        onSelectAll={() => {}}
-        onOpen={open}
-        onDuplicate={dup}
-        onDelete={del}
-        onRowClick={() => {}}
-      />
+      <>
+        <ProjectTable
+          projects={projects}
+          sortKey="name"
+          asc
+          onSort={() => {}}
+          selected={new Set()}
+          onSelect={() => {}}
+          onSelectAll={() => {}}
+          onRowClick={() => {}}
+        />
+        <ProjectModals refresh={() => {}} toast={() => {}} />
+      </>
     );
     fireEvent.click(screen.getAllByRole('button', { name: 'Open' })[0]);
     expect(open).toHaveBeenCalledWith('Alpha');
     fireEvent.click(screen.getAllByRole('button', { name: 'Duplicate' })[0]);
-    expect(dup).toHaveBeenCalledWith('Alpha');
+    expect(useAppStore.getState().duplicateTarget).toBe('Alpha');
     fireEvent.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
-    expect(del).toHaveBeenCalledWith('Alpha');
+    expect(useAppStore.getState().deleteTarget).toBe('Alpha');
   });
 
   it('opens and deletes via keyboard', () => {
     const open = vi.fn();
     const del = vi.fn();
+    (
+      window as unknown as {
+        electronAPI: { openProject: typeof open; deleteProject: typeof del };
+      }
+    ).electronAPI = {
+      openProject: open,
+      deleteProject: del,
+    } as any;
     render(
-      <ProjectTable
-        projects={projects}
-        sortKey="name"
-        asc
-        onSort={() => {}}
-        selected={new Set()}
-        onSelect={() => {}}
-        onSelectAll={() => {}}
-        onOpen={open}
-        onDuplicate={() => {}}
-        onDelete={del}
-        onRowClick={() => {}}
-      />
+      <>
+        <ProjectTable
+          projects={projects}
+          sortKey="name"
+          asc
+          onSort={() => {}}
+          selected={new Set()}
+          onSelect={() => {}}
+          onSelectAll={() => {}}
+          onRowClick={() => {}}
+        />
+        <ProjectModals refresh={() => {}} toast={() => {}} />
+      </>
     );
     const row = screen.getAllByRole('row')[1];
     fireEvent.doubleClick(row);
     expect(open).toHaveBeenCalledWith('Alpha');
     fireEvent.keyDown(row, { key: 'Delete' });
-    expect(del).toHaveBeenCalledWith('Alpha');
+    expect(del).not.toHaveBeenCalled();
+    expect(useAppStore.getState().deleteTarget).toBe('Alpha');
   });
 
   it('selects rows and toggles all', () => {
@@ -75,9 +89,6 @@ describe('ProjectTable', () => {
         selected={new Set()}
         onSelect={select}
         onSelectAll={selectAll}
-        onOpen={() => {}}
-        onDuplicate={() => {}}
-        onDelete={() => {}}
         onRowClick={() => {}}
       />
     );
@@ -98,9 +109,6 @@ describe('ProjectTable', () => {
         selected={new Set()}
         onSelect={() => {}}
         onSelectAll={() => {}}
-        onOpen={() => {}}
-        onDuplicate={() => {}}
-        onDelete={() => {}}
         onRowClick={() => {}}
       />
     );
@@ -118,9 +126,6 @@ describe('ProjectTable', () => {
         selected={new Set()}
         onSelect={() => {}}
         onSelectAll={() => {}}
-        onOpen={() => {}}
-        onDuplicate={() => {}}
-        onDelete={() => {}}
         onRowClick={() => {}}
       />
     );
@@ -138,9 +143,6 @@ describe('ProjectTable', () => {
         selected={new Set()}
         onSelect={() => {}}
         onSelectAll={() => {}}
-        onOpen={() => {}}
-        onDuplicate={() => {}}
-        onDelete={() => {}}
         onRowClick={() => {}}
       />
     );

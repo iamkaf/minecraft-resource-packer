@@ -11,6 +11,7 @@ import {
 import defaultPack from '../../../../resources/default_pack.png';
 import ProjectContextMenu from './ProjectContextMenu';
 import type { ProjectInfo } from './ProjectTable';
+import { useAppStore } from '../../store';
 
 interface Props {
   project: ProjectInfo;
@@ -19,9 +20,6 @@ interface Props {
   selected: Set<string>;
   onSelect: (name: string, checked: boolean) => void;
   lastIndexRef: React.MutableRefObject<number | null>;
-  onOpen: (name: string) => void;
-  onDuplicate: (name: string) => void;
-  onDelete: (name: string) => void;
   onRowClick: (name: string) => void;
 }
 
@@ -32,11 +30,11 @@ export default function ProjectRow({
   selected,
   onSelect,
   lastIndexRef,
-  onOpen,
-  onDuplicate,
-  onDelete,
   onRowClick,
 }: Props) {
+  const openProject = useAppStore((s) => s.openProject);
+  const duplicateProject = useAppStore((s) => s.duplicateProject);
+  const deleteProject = useAppStore((s) => s.deleteProject);
   const [menuPos, setMenuPos] = React.useState<{ x: number; y: number } | null>(
     null
   );
@@ -47,19 +45,6 @@ export default function ProjectRow({
   }, [menuPos]);
 
   const closeMenu = () => setMenuPos(null);
-
-  const handleOpen = () => {
-    onOpen(project.name);
-    closeMenu();
-  };
-  const handleDuplicate = () => {
-    onDuplicate(project.name);
-    closeMenu();
-  };
-  const handleDelete = () => {
-    onDelete(project.name);
-    closeMenu();
-  };
 
   const handleCheckbox = (
     e: React.ChangeEvent<HTMLInputElement> & {
@@ -86,8 +71,8 @@ export default function ProjectRow({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && selected.size <= 1) onOpen(project.name);
-    if (e.key === 'Delete' && selected.size <= 1) onDelete(project.name);
+    if (e.key === 'Enter' && selected.size <= 1) openProject(project.name);
+    if (e.key === 'Delete' && selected.size <= 1) deleteProject(project.name);
     if (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) {
       e.preventDefault();
       const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
@@ -98,7 +83,7 @@ export default function ProjectRow({
   return (
     <tr
       onClick={() => onRowClick(project.name)}
-      onDoubleClick={() => onOpen(project.name)}
+      onDoubleClick={() => openProject(project.name)}
       onContextMenu={handleContextMenu}
       onKeyDown={handleKeyDown}
       tabIndex={0}
@@ -138,7 +123,7 @@ export default function ProjectRow({
           className="btn-accent btn-sm flex items-center gap-1"
           onClick={(e) => {
             e.stopPropagation();
-            onOpen(project.name);
+            openProject(project.name);
           }}
         >
           <ArrowRightCircleIcon className="w-4 h-4" />
@@ -148,7 +133,7 @@ export default function ProjectRow({
           className="btn-info btn-sm flex items-center gap-1"
           onClick={(e) => {
             e.stopPropagation();
-            onDuplicate(project.name);
+            duplicateProject(project.name);
           }}
         >
           <DocumentDuplicateIcon className="w-4 h-4" />
@@ -158,7 +143,7 @@ export default function ProjectRow({
           className="btn-error btn-sm flex items-center gap-1"
           onClick={(e) => {
             e.stopPropagation();
-            onDelete(project.name);
+            deleteProject(project.name);
           }}
         >
           <TrashIcon className="w-4 h-4" />
@@ -174,9 +159,6 @@ export default function ProjectRow({
             display: menuPos ? 'block' : 'none',
           }}
           firstItemRef={firstItem}
-          onOpen={handleOpen}
-          onDuplicate={handleDuplicate}
-          onDelete={handleDelete}
         />
       )}
     </tr>

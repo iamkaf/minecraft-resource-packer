@@ -6,6 +6,7 @@ import React, {
   useRef,
 } from 'react';
 import ReactDOM from 'react-dom';
+import { useAppStore } from '../../store';
 
 export type ToastType =
   | 'info'
@@ -44,6 +45,7 @@ export default function ToastProvider({
 }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const timeouts = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
+  const setToast = useAppStore((s) => s.setToast);
 
   const removeToast = (id: number) => {
     setToasts((t) => t.filter((toast) => toast.id !== id));
@@ -70,6 +72,10 @@ export default function ToastProvider({
       timeouts.current[id] = tid;
     }
   };
+
+  useEffect(() => {
+    setToast(showToast);
+  }, [setToast]);
 
   useEffect(() => {
     return () => {

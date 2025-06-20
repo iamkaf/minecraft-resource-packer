@@ -13,6 +13,20 @@ export interface AppState {
   openRename: (file: string) => void;
   openMove: (file: string) => void;
   closeDialogs: () => void;
+  toast: (opts: {
+    message: string;
+    type?: import('./components/providers/ToastProvider').ToastType;
+  }) => void;
+  setToast: (fn: AppState['toast']) => void;
+  duplicateTarget: string | null;
+  deleteTarget: string | null;
+  deleteMany: string[] | null;
+  deleteManyAfter: (() => void) | null;
+  openProject: (name: string) => void;
+  duplicateProject: (name: string) => void;
+  deleteProject: (name: string) => void;
+  deleteProjects: (names: string[], after?: () => void) => void;
+  closeProjectModals: () => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -44,4 +58,27 @@ export const useAppStore = create<AppState>((set, get) => ({
   openRename: (file) => set({ renameTarget: file }),
   openMove: (file) => set({ moveTarget: file }),
   closeDialogs: () => set({ renameTarget: null, moveTarget: null }),
+  toast: () => {},
+  setToast: (fn) => set({ toast: fn }),
+  duplicateTarget: null,
+  deleteTarget: null,
+  deleteMany: null,
+  deleteManyAfter: null,
+  openProject: (name) => {
+    const res = window.electronAPI?.openProject(name);
+    res?.catch?.(() =>
+      get().toast({ message: 'Invalid project.json', type: 'error' })
+    );
+  },
+  duplicateProject: (name) => set({ duplicateTarget: name }),
+  deleteProject: (name) => set({ deleteTarget: name }),
+  deleteProjects: (names, after) =>
+    set({ deleteMany: names, deleteManyAfter: after ?? null }),
+  closeProjectModals: () =>
+    set({
+      duplicateTarget: null,
+      deleteTarget: null,
+      deleteMany: null,
+      deleteManyAfter: null,
+    }),
 }));
