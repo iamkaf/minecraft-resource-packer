@@ -6,8 +6,11 @@ bootstrap();
 // renderer process.
 
 import { app, BrowserWindow, ipcMain, protocol } from 'electron';
+import logger, { registerLogHandler } from './logger';
 import { registerFileHandlers } from './ipcFiles';
 import { registerFileWatcherHandlers } from './ipc/fileWatcher';
+
+logger.info('Main process starting');
 import path from 'path';
 import { registerExportHandlers } from './exporter';
 import { registerProjectHandlers, openProject } from './projects';
@@ -51,11 +54,13 @@ let mainWindow: BrowserWindow | null = null;
 // Directory that stores the local projects on disk.	Under Electron's
 // userData path to keep everything self contained.
 const projectsDir = path.join(app.getPath('userData'), 'projects');
+logger.info(`Projects directory: ${projectsDir}`);
 
 // Create the main application window for a specific project.
 // Once the window loads we emit the selected project path so the renderer can
 // display its contents.
 const createMainWindow = () => {
+  logger.info('Creating main window');
   const savedBounds = getWindowBounds();
   const maximized = isMaximized();
   const options: Electron.BrowserWindowConstructorOptions = {
@@ -81,13 +86,16 @@ const createMainWindow = () => {
   mainWindow.on('close', () => {
     setWindowBounds(mainWindow!.getBounds());
     setMaximized(mainWindow!.isMaximized());
+    logger.info('Main window closing');
   });
   mainWindow.on('closed', () => {
     mainWindow = null;
+    logger.info('Main window closed');
   });
 };
 
 registerProjectHandlers(ipcMain, projectsDir, (p) => {
+  logger.info(`Project opened: ${p}`);
   mainWindow?.webContents.send('project-opened', p);
 });
 
@@ -101,14 +109,19 @@ registerExternalEditorHandlers(ipcMain);
 
 // Register file-related IPC handlers
 registerFileHandlers(ipcMain);
+registerLogHandler(ipcMain);
 
 // Once Electron is ready register protocols and show the main window.
 app.whenReady().then(() => {
+  logger.info('Electron app ready');
   registerVanillaProtocol(protocol);
   registerAssetProtocol(protocol);
   createMainWindow();
   const shouldOpen = getOpenLastProject();
   const last = getLastProject();
+  logger.info(
+    `Open last project: ${shouldOpen ? (last ?? 'none') : 'disabled'}`
+  );
   if (shouldOpen && last) {
     mainWindow?.webContents.once('did-finish-load', async () => {
       const projectPath = await openProject(projectsDir, last);
@@ -116,6 +129,7 @@ app.whenReady().then(() => {
       if (ok) {
         setLastProject(last);
         mainWindow?.webContents.send('project-opened', projectPath);
+        logger.info(`Auto-opened project: ${projectPath}`);
       }
     });
   }
@@ -126,6 +140,7 @@ app.whenReady().then(() => {
 // dock.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    logger.info('All windows closed, quitting app');
     app.quit();
   }
 });
@@ -134,6 +149,7 @@ app.on('window-all-closed', () => {
 // other windows open.
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
+    logger.info('Recreating main window after activate');
     createMainWindow();
   }
 });

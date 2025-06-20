@@ -18,6 +18,7 @@ loader.init().then((_monacoInstance: typeof monaco) => {
 
 window.electronAPI?.getTheme().then((t) => {
   applyTheme(t);
+  window.electronAPI?.log('info', 'Renderer initialized');
 });
 
 // Bootstraps the main renderer process. This simply mounts the React
