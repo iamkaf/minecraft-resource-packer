@@ -17,6 +17,7 @@ export default function ProjectContextMenu({
   const openProject = useAppStore((s) => s.openProject);
   const duplicateProject = useAppStore((s) => s.duplicateProject);
   const deleteProject = useAppStore((s) => s.deleteProject);
+  const openProjectFolder = useAppStore((s) => s.openProjectFolder);
   const root = document.getElementById('overlay-root');
   if (!root) return null;
   const fallbackRef = useRef<HTMLButtonElement>(null);
@@ -44,6 +45,11 @@ export default function ProjectContextMenu({
           onClick={() => openProject(project)}
         >
           Open
+        </Button>
+      </li>
+      <li>
+        <Button role="menuitem" onClick={() => openProjectFolder(project)}>
+          Open Folder
         </Button>
       </li>
       <li>
