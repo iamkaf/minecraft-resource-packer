@@ -25,6 +25,7 @@ export interface IpcRequestMap {
   'save-pack-icon': [string, string, string];
   'export-project': [string];
   'export-projects': [string[]];
+  'open-project-folder': [string];
   'open-in-folder': [string];
   'open-file': [string];
   'open-external-editor': [string];
@@ -85,6 +86,7 @@ export interface IpcResponseMap {
   'save-pack-icon': void;
   'export-project': ExportSummary | void;
   'export-projects': void;
+  'open-project-folder': void;
   'open-in-folder': void;
   'open-file': void;
   'open-external-editor': void;

@@ -1,12 +1,8 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import os from 'os';
-import path from 'path';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ProjectContextMenu from '../src/renderer/components/project/ProjectContextMenu';
 import { useAppStore } from '../src/renderer/store';
-
-vi.mock('electron', () => ({ app: { getPath: () => os.tmpdir() } }));
 
 describe('ProjectContextMenu', () => {
   it('fires callbacks and renders to overlay root', async () => {
@@ -19,7 +15,7 @@ describe('ProjectContextMenu', () => {
         openProject: open,
         duplicateProject: dup,
         deleteProject: del,
-        openInFolder: reveal,
+        openProjectFolder: reveal,
       } as Window['electronAPI'];
     render(<ProjectContextMenu project="Test" />);
     const root = document.getElementById('overlay-root');
@@ -30,9 +26,7 @@ describe('ProjectContextMenu', () => {
     fireEvent.click(screen.getByRole('menuitem', { name: 'Open' }));
     expect(open).toHaveBeenCalledWith('Test');
     fireEvent.click(screen.getByRole('menuitem', { name: 'Open Folder' }));
-    expect(reveal).toHaveBeenCalledWith(
-      path.join(os.tmpdir(), 'projects', 'Test')
-    );
+    expect(reveal).toHaveBeenCalledWith('Test');
     fireEvent.click(screen.getByRole('menuitem', { name: 'Duplicate' }));
     expect(useAppStore.getState().duplicateTarget).toBe('Test');
     fireEvent.click(screen.getByRole('menuitem', { name: 'Delete' }));

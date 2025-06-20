@@ -1,7 +1,5 @@
 import { create } from 'zustand';
 import type { ToastType } from './components/providers/ToastProvider';
-import path from 'path';
-import { app } from 'electron';
 
 export interface AppState {
   projectPath: string | null;
@@ -88,9 +86,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     );
   },
   openProjectFolder: (name) => {
-    window.electronAPI?.openInFolder(
-      path.join(app.getPath('userData'), 'projects', name)
-    );
+    window.electronAPI?.openProjectFolder(name);
   },
   duplicateProject: (name) => set({ duplicateTarget: name }),
   deleteProject: (name) => set({ deleteTarget: name }),

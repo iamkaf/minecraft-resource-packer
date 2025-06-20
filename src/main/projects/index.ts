@@ -2,6 +2,8 @@
  * Aggregates project management utilities and IPC registration helpers.
  */
 import type { IpcMain } from 'electron';
+import { shell } from 'electron';
+import path from 'path';
 import { listPackFormats } from '../assets';
 import { setActiveProject } from '../assets/protocols';
 import { setLastProject } from '../layout';
@@ -57,6 +59,9 @@ export function registerProjectHandlers(
   });
   ipc.handle('delete-project', (_e, name: string) => {
     return deleteProject(baseDir, name);
+  });
+  ipc.handle('open-project-folder', (_e, name: string) => {
+    shell.showItemInFolder(path.join(baseDir, name));
   });
   ipc.handle('import-project', async () => {
     return importProject(baseDir);
