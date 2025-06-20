@@ -25,6 +25,7 @@ function on<C extends keyof IpcEventMap>(
 }
 
 const api = {
+  log: (level: string, message: string) => invoke('log', level, message),
   listProjects: () => invoke('list-projects'),
   listPackFormats: () => invoke('list-formats'),
   createProject: (name: string, minecraftVersion: string) =>

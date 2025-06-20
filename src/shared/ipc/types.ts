@@ -62,6 +62,7 @@ export interface IpcRequestMap {
   'set-open-last-project': [boolean];
   'get-last-project': [];
   'set-last-project': [string];
+  log: [string, string];
 }
 
 export interface IpcResponseMap {
@@ -121,6 +122,7 @@ export interface IpcResponseMap {
   'set-open-last-project': void;
   'get-last-project': string;
   'set-last-project': void;
+  log: void;
 }
 /* c8 ignore end */
 
