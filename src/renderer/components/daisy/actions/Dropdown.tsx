@@ -1,15 +1,20 @@
 import React from 'react';
+import type { DaisyColor, DaisySize } from '../types';
 
 interface DropdownProps extends React.HTMLAttributes<HTMLDivElement> {
   label: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  variant?: DaisyColor;
+  size?: DaisySize;
 }
 
 export default function Dropdown({
   label,
   children,
   className = '',
+  variant,
+  size,
   ...rest
 }: DropdownProps) {
   return (
@@ -18,7 +23,13 @@ export default function Dropdown({
       data-testid="daisy-dropdown"
       {...rest}
     >
-      <div tabIndex={0} role="button" className="btn m-1">
+      <div
+        tabIndex={0}
+        role="button"
+        className={`btn m-1 ${variant ? `btn-${variant}` : ''} ${
+          size ? `btn-${size}` : ''
+        }`.trim()}
+      >
         {label}
       </div>
       <ul

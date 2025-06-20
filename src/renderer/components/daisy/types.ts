@@ -7,3 +7,5 @@ export type DaisyColor =
   | 'success'
   | 'warning'
   | 'error';
+
+export type DaisySize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';

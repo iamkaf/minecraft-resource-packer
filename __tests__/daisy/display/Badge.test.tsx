@@ -6,13 +6,14 @@ import Badge from '../../../src/renderer/components/daisy/display/Badge';
 describe('Badge', () => {
   it('renders and accepts props', () => {
     render(
-      <Badge variant="accent" id="b1" className="extra">
+      <Badge variant="accent" size="lg" id="b1" className="extra">
         Hi
       </Badge>
     );
     const badge = screen.getByTestId('badge');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveClass('badge-accent');
+    expect(badge).toHaveClass('badge-lg');
     expect(badge).toHaveClass('extra');
     expect(badge).toHaveAttribute('id', 'b1');
   });
