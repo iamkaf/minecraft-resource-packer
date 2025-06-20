@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import type { ToastType } from './components/providers/ToastProvider';
+import path from 'path';
+import { app } from 'electron';
 
 export interface AppState {
   projectPath: string | null;
@@ -29,6 +31,7 @@ export interface AppState {
   duplicateProject: (name: string) => void;
   deleteProject: (name: string) => void;
   deleteProjects: (names: string[], after?: () => void) => void;
+  openProjectFolder: (name: string) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -82,6 +85,11 @@ export const useAppStore = create<AppState>((set, get) => ({
     const res = window.electronAPI?.openProject(name);
     res?.catch?.(() =>
       get().toast?.({ message: 'Invalid project.json', type: 'error' })
+    );
+  },
+  openProjectFolder: (name) => {
+    window.electronAPI?.openInFolder(
+      path.join(app.getPath('userData'), 'projects', name)
     );
   },
   duplicateProject: (name) => set({ duplicateTarget: name }),
