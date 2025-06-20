@@ -1,18 +1,25 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import RenameModal from '../modals/RenameModal';
 import ConfirmModal from '../modals/ConfirmModal';
 import type { ToastType } from '../providers/ToastProvider';
+import { useAppStore } from '../../store';
 
-export function useProjectModals(
-  refresh: () => void,
-  toast: (opts: { message: string; type?: ToastType }) => void
-) {
-  const [duplicateTarget, setDuplicateTarget] = useState<string | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-  const [deleteMany, setDeleteMany] = useState<string[] | null>(null);
-  const deleteManyAfter = useRef<(() => void) | null>(null);
+export default function ProjectModals({
+  refresh,
+  toast,
+}: {
+  refresh: () => void;
+  toast: (opts: { message: string; type?: ToastType }) => void;
+}) {
+  const duplicateTarget = useAppStore((s) => s.duplicateTarget);
+  const deleteTarget = useAppStore((s) => s.deleteTarget);
+  const deleteMany = useAppStore((s) => s.deleteMany);
+  const deleteManyAfter = useAppStore((s) => s.deleteManyAfter);
+  const setDuplicateTarget = useAppStore((s) => s.setDuplicateTarget);
+  const setDeleteTarget = useAppStore((s) => s.setDeleteTarget);
+  const setDeleteMany = useAppStore((s) => s.setDeleteMany);
 
-  const modals = (
+  return (
     <>
       {duplicateTarget && (
         <RenameModal
@@ -59,7 +66,7 @@ export function useProjectModals(
               targets.map((t) => window.electronAPI?.deleteProject(t))
             ).then(() => {
               refresh();
-              deleteManyAfter.current?.();
+              deleteManyAfter?.();
               toast({ message: 'Projects deleted', type: 'info' });
             });
           }}
@@ -67,14 +74,4 @@ export function useProjectModals(
       )}
     </>
   );
-
-  return {
-    modals,
-    openDuplicate: setDuplicateTarget,
-    openDelete: setDeleteTarget,
-    openDeleteMany: (names: string[], cb?: () => void) => {
-      deleteManyAfter.current = cb ?? null;
-      setDeleteMany(names);
-    },
-  };
 }
