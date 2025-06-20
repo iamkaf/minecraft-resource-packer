@@ -1,7 +1,8 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import { useProjectModals } from '../src/renderer/components/project/ProjectModals';
+import ProjectModals from '../src/renderer/components/project/ProjectModals';
+import { useAppStore } from '../src/renderer/store';
 
 function Wrapper({
   refresh,
@@ -10,15 +11,16 @@ function Wrapper({
   refresh: () => void;
   toast: (m: string, t: 'success' | 'info' | 'error') => void;
 }) {
-  const { modals, openDuplicate, openDelete } = useProjectModals(
-    refresh,
-    toast
-  );
+  const dup = useAppStore((s) => s.duplicateProject);
+  const del = useAppStore((s) => s.deleteProject);
   return (
     <div>
-      <button onClick={() => openDuplicate('Alpha')}>dup</button>
-      <button onClick={() => openDelete('Alpha')}>del</button>
-      {modals}
+      <button onClick={() => dup('Alpha')}>dup</button>
+      <button onClick={() => del('Alpha')}>del</button>
+      <ProjectModals
+        refresh={refresh}
+        toast={({ message, type }) => toast(message, (type ?? 'info') as any)}
+      />
     </div>
   );
 }

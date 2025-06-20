@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ProjectRow from '../src/renderer/components/project/ProjectRow';
 import type { ProjectInfo } from '../src/renderer/components/project/ProjectTable';
+import { useAppStore } from '../src/renderer/store';
 
 describe('ProjectRow', () => {
   const projects: ProjectInfo[] = [
@@ -14,6 +15,12 @@ describe('ProjectRow', () => {
     const open = vi.fn();
     const dup = vi.fn();
     const del = vi.fn();
+    (window as unknown as { electronAPI: Window['electronAPI'] }).electronAPI =
+      {
+        openProject: open,
+        duplicateProject: dup,
+        deleteProject: del,
+      } as Window['electronAPI'];
     const selected = new Set<string>();
     const last = { current: null as number | null };
     render(
@@ -26,9 +33,6 @@ describe('ProjectRow', () => {
             selected={selected}
             onSelect={() => {}}
             lastIndexRef={last}
-            onOpen={open}
-            onDuplicate={dup}
-            onDelete={del}
             onRowClick={() => {}}
           />
         </tbody>
@@ -37,14 +41,20 @@ describe('ProjectRow', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Open' }));
     expect(open).toHaveBeenCalledWith('Alpha');
     fireEvent.click(screen.getByRole('button', { name: 'Duplicate' }));
-    expect(dup).toHaveBeenCalledWith('Alpha');
+    expect(useAppStore.getState().duplicateTarget).toBe('Alpha');
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
-    expect(del).toHaveBeenCalledWith('Alpha');
+    expect(useAppStore.getState().deleteTarget).toBe('Alpha');
   });
 
   it('handles double click and key', () => {
     const open = vi.fn();
     const del = vi.fn();
+    (window as unknown as { electronAPI: Window['electronAPI'] }).electronAPI =
+      {
+        openProject: open,
+        duplicateProject: vi.fn(),
+        deleteProject: del,
+      } as Window['electronAPI'];
     const selected = new Set<string>();
     const last = { current: null as number | null };
     render(
@@ -57,9 +67,6 @@ describe('ProjectRow', () => {
             selected={selected}
             onSelect={() => {}}
             lastIndexRef={last}
-            onOpen={open}
-            onDuplicate={() => {}}
-            onDelete={del}
             onRowClick={() => {}}
           />
         </tbody>
@@ -69,7 +76,7 @@ describe('ProjectRow', () => {
     fireEvent.doubleClick(row);
     expect(open).toHaveBeenCalledWith('Alpha');
     fireEvent.keyDown(row, { key: 'Delete' });
-    expect(del).toHaveBeenCalledWith('Alpha');
+    expect(useAppStore.getState().deleteTarget).toBe('Alpha');
   });
 
   it('selects range with shift', () => {
@@ -91,9 +98,6 @@ describe('ProjectRow', () => {
               selected={selected}
               onSelect={select}
               lastIndexRef={last}
-              onOpen={() => {}}
-              onDuplicate={() => {}}
-              onDelete={() => {}}
               onRowClick={() => {}}
             />
           ))}
