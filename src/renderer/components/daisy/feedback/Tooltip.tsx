@@ -14,18 +14,25 @@ export type TooltipPosition =
   | 'right-start'
   | 'right-end';
 
+interface TooltipProps extends React.HTMLAttributes<HTMLDivElement> {
+  tip: string;
+  position?: TooltipPosition;
+}
+
 export default function Tooltip({
   tip,
   children,
   position,
-}: {
-  tip: string;
-  children: React.ReactNode;
-  position?: TooltipPosition;
-}) {
+  className = '',
+  ...rest
+}: TooltipProps & { children: React.ReactNode }) {
   const posClass = position ? `tooltip-${position}` : '';
   return (
-    <div className={`tooltip ${posClass}`.trim()} data-tip={tip}>
+    <div
+      className={`tooltip ${posClass} ${className}`.trim()}
+      data-tip={tip}
+      {...rest}
+    >
       {children}
     </div>
   );

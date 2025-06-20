@@ -1,8 +1,20 @@
 import React from 'react';
 
-export default function Countdown({ value }: { value: number }) {
+interface CountdownProps extends React.HTMLAttributes<HTMLSpanElement> {
+  value: number;
+}
+
+export default function Countdown({
+  value,
+  className = '',
+  ...rest
+}: CountdownProps) {
   return (
-    <span className="countdown font-mono text-2xl" data-testid="countdown">
+    <span
+      className={`countdown font-mono text-2xl ${className}`.trim()}
+      data-testid="countdown"
+      {...rest}
+    >
       <span style={{ '--value': value } as React.CSSProperties} />
     </span>
   );

@@ -4,9 +4,11 @@ import { render, screen } from '@testing-library/react';
 import Table from '../../../src/renderer/components/daisy/display/Table';
 
 describe('Table', () => {
-  it('renders', () => {
+  it('renders and accepts props', () => {
     render(
       <Table
+        id="tbl1"
+        className="extra"
         head={
           <tr>
             <th>H</th>
@@ -18,6 +20,9 @@ describe('Table', () => {
         </tr>
       </Table>
     );
-    expect(screen.getByTestId('table')).toBeInTheDocument();
+    const table = screen.getByTestId('table');
+    expect(table).toBeInTheDocument();
+    expect(table).toHaveClass('extra');
+    expect(table).toHaveAttribute('id', 'tbl1');
   });
 });

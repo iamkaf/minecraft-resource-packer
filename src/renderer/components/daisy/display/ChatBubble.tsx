@@ -1,12 +1,20 @@
 import React from 'react';
 
+interface ChatBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+
 export default function ChatBubble({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+  className = '',
+  ...rest
+}: ChatBubbleProps) {
   return (
-    <div className="chat-bubble" data-testid="chat-bubble">
+    <div
+      className={`chat-bubble ${className}`.trim()}
+      data-testid="chat-bubble"
+      {...rest}
+    >
       {children}
     </div>
   );

@@ -4,12 +4,15 @@ import { render, screen } from '@testing-library/react';
 import List from '../../../src/renderer/components/daisy/display/List';
 
 describe('List', () => {
-  it('renders', () => {
+  it('renders and accepts props', () => {
     render(
-      <List>
+      <List className="extra" id="l1">
         <li>Item</li>
       </List>
     );
-    expect(screen.getByTestId('list')).toBeInTheDocument();
+    const el = screen.getByTestId('list');
+    expect(el).toBeInTheDocument();
+    expect(el).toHaveClass('extra');
+    expect(el).toHaveAttribute('id', 'l1');
   });
 });

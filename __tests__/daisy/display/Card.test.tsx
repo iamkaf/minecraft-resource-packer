@@ -4,8 +4,15 @@ import { render, screen } from '@testing-library/react';
 import Card from '../../../src/renderer/components/daisy/display/Card';
 
 describe('Card', () => {
-  it('renders', () => {
-    render(<Card title="Title">Body</Card>);
-    expect(screen.getByTestId('card')).toBeInTheDocument();
+  it('renders and accepts props', () => {
+    render(
+      <Card title="Title" className="extra" id="c1">
+        Body
+      </Card>
+    );
+    const card = screen.getByTestId('card');
+    expect(card).toBeInTheDocument();
+    expect(card).toHaveClass('extra');
+    expect(card).toHaveAttribute('id', 'c1');
   });
 });

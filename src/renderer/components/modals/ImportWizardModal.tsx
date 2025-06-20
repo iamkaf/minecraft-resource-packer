@@ -35,7 +35,7 @@ export default function ImportWizardModal({
     return (
       <Modal open className="flex flex-col items-center">
         <h3 className="font-bold text-lg mb-2">Importing...</h3>
-        <Loading style="spinner" size="lg" />
+        <Loading loadingStyle="spinner" size="lg" />
       </Modal>
     );
   }

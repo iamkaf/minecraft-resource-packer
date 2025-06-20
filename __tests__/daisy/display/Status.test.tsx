@@ -4,8 +4,11 @@ import { render, screen } from '@testing-library/react';
 import Status from '../../../src/renderer/components/daisy/display/Status';
 
 describe('Status', () => {
-  it('renders', () => {
-    render(<Status />);
-    expect(screen.getByTestId('status')).toBeInTheDocument();
+  it('renders and accepts props', () => {
+    render(<Status id="st1" className="extra" />);
+    const el = screen.getByTestId('status');
+    expect(el).toBeInTheDocument();
+    expect(el).toHaveClass('extra');
+    expect(el).toHaveAttribute('id', 'st1');
   });
 });

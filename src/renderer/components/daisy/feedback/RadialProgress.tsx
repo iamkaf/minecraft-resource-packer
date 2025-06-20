@@ -1,17 +1,21 @@
 import React from 'react';
 
+interface RadialProgressProps extends React.HTMLAttributes<HTMLDivElement> {
+  value: number;
+  size?: string;
+  thickness?: string;
+}
+
 export default function RadialProgress({
   value,
   size = '5rem',
   thickness,
-}: {
-  value: number;
-  size?: string;
-  thickness?: string;
-}) {
+  className = '',
+  ...rest
+}: RadialProgressProps) {
   return (
     <div
-      className="radial-progress"
+      className={`radial-progress ${className}`.trim()}
       style={
         {
           '--value': value.toString(),
@@ -22,6 +26,7 @@ export default function RadialProgress({
       role="progressbar"
       aria-valuenow={value}
       data-testid="radial-progress"
+      {...rest}
     >
       {value}%
     </div>

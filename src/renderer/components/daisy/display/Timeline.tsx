@@ -1,8 +1,20 @@
 import React from 'react';
 
-export default function Timeline({ children }: { children: React.ReactNode }) {
+interface TimelineProps extends React.HTMLAttributes<HTMLUListElement> {
+  children: React.ReactNode;
+}
+
+export default function Timeline({
+  children,
+  className = '',
+  ...rest
+}: TimelineProps) {
   return (
-    <ul className="timeline" data-testid="timeline">
+    <ul
+      className={`timeline ${className}`.trim()}
+      data-testid="timeline"
+      {...rest}
+    >
       {children}
     </ul>
   );

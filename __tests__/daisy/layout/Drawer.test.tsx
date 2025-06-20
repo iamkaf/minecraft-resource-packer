@@ -6,12 +6,20 @@ import Drawer from '../../../src/renderer/components/daisy/layout/Drawer';
 describe('Drawer', () => {
   it('renders drawer structure', () => {
     const { container } = render(
-      <Drawer id="d1" side={<div>Side</div>}>
+      <Drawer
+        id="d1"
+        side={<div>Side</div>}
+        className="extra"
+        data-testid="drawer"
+      >
         <div>Content</div>
       </Drawer>
     );
     expect(container.querySelector('.drawer')).toBeInTheDocument();
     expect(container.querySelector('.drawer-content')).toBeInTheDocument();
     expect(container.querySelector('.drawer-side')).toBeInTheDocument();
+    const wrapper = container.querySelector('.drawer');
+    expect(wrapper).toHaveClass('extra');
+    expect(wrapper).toHaveAttribute('data-testid', 'drawer');
   });
 });

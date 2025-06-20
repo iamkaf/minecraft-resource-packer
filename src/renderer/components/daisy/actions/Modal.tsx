@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import type { DaisyColor } from '../types';
 
-interface ModalProps {
+interface ModalProps extends React.DialogHTMLAttributes<HTMLDialogElement> {
   open?: boolean;
   children: React.ReactNode;
   className?: string;
@@ -18,6 +18,7 @@ export default function Modal({
   variant,
   testId = 'daisy-modal',
   onClose,
+  ...rest
 }: ModalProps) {
   if (!open) return null;
   const root = document.getElementById('overlay-root');
@@ -54,6 +55,7 @@ export default function Modal({
       tabIndex={-1}
       className="modal modal-open"
       data-testid={testId}
+      {...rest}
     >
       <div
         className={`modal-box ${
