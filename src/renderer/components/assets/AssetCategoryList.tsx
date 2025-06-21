@@ -1,6 +1,7 @@
 import React from 'react';
 import TextureGrid, { TextureInfo } from './TextureGrid';
 import type { Filter } from './AssetSelectorControls';
+import { getCategory } from '../../utils/category';
 
 export const CATEGORY_KEYS = [
   'blocks',
@@ -11,19 +12,6 @@ export const CATEGORY_KEYS = [
   'misc',
 ] as const;
 
-export const getCategory = (name: string): Filter | 'misc' => {
-  if (name.startsWith('block/')) return 'blocks';
-  if (name.startsWith('item/')) return 'items';
-  if (name.startsWith('entity/')) return 'entity';
-  if (
-    name.startsWith('gui/') ||
-    name.startsWith('font/') ||
-    name.startsWith('misc/')
-  )
-    return 'ui';
-  if (name.startsWith('sound/') || name.startsWith('sounds/')) return 'audio';
-  return 'misc';
-};
 
 interface Props {
   textures: TextureInfo[];

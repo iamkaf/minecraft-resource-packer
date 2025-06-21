@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import TextureTree from './TextureTree';
 import AssetSelectorControls, { Filter } from './AssetSelectorControls';
-import AssetCategoryList, { getCategory } from './AssetCategoryList';
+import AssetCategoryList from './AssetCategoryList';
+import { getCategory } from '../../utils/category';
 import { TextureInfo } from './TextureGrid';
 import { Button } from '../daisy/actions';
 import { useAppStore } from '../../store';
