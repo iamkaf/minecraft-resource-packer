@@ -2,12 +2,13 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import path from 'path';
-import FileTree from '../src/renderer/components/assets/FileTree';
+import FileTreeView from '../src/renderer/components/assets/FileTreeView';
+import { buildTree } from '../src/renderer/utils/tree';
 import { useAppStore } from '../src/renderer/store';
 
 const files = ['a.txt', 'b.png'];
 
-function Wrapper(props: Partial<Parameters<typeof FileTree>[0]>) {
+function Wrapper(props: Partial<Parameters<typeof FileTreeView>[0]>) {
   const setProjectPath = useAppStore((s) => s.setProjectPath);
   const setSelected = useAppStore((s) => s.setSelectedAssets);
   const [ready, setReady] = React.useState(false);
@@ -16,10 +17,11 @@ function Wrapper(props: Partial<Parameters<typeof FileTree>[0]>) {
     setSelected([]);
     setReady(true);
   }, []);
-  return ready ? <FileTree files={files} versions={{}} {...props} /> : null;
+  const data = React.useMemo(() => buildTree(files), []);
+  return ready ? <FileTreeView files={files} data={data} versions={{}} {...props} /> : null;
 }
 
-describe('FileTree', () => {
+describe('FileTreeView', () => {
   beforeEach(() => {
     useAppStore.setState({ selectedAssets: [] });
   });
