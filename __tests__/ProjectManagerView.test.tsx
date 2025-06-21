@@ -279,4 +279,21 @@ describe('ProjectManagerView', () => {
     fireEvent.click(within(delModal).getByText('Delete'));
     expect(deleteProject).toHaveBeenCalledWith('Alpha');
   });
+
+  it('renders sidebar above the table', async () => {
+    render(<ProjectManagerView />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    const sidebar = screen.getByTestId('project-sidebar');
+    const table = screen.getByRole('table');
+    const position = sidebar.compareDocumentPosition(table);
+    expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('sidebar uses horizontal layout', async () => {
+    render(<ProjectManagerView />);
+    await screen.findAllByRole('button', { name: 'Open' });
+    const sidebar = screen.getByTestId('project-sidebar');
+    expect(sidebar).toHaveClass('flex-row');
+    expect(sidebar).toHaveClass('items-start');
+  });
 });
