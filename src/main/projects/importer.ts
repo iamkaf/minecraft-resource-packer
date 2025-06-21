@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { dialog } from 'electron';
 import unzipper from 'unzipper';
+import { pipeline } from 'stream/promises';
 import {
   createDefaultProjectMeta,
   type ProjectMetadata,
@@ -21,29 +22,21 @@ export interface ImportSummary {
 
 async function extractZip(src: string, dest: string): Promise<number> {
   let count = 0;
-  await new Promise<void>((resolve, reject) => {
-    fs.createReadStream(src)
-      .pipe(unzipper.Parse())
-      .on('entry', (entry: unknown) => {
-        const e = entry as {
-          type: string;
-          path: string;
-          autodrain(): void;
-          pipe(dest: fs.WriteStream): void;
-        };
-        const outPath = path.join(dest, e.path);
-        if (e.type === 'Directory') {
-          fs.mkdirSync(outPath, { recursive: true });
-          e.autodrain();
-        } else {
-          fs.mkdirSync(path.dirname(outPath), { recursive: true });
-          e.pipe(fs.createWriteStream(outPath));
-          count++;
-        }
-      })
-      .on('close', resolve)
-      .on('error', reject);
-  });
+  const directory = await unzipper.Open.file(src);
+  for (const e of directory.files) {
+    const outPath = path.resolve(dest, e.path);
+    if (!outPath.startsWith(dest)) {
+      // ignore zip slip entries
+      continue;
+    }
+    if (e.type === 'Directory') {
+      await fs.promises.mkdir(outPath, { recursive: true });
+    } else {
+      await fs.promises.mkdir(path.dirname(outPath), { recursive: true });
+      await pipeline(e.stream(), fs.createWriteStream(outPath));
+      count++;
+    }
+  }
   return count;
 }
 
