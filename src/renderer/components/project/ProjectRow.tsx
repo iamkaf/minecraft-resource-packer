@@ -6,8 +6,6 @@ import {
   DocumentDuplicateIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - webpack replaces import with URL string
 import defaultPack from '../../../../resources/default_pack.png';
 import ProjectContextMenu from './ProjectContextMenu';
 import type { ProjectInfo } from './ProjectTable';
@@ -108,11 +106,7 @@ export default function ProjectRow({
         />
       </td>
       <td className="flex items-center gap-2">
-        <img
-          src={defaultPack as unknown as string}
-          alt="Pack icon"
-          className="w-6 h-6"
-        />
+        <img src={defaultPack} alt="Pack icon" className="w-6 h-6" />
         {project.name}
       </td>
       <td>{project.version}</td>
