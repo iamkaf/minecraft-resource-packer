@@ -124,7 +124,8 @@ function useMinecraftModel(
       });
 
       if (!elements.length) throw new Error('No elements array');
-    } catch {
+    } catch (e) {
+      window.electronAPI?.log('error', `Model preview failed: ${e}`);
       const tex = loader.load(getTexture(modelType, ''));
       tex.magFilter = THREE.NearestFilter;
       tex.minFilter = THREE.NearestFilter;

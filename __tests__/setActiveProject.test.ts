@@ -3,13 +3,18 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { v4 as uuid } from 'uuid';
-import { setActiveProject } from '../src/main/assets/protocols';
 import * as cache from '../src/main/assets/cache';
+let setActiveProject: typeof import('../src/main/assets/protocols').setActiveProject;
+const errorMock = vi.fn();
+vi.mock('../src/main/logger', () => ({
+  default: { error: errorMock, info: vi.fn() },
+}));
 
 const baseDir = path.join(os.tmpdir(), `active-${uuid()}`);
 
-beforeAll(() => {
+beforeAll(async () => {
   fs.mkdirSync(baseDir, { recursive: true });
+  ({ setActiveProject } = await import('../src/main/assets/protocols'));
 });
 
 afterAll(() => {
@@ -25,5 +30,6 @@ describe('setActiveProject', () => {
     const ok = await setActiveProject(proj);
     expect(ok).toBe(false);
     expect(ensure).not.toHaveBeenCalled();
+    expect(errorMock).toHaveBeenCalledWith(expect.stringContaining(proj));
   });
 });

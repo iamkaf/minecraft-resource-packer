@@ -1,12 +1,14 @@
 /* c8 ignore start */
 import type { IpcMain } from 'electron';
 import { readProjectMeta, writeProjectMeta } from './projectMeta';
+import logger from './logger';
 
 export async function getNoExport(projectPath: string): Promise<string[]> {
   try {
     const meta = await readProjectMeta(projectPath);
     return meta.noExport ?? [];
-  } catch {
+  } catch (e) {
+    logger.error(`Failed to read noExport from ${projectPath}: ${e}`);
     return [];
   }
 }

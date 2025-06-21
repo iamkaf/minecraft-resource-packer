@@ -11,6 +11,7 @@ import {
 } from '../../shared/project';
 import { readProjectMeta, writeProjectMeta } from '../projectMeta';
 import { versionForFormat } from '../../shared/packFormat';
+import logger from '../logger';
 
 export interface ImportSummary {
   name: string;
@@ -55,8 +56,8 @@ async function detectVersion(dir: string): Promise<string | null> {
     if (typeof fmt === 'number') {
       return versionForFormat(fmt);
     }
-  } catch {
-    /* ignore */
+  } catch (e) {
+    logger.error(`Failed to parse ${mcmeta}: ${e}`);
   }
   return null;
 }
@@ -81,7 +82,10 @@ export async function importProject(
   if (fs.existsSync(path.join(dest, 'project.json'))) {
     try {
       meta = await readProjectMeta(dest);
-    } catch {
+    } catch (e) {
+      logger.error(
+        `Failed to parse ${path.join(dest, 'project.json')} during import: ${e}`
+      );
       meta = createDefaultProjectMeta(name, version);
     }
   } else {

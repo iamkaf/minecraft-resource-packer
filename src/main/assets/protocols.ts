@@ -10,6 +10,7 @@ import type { Protocol } from 'electron';
 
 import { readProjectMetaSafe } from '../projectMeta';
 import { ensureAssets } from './cache';
+import logger from '../logger';
 
 let cacheTexturesDir = '';
 let activeProjectDir = '';
@@ -59,7 +60,8 @@ export async function setActiveProject(projectPath: string): Promise<boolean> {
     );
     activeProjectDir = projectPath;
     return true;
-  } catch {
+  } catch (e) {
+    logger.error(`Failed to set active project at ${projectPath}: ${e}`);
     return false;
   }
 }
