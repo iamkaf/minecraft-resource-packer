@@ -20,7 +20,17 @@ export function clearTextureCache(projectPath: string) {
   }
 }
 
-/** Recursively list all texture paths available for the given project version. */
+/**
+ * Recursively enumerate all vanilla textures available for a project.
+ *
+ * The project metadata indicates which Minecraft version the project targets.
+ * We locate the cached assets for that version and walk the
+ * `assets/minecraft/textures` directory. Every PNG file is added to the result
+ * array using POSIX path separators.
+ *
+ * Results are memoised per project/version combination so repeated calls avoid
+ * hitting the filesystem again.
+ */
 export async function listTextures(projectPath: string): Promise<string[]> {
   const meta = await readProjectMeta(projectPath);
   const key = `${projectPath}:${meta.minecraft_version}`;
@@ -89,7 +99,15 @@ export async function getTextureURL(
   return `vanilla://${texture}`;
 }
 
-/** Combine multiple textures into a single PNG and return a data URL. */
+/**
+ * Combine a set of textures into a single horizontally-aligned image.
+ *
+ * Each texture is loaded from the vanilla cache, converted to PNG and placed
+ * next to the previous one. The function keeps track of the widest and tallest
+ * dimensions seen to determine the final atlas size. The composed image is
+ * returned as a base64 encoded PNG data URL so it can be used directly in the
+ * renderer.
+ */
 export async function createTextureAtlas(
   projectPath: string,
   textures: string[]
