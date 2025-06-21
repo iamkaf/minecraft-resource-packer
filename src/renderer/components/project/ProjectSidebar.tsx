@@ -22,7 +22,10 @@ export default function ProjectSidebar({
   }, [project]);
 
   return (
-    <aside data-testid="project-sidebar" className="w-80 p-4 bg-base-200">
+    <aside
+      data-testid="project-sidebar"
+      className="w-full p-4 bg-base-200 flex flex-row gap-4 items-start"
+    >
       {project ? (
         <>
           <h2 className="font-display text-lg mb-2">{project}</h2>

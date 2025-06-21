@@ -120,7 +120,7 @@ const ProjectManagerView: React.FC = () => {
   });
 
   return (
-    <section className="flex gap-4 max-w-5xl mx-auto">
+    <section className="flex flex-col gap-4 max-w-5xl mx-auto">
       <div className="flex-1">
         <div className="flex items-center mb-2 gap-2">
           <h2 className="font-display text-xl flex-1">Projects</h2>
@@ -148,6 +148,7 @@ const ProjectManagerView: React.FC = () => {
           onBulkExport={handleBulkExport}
           disableExport={selected.size === 0}
         />
+        <ProjectSidebar project={activeProject} />
         <ProjectTable
           projects={sortedProjects}
           sortKey={sortKey}
@@ -175,7 +176,6 @@ const ProjectManagerView: React.FC = () => {
         )}
         <ProjectModals refresh={refresh} toast={toast} />
       </div>
-      <ProjectSidebar project={activeProject} />
     </section>
   );
 };
