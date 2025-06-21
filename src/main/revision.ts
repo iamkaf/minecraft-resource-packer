@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import logger from './logger';
 
 /** Save the current version of a file into the project's .history folder */
 export async function saveRevision(
@@ -33,7 +34,8 @@ export async function listRevisions(
   try {
     const list = await fs.promises.readdir(histDir);
     return list.sort().reverse();
-  } catch {
+  } catch (e) {
+    logger.error(`Failed to list revisions in ${histDir}: ${e}`);
     return [];
   }
 }

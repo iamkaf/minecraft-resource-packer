@@ -9,6 +9,7 @@ import {
   type ProjectMetadata,
 } from '../../shared/project';
 import { readProjectMeta, writeProjectMeta } from '../projectMeta';
+import logger from '../logger';
 
 export interface ProjectInfo {
   name: string;
@@ -54,7 +55,8 @@ export async function listProjects(baseDir: string): Promise<ProjectInfo[]> {
           lastOpened: meta.lastOpened ?? 0,
         });
         continue;
-      } catch {
+      } catch (e) {
+        logger.error(`listProjects failed for ${name}: ${e}`);
         // ignore malformed metadata
       }
     }
@@ -75,7 +77,10 @@ export async function openProject(
       const meta = await readProjectMeta(projectPath);
       meta.lastOpened = Date.now();
       await writeProjectMeta(projectPath, meta);
-    } catch {
+    } catch (e) {
+      logger.error(
+        `Failed to update ${path.join(projectPath, 'project.json')}: ${e}`
+      );
       // ignore corrupted metadata
     }
   }
@@ -95,7 +100,13 @@ export async function duplicateProject(
       const meta = await readProjectMeta(dest);
       meta.name = newName;
       await writeProjectMeta(dest, meta);
-    } catch {
+    } catch (e) {
+      logger.error(
+        `Failed to update duplicated project metadata ${path.join(
+          dest,
+          'project.json'
+        )}: ${e}`
+      );
       // ignore malformed metadata
     }
   }
@@ -114,8 +125,13 @@ export async function renameProject(
       const meta = await readProjectMeta(dest);
       meta.name = newName;
       await writeProjectMeta(dest, meta);
-    } catch {
-      /* ignore */
+    } catch (e) {
+      logger.error(
+        `Failed to update renamed project metadata ${path.join(
+          dest,
+          'project.json'
+        )}: ${e}`
+      );
     }
   }
 }

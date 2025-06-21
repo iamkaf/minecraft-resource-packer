@@ -58,7 +58,8 @@ export function PackMetaForm({
           };
           const parsed = PackMetaSchema.parse(data);
           onSave({ ...parsed, updated: Date.now() });
-        } catch {
+        } catch (e) {
+          window.electronAPI?.log('error', `PackMetaModal parse failed: ${e}`);
           toast({ message: 'Invalid metadata', type: 'error' });
         }
       }}

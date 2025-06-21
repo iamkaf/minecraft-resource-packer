@@ -6,6 +6,7 @@ import path from 'path';
 import type { PackMeta, ProjectMetadata } from '../../shared/project';
 import { PackMetaSchema, createDefaultProjectMeta } from '../../shared/project';
 import { readProjectMeta, writeProjectMeta } from '../projectMeta';
+import logger from '../logger';
 
 export async function loadPackMeta(
   baseDir: string,
@@ -16,7 +17,13 @@ export async function loadPackMeta(
     try {
       const meta = await readProjectMeta(projectPath);
       return PackMetaSchema.parse(meta);
-    } catch {
+    } catch (e) {
+      logger.error(
+        `Failed to load pack metadata from ${path.join(
+          projectPath,
+          'project.json'
+        )}: ${e}`
+      );
       // ignore malformed data
     }
   }
@@ -40,8 +47,13 @@ export async function savePackMeta(
   if (fs.existsSync(path.join(projectPath, 'project.json'))) {
     try {
       data = await readProjectMeta(projectPath);
-    } catch {
-      /* ignore */
+    } catch (e) {
+      logger.error(
+        `Failed to read existing metadata from ${path.join(
+          projectPath,
+          'project.json'
+        )}: ${e}`
+      );
     }
   }
   if (!data) {

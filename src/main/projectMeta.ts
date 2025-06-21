@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { ProjectMetadata, ProjectMetadataSchema } from '../shared/project';
+import logger from './logger';
 
 /** Read and parse the project.json metadata for a project. */
 export async function readProjectMeta(
@@ -20,7 +21,10 @@ export async function readProjectMetaSafe(
 ): Promise<ProjectMetadata | undefined> {
   try {
     return await readProjectMeta(projectPath);
-  } catch {
+  } catch (e) {
+    logger.error(
+      `Failed to parse ${path.join(projectPath, 'project.json')}: ${e}`
+    );
     return undefined;
   }
 }

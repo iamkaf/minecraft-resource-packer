@@ -74,7 +74,8 @@ export default function AssetInfo({ asset, count = 1 }: Props) {
     if (isJson) {
       try {
         JSON.parse(text);
-      } catch {
+      } catch (e) {
+        window.electronAPI?.log('error', `AssetInfo invalid JSON: ${e}`);
         setError('Invalid JSON');
         toast({ message: 'Invalid JSON', type: 'error' });
         return;
