@@ -23,7 +23,6 @@ interface Props {
 
 export default function AssetBrowserTab({ onExport }: Props) {
   const selected = useAppStore((s) => s.selectedAssets);
-  const setSelected = useAppStore((s) => s.setSelectedAssets);
   const [selectorAsset, setSelectorAsset] = useState<string | null>(null);
   const [layout, setLayout] = useState<number[]>([20, 80]);
   const [selectorOpen, setSelectorOpen] = useState(false);
@@ -85,7 +84,7 @@ export default function AssetBrowserTab({ onExport }: Props) {
           <PanelGroup direction="vertical" className="h-full">
             <Panel defaultSize={70} className="overflow-y-auto">
               <Suspense fallback={<Skeleton width="100%" height="8rem" />}>
-                <AssetBrowser onSelectionChange={setSelected} />
+                <AssetBrowser />
               </Suspense>
             </Panel>
             <PanelResizeHandle className="flex items-center" tagName="div">
