@@ -12,7 +12,6 @@ export const CATEGORY_KEYS = [
   'misc',
 ] as const;
 
-
 interface Props {
   textures: TextureInfo[];
   zoom: number;
@@ -38,7 +37,10 @@ export default function AssetCategoryList({
       misc: [],
     };
     for (const tex of textures) {
-      const cat = getCategory(tex.name);
+      const cat = getCategory(tex.name) as Exclude<
+        ReturnType<typeof getCategory>,
+        'lang'
+      >;
       if (out[cat]) out[cat].push(tex);
       else out.misc.push(tex);
     }

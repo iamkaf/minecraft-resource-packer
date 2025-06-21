@@ -10,10 +10,7 @@ describe('BrowserBody', () => {
     render(
       <BrowserBody
         projectPath="/proj"
-        files={[
-          'assets/minecraft/textures/block/stone.png',
-          'lang/en_us.json',
-        ]}
+        files={['assets/minecraft/textures/block/stone.png', 'lang/en_us.json']}
         versions={{}}
         zoom={64}
         onControlsChange={() => {}}

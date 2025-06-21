@@ -29,10 +29,7 @@ const BrowserBody: React.FC<Props> = ({
     deleteFiles(selected.map((s) => path.join(projectPath, s)));
   };
 
-  const categories = React.useMemo(
-    () => groupFilesByCategory(files),
-    [files]
-  );
+  const categories = React.useMemo(() => groupFilesByCategory(files), [files]);
 
   return (
     <div

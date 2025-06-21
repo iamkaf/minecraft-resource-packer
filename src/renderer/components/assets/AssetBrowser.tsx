@@ -8,7 +8,6 @@ import type { Filter, ControlsState } from './AssetBrowserControls';
 import BrowserBody from './BrowserBody';
 import { normalizeForCategory, getCategory } from '../../utils/category';
 
-
 const AssetBrowser: React.FC = () => {
   const projectPath = useAppStore((s) => s.projectPath)!;
   const { files, noExport, versions } = useProjectFiles();
@@ -35,7 +34,6 @@ const AssetBrowser: React.FC = () => {
       }),
     [files, query, filters]
   );
-
 
   const handleControlsChange = (state: ControlsState) => {
     setQuery(state.query);
