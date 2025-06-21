@@ -1,88 +1,102 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import path from 'path';
+import ExternalLink from '../common/ExternalLink';
+import PackMetaModal from '../modals/PackMetaModal';
+import RenameModal from '../modals/RenameModal';
 import type { PackMeta } from '../../../main/projects';
-import { Button } from '../daisy/actions';
-import { PackMetaForm } from '../modals/PackMetaModal';
-import defaultIcon from '../../../../resources/default_pack.png';
+import { ProjectInfoPanelSkeleton } from '../skeleton';
 
-import { useAppStore } from '../../store';
-
-interface Props {
-  onExport: () => void;
-}
-
-export default function ProjectInfoPanel({ onExport }: Props) {
-  const projectPath = useAppStore((s) => s.projectPath);
-  const setProjectPath = useAppStore((s) => s.setProjectPath);
-  const navigate = useNavigate();
+export default function ProjectInfoPanel({
+  project,
+}: {
+  project: string | null;
+}) {
   const [meta, setMeta] = useState<PackMeta | null>(null);
+  const [edit, setEdit] = useState(false);
+  const [rename, setRename] = useState(false);
 
   useEffect(() => {
-    if (projectPath) {
-      const name = path.basename(projectPath);
-      window.electronAPI?.loadPackMeta(name).then(setMeta);
+    if (project) {
+      setMeta(null);
+      window.electronAPI?.loadPackMeta(project).then(setMeta);
     }
-  }, [projectPath]);
-
-  if (!projectPath) return null;
-
-  const name = path.basename(projectPath);
+  }, [project]);
 
   return (
-    <>
-      <div className="card bg-base-100 shadow" data-testid="project-info">
-        <div className="card-body items-center gap-2 p-2">
-          <Button
-            className="link link-primary self-start"
-            onClick={() => {
-              setProjectPath(null);
-              navigate('/');
-            }}
-          >
-            Back to Projects
-          </Button>
-          <Button
-            className="link link-primary self-start"
-            onClick={() => navigate('/settings')}
-          >
-            Settings
-          </Button>
-          <img
-            src="asset://pack.png"
-            alt="Pack icon"
-            className="w-24 h-24"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = defaultIcon;
-            }}
-          />
-          <h2 className="card-title text-lg font-display">{name}</h2>
-          <div className="card-actions justify-end w-full mt-auto">
-            <Button
-              className="btn-neutral btn-sm"
-              onClick={() => window.electronAPI?.openInFolder(projectPath)}
-            >
-              Open Folder
-            </Button>
-            <Button className="btn-accent btn-sm" onClick={onExport}>
-              Export Pack
-            </Button>
-          </div>
-        </div>
-      </div>
-      {meta && (
-        <div className="mt-4">
-          <PackMetaForm
-            project={name}
-            meta={meta}
-            onSave={(m) => {
-              window.electronAPI?.savePackMeta(name, m).then(() => {
-                setMeta(m);
-              });
-            }}
-          />
-        </div>
+    <aside
+      data-testid="project-info-panel"
+      className="w-full p-4 bg-base-200 flex flex-row gap-4 items-start"
+    >
+      {project ? (
+        <>
+          <h2 className="font-display text-lg mb-2">{project}</h2>
+          {meta ? (
+            <div className="card bg-base-100 p-4">
+              <p>{meta.description}</p>
+              <p className="text-sm mt-1">Author: {meta.author}</p>
+              <ul className="list-disc list-inside mt-2">
+                {meta.urls.map((u: string) => (
+                  <li key={u}>
+                    <ExternalLink href={u} className="link link-primary">
+                      {u}
+                    </ExternalLink>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs mt-2">
+                Created: {new Date(meta.created).toLocaleDateString()}
+              </p>
+              {meta.updated && (
+                <p className="text-xs">
+                  Updated: {new Date(meta.updated).toLocaleDateString()}
+                </p>
+              )}
+              <button
+                className="btn btn-primary btn-sm mt-2"
+                onClick={() => setEdit(true)}
+              >
+                Edit
+              </button>
+              <button
+                className="btn btn-neutral btn-sm mt-2"
+                onClick={() => setRename(true)}
+              >
+                Rename
+              </button>
+            </div>
+          ) : (
+            <ProjectInfoPanelSkeleton />
+          )}
+        </>
+      ) : (
+        <p>Select a project to view metadata.</p>
       )}
-    </>
+      {edit && meta && (
+        <PackMetaModal
+          project={project}
+          meta={meta}
+          onCancel={() => setEdit(false)}
+          onSave={(m) => {
+            if (!project) return;
+            window.electronAPI?.savePackMeta(project, m).then(() => {
+              setMeta(m);
+              setEdit(false);
+            });
+          }}
+        />
+      )}
+      {rename && project && (
+        <RenameModal
+          current={project}
+          title="Rename Project"
+          confirmText="Rename"
+          onCancel={() => setRename(false)}
+          onRename={(n) => {
+            window.electronAPI?.renameProject(project, n).then(() => {
+              setRename(false);
+            });
+          }}
+        />
+      )}
+    </aside>
   );
 }

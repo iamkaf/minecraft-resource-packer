@@ -1,71 +1,74 @@
 import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { SetPath, electronAPI } from './test-utils';
-import { MemoryRouter, useLocation } from 'react-router-dom';
-import { useAppStore } from '../src/renderer/store';
-
-function HashSync() {
-  const location = useLocation();
-  React.useEffect(() => {
-    window.location.hash = `#${location.pathname}`;
-  }, [location]);
-  return null;
-}
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import ProjectInfoPanel from '../src/renderer/components/project/ProjectInfoPanel';
 
-const meta = {
-  version: '1.21.1',
-  description: 'desc',
-  author: '',
-  urls: [],
-  created: 0,
-  license: '',
-};
-
 describe('ProjectInfoPanel', () => {
-  const load = electronAPI.loadPackMeta as ReturnType<typeof vi.fn>;
-  const open = electronAPI.openInFolder as ReturnType<typeof vi.fn>;
-  const onExport = vi.fn();
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    load.mockResolvedValue(meta);
-    open.mockResolvedValue(undefined);
-  });
-
-  it('loads metadata and triggers export', async () => {
-    render(
-      <MemoryRouter>
-        <HashSync />
-        <SetPath path="/p/Pack">
-          <ProjectInfoPanel onExport={onExport} />
-        </SetPath>
-      </MemoryRouter>
-    );
+  it('loads metadata when given a project', async () => {
+    const load = vi.fn().mockResolvedValue({
+      version: '1.21.1',
+      description: 'A pack',
+      author: 'Me',
+      urls: ['https://a.com'],
+      created: 0,
+      license: '',
+    });
+    interface API {
+      loadPackMeta: typeof load;
+      savePackMeta: () => void;
+    }
+    (window as unknown as { electronAPI: API }).electronAPI = {
+      loadPackMeta: load,
+      savePackMeta: vi.fn(),
+    };
+    render(<ProjectInfoPanel project="Pack" />);
     expect(load).toHaveBeenCalledWith('Pack');
-    await screen.findByText('desc');
-    fireEvent.click(screen.getByText('Export Pack'));
-    expect(onExport).toHaveBeenCalled();
-    fireEvent.click(screen.getByText('Open Folder'));
-    expect(open).toHaveBeenCalledWith('/p/Pack');
-    fireEvent.click(screen.getByText('Back to Projects'));
-    expect(useAppStore.getState().projectPath).toBeNull();
-    expect(window.location.hash).toBe('#/');
-    expect(screen.queryByText('Pack')).toBeNull();
+    await screen.findByText('A pack');
   });
 
-  it('falls back to default icon when pack.png missing', async () => {
-    render(
-      <MemoryRouter>
-        <HashSync />
-        <SetPath path="/p/Pack">
-          <ProjectInfoPanel onExport={onExport} />
-        </SetPath>
-      </MemoryRouter>
-    );
-    const img = screen.getByAltText('Pack icon') as HTMLImageElement;
-    fireEvent.error(img);
-    expect(img.src).toContain('default_pack');
+  it('shows placeholder without a project', () => {
+    const load = vi.fn();
+    (window as unknown as { electronAPI: API }).electronAPI = {
+      loadPackMeta: load,
+      savePackMeta: vi.fn(),
+    };
+    render(<ProjectInfoPanel project={null} />);
+    expect(screen.getByText(/select a project/i)).toBeInTheDocument();
+    expect(load).not.toHaveBeenCalled();
+  });
+
+  it('updates when project changes', async () => {
+    const load = vi
+      .fn()
+      .mockResolvedValueOnce({
+        version: '1.21.1',
+        description: 'First',
+        author: '',
+        urls: [],
+        created: 0,
+        license: '',
+      })
+      .mockResolvedValueOnce({
+        version: '1.21.1',
+        description: 'Second',
+        author: '',
+        urls: [],
+        created: 0,
+        license: '',
+      });
+    interface API {
+      loadPackMeta: typeof load;
+      savePackMeta: () => void;
+    }
+    (window as unknown as { electronAPI: API }).electronAPI = {
+      loadPackMeta: load,
+      savePackMeta: vi.fn(),
+    };
+    const { rerender } = render(<ProjectInfoPanel project="A" />);
+    await screen.findByText('First');
+    rerender(<ProjectInfoPanel project="B" />);
+    expect(load).toHaveBeenLastCalledWith('B');
+    await screen.findByText('Second');
+    expect(screen.queryByText('First')).toBeNull();
   });
 });

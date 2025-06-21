@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import Fuse from 'fuse.js';
 import { useToast } from '../components/providers/ToastProvider';
 import ExternalLink from '../components/common/ExternalLink';
-import ProjectSidebar from '../components/project/ProjectSidebar';
+import ProjectInfoPanel from '../components/project/ProjectInfoPanel';
 import ProjectForm from '../components/project/ProjectForm';
 import ProjectTable from '../components/project/ProjectTable';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
@@ -148,7 +148,7 @@ const ProjectManagerView: React.FC = () => {
           onBulkExport={handleBulkExport}
           disableExport={selected.size === 0}
         />
-        <ProjectSidebar project={activeProject} />
+        <ProjectInfoPanel project={activeProject} />
         <ProjectTable
           projects={sortedProjects}
           sortKey={sortKey}

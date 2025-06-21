@@ -7,7 +7,7 @@ import {
   SettingsViewSkeleton,
   AboutViewSkeleton,
   ProjectManagerSkeleton,
-  ProjectSidebarSkeleton,
+  ProjectInfoPanelSkeleton,
 } from '../src/renderer/components/skeleton';
 
 describe('View skeletons', () => {
@@ -31,8 +31,8 @@ describe('View skeletons', () => {
     expect(screen.getByTestId('manager-skeleton')).toBeInTheDocument();
   });
 
-  it('renders sidebar skeleton', () => {
-    render(<ProjectSidebarSkeleton />);
-    expect(screen.getByTestId('sidebar-skeleton')).toBeInTheDocument();
+  it('renders info panel skeleton', () => {
+    render(<ProjectInfoPanelSkeleton />);
+    expect(screen.getByTestId('info-panel-skeleton')).toBeInTheDocument();
   });
 });
