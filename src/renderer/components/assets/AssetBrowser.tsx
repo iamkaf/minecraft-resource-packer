@@ -11,10 +11,6 @@ import AssetBrowserControls, {
 } from './AssetBrowserControls';
 import AssetCategorySection from './AssetCategorySection';
 
-interface Props {
-  onSelectionChange?: (sel: string[]) => void;
-}
-
 const normalizeForCategory = (file: string) => {
   const texIdx = file.indexOf('textures/');
   if (texIdx >= 0) return file.slice(texIdx + 'textures/'.length);
@@ -108,7 +104,7 @@ const BrowserBody: React.FC<{
   );
 };
 
-const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
+const AssetBrowser: React.FC = () => {
   const projectPath = useAppStore((s) => s.projectPath)!;
   const { files, noExport, versions } = useProjectFiles();
   React.useEffect(() => {
@@ -116,8 +112,6 @@ const AssetBrowser: React.FC<Props> = ({ onSelectionChange }) => {
   }, [noExport]);
   const renameTarget = useAppStore((s) => s.renameTarget);
   const moveTarget = useAppStore((s) => s.moveTarget);
-  const openRename = useAppStore((s) => s.openRename);
-  const openMove = useAppStore((s) => s.openMove);
   const closeDialogs = useAppStore((s) => s.closeDialogs);
   const [query, setQuery] = useState('');
   const [zoom, setZoom] = useState(64);
