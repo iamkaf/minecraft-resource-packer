@@ -1,7 +1,5 @@
 import React from 'react';
 import pkg from '../../../package.json';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - webpack replaces import with URL string
 import iconPath from '../../../resources/icon.png';
 import ExternalLink from '../components/common/ExternalLink';
 export default function AboutView() {
@@ -11,7 +9,7 @@ export default function AboutView() {
       data-testid="about"
     >
       <img
-        src={iconPath as unknown as string}
+        src={iconPath}
         style={{ imageRendering: 'pixelated' }}
         alt="App logo"
         className="w-32 h-32"

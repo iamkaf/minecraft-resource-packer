@@ -4,8 +4,6 @@ import path from 'path';
 import type { PackMeta } from '../../../main/projects';
 import { Button } from '../daisy/actions';
 import { PackMetaForm } from '../modals/PackMetaModal';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - webpack replaces import with URL string
 import defaultIcon from '../../../../resources/default_pack.png';
 
 import { useAppStore } from '../../store';
@@ -55,8 +53,7 @@ export default function ProjectInfoPanel({ onExport }: Props) {
             alt="Pack icon"
             className="w-24 h-24"
             onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src =
-                defaultIcon as unknown as string;
+              (e.currentTarget as HTMLImageElement).src = defaultIcon;
             }}
           />
           <h2 className="card-title text-lg font-display">{name}</h2>
