@@ -5,11 +5,7 @@ import ExportWizardModal, {
 } from '../components/modals/ExportWizardModal';
 import type { ExportSummary } from '../../main/exporter';
 import { useAppStore } from '../store';
-import {
-  AssetBrowserTab,
-  TextureLabTab,
-  ExporterTab,
-} from '../components/editor';
+import { BrowserView, TextureLabView, ExporterView } from './editor';
 import Tab from '../components/daisy/navigation/Tab';
 
 export default function EditorView() {
@@ -74,9 +70,9 @@ export default function EditorView() {
           Exporter
         </Tab>
       </div>
-      {mode === 'browser' && <AssetBrowserTab onExport={handleExport} />}
-      {mode === 'lab' && <TextureLabTab />}
-      {mode === 'exporter' && <ExporterTab onExport={handleExport} />}
+      {mode === 'browser' && <BrowserView onExport={handleExport} />}
+      {mode === 'lab' && <TextureLabView />}
+      {mode === 'exporter' && <ExporterView onExport={handleExport} />}
       {(progress || summary) && (
         <ExportWizardModal
           progress={progress ?? undefined}
