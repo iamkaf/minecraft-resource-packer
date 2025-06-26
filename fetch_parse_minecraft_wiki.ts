@@ -1,4 +1,4 @@
-import axios from 'axios'; // Re-added axios
+import axios from 'axios';
 import * as cheerio from 'cheerio';
 import * as fs from 'fs/promises';
 import * as path from 'path';
