@@ -54,6 +54,17 @@ export async function restoreRevision(
   await fs.promises.copyFile(src, dest);
 }
 
+/** Delete the specified revision */
+export async function deleteRevision(
+  project: string,
+  rel: string,
+  revision: string
+): Promise<void> {
+  const histDir = path.join(project, '.history', rel);
+  const target = path.join(histDir, revision);
+  await fs.promises.unlink(target);
+}
+
 /** Find the project root for the given file by locating project.json */
 export function findProjectRoot(file: string): string | null {
   let dir = path.resolve(path.dirname(file));
