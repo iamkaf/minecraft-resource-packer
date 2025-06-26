@@ -7,6 +7,7 @@ import {
   saveRevision,
   listRevisions,
   restoreRevision,
+  deleteRevision,
   saveRevisionForFile,
 } from './revision';
 
@@ -45,6 +46,13 @@ export function registerFileHandlers(ipc: IpcMain) {
     'restore-revision',
     async (_e, project: string, rel: string, rev: string) => {
       await restoreRevision(project, rel, rev);
+    }
+  );
+
+  ipc.handle(
+    'delete-revision',
+    async (_e, project: string, rel: string, rev: string) => {
+      await deleteRevision(project, rel, rev);
     }
   );
 

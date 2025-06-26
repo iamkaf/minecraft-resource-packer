@@ -34,6 +34,7 @@ export interface IpcRequestMap {
   'save-revision': [string, string, string];
   'list-revisions': [string, string];
   'restore-revision': [string, string, string];
+  'delete-revision': [string, string, string];
   'rename-file': [string, string];
   'delete-file': [string];
   'edit-texture': [string, TextureEditOptions];
@@ -95,6 +96,7 @@ export interface IpcResponseMap {
   'save-revision': void;
   'list-revisions': string[];
   'restore-revision': void;
+  'delete-revision': void;
   'rename-file': void;
   'delete-file': void;
   'edit-texture': void;
