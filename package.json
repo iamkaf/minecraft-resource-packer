@@ -18,7 +18,8 @@
     "typecheck": "tsc --noEmit",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "update-minecraft-changelog": "ts-node ./fetch_parse_minecraft_wiki.ts && ts-node ./generate_changelog_md_node.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -77,6 +78,8 @@
     "@vercel/webpack-asset-relocator-loader": "1.7.3",
     "@vitest/coverage-v8": "^3.2.3",
     "autoprefixer": "^10.4.21",
+    "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
     "css-loader": "^7.1.2",
     "daisyui": "^5.0.43",
     "electron": "^36.4.0",

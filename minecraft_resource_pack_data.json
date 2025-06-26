@@ -1,0 +1,302 @@
+[
+  {
+    "value": "1",
+    "releases": "1.6.1 – 1.8.9",
+    "changes": "First implementation of the resource pack system. See [Java Edition 1.6.1/Resource pack changes](https://minecraft.wiki/w/Java_Edition_1.6.1/Resource_pack_changes) for the list of file names changed."
+  },
+  {
+    "value": "2",
+    "releases": "1.9 – 1.10.2",
+    "changes": "Changes in the [model](https://minecraft.wiki/w/Model) system, such as [item tags](https://minecraft.wiki/w/Model#Item_tags), [multipart](https://minecraft.wiki/w/Model#Block_states), and changes to display tags."
+  },
+  {
+    "value": "3",
+    "releases": "1.11 – 1.12.2",
+    "changes": "Now requires lowercase file names for all files in the resource pack."
+  },
+  {
+    "value": "4",
+    "releases": "1.13 – 1.14.4",
+    "changes": "Most of the block and item textures have been renamed. See [Java Edition 1.13/Resource pack changes](https://minecraft.wiki/w/Java_Edition_1.13/Resource_pack_changes) for the list of file names changed. The resource pack folder `textures/blocks` got renamed to `textures/block`.The resource pack folder `textures/items` got renamed to `textures/item`."
+  },
+  {
+    "value": "5",
+    "releases": "1.15 – 1.16.1",
+    "changes": "Changed texture mappings with all chests, banner and shield patterns now use alpha channels. The [ender dragon](https://minecraft.wiki/w/Ender_dragon) no longer has a separate texture for the bottom of its wing. The glint texture for [enchanted](https://minecraft.wiki/w/Enchant) [items](https://minecraft.wiki/w/Item) now appears like it does in-game. The game now supports conversion with some of version 4 resource packs' outdated textures to the newer ones.Increased the size limit for the client-side downloading of resource packs from 50 MB to 100 MB."
+  },
+  {
+    "value": "6",
+    "releases": "1.16.2 – 1.16.5",
+    "changes": "Fixed MC-197275 — Due to changes to walls, `pack_format: 5` is no longer cross-compatible between 1.15 and 1.16."
+  },
+  {
+    "value": "7",
+    "releases": "1.17 – 1.17.1",
+    "changes": "[Drowned](https://minecraft.wiki/w/Drowned) texture mirroring has changed, Grass path has been renamed to dirt path. Slots for the game mode selector are now 26 pixels instead of 25."
+  },
+  {
+    "value": "8",
+    "releases": "1.18 – 1.18.2",
+    "changes": "[inventory.png](https://minecraft.wiki/w/Inventory.png) now contains an extra sprite for a thin-layout version of the effect list in the inventory."
+  },
+  {
+    "value": "9",
+    "releases": "1.19 – 1.19.2",
+    "changes": "Resource pack can have a `filter` section in `pack.mcmeta` now."
+  },
+  {
+    "value": "11",
+    "releases": "Development Snapshots",
+    "changes": "Removed \"fixers\" for resource packs with a `pack_format` value of `3` and `4` (pre-flattening);the game will no longer try to adapt packs with those values to the current version."
+  },
+  {
+    "value": "12",
+    "releases": "1.19.3",
+    "changes": "The model and textures of the vex have been updated. `tabs.png` is now skinnier by 2 pixels, with the 7th tab being added to it. Resource packs can have configuration files now, located in the new `atlases` directory, that control which images are included in the atlases. Block and item textures are now loaded before they are processed by block and item models."
+  },
+  {
+    "value": "13",
+    "releases": "1.19.4",
+    "changes": "The enchantment glint now has two separate texture files: `enchanted_glint_entity.png` and `enchanted_glint_item.png`.The former smithing table GUI texture has been renamed to `legacy_smithing.png` in preparations for [Java Edition 1.20](https://minecraft.wiki/w/Java_Edition_1.20), where the new smithing GUI texture is named as `smithing.png` instead, superseding the previous, similarly-named texture."
+  },
+  {
+    "value": "14",
+    "releases": "Development Snapshots",
+    "changes": "Updated the sprite layout of `minecraft.png` and `invite_icon.png`. `minecraft.png` logo has been reworked to be high quality and is no longer split across 2 rows."
+  },
+  {
+    "value": "15",
+    "releases": "1.20 – 1.20.1",
+    "changes": "`legacy_unicode` glyph provider has been removed. Bitmaps used by `uniform` font have been removed.`uniform` font has been updated to use Unifont 15.0.01, where it changes shape of multiple characters, while also adding support for new ones, and combining characters no longer include circle overlayed over them. Added second level of organization of entries in credits.json on top of `titles`, called `disciplines`."
+  },
+  {
+    "value": "16",
+    "releases": "Development Snapshots",
+    "changes": "Pack metadata now includes an optional field `supported_formats` which describes a range for pack formats that this pack supports. Packs can now contain overlay directories (\"overlays\")."
+  },
+  {
+    "value": "17",
+    "releases": "Development Snapshots",
+    "changes": "The text field background is now a nine-sliced sprite at `widget/text_field`, and `widget/text_field_highlighted`. The scroll bar in lists and text fields is now a nine-sliced sprite at `widget/scroller`. Added new village structure icons to `map_icons.png`."
+  },
+  {
+    "value": "18",
+    "releases": "1.20.2",
+    "changes": ""
+  },
+  {
+    "value": "19",
+    "releases": "Development Snapshots",
+    "changes": "Added block model, item model and block state definitions for [Crafter](https://minecraft.wiki/w/Crafter). Associated GUI slot texture and sprites have also been added as well."
+  },
+  {
+    "value": "20",
+    "releases": "Development Snapshots",
+    "changes": "The [bat](https://minecraft.wiki/w/Bat) has a new model, resulting the texture mappings for `bat.png` to be changed."
+  },
+  {
+    "value": "21",
+    "releases": "Development Snapshots",
+    "changes": "Now support only `.png` files for textures."
+  },
+  {
+    "value": "22",
+    "releases": "1.20.3 – 1.20.4",
+    "changes": "Renamed `grass` block and item to `short_grass`."
+  },
+  {
+    "value": "24",
+    "releases": "Development Snapshots",
+    "changes": "Adjusted the texture of the Wolf Collar layer to be more consistent with the new Wolf Armor.The `ttf` font provider transforms have been adjusted to have more reasonable defaults."
+  },
+  {
+    "value": "25",
+    "releases": "Development Snapshots",
+    "changes": "Added texture and model files for vault block.Removed unused attributes in core shader definitions."
+  },
+  {
+    "value": "26",
+    "releases": "Development Snapshots",
+    "changes": "Added font variant filters."
+  },
+  {
+    "value": "28",
+    "releases": "Development Snapshots",
+    "changes": "Adjusted menu GUI textures. Added additional textures to support colored layers of wolf armor for the wolf model and wolf armor item. Added three semi-transparent textures for the cracks to show on the wolf armor layer."
+  },
+  {
+    "value": "29",
+    "releases": "Development Snapshots",
+    "changes": "Adjusted menu GUI textures."
+  },
+  {
+    "value": "30",
+    "releases": "Development Snapshots",
+    "changes": "Split `map_icons.png` into individual sprites in the `textures/map/decorations` directory."
+  },
+  {
+    "value": "31",
+    "releases": "Development Snapshots",
+    "changes": "Added new particle types and sound events."
+  },
+  {
+    "value": "32",
+    "releases": "1.20.5 – 1.20.6",
+    "changes": "The `shift` in TTF glyph providers is now restricted to the range `[-512; 512]`."
+  },
+  {
+    "value": "33",
+    "releases": "Development Snapshots",
+    "changes": "The sound events for ominous trial spawner becoming active and ambient sound were renamed.Added new music discs."
+  },
+  {
+    "value": "34",
+    "releases": "1.21 – 1.21.1",
+    "changes": "Added the block.vault.reject_rewarded_player sound event."
+  },
+  {
+    "value": "35",
+    "releases": "Development Snapshots",
+    "changes": "Changed shaders and post-process effects."
+  },
+  {
+    "value": "36",
+    "releases": "Development Snapshots",
+    "changes": "Changed shader and post-process effect definitions and imports."
+  },
+  {
+    "value": "37",
+    "releases": "Development Snapshots",
+    "changes": "Introduced equipment models and more customizable tooltips."
+  },
+  {
+    "value": "38",
+    "releases": "Development Snapshots",
+    "changes": "Added GUI Sprite of the highlighted slots."
+  },
+  {
+    "value": "39",
+    "releases": "Development Snapshots",
+    "changes": "Added Bundle variants and changed torch models."
+  },
+  {
+    "value": "40",
+    "releases": "Development Snapshots",
+    "changes": "Increased to support the new experimental changes."
+  },
+  {
+    "value": "41",
+    "releases": "Development Snapshots",
+    "changes": "Added texture for empty air bubble and sound for when air bubble pops."
+  },
+  {
+    "value": "42",
+    "releases": "1.21.2 – 1.21.3",
+    "changes": "Added texture for bundle slot background."
+  },
+  {
+    "value": "43",
+    "releases": "Development Snapshots",
+    "changes": "Added resin, eyeblossoms, and changes some GUI sprites and magma cube texture layout with UV mapping."
+  },
+  {
+    "value": "44",
+    "releases": "Development Snapshots",
+    "changes": "Adds new format for data-driven item models."
+  },
+  {
+    "value": "45",
+    "releases": "Development Snapshots",
+    "changes": "All blocks that previously rendered only block entity will now also render normal block model over it."
+  },
+  {
+    "value": "46",
+    "releases": "1.21.4",
+    "changes": "Added a way to suppress first-person hand animation on item change for specific models."
+  },
+  {
+    "value": "47",
+    "releases": "Development Snapshots",
+    "changes": "Added wildflowers, falling leaves, and new pig textures."
+  },
+  {
+    "value": "48",
+    "releases": "Development Snapshots",
+    "changes": "Changed the size of the `pig_saddle` texture and added new equipment layer to pigs and striders."
+  },
+  {
+    "value": "49",
+    "releases": "Development Snapshots",
+    "changes": "Changed item model components."
+  },
+  {
+    "value": "50",
+    "releases": "Development Snapshots",
+    "changes": "Added new cow variants and new bush blocks."
+  },
+  {
+    "value": "51",
+    "releases": "Development Snapshots",
+    "changes": "Added new chicken textures, new eggs, cactus flower, and tall and short dry grass."
+  },
+  {
+    "value": "52",
+    "releases": "Development Snapshots",
+    "changes": "Updated mooshroom model, removed shader program definitions for core shaders and post-processing effects as JSON files, and updated item rendering."
+  },
+  {
+    "value": "53",
+    "releases": "Development Snapshots",
+    "changes": "Updated spawn egg textures, removed spawn_egg.png and spawn_egg_overlay.png, added an undercoat texture to sheep, and changed wolf sounds."
+  },
+  {
+    "value": "54",
+    "releases": "Development Snapshots",
+    "changes": "Renamed `misc/enchanted_glint_entity.png` to `misc/enchanted_glint_armor.png`, and \"global\" uniforms may now be defined in any shader and the game will attempt to fill it."
+  },
+  {
+    "value": "55",
+    "releases": "1.21.5",
+    "changes": "Tweaked leaf litter model."
+  },
+  {
+    "value": "56",
+    "releases": "Development Snapshots",
+    "changes": "The game will now consistently respect blur texture parameter in .png.mcmeta files."
+  },
+  {
+    "value": "57",
+    "releases": "Development Snapshots",
+    "changes": "All core shader uniforms are now uniform blocks, clouds.png can no longer be colored, and Block Model rotations are no longer limited to multiplies of 22.5."
+  },
+  {
+    "value": "58",
+    "releases": "Development Snapshots",
+    "changes": "FOG_IS_SKY has been removed."
+  },
+  {
+    "value": "59",
+    "releases": "Development Snapshots",
+    "changes": "Locator bar arrows are now animated using the standard method. Unifont updated to 16.0.03. UNIHEX font provider's `size_overrides` field is now optional."
+  },
+  {
+    "value": "60",
+    "releases": "Development Snapshots",
+    "changes": "Panorama textures must now all be the same size and square."
+  },
+  {
+    "value": "61",
+    "releases": "Development Snapshots",
+    "changes": "Added `icon/music_notes` and `toast/now_playing` sprites."
+  },
+  {
+    "value": "62",
+    "releases": "Development Snapshots",
+    "changes": "Added `entity/leashknot/break` sound, renamed leash sound names,and added sounds for shearing Saddles, Horse Armor, and Carpets from Llamas."
+  },
+  {
+    "value": "63",
+    "releases": "1.21.6",
+    "changes": "Added `oversized_in_gui` item model field and introduced new player head special model type."
+  }
+]
